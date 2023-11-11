@@ -194,21 +194,24 @@ import { jsx as jsx2, jsxs as jsxs2 } from "react/jsx-runtime";
 function Comments() {
   var _a;
   const query = useSWR("/api/comments", (key) => fetcher(key));
-  return /* @__PURE__ */ jsxs2("div", { className: "fc-bg-background fc-p-4 fc-rounded-xl fc-border fc-border-border", children: [
+  return /* @__PURE__ */ jsxs2("div", { className: "fc-bg-background fc-text-foreground fc-p-4 fc-rounded-xl fc-border fc-border-border", children: [
     /* @__PURE__ */ jsx2("p", { className: "fc-font-bold fc-mb-4", children: "Comments" }),
     /* @__PURE__ */ jsx2(CommentEditor, {}),
-    /* @__PURE__ */ jsx2("div", { className: "fc-flex fc-flex-col fc-gap-2 fc-mt-4 fc-border-t fc-border-border fc-pt-4", children: (_a = query.data) == null ? void 0 : _a.map((comment) => /* @__PURE__ */ jsx2(CommentCard, { children: comment.content }, comment.id)) })
+    /* @__PURE__ */ jsx2("div", { className: "fc-flex fc-flex-col fc-mt-4 fc-border-t fc-border-border fc-pt-4", children: (_a = query.data) == null ? void 0 : _a.map((comment) => /* @__PURE__ */ jsx2(CommentCard, { children: comment.content }, comment.id)) })
   ] });
 }
 function CommentCard(props) {
   return /* @__PURE__ */ jsxs2(
     "div",
     __spreadProps(__spreadValues({
-      className: "fc-rounded-xl fc-text-sm fc-p-3 fc-bg-card fc-border fc-border-border"
+      className: "fc-flex fc-flex-row fc-gap-2 fc-rounded-xl fc-text-sm fc-p-3 -fc-mx-3 fc-transition-colors hover:fc-bg-card"
     }, props), {
       children: [
-        /* @__PURE__ */ jsx2("p", { className: "fc-font-semibold fc-mb-2", children: "Fuma" }),
-        /* @__PURE__ */ jsx2("p", { children: props.children })
+        /* @__PURE__ */ jsx2("div", { className: "fc-flex fc-items-center fc-justify-center fc-w-7 fc-h-7 fc-rounded-full fc-bg-gradient-to-br fc-from-blue-600 fc-to-red-600", children: "F" }),
+        /* @__PURE__ */ jsxs2("div", { children: [
+          /* @__PURE__ */ jsx2("p", { className: "fc-font-semibold fc-mb-2", children: "Fuma" }),
+          /* @__PURE__ */ jsx2("p", { children: props.children })
+        ] })
       ]
     })
   );
