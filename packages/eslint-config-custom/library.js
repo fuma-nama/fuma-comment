@@ -19,6 +19,9 @@ module.exports = {
   parserOptions: {
     project,
   },
+  rules: {
+    "import/no-default-export": "off",
+  },
   globals: {
     React: true,
     JSX: true,

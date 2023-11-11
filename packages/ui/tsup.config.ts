@@ -1,10 +1,10 @@
 import { defineConfig } from "tsup";
 
 const config = defineConfig({
-  entry: ["./index.tsx"],
+  entry: ["./src/index.tsx"],
   format: "esm",
+  banner: () => ({ js: "'use client';" }),
   outExtension: () => ({ js: ".js" }),
 });
 
-// eslint-disable-next-line -- No allowed
 export default config;

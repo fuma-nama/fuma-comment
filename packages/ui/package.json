@@ -2,12 +2,14 @@
   "name": "ui",
   "version": "0.0.0",
   "main": "./dist/index.js",
-  "types": "./index.tsx",
+  "types": "./src/index.tsx",
   "license": "MIT",
   "scripts": {
     "lint": "eslint .",
-    "build": "tsup",
-    "dev": "tsup --watch"
+    "build": "tsup && postcss css/styles.css -o ./dist/style.css --watch",
+    "dev": "concurrently \"pnpm dev:layout\" \"pnpm dev:tailwind\"",
+    "dev:layout": "tsup --watch",
+    "dev:tailwind": "postcss css/styles.css -o ./dist/style.css --watch"
   },
   "peerDependencies": {
     "react": "^18.x"
@@ -16,10 +18,30 @@
     "@types/node": "^20.5.2",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "concurrently": "^8.2.2",
     "eslint-config-custom": "workspace:*",
+    "postcss": "^8.4.31",
+    "postcss-cli": "^10.1.0",
+    "postcss-lightningcss": "^1.0.0",
     "react": "^18.2.0",
+    "server": "workspace:^",
+    "tailwindcss": "^3.3.5",
     "tsconfig": "workspace:*",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@tiptap/extension-placeholder": "^2.1.12",
+    "@tiptap/extension-document": "^2.1.12",
+    "@tiptap/extension-dropcursor": "^2.1.12",
+    "@tiptap/extension-gapcursor": "^2.1.12",
+    "@tiptap/extension-hard-break": "^2.1.12",
+    "@tiptap/extension-history": "^2.1.12",
+    "@tiptap/extension-paragraph": "^2.1.12",
+    "@tiptap/extension-text": "^2.1.12",
+    "@tiptap/pm": "^2.1.12",
+    "@tiptap/react": "^2.1.12",
+    "swr": "^2.2.4",
+    "tailwind-merge": "^2.0.0"
   }
 }

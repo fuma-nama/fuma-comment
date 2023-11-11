@@ -35,8 +35,8 @@ module.exports = {
     },
   },
   ignorePatterns: ["node_modules/", "dist/"],
-  // add rules configurations here
   rules: {
+    "no-console": "off",
     "import/no-default-export": "off",
   },
 };

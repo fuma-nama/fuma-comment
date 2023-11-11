@@ -6,13 +6,19 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:init": "tsx ./init.ts"
   },
   "dependencies": {
+    "@vercel/postgres-kysely": "^0.6.0",
+    "dotenv": "^16.3.1",
+    "kysely": "^0.26.3",
     "next": "^14.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "ui": "workspace:*"
+    "server": "workspace:^",
+    "ui": "workspace:*",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^14.0.2",
@@ -21,6 +27,7 @@
     "@types/react-dom": "^18.0.7",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
+    "tsx": "^4.1.1",
     "typescript": "^5.2.2"
   }
 }
