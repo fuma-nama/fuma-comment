@@ -16,7 +16,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const body = postSchema.parse(await req.json());
   await db
     .insertInto("comments")
-    .values({ author: "Fuma", content: body.content })
+    .values({
+      author: "Fuma",
+      content: body.content,
+      timestamp: new Date(Date.now()),
+    })
     .execute();
 
   return NextResponse.json({ message: "Done" });
