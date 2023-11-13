@@ -4,7 +4,7 @@ import type { ButtonHTMLAttributes, HTMLAttributes } from "react";
 import { Fragment, forwardRef } from "react";
 import { cn } from "../utils/cn";
 
-export const menuItemVariants = cva(
+const menuItemVariants = cva(
   "fc-text-left fc-px-3 fc-py-1.5 fc-transition-colors disabled:fc-opacity-80 disabled:fc-cursor-not-allowed",
   {
     variants: {
@@ -16,7 +16,7 @@ export const menuItemVariants = cva(
   }
 );
 
-export const menuItemsVariants = cva(
+const menuItemsVariants = cva(
   "fc-absolute fc-flex fc-flex-col fc-right-0 fc-mt-4 fc-w-56 fc-origin-top-right fc-divide-y fc-divide-border fc-rounded-md fc-text-popover-foreground fc-bg-popover fc-shadow-lg fc-overflow-hidden fc-z-50 focus-visible:fc-ring-1 focus-visible:fc-ring-ring focus-visible:fc-outline-none"
 );
 

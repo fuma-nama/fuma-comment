@@ -3,7 +3,11 @@ import { z } from "zod";
 import { db } from "@/utils/database";
 
 export async function GET(): Promise<NextResponse> {
-  const comments = await db.selectFrom("comments").selectAll().execute();
+  const comments = await db
+    .selectFrom("comments")
+    .selectAll()
+    .orderBy("timestamp desc")
+    .execute();
 
   return NextResponse.json(comments);
 }
