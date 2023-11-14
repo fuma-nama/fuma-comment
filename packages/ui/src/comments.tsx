@@ -8,6 +8,7 @@ import { fetcher } from "./utils/fetcher";
 import { toLocalString } from "./utils/date";
 import { MenuItem, MenuItems, MenuTrigger } from "./components/menu";
 import { cn } from "./utils/cn";
+import { Spinner } from "./components/spinner";
 
 export function Comments(): JSX.Element {
   const query = useSWR("/api/comments", (key) =>
@@ -19,9 +20,13 @@ export function Comments(): JSX.Element {
       <p className="fc-font-bold fc-mb-4">Comments</p>
       <CommentPost />
       <div className="fc-flex fc-flex-col fc-gap-2 fc-mt-4 fc-border-t fc-border-border fc-pt-4">
-        {query.data?.map((comment) => (
-          <CommentCard key={comment.id} {...comment} />
-        ))}
+        {query.isLoading ? (
+          <Spinner className="fc-w-8 fc-h-8 fc-mx-auto" />
+        ) : (
+          query.data?.map((comment) => (
+            <CommentCard key={comment.id} {...comment} />
+          ))
+        )}
       </div>
     </div>
   );
