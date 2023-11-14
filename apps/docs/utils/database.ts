@@ -1,8 +1,9 @@
 import { createKysely } from "@vercel/postgres-kysely";
-import { sql, type Generated } from "kysely";
+import { type Generated } from "kysely";
 
 interface CommentTable {
   id: Generated<number>;
+  replyCommentId?: number;
   author: string;
   content: string;
   timestamp: Generated<Date>;
@@ -14,32 +15,47 @@ interface RateTable {
   like: boolean;
 }
 
+interface UserTable {
+  id: Generated<string>;
+  name: string | null;
+  email: string;
+  emailVerified: Date | null;
+  image: string | null;
+}
+
+interface AccountTable {
+  id: Generated<string>;
+  userId: string;
+  type: string;
+  provider: string;
+  providerAccountId: string;
+  refresh_token: string | null;
+  access_token: string | null;
+  expires_at: number | null;
+  token_type: string | null;
+  scope: string | null;
+  id_token: string | null;
+  session_state: string | null;
+}
+
+interface SessionTable {
+  id: Generated<string>;
+  userId: string;
+  sessionToken: string;
+  expires: Date;
+}
+
 interface Database {
   comments: CommentTable;
   rates: RateTable;
+  User: UserTable;
+  Account: AccountTable;
+  Session: SessionTable;
+  VerificationToken: {
+    identifier: string;
+    token: string;
+    expires: Date;
+  };
 }
 
 export const db = createKysely<Database>();
-
-export async function init(): Promise<void> {
-  await db.schema.dropTable("rates").ifExists().execute();
-  await db.schema.dropTable("comments").ifExists().execute();
-
-  await db.schema
-    .createTable("comments")
-    .addColumn("id", "serial", (col) => col.primaryKey())
-    .addColumn("author", "varchar(256)", (col) => col.notNull())
-    .addColumn("content", "text", (col) => col.notNull())
-    .addColumn("timestamp", "timestamp", (col) =>
-      col.defaultTo(sql`now()`).notNull()
-    )
-    .execute();
-
-  await db.schema
-    .createTable("rates")
-    .addColumn("userId", "varchar(256)")
-    .addColumn("commentId", "integer")
-    .addColumn("like", "boolean", (col) => col.notNull())
-    .addPrimaryKeyConstraint("rates_pk", ["commentId", "userId"])
-    .execute();
-}

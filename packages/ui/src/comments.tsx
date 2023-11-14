@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import type { Comment } from "server";
+import type { SerializedComment } from "server";
 import { useEffect, useState } from "react";
 import { Menu } from "@headlessui/react";
 import useSWRMutation from "swr/mutation";
@@ -10,7 +10,9 @@ import { MenuItem, MenuItems, MenuTrigger } from "./components/menu";
 import { cn } from "./utils/cn";
 
 export function Comments(): JSX.Element {
-  const query = useSWR("/api/comments", (key) => fetcher<Comment[]>(key));
+  const query = useSWR("/api/comments", (key) =>
+    fetcher<SerializedComment[]>(key)
+  );
 
   return (
     <div className="fc-bg-background fc-text-foreground fc-p-4 fc-rounded-xl fc-border fc-border-border">
@@ -25,7 +27,7 @@ export function Comments(): JSX.Element {
   );
 }
 
-function CommentCard(props: Comment): JSX.Element {
+function CommentCard(props: SerializedComment): JSX.Element {
   const [timestamp, setTimestamp] = useState("");
   const [edit, setEdit] = useState(false);
   const deleteMutation = useSWRMutation("/api/comments", (key) =>
@@ -52,12 +54,20 @@ function CommentCard(props: Comment): JSX.Element {
         edit ? "fc-bg-card" : "hover:fc-bg-card"
       )}
     >
-      <div className="fc-flex fc-items-center fc-justify-center fc-w-7 fc-h-7 fc-rounded-full fc-bg-gradient-to-br fc-from-blue-600 fc-to-red-600">
-        F
-      </div>
+      {props.author.image ? (
+        <img
+          alt="avatar"
+          className="fc-w-8 fc-h-8 fc-rounded-full"
+          height={32}
+          src={props.author.image}
+          width={32}
+        />
+      ) : (
+        <div className="fc-w-8 fc-h-8 fc-rounded-full fc-bg-gradient-to-br fc-from-blue-600 fc-to-red-600" />
+      )}
       <div className="fc-flex-1">
         <p className="fc-inline-flex fc-gap-2 fc-items-center fc-mb-2">
-          <span className="fc-font-semibold">{props.author}</span>
+          <span className="fc-font-semibold">{props.author.name}</span>
           <span className="fc-text-muted-foreground fc-text-xs">
             {timestamp}
           </span>

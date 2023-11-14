@@ -38,8 +38,10 @@
 
 .primary-editor {
   .tiptap {
-    @apply fc-min-h-[40px] fc-bg-transparent fc-text-sm fc-rounded-xl fc-px-3 fc-py-1.5 fc-transition-colors hover:fc-bg-accent focus-visible:fc-outline-none focus-visible:fc-ring-2 focus-visible:fc-ring-ring focus-visible:fc-bg-transparent;
+    @apply fc-min-h-[40px] fc-border fc-border-border fc-bg-card fc-text-sm fc-rounded-xl fc-px-3 fc-py-1.5 fc-transition-colors hover:fc-bg-accent focus-visible:fc-outline-none focus-visible:fc-ring-2 focus-visible:fc-ring-ring focus-visible:fc-bg-card;
   }
+
+  @apply aria-disabled:fc-opacity-80 aria-disabled:fc-cursor-not-allowed;
 }
 
 .secondary-editor {

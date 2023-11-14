@@ -7,13 +7,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:init": "tsx ./init.ts"
+    "db:init": "tsx ./scripts/init.ts",
+    "db:migrate": "tsx ./scripts/migrate.ts"
   },
   "dependencies": {
+    "@auth/kysely-adapter": "^0.1.5",
     "@vercel/postgres-kysely": "^0.6.0",
     "dotenv": "^16.3.1",
     "kysely": "^0.26.3",
     "next": "^14.0.2",
+    "next-auth": "^4.24.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "server": "workspace:^",
@@ -26,6 +29,8 @@
     "@types/react": "^18.0.22",
     "@types/react-dom": "^18.0.7",
     "eslint-config-custom": "workspace:*",
+    "kysely-codegen": "^0.11.0",
+    "pg": "^8.11.3",
     "tsconfig": "workspace:*",
     "tsx": "^4.1.1",
     "typescript": "^5.2.2"

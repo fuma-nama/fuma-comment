@@ -10,8 +10,10 @@ import {
 } from "./components/editor";
 import { buttonVariants } from "./components/button";
 import { Spinner } from "./components/spinner";
+import { AuthContext } from "./contexts/auth";
 
 export function CommentPost(): JSX.Element {
+  const auth = React.useContext(AuthContext);
   const mutation = useMutation(
     "/api/comments",
     (key, { arg }: { arg: { content: string } }) =>
@@ -38,6 +40,7 @@ export function CommentPost(): JSX.Element {
   );
 
   const editor = useCommentEditor({ onSubmit: submit });
+  const disabled = mutation.isMutating;
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     if (editor === null) return;
@@ -47,25 +50,48 @@ export function CommentPost(): JSX.Element {
 
   React.useEffect(() => {
     if (!editor) return;
-    editor.setEditable(!mutation.isMutating);
-  }, [editor, mutation.isMutating]);
+    editor.setEditable(!disabled);
+  }, [editor, disabled]);
 
   return (
-    <form
-      className="fc-relative fc-flex fc-flex-col fc-rounded-xl fc-border fc-border-border fc-bg-card"
-      onSubmit={onSubmit}
-    >
-      {editor ? (
+    <form className="fc-relative fc-flex fc-flex-col" onSubmit={onSubmit}>
+      {auth.status === "authenticated" && editor ? (
         <>
           <SendButton editor={editor} loading={mutation.isMutating} />
-          <CommentEditor editor={editor} />
+          <CommentEditor aria-disabled={disabled} editor={editor} />
         </>
       ) : (
-        <div className="fc-min-h-[40px] fc-text-sm fc-px-3 fc-py-1.5 fc-text-muted-foreground">
-          Leave comment
-        </div>
+        <>
+          <Placeholder />
+          <div className="fc-mt-2">
+            {auth.status !== "authenticated" && <AuthButton />}
+          </div>
+        </>
       )}
     </form>
+  );
+}
+
+function AuthButton(): JSX.Element {
+  const { signIn } = React.useContext(AuthContext);
+
+  if (typeof signIn === "function")
+    return (
+      <button className={cn(buttonVariants())} onClick={signIn} type="button">
+        Sign In
+      </button>
+    );
+
+  return <>{signIn}</>;
+}
+
+function Placeholder(): JSX.Element {
+  return (
+    <div aria-disabled className="primary-editor">
+      <div className="tiptap fc-text-sm fc-text-muted-foreground">
+        Leave comment
+      </div>
+    </div>
   );
 }
 

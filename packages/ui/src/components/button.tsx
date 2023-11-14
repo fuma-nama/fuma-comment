@@ -12,5 +12,8 @@ export const buttonVariants = cva(
           "fc-px-2 fc-py-1.5 fc-text-muted-foreground fc-transition-colors fc-rounded-lg hover:fc-bg-accent/80",
       },
     },
+    defaultVariants: {
+      variant: "primary",
+    },
   }
 );
