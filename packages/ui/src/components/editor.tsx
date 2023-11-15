@@ -30,15 +30,7 @@ export function useCommentEditor({
   ...props
 }: UseCommentEditorProps): Editor | null {
   return useEditor({
-    content: defaultValue
-      ? {
-          type: "doc",
-          content: defaultValue.split("\n").map((paragraph) => ({
-            type: "paragraph",
-            content: [{ type: "text", text: paragraph }],
-          })),
-        }
-      : undefined,
+    content: defaultValue ? getContentFromText(defaultValue) : undefined,
     extensions: [
       Document,
       Dropcursor,
@@ -84,6 +76,17 @@ export function CommentEditor({
   );
 }
 
+export function getContentFromText(text: string): JSONContent {
+  return {
+    type: "doc",
+    content: text.split("\n").map((paragraph) => ({
+      type: "paragraph",
+      content:
+        paragraph.length === 0 ? [] : [{ type: "text", text: paragraph }],
+    })),
+  };
+}
+
 export function getEditorContent(content: JSONContent): string {
   const s = [content.text ?? ""];
 
@@ -92,5 +95,5 @@ export function getEditorContent(content: JSONContent): string {
     if (child.type === "paragraph") s.push("\n");
   }
 
-  return s.join("").trim();
+  return s.join("");
 }
