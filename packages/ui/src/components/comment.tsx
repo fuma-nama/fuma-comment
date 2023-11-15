@@ -107,6 +107,7 @@ const rateVariants = cva(
 
 function CommentActions(): JSX.Element {
   const { comment } = useCommentContext();
+  const { status } = useAuthContext();
   const { mutate } = useSWRConfig();
 
   const onRate = (v: boolean): void => {
@@ -134,6 +135,7 @@ function CommentActions(): JSX.Element {
             active: comment.liked === true,
           })
         )}
+        disabled={status === "unauthenticated"}
         onClick={() => {
           onRate(true);
         }}
@@ -162,6 +164,7 @@ function CommentActions(): JSX.Element {
             active: comment.liked === false,
           })
         )}
+        disabled={status === "unauthenticated"}
         onClick={() => {
           onRate(false);
         }}
