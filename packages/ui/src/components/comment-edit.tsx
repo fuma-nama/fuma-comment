@@ -61,7 +61,7 @@ export function CommentEdit(): JSX.Element {
         editor={editor}
         variant="secondary"
       />
-      <div className="fc-flex fc-flex-row fc-gap-2 fc-mt-2">
+      <div className="fc-flex fc-flex-row fc-gap-1 fc-mt-2">
         <button
           aria-label="Edit"
           className={cn(

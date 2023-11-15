@@ -2,6 +2,7 @@ import { Menu } from "@headlessui/react";
 import { useState, useMemo, useLayoutEffect } from "react";
 import type { SerializedComment } from "server";
 import useSWRMutation from "swr/mutation";
+import { cva } from "cva";
 import { cn } from "../utils/cn";
 import { toLocalString } from "../utils/date";
 import { fetcher } from "../utils/fetcher";
@@ -71,14 +72,36 @@ export function Comment({
               {timestamp}
             </span>
           </p>
-          {edit ? <CommentEdit /> : <p>{comment.content}</p>}
-          <CommentActions />
+          {edit ? (
+            <CommentEdit />
+          ) : (
+            <>
+              <p className="fc-whitespace-pre-wrap">{comment.content}</p>
+              <CommentActions />
+            </>
+          )}
         </div>
         {!context.isEditing && <CommentMenu />}
       </div>
     </CommentProvider>
   );
 }
+
+const rateVariants = cva(
+  buttonVariants({
+    variant: "secondary",
+    size: "small",
+    className: "fc-gap-1.5",
+  }),
+  {
+    variants: {
+      active: {
+        true: "fc-bg-accent fc-text-accent-foreground",
+        false: "fc-text-muted-foreground",
+      },
+    },
+  }
+);
 
 function CommentActions(): JSX.Element {
   const { comment } = useCommentContext();
@@ -103,13 +126,11 @@ function CommentActions(): JSX.Element {
   };
 
   return (
-    <div className="fc-flex fc-flex-row fc-text-muted-foreground fc-gap-1 fc-mt-2">
+    <div className="fc-flex fc-flex-row fc-gap-1 fc-mt-2">
       <button
         className={cn(
-          buttonVariants({
-            variant: comment.liked === true ? "primary" : "secondary",
-            className: "fc-gap-1.5",
-            size: "small",
+          rateVariants({
+            active: comment.liked === true,
           })
         )}
         onClick={() => {
@@ -136,10 +157,8 @@ function CommentActions(): JSX.Element {
       </button>
       <button
         className={cn(
-          buttonVariants({
-            variant: comment.liked === false ? "primary" : "secondary",
-            className: "fc-gap-1.5",
-            size: "small",
+          rateVariants({
+            active: comment.liked === false,
           })
         )}
         onClick={() => {
