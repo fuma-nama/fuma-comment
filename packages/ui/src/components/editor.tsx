@@ -33,12 +33,10 @@ export function useCommentEditor({
     content: defaultValue
       ? {
           type: "doc",
-          content: [
-            {
-              type: "paragraph",
-              content: [{ type: "text", text: defaultValue }],
-            },
-          ],
+          content: defaultValue.split("\n").map((paragraph) => ({
+            type: "paragraph",
+            content: [{ type: "text", text: paragraph }],
+          })),
         }
       : undefined,
     extensions: [
