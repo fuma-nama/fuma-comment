@@ -1,14 +1,19 @@
 import useSWR from "swr";
 import type { SerializedComment } from "server";
-import { useEffect, useState } from "react";
-import { Menu } from "@headlessui/react";
+import { useCallback, useContext, useEffect } from "react";
 import useSWRMutation from "swr/mutation";
-import { CommentEdit, CommentPost } from "./editor";
+import type { Editor } from "@tiptap/react";
 import { fetcher } from "./utils/fetcher";
-import { toLocalString } from "./utils/date";
-import { MenuItem, MenuItems, MenuTrigger } from "./components/menu";
-import { cn } from "./utils/cn";
 import { Spinner } from "./components/spinner";
+import { Comment } from "./components/comment";
+import {
+  CommentEditor,
+  getEditorContent,
+  useCommentEditor,
+} from "./components/editor";
+import { AuthContext } from "./contexts/auth";
+import { buttonVariants } from "./components/button";
+import { cn } from "./utils/cn";
 
 export function Comments(): JSX.Element {
   const query = useSWR("/api/comments", (key) =>
@@ -24,7 +29,7 @@ export function Comments(): JSX.Element {
           <Spinner className="fc-w-8 fc-h-8 fc-mx-auto" />
         ) : (
           query.data?.map((comment) => (
-            <CommentCard key={comment.id} {...comment} />
+            <Comment comment={comment} key={comment.id} />
           ))
         )}
       </div>
@@ -32,84 +37,126 @@ export function Comments(): JSX.Element {
   );
 }
 
-function CommentCard(props: SerializedComment): JSX.Element {
-  const [timestamp, setTimestamp] = useState("");
-  const [edit, setEdit] = useState(false);
-  const deleteMutation = useSWRMutation("/api/comments", (key) =>
-    fetcher(`${key}/${props.id}`, { method: "DELETE" })
+function CommentPost(): JSX.Element {
+  const auth = useContext(AuthContext);
+  const mutation = useSWRMutation(
+    "/api/comments",
+    (key, { arg }: { arg: { content: string } }) =>
+      fetcher(key, { method: "POST", body: JSON.stringify(arg) })
   );
 
-  const onEdit = (): void => {
-    setEdit((prev) => !prev);
-  };
+  const submit = useCallback(
+    (instance: Editor): boolean => {
+      const content = getEditorContent(instance.getJSON());
 
-  const onDelete = (): void => {
-    void deleteMutation.trigger();
+      if (content.length === 0) return false;
+      void mutation.trigger(
+        { content },
+        {
+          onSuccess: () => {
+            instance.commands.clearContent();
+          },
+        }
+      );
+
+      return true;
+    },
+    [mutation]
+  );
+
+  const editor = useCommentEditor({ onSubmit: submit });
+  const disabled = mutation.isMutating;
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    if (editor === null) return;
+    submit(editor);
+    e.preventDefault();
   };
 
   useEffect(() => {
-    const parsed = new Date(props.timestamp);
-    setTimestamp(toLocalString(parsed));
-  }, [props.timestamp]);
+    if (!editor) return;
+    editor.setEditable(!disabled);
+  }, [editor, disabled]);
 
   return (
-    <div
-      className={cn(
-        "fc-group fc-relative fc-flex fc-flex-row fc-gap-2 fc-rounded-xl fc-text-sm fc-p-3 -fc-mx-3",
-        edit ? "fc-bg-card" : "hover:fc-bg-card"
-      )}
-    >
-      {props.author.image ? (
-        <img
-          alt="avatar"
-          className="fc-w-8 fc-h-8 fc-rounded-full"
-          height={32}
-          src={props.author.image}
-          width={32}
-        />
+    <form className="fc-relative fc-flex fc-flex-col" onSubmit={onSubmit}>
+      {auth.status === "authenticated" && editor ? (
+        <>
+          <SendButton editor={editor} loading={mutation.isMutating} />
+          <CommentEditor aria-disabled={disabled} editor={editor} />
+        </>
       ) : (
-        <div className="fc-w-8 fc-h-8 fc-rounded-full fc-bg-gradient-to-br fc-from-blue-600 fc-to-red-600" />
+        <>
+          <Placeholder />
+          <div className="fc-mt-2">
+            {auth.status !== "authenticated" && <AuthButton />}
+          </div>
+        </>
       )}
-      <div className="fc-flex-1">
-        <p className="fc-inline-flex fc-gap-2 fc-items-center fc-mb-2">
-          <span className="fc-font-semibold">{props.author.name}</span>
-          <span className="fc-text-muted-foreground fc-text-xs">
-            {timestamp}
-          </span>
-        </p>
-        {edit ? (
-          <CommentEdit
-            defaultContent={props.content}
-            id={props.id}
-            onOpenChange={setEdit}
-          />
-        ) : (
-          <p>{props.content}</p>
-        )}
+    </form>
+  );
+}
+
+function AuthButton(): JSX.Element {
+  const { signIn } = useContext(AuthContext);
+
+  if (typeof signIn === "function")
+    return (
+      <button className={cn(buttonVariants())} onClick={signIn} type="button">
+        Sign In
+      </button>
+    );
+
+  return <>{signIn}</>;
+}
+
+function Placeholder(): JSX.Element {
+  return (
+    <div aria-disabled className="primary-editor">
+      <div className="tiptap fc-text-sm fc-text-muted-foreground">
+        Leave comment
       </div>
-      <Menu>
-        <MenuTrigger className="fc-inline-flex fc-items-center fc-justify-center fc-w-6 fc-h-6 fc-rounded-full fc-opacity-0 group-hover:fc-opacity-100 data-[headlessui-state=open]:fc-bg-accent data-[headlessui-state=open]:fc-opacity-100">
-          <svg
-            className="fc-w-4 fc-h-4"
-            fill="none"
-            height="24"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            width="24"
-          >
-            <circle cx="12" cy="12" r="1" />
-            <circle cx="12" cy="5" r="1" />
-            <circle cx="12" cy="19" r="1" />
-          </svg>
-        </MenuTrigger>
-        <MenuItems>
-          <MenuItem onClick={onEdit}>Edit</MenuItem>
-          <MenuItem disabled={deleteMutation.isMutating} onClick={onDelete}>
-            Delete
-          </MenuItem>
-        </MenuItems>
-      </Menu>
     </div>
+  );
+}
+
+function SendButton({
+  editor,
+  loading,
+}: {
+  editor: Editor;
+  loading: boolean;
+}): JSX.Element {
+  return (
+    <button
+      aria-label="Send Comment"
+      className={cn(
+        buttonVariants({
+          className: "fc-absolute fc-right-2 fc-bottom-2 fc-z-10",
+          variant: "icon",
+        })
+      )}
+      disabled={loading || editor.isEmpty}
+      type="submit"
+    >
+      {loading ? (
+        <Spinner />
+      ) : (
+        <svg
+          className="fc-w-4 fc-h-4"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+          width="24"
+        >
+          <path d="m22 2-7 20-4-9-9-4Z" />
+          <path d="M22 2 11 13" />
+        </svg>
+      )}
+    </button>
   );
 }
