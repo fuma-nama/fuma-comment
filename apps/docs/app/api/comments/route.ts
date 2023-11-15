@@ -2,14 +2,34 @@ import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import type { Comment } from "server";
 import { getServerSession } from "next-auth";
+import { sql } from "kysely";
 import { db } from "@/utils/database";
 import { authOptions } from "../auth/[...nextauth]/route";
 
 export async function GET(): Promise<NextResponse<Comment[]>> {
+  const session = await getServerSession(authOptions);
+  const email = session?.user?.email;
+
   const comments = await db
     .selectFrom("comments")
     .innerJoin("User", "User.email", "comments.author")
-    .leftJoin("rates", "comments.id", "rates.commentId")
+    .leftJoin("rates as likes", (join) =>
+      join
+        .onRef("comments.id", "=", "likes.commentId")
+        .on("likes.like", "=", true)
+    )
+    .leftJoin("rates as dislikes", (join) =>
+      join
+        .onRef("comments.id", "=", "dislikes.commentId")
+        .on("dislikes.like", "=", false)
+    )
+    .leftJoin("rates as self_rate", (c) => {
+      const join = c.onRef("comments.id", "=", "self_rate.commentId");
+
+      if (email) return join.on("self_rate.userId", "=", email);
+
+      return join.on(sql`false`);
+    })
     .select(({ fn }) => {
       return [
         "comments.content",
@@ -19,23 +39,24 @@ export async function GET(): Promise<NextResponse<Comment[]>> {
         "User.name as authorName",
         "User.image as authorImage",
         "User.id as authorId",
-        fn
-          .count<number>("rates.commentId")
-          .filterWhere("rates.like", "=", true)
-          .as("likes"),
-        fn
-          .count<number>("rates.commentId")
-          .filterWhere("rates.like", "=", false)
-          .as("dislikes"),
+        fn.count<number>("likes.like").as("likes"),
+        fn.count<number>("dislikes.like").as("dislikes"),
+        "self_rate.like as liked",
       ];
     })
     .orderBy("timestamp desc")
-    .groupBy(["comments.id", "User.id"])
+    .groupBy([
+      "comments.id",
+      "User.id",
+      "self_rate.commentId",
+      "self_rate.userId",
+    ])
     .execute();
 
   return NextResponse.json(
     comments.map((comment) => ({
       ...comment,
+      liked: comment.liked ?? undefined,
       author: {
         id: comment.authorId,
         name: comment.authorName ?? "Unknown",

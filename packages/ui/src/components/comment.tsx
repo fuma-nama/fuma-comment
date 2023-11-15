@@ -12,6 +12,7 @@ import {
 } from "../contexts/comment";
 import { MenuTrigger, MenuItems, MenuItem } from "./menu";
 import { CommentEdit } from "./comment-edit";
+import { buttonVariants } from "./button";
 
 export function Comment({
   comment,
@@ -71,10 +72,99 @@ export function Comment({
             </span>
           </p>
           {edit ? <CommentEdit /> : <p>{comment.content}</p>}
+          <CommentActions />
         </div>
         {!context.isEditing && <CommentMenu />}
       </div>
     </CommentProvider>
+  );
+}
+
+function CommentActions(): JSX.Element {
+  const { comment } = useCommentContext();
+  const mutation = useSWRMutation(
+    "/api/comments",
+    (key, { arg }: { arg: { like: boolean | "remove" } }) =>
+      fetcher(
+        `${key}/${comment.id}/rate`,
+        arg.like === "remove"
+          ? {
+              method: "DELETE",
+            }
+          : {
+              method: "POST",
+              body: JSON.stringify(arg),
+            }
+      )
+  );
+
+  const onRate = (v: boolean): void => {
+    void mutation.trigger({ like: v === comment.liked ? "remove" : v });
+  };
+
+  return (
+    <div className="fc-flex fc-flex-row fc-text-muted-foreground fc-gap-1 fc-mt-2">
+      <button
+        className={cn(
+          buttonVariants({
+            variant: comment.liked === true ? "primary" : "secondary",
+            className: "fc-gap-1.5",
+            size: "small",
+          })
+        )}
+        onClick={() => {
+          onRate(true);
+        }}
+        type="button"
+      >
+        <svg
+          aria-label="Like"
+          className="fc-w-4 fc-h-4"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+          width="24"
+        >
+          <path d="M7 10v12" />
+          <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z" />
+        </svg>
+        {comment.likes}
+      </button>
+      <button
+        className={cn(
+          buttonVariants({
+            variant: comment.liked === false ? "primary" : "secondary",
+            className: "fc-gap-1.5",
+            size: "small",
+          })
+        )}
+        onClick={() => {
+          onRate(false);
+        }}
+        type="button"
+      >
+        <svg
+          aria-label="Dislike"
+          className="fc-w-4 fc-h-4"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+          width="24"
+        >
+          <path d="M17 14V2" />
+          <path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22h0a3.13 3.13 0 0 1-3-3.88Z" />
+        </svg>
+        {comment.dislikes}
+      </button>
+    </div>
   );
 }
 

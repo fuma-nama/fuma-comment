@@ -40,6 +40,7 @@ export interface Comment {
   likes: number;
   dislikes: number;
   timestamp: Date;
+  liked?: boolean;
 }
 
 export interface UserProfile {

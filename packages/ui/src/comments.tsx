@@ -133,7 +133,7 @@ function SendButton({
       className={cn(
         buttonVariants({
           className: "fc-absolute fc-right-2 fc-bottom-2 fc-z-10",
-          variant: "icon",
+          size: "icon",
         })
       )}
       disabled={loading || editor.isEmpty}
