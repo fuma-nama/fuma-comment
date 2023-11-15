@@ -3,6 +3,7 @@ import { useState, useMemo, useLayoutEffect } from "react";
 import type { SerializedComment } from "server";
 import useSWRMutation from "swr/mutation";
 import { cva } from "cva";
+import { useSWRConfig } from "swr";
 import { cn } from "../utils/cn";
 import { toLocalString } from "../utils/date";
 import { fetcher } from "../utils/fetcher";
@@ -105,24 +106,50 @@ const rateVariants = cva(
 
 function CommentActions(): JSX.Element {
   const { comment } = useCommentContext();
-  const mutation = useSWRMutation(
-    "/api/comments",
-    (key, { arg }: { arg: { like: boolean | "remove" } }) =>
-      fetcher(
-        `${key}/${comment.id}/rate`,
-        arg.like === "remove"
-          ? {
-              method: "DELETE",
-            }
-          : {
-              method: "POST",
-              body: JSON.stringify(arg),
-            }
-      )
-  );
+  const { mutate } = useSWRConfig();
 
   const onRate = (v: boolean): void => {
-    void mutation.trigger({ like: v === comment.liked ? "remove" : v });
+    const value = v === comment.liked ? undefined : v;
+    void fetcher(
+      `/api/comments/${comment.id}/rate`,
+      value === undefined
+        ? {
+            method: "DELETE",
+          }
+        : {
+            method: "POST",
+            body: JSON.stringify({ like: value }),
+          }
+    );
+
+    void mutate<SerializedComment[]>(
+      "/api/comments",
+      (c) => {
+        return c?.map((item) => {
+          if (item.id === comment.id) {
+            let likes: number = comment.likes;
+            let dislikes: number = comment.dislikes;
+
+            if (comment.liked === true) likes--;
+            if (comment.liked === false) dislikes--;
+            if (value === true) likes++;
+            if (value === false) dislikes++;
+
+            return {
+              ...item,
+              likes,
+              dislikes,
+              liked: value,
+            };
+          }
+
+          return item;
+        });
+      },
+      {
+        revalidate: false,
+      }
+    );
   };
 
   return (

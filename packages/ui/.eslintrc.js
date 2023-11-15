@@ -8,4 +8,7 @@ module.exports = {
       },
     },
   ],
+  rules: {
+    "@typescript-eslint/no-invalid-void-type": "off",
+  },
 };
