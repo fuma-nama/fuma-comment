@@ -38,7 +38,7 @@ export async function GET(): Promise<NextResponse<Comment[]>> {
         "comments.timestamp",
         "User.name as authorName",
         "User.image as authorImage",
-        "User.id as authorId",
+        "User.email as authorId",
         fn.count<number>("likes.like").as("likes"),
         fn.count<number>("dislikes.like").as("dislikes"),
         "self_rate.like as liked",

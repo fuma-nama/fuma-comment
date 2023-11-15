@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import type { SerializedComment } from "server";
-import { useCallback, useContext, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import useSWRMutation from "swr/mutation";
 import type { Editor } from "@tiptap/react";
 import { fetcher } from "./utils/fetcher";
@@ -11,7 +11,7 @@ import {
   getEditorContent,
   useCommentEditor,
 } from "./components/editor";
-import { AuthContext } from "./contexts/auth";
+import { useAuthContext } from "./contexts/auth";
 import { buttonVariants } from "./components/button";
 import { cn } from "./utils/cn";
 
@@ -38,7 +38,7 @@ export function Comments(): JSX.Element {
 }
 
 function CommentPost(): JSX.Element {
-  const auth = useContext(AuthContext);
+  const auth = useAuthContext();
   const mutation = useSWRMutation(
     "/api/comments",
     (key, { arg }: { arg: { content: string } }) =>
@@ -96,7 +96,7 @@ function CommentPost(): JSX.Element {
 }
 
 function AuthButton(): JSX.Element {
-  const { signIn } = useContext(AuthContext);
+  const { signIn } = useAuthContext();
 
   if (typeof signIn === "function")
     return (

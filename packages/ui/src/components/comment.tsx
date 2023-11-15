@@ -12,6 +12,7 @@ import {
   useCommentContext,
   CommentProvider,
 } from "../contexts/comment";
+import { useAuthContext } from "../contexts/auth";
 import { MenuTrigger, MenuItems, MenuItem } from "./menu";
 import { CommentEdit } from "./comment-edit";
 import { buttonVariants } from "./button";
@@ -188,7 +189,17 @@ function CommentActions(): JSX.Element {
 }
 
 function CommentMenu(): JSX.Element {
-  const { isDeleting, onDelete, setEdit } = useCommentContext();
+  const { session } = useAuthContext();
+  const { comment, isDeleting, onDelete, setEdit } = useCommentContext();
+
+  const canEdit = session !== null && session.id === comment.author.id;
+  const canDelete =
+    session !== null &&
+    (session.permissions?.delete || session.id === comment.author.id);
+
+  const onCopy = (): void => {
+    void navigator.clipboard.writeText(comment.content);
+  };
 
   const onEdit = (): void => {
     setEdit(true);
@@ -212,10 +223,13 @@ function CommentMenu(): JSX.Element {
         </svg>
       </MenuTrigger>
       <MenuItems>
-        <MenuItem onClick={onEdit}>Edit</MenuItem>
-        <MenuItem disabled={isDeleting} onClick={onDelete}>
-          Delete
-        </MenuItem>
+        <MenuItem onClick={onCopy}>Copy</MenuItem>
+        {canEdit ? <MenuItem onClick={onEdit}>Edit</MenuItem> : null}
+        {canDelete ? (
+          <MenuItem disabled={isDeleting} onClick={onDelete}>
+            Delete
+          </MenuItem>
+        ) : null}
       </MenuItems>
     </Menu>
   );

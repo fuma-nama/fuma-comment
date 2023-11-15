@@ -1,6 +1,6 @@
 import { useMemo, type ReactNode } from "react";
 import type { AuthContextType } from "./contexts/auth";
-import { AuthContext } from "./contexts/auth";
+import { AuthContextProvider } from "./contexts/auth";
 
 interface AuthLayoutProps extends AuthContextType {
   signIn: ReactNode | (() => void);
@@ -18,5 +18,5 @@ export function AuthLayout({
     [session, status, signIn]
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <AuthContextProvider value={value}>{children}</AuthContextProvider>;
 }
