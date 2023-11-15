@@ -15,7 +15,7 @@ export interface UseCommentEditorProps
   extends Omit<Partial<EditorOptions>, "content" | "extensions"> {
   defaultValue?: string;
   placeholder?: string;
-  onSubmit?: (editor: Editor) => boolean;
+  onSubmit?: (editor: Editor) => void;
 }
 
 export interface CommentEditorProps extends HTMLAttributes<HTMLDivElement> {
@@ -26,7 +26,7 @@ export interface CommentEditorProps extends HTMLAttributes<HTMLDivElement> {
 export function useCommentEditor({
   defaultValue,
   placeholder = "Leave comment",
-  onSubmit = () => false,
+  onSubmit,
   ...props
 }: UseCommentEditorProps): Editor | null {
   return useEditor({
@@ -54,7 +54,12 @@ export function useCommentEditor({
         addKeyboardShortcuts() {
           return {
             "Shift-Enter": () => {
-              return onSubmit(this.editor as Editor);
+              if (onSubmit) {
+                onSubmit(this.editor as Editor);
+                return true;
+              }
+
+              return false;
             },
           };
         },

@@ -46,10 +46,10 @@ function CommentPost(): JSX.Element {
   );
 
   const submit = useCallback(
-    (instance: Editor): boolean => {
+    (instance: Editor) => {
       const content = getEditorContent(instance.getJSON());
 
-      if (content.length === 0) return false;
+      if (content.length === 0) return;
       void mutation.trigger(
         { content },
         {
@@ -58,8 +58,6 @@ function CommentPost(): JSX.Element {
           },
         }
       );
-
-      return true;
     },
     [mutation]
   );

@@ -1,14 +1,16 @@
 import type { Editor } from "@tiptap/react";
 import { useCallback } from "react";
 import useSWRMutation from "swr/mutation";
+import { useSWRConfig } from "swr";
 import { cn } from "../utils/cn";
-import { fetcher } from "../utils/fetcher";
+import { fetcher, updateComment } from "../utils/fetcher";
 import { useCommentContext } from "../contexts/comment";
 import { buttonVariants } from "./button";
 import { getEditorContent, useCommentEditor, CommentEditor } from "./editor";
 import { Spinner } from "./spinner";
 
 export function CommentEdit(): JSX.Element {
+  const { mutate } = useSWRConfig();
   const { comment, setEdit } = useCommentContext();
 
   const mutation = useSWRMutation(
@@ -17,24 +19,27 @@ export function CommentEdit(): JSX.Element {
       fetcher(`${key}/${arg.id}`, {
         method: "PATCH",
         body: JSON.stringify({ content: arg.content }),
-      }),
-    {
-      onSuccess: () => {
-        setEdit(false);
-      },
-    }
+      })
   );
 
   const submit = useCallback(
-    (instance: Editor): boolean => {
+    (instance: Editor): void => {
       const content = getEditorContent(instance.getJSON());
 
-      if (content.length === 0) return false;
-      void mutation.trigger({ id: comment.id, content });
-
-      return true;
+      if (content.length === 0) return;
+      void mutation.trigger(
+        { id: comment.id, content },
+        {
+          revalidate: false,
+          onSuccess: () => {
+            updateComment(mutate, comment.id, (c) => ({ ...c, content }));
+            setEdit(false);
+          },
+        }
+      );
     },
-    [comment, mutation]
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mutation objects shouldn't be included
+    [comment.id, mutate]
   );
 
   const editor = useCommentEditor({
