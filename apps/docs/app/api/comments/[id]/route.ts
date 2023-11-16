@@ -58,8 +58,15 @@ export async function DELETE(
       { status: 401 }
     );
 
-  // TODO: Implement authentication
-  await db.deleteFrom("comments").where("id", "=", Number(params.id)).execute();
+  await db
+    .deleteFrom("comments")
+    .where((eb) =>
+      eb.or([
+        eb("comments.id", "=", Number(params.id)),
+        eb("comments.replyCommentId", "=", Number(params.id)),
+      ])
+    )
+    .execute();
 
   return NextResponse.json({ message: "Done" });
 }
