@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { Comment } from "server";
 import { getServerSession } from "next-auth";
 import { db } from "@/utils/database";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "../auth/[...nextauth]/options";
 
 const sortSchema = z.enum(["oldest", "newest"]).default("newest");
 export async function GET(req: NextRequest): Promise<NextResponse<Comment[]>> {

@@ -3,7 +3,7 @@ import { z } from "zod";
 import { getServerSession } from "next-auth";
 import { db } from "@/utils/database";
 import { NOT_AUTHENTICATED } from "@/utils/errors";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "../../auth/[...nextauth]/options";
 
 const patchSchema = z.strictObject({
   content: z.string().trim().min(1),
