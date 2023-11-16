@@ -2,7 +2,6 @@ import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import type { Comment } from "server";
 import { getServerSession } from "next-auth";
-import { sql } from "kysely";
 import { db } from "@/utils/database";
 import { authOptions } from "../auth/[...nextauth]/route";
 
@@ -18,25 +17,8 @@ export async function GET(req: NextRequest): Promise<NextResponse<Comment[]>> {
   let query = db
     .selectFrom("comments")
     .innerJoin("User", "User.email", "comments.author")
-    .leftJoin("rates as likes", (join) =>
-      join
-        .onRef("comments.id", "=", "likes.commentId")
-        .on("likes.like", "=", true)
-    )
-    .leftJoin("rates as dislikes", (join) =>
-      join
-        .onRef("comments.id", "=", "dislikes.commentId")
-        .on("dislikes.like", "=", false)
-    )
-    .leftJoin("comments as replies", "replies.replyCommentId", "comments.id")
-    .leftJoin("rates as self_rate", (c) => {
-      const join = c.onRef("comments.id", "=", "self_rate.commentId");
-
-      if (email) return join.on("self_rate.userId", "=", email);
-
-      return join.on(sql`false`);
-    })
-    .select(({ fn }) => {
+    .leftJoin("rates", "comments.id", "rates.commentId")
+    .select(({ fn, selectFrom }) => {
       return [
         "comments.content",
         "comments.id",
@@ -45,18 +27,28 @@ export async function GET(req: NextRequest): Promise<NextResponse<Comment[]>> {
         "User.name as authorName",
         "User.image as authorImage",
         "User.email as authorId",
-        fn.count<number>("likes.like").as("likes"),
-        fn.count<number>("dislikes.like").as("dislikes"),
-        fn.count<number>("replies.id").as("replies"),
-        "self_rate.like as liked",
+        fn
+          .count<number>("rates.userId")
+          .filterWhere("rates.like", "=", true)
+          .as("likes"),
+        fn
+          .count<number>("rates.userId")
+          .filterWhere("rates.like", "=", false)
+          .as("dislikes"),
+        selectFrom("comments as replies")
+          .select(({ fn: sFn }) => [
+            sFn.count<number>("replies.id").as("replies"),
+          ])
+          .whereRef("replies.replyCommentId", "=", "comments.id")
+          .as("replies"),
+        selectFrom("rates")
+          .select("rates.like")
+          .where("rates.userId", "=", email ?? null)
+          .whereRef("rates.commentId", "=", "comments.id")
+          .as("liked"),
       ];
     })
-    .groupBy([
-      "comments.id",
-      "User.id",
-      "self_rate.commentId",
-      "self_rate.userId",
-    ]);
+    .groupBy(["comments.id", "User.id"]);
 
   if (sort === "newest") {
     query = query.orderBy("timestamp desc");
@@ -75,6 +67,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<Comment[]>> {
   return NextResponse.json(
     comments.map((comment) => ({
       ...comment,
+      replies: comment.replies ?? 0,
       liked: comment.liked ?? undefined,
       replyCommentId: comment.replyCommentId ?? undefined,
       author: {
