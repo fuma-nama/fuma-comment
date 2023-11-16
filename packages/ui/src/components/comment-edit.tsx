@@ -1,21 +1,20 @@
 import type { Editor } from "@tiptap/react";
 import { useCallback } from "react";
 import useSWRMutation from "swr/mutation";
-import { useSWRConfig } from "swr";
 import { cn } from "../utils/cn";
-import { fetcher, updateComment } from "../utils/fetcher";
+import { fetcher, getCommentsKey } from "../utils/fetcher";
 import { useCommentContext } from "../contexts/comment";
+import { updateComment } from "../utils/comment-manager";
 import { buttonVariants } from "./button";
 import { getEditorContent, useCommentEditor, CommentEditor } from "./editor";
 import { Spinner } from "./spinner";
 
 export function CommentEdit(): JSX.Element {
-  const { mutate } = useSWRConfig();
   const { comment, setEdit } = useCommentContext();
 
   const mutation = useSWRMutation(
-    "/api/comments",
-    (key, { arg }: { arg: { id: number; content: string } }) =>
+    getCommentsKey(comment.replyCommentId),
+    ([key], { arg }: { arg: { id: number; content: string } }) =>
       fetcher(`${key}/${arg.id}`, {
         method: "PATCH",
         body: JSON.stringify({ content: arg.content }),
@@ -32,14 +31,14 @@ export function CommentEdit(): JSX.Element {
         {
           revalidate: false,
           onSuccess: () => {
-            updateComment(mutate, comment.id, (c) => ({ ...c, content }));
+            updateComment(comment.id, (c) => ({ ...c, content }));
             setEdit(false);
           },
         }
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps -- mutation objects shouldn't be included
-    [comment.id, mutate]
+    [comment.id]
   );
 
   const editor = useCommentEditor({

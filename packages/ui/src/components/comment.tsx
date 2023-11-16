@@ -3,45 +3,46 @@ import { useState, useMemo, useLayoutEffect } from "react";
 import type { SerializedComment } from "server";
 import useSWRMutation from "swr/mutation";
 import { cva } from "cva";
-import { useSWRConfig } from "swr";
+import useSWR from "swr";
 import { cn } from "../utils/cn";
 import { toLocalString } from "../utils/date";
-import { fetcher, updateLikes } from "../utils/fetcher";
+import { fetcher, getCommentsKey } from "../utils/fetcher";
 import {
   type CommentContext,
   useCommentContext,
   CommentProvider,
 } from "../contexts/comment";
 import { useAuthContext } from "../contexts/auth";
+import { onLikeUpdated, useCommentManager } from "../utils/comment-manager";
 import { MenuTrigger, MenuItems, MenuItem } from "./menu";
 import { CommentEdit } from "./comment-edit";
 import { buttonVariants } from "./button";
+import { CommentPost } from "./comment-post";
+import { Spinner } from "./spinner";
 
 export function Comment({
-  comment,
+  comment: cached,
 }: {
   comment: SerializedComment;
 }): JSX.Element {
   const [timestamp, setTimestamp] = useState("");
   const [edit, setEdit] = useState(false);
-  const deleteMutation = useSWRMutation("/api/comments", (key) =>
-    fetcher(`${key}/${comment.id}`, { method: "DELETE" })
-  );
+  const [isReply, setIsReply] = useState(false);
+  const comment = useCommentManager(cached);
 
   const context = useMemo<CommentContext>(() => {
     return {
-      isDeleting: deleteMutation.isMutating,
       isEditing: edit,
+      isReplying: isReply,
       setEdit: (v) => {
         setEdit(v);
       },
-      onDelete: () => {
-        void deleteMutation.trigger();
-      },
+      setReply: setIsReply,
       comment,
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- Mutation object is always updated
-  }, [comment, deleteMutation.isMutating, edit]);
+  }, [comment, edit, isReply]);
+
+  const canDisplayComments = !comment.replyCommentId && comment.replies > 0;
 
   useLayoutEffect(() => {
     const parsed = new Date(comment.timestamp);
@@ -52,8 +53,8 @@ export function Comment({
     <CommentProvider value={context}>
       <div
         className={cn(
-          "fc-group fc-relative fc-flex fc-flex-row fc-gap-2 fc-rounded-xl fc-text-sm fc-p-3 -fc-mx-3",
-          edit ? "fc-bg-card" : "hover:fc-bg-card"
+          "fc-group fc-relative fc-flex fc-flex-row fc-gap-2 fc-rounded-xl fc-text-sm fc-px-3 fc-py-5 -fc-mx-3",
+          canDisplayComments && "fc-pb-2"
         )}
       >
         {comment.author.image ? (
@@ -79,13 +80,39 @@ export function Comment({
           ) : (
             <>
               <p className="fc-whitespace-pre-wrap">{comment.content}</p>
-              <CommentActions />
+              {isReply ? <CommentReply /> : <CommentActions />}
             </>
           )}
         </div>
         {!context.isEditing && <CommentMenu />}
       </div>
+      {canDisplayComments ? <CommentReplies /> : null}
     </CommentProvider>
+  );
+}
+
+function CommentReply(): JSX.Element {
+  const { comment, setReply } = useCommentContext();
+
+  return (
+    <div className="fc-mt-4">
+      <CommentPost
+        autofocus
+        placeholder="Reply to comment"
+        thread={comment.id}
+      />
+      <button
+        className={cn(
+          buttonVariants({ variant: "secondary", className: "fc-mt-1" })
+        )}
+        onClick={() => {
+          setReply(false);
+        }}
+        type="button"
+      >
+        Cancel
+      </button>
+    </div>
   );
 }
 
@@ -106,9 +133,8 @@ const rateVariants = cva(
 );
 
 function CommentActions(): JSX.Element {
-  const { comment } = useCommentContext();
+  const { comment, setReply } = useCommentContext();
   const { status } = useAuthContext();
-  const { mutate } = useSWRConfig();
 
   const onRate = (v: boolean): void => {
     const value = v === comment.liked ? undefined : v;
@@ -124,11 +150,15 @@ function CommentActions(): JSX.Element {
           }
     );
 
-    updateLikes(mutate, comment.id, value);
+    onLikeUpdated(comment.id, value);
+  };
+
+  const onReply = (): void => {
+    setReply(true);
   };
 
   return (
-    <div className="fc-flex fc-flex-row fc-gap-1 fc-mt-2">
+    <div className="fc-flex fc-flex-row fc-gap-1 fc-mt-4">
       <button
         className={cn(
           rateVariants({
@@ -187,13 +217,27 @@ function CommentActions(): JSX.Element {
         </svg>
         {comment.dislikes}
       </button>
+      {!comment.replyCommentId ? (
+        <button
+          className={cn(rateVariants({ active: false }))}
+          onClick={onReply}
+          type="button"
+        >
+          Reply
+        </button>
+      ) : null}
     </div>
   );
 }
 
 function CommentMenu(): JSX.Element {
   const { session } = useAuthContext();
-  const { comment, isDeleting, onDelete, setEdit } = useCommentContext();
+  const { comment, setEdit } = useCommentContext();
+
+  const deleteMutation = useSWRMutation(
+    getCommentsKey(comment.replyCommentId),
+    ([key]) => fetcher(`${key}/${comment.id}`, { method: "DELETE" })
+  );
 
   const canEdit = session !== null && session.id === comment.author.id;
   const canDelete =
@@ -206,6 +250,10 @@ function CommentMenu(): JSX.Element {
 
   const onEdit = (): void => {
     setEdit(true);
+  };
+
+  const onDelete = (): void => {
+    void deleteMutation.trigger();
   };
 
   return (
@@ -229,11 +277,45 @@ function CommentMenu(): JSX.Element {
         <MenuItem onClick={onCopy}>Copy</MenuItem>
         {canEdit ? <MenuItem onClick={onEdit}>Edit</MenuItem> : null}
         {canDelete ? (
-          <MenuItem disabled={isDeleting} onClick={onDelete}>
+          <MenuItem disabled={deleteMutation.isMutating} onClick={onDelete}>
             Delete
           </MenuItem>
         ) : null}
       </MenuItems>
     </Menu>
+  );
+}
+
+function CommentReplies(): JSX.Element {
+  const { comment } = useCommentContext();
+  const [open, setOpen] = useState(false);
+  const query = useSWR(
+    open ? getCommentsKey(comment.id) : null,
+    ([api, thread]) =>
+      fetcher<SerializedComment[]>(`${api}?thread=${thread}&sort=oldest`),
+    {}
+  );
+
+  const onOpen = (): void => {
+    setOpen((prev) => !prev);
+  };
+
+  return (
+    <div className="fc-mx-6">
+      <button
+        className="fc-px-4 fc-py-4 fc-font-medium fc-text-sm fc-w-full fc-text-left"
+        onClick={onOpen}
+        type="button"
+      >
+        {query.data?.length ?? comment.replies} Replies
+      </button>
+      {open ? (
+        <div className="fc-px-4">
+          {query.data?.map((reply) => (
+            <Comment comment={reply} key={reply.id} />
+          )) ?? <Spinner />}
+        </div>
+      ) : null}
+    </div>
   );
 }

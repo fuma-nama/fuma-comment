@@ -3,7 +3,6 @@ import type { AuthContextType } from "./contexts/auth";
 import { AuthContextProvider } from "./contexts/auth";
 
 interface AuthLayoutProps extends AuthContextType {
-  signIn: ReactNode | (() => void);
   children: ReactNode;
 }
 

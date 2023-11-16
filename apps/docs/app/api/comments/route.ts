@@ -6,11 +6,16 @@ import { sql } from "kysely";
 import { db } from "@/utils/database";
 import { authOptions } from "../auth/[...nextauth]/route";
 
-export async function GET(): Promise<NextResponse<Comment[]>> {
+const sortSchema = z.enum(["oldest", "newest"]).default("newest");
+export async function GET(req: NextRequest): Promise<NextResponse<Comment[]>> {
   const session = await getServerSession(authOptions);
   const email = session?.user?.email;
+  const threadId = req.nextUrl.searchParams.get("thread");
+  const sort = sortSchema.parse(
+    req.nextUrl.searchParams.get("sort") ?? undefined
+  );
 
-  const comments = await db
+  let query = db
     .selectFrom("comments")
     .innerJoin("User", "User.email", "comments.author")
     .leftJoin("rates as likes", (join) =>
@@ -23,6 +28,7 @@ export async function GET(): Promise<NextResponse<Comment[]>> {
         .onRef("comments.id", "=", "dislikes.commentId")
         .on("dislikes.like", "=", false)
     )
+    .leftJoin("comments as replies", "replies.replyCommentId", "comments.id")
     .leftJoin("rates as self_rate", (c) => {
       const join = c.onRef("comments.id", "=", "self_rate.commentId");
 
@@ -41,22 +47,36 @@ export async function GET(): Promise<NextResponse<Comment[]>> {
         "User.email as authorId",
         fn.count<number>("likes.like").as("likes"),
         fn.count<number>("dislikes.like").as("dislikes"),
+        fn.count<number>("replies.id").as("replies"),
         "self_rate.like as liked",
       ];
     })
-    .orderBy("timestamp desc")
     .groupBy([
       "comments.id",
       "User.id",
       "self_rate.commentId",
       "self_rate.userId",
-    ])
-    .execute();
+    ]);
+
+  if (sort === "newest") {
+    query = query.orderBy("timestamp desc");
+  } else {
+    query = query.orderBy("timestamp asc");
+  }
+
+  if (threadId) {
+    query = query.where("comments.replyCommentId", "=", Number(threadId));
+  } else {
+    query = query.where("comments.replyCommentId", "is", null);
+  }
+
+  const comments = await query.execute();
 
   return NextResponse.json(
     comments.map((comment) => ({
       ...comment,
       liked: comment.liked ?? undefined,
+      replyCommentId: comment.replyCommentId ?? undefined,
       author: {
         id: comment.authorId,
         name: comment.authorName ?? "Unknown",
@@ -68,6 +88,7 @@ export async function GET(): Promise<NextResponse<Comment[]>> {
 
 const postSchema = z.strictObject({
   content: z.string().trim().min(1),
+  thread: z.number().optional(),
 });
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
@@ -83,6 +104,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     .values({
       author: email,
       content: body.content,
+      replyCommentId: body.thread,
       timestamp: new Date(Date.now()),
     })
     .execute();

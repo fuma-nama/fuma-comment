@@ -3,9 +3,9 @@ import type { SerializedComment } from "server";
 
 export interface CommentContext {
   isEditing: boolean;
-  isDeleting: boolean;
-  onDelete: () => void;
+  isReplying: boolean;
   setEdit: (v: boolean) => void;
+  setReply: (v: boolean) => void;
   comment: SerializedComment;
 }
 
