@@ -66,8 +66,12 @@ export async function GET(req: NextRequest): Promise<NextResponse<Comment[]>> {
 
   return NextResponse.json(
     comments.map((comment) => ({
-      ...comment,
-      replies: comment.replies ?? 0,
+      content: comment.content,
+      dislikes: Number(comment.dislikes),
+      likes: Number(comment.likes),
+      id: Number(comment.id),
+      timestamp: comment.timestamp,
+      replies: Number(comment.replies ?? 0),
       liked: comment.liked ?? undefined,
       replyCommentId: comment.replyCommentId ?? undefined,
       author: {

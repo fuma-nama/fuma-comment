@@ -4,6 +4,7 @@ import useSWRMutation from "swr/mutation";
 import { useAuthContext } from "../contexts/auth";
 import { cn } from "../utils/cn";
 import { fetcher, getCommentsKey } from "../utils/fetcher";
+import { onCommentPosted } from "../utils/comment-manager";
 import { buttonVariants } from "./button";
 import {
   getEditorContent,
@@ -13,15 +14,17 @@ import {
 } from "./editor";
 import { Spinner } from "./spinner";
 
-interface CommentPostProps extends UseCommentEditorProps {
+interface CommentPostProps extends Omit<UseCommentEditorProps, "onSubmit"> {
   thread?: number;
   className?: string;
+  onSent?: () => void;
 }
 
 export function CommentPost({
   thread,
   placeholder = "Leave comment",
   className,
+  onSent,
   ...props
 }: CommentPostProps): JSX.Element {
   const auth = useAuthContext();
@@ -47,11 +50,14 @@ export function CommentPost({
         {
           onSuccess: () => {
             instance.commands.clearContent();
+            onCommentPosted(thread);
+            onSent?.();
           },
         }
       );
     },
-    [mutation]
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Mutation objects shouldn't be included
+    [thread]
   );
 
   const editor = useCommentEditor({ placeholder, onSubmit: submit, ...props });

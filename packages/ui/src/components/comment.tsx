@@ -13,7 +13,12 @@ import {
   CommentProvider,
 } from "../contexts/comment";
 import { useAuthContext } from "../contexts/auth";
-import { onLikeUpdated, useCommentManager } from "../utils/comment-manager";
+import {
+  onCommentDeleted,
+  onLikeUpdated,
+  updateComment,
+  useCommentManager,
+} from "../utils/comment-manager";
 import { MenuTrigger, MenuItems, MenuItem } from "./menu";
 import { CommentEdit } from "./comment-edit";
 import { buttonVariants } from "./button";
@@ -94,10 +99,15 @@ export function Comment({
 function CommentReply(): JSX.Element {
   const { comment, setReply } = useCommentContext();
 
+  const onClose = (): void => {
+    setReply(false);
+  };
+
   return (
     <div className="fc-mt-4">
       <CommentPost
         autofocus
+        onSent={onClose}
         placeholder="Reply to comment"
         thread={comment.id}
       />
@@ -105,9 +115,7 @@ function CommentReply(): JSX.Element {
         className={cn(
           buttonVariants({ variant: "secondary", className: "fc-mt-1" })
         )}
-        onClick={() => {
-          setReply(false);
-        }}
+        onClick={onClose}
         type="button"
       >
         Cancel
@@ -236,7 +244,12 @@ function CommentMenu(): JSX.Element {
 
   const deleteMutation = useSWRMutation(
     getCommentsKey(comment.replyCommentId),
-    ([key]) => fetcher(`${key}/${comment.id}`, { method: "DELETE" })
+    ([key]) => fetcher(`${key}/${comment.id}`, { method: "DELETE" }),
+    {
+      onSuccess() {
+        onCommentDeleted(comment);
+      },
+    }
   );
 
   const canEdit = session !== null && session.id === comment.author.id;
@@ -293,7 +306,11 @@ function CommentReplies(): JSX.Element {
     open ? getCommentsKey(comment.id) : null,
     ([api, thread]) =>
       fetcher<SerializedComment[]>(`${api}?thread=${thread}&sort=oldest`),
-    {}
+    {
+      onSuccess(data) {
+        updateComment(comment.id, (c) => ({ ...c, replies: data.length }));
+      },
+    }
   );
 
   const onOpen = (): void => {
@@ -307,7 +324,7 @@ function CommentReplies(): JSX.Element {
         onClick={onOpen}
         type="button"
       >
-        {query.data?.length ?? comment.replies} Replies
+        {comment.replies} Replies
       </button>
       {open ? (
         <div className="fc-px-4">

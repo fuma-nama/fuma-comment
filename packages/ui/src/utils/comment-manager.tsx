@@ -27,11 +27,7 @@ export function useCommentManager(
   return value;
 }
 
-export function getComment(id: number): SerializedComment | undefined {
-  return map.get(id);
-}
-
-export function setComment(id: number, c: SerializedComment): void {
+function setComment(id: number, c: SerializedComment): void {
   map.set(id, c);
 
   listeners.get(id)?.forEach((fn) => {
@@ -43,10 +39,25 @@ export function updateComment(
   commentId: number,
   updateFn: (comment: SerializedComment) => SerializedComment
 ): void {
-  const comment = getComment(commentId);
+  const comment = map.get(commentId);
 
   if (!comment) return;
   setComment(commentId, updateFn(comment));
+}
+
+export function onCommentPosted(thread: number | undefined): void {
+  if (thread) {
+    updateComment(thread, (c) => ({ ...c, replies: c.replies + 1 }));
+  }
+}
+
+export function onCommentDeleted(comment: SerializedComment): void {
+  if (comment.replyCommentId) {
+    updateComment(comment.replyCommentId, (c) => ({
+      ...c,
+      replies: c.replies - 1,
+    }));
+  }
 }
 
 export function onLikeUpdated(
