@@ -91,6 +91,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<Comment[]>> {
 const postSchema = z.strictObject({
   content: z.string().trim().min(1),
   thread: z.number().optional(),
+  page: z.string().max(255).optional(),
 });
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
@@ -107,6 +108,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       author: email,
       content: body.content,
       threadId: body.thread,
+      page: body.page,
       timestamp: new Date(Date.now()),
     })
     .execute();

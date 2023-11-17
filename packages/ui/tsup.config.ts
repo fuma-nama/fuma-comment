@@ -5,7 +5,7 @@ const config = defineConfig({
   format: "esm",
   dts: true,
   banner: () => ({ js: "'use client';" }),
-  outExtension: () => ({ js: ".js", dts: ".d.ts" }),
+  outExtension: () => ({ js: ".js" }),
 });
 
 export default config;

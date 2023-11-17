@@ -5,6 +5,7 @@ import { useAuthContext } from "../contexts/auth";
 import { cn } from "../utils/cn";
 import { fetcher, getCommentsKey } from "../utils/fetcher";
 import { onCommentPosted } from "../utils/comment-manager";
+import { useCommentsContext } from "../contexts/comments";
 import { buttonVariants } from "./button";
 import {
   getEditorContent,
@@ -28,13 +29,15 @@ export function CommentPost({
   ...props
 }: CommentPostProps): JSX.Element {
   const auth = useAuthContext();
+  const { page } = useCommentsContext();
   const mutation = useSWRMutation(
-    getCommentsKey(thread),
+    getCommentsKey(thread, page),
     (key, { arg }: { arg: { content: string } }) =>
       fetcher(key[0], {
         method: "POST",
         body: JSON.stringify({
           thread: key[1],
+          page: key[2],
           ...arg,
         }),
       })

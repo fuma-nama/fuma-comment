@@ -4,7 +4,6 @@ import { Comments, AuthProvider } from "ui";
 
 export function CommentsWithAuth(): JSX.Element {
   const session = useSession();
-
   const id = session.data?.user?.email;
 
   return (
