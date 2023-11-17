@@ -9,11 +9,20 @@ import { useAuthContext } from "./contexts/auth";
 import { cn } from "./utils/cn";
 import { syncComments } from "./utils/comment-manager";
 
-export function Comments(): JSX.Element {
+interface CommentsProps {
+  page?: string;
+}
+
+export function Comments(props: CommentsProps): JSX.Element {
   const auth = useAuthContext();
   const query = useSWR(
-    getCommentsKey(),
-    ([key]) => fetcher<SerializedComment[]>(key),
+    getCommentsKey(undefined, props.page),
+    ([key, _, page]) => {
+      const params = new URLSearchParams();
+
+      if (page) params.append("page", page);
+      return fetcher<SerializedComment[]>(`${key}?${params.toString()}`);
+    },
     {
       onSuccess(data) {
         syncComments(data);

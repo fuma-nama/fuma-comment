@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:init": "tsx ./scripts/init.ts",
     "db:migrate": "tsx ./scripts/migrate.ts"
   },
   "dependencies": {

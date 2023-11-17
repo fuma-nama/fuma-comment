@@ -13,7 +13,7 @@ export function CommentEdit(): JSX.Element {
   const { comment, setEdit } = useCommentContext();
 
   const mutation = useSWRMutation(
-    getCommentsKey(comment.replyCommentId),
+    getCommentsKey(comment.threadId),
     ([key], { arg }: { arg: { id: number; content: string } }) =>
       fetcher(`${key}/${arg.id}`, {
         method: "PATCH",

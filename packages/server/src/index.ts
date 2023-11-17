@@ -1,3 +1,7 @@
+import type { CommentRoute } from "./routes/comment";
+import type { CommentsRoute } from "./routes/comments";
+import type { RatesRoute } from "./routes/rates";
+
 export type SerializedComment = Serialize<Comment>;
 
 type JsonPrimitive = boolean | number | string | null;
@@ -34,7 +38,8 @@ export type Serialize<T> = // JSON Primitives
 
 export interface Comment {
   id: number;
-  replyCommentId?: number;
+  threadId?: number;
+  page?: string;
   author: UserProfile;
   content: string;
   likes: number;
@@ -50,7 +55,4 @@ export interface UserProfile {
   image?: string;
 }
 
-export interface StorageAdapter {
-  getComments: (threadId: string) => Comment[] | Promise<Comment[]>;
-  addComment: (comment: Comment) => void | Promise<void>;
-}
+export type StorageAdapter = CommentsRoute & CommentRoute & RatesRoute;

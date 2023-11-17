@@ -1,9 +1,10 @@
 import { createKysely } from "@vercel/postgres-kysely";
-import { type Generated } from "kysely";
+import { type GeneratedAlways, type Generated } from "kysely";
 
 interface CommentTable {
   id: Generated<number>;
-  replyCommentId?: number;
+  threadId?: number;
+  page?: string;
   author: string;
   content: string;
   timestamp: Generated<Date>;
@@ -16,7 +17,7 @@ interface RateTable {
 }
 
 interface UserTable {
-  id: Generated<string>;
+  id: GeneratedAlways<string>;
   name: string | null;
   email: string;
   emailVerified: Date | null;
@@ -24,7 +25,7 @@ interface UserTable {
 }
 
 interface AccountTable {
-  id: Generated<string>;
+  id: GeneratedAlways<string>;
   userId: string;
   type: string;
   provider: string;
@@ -39,7 +40,7 @@ interface AccountTable {
 }
 
 interface SessionTable {
-  id: Generated<string>;
+  id: GeneratedAlways<string>;
   userId: string;
   sessionToken: string;
   expires: Date;

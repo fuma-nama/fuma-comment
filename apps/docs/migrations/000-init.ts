@@ -5,12 +5,20 @@ export async function up(db: Kysely<unknown>): Promise<void> {
   await db.schema
     .createTable("comments")
     .addColumn("id", "serial", (col) => col.primaryKey())
-    .addColumn("replyCommentId", "integer")
+    .addColumn("page", "varchar(256)")
+    // The root comment of reply
+    .addColumn("threadId", "integer")
     .addColumn("author", "varchar(256)", (col) => col.notNull())
     .addColumn("content", "text", (col) => col.notNull())
     .addColumn("timestamp", "timestamp", (col) =>
       col.defaultTo(sql`now()`).notNull()
     )
+    .execute();
+
+  await db.schema
+    .createIndex("comments_page_id_index")
+    .on("comments")
+    .column("page")
     .execute();
 
   await db.schema
@@ -25,4 +33,5 @@ export async function up(db: Kysely<unknown>): Promise<void> {
 export async function down(db: Kysely<unknown>): Promise<void> {
   await db.schema.dropTable("rates").ifExists().execute();
   await db.schema.dropTable("comments").ifExists().execute();
+  await db.schema.dropIndex("comments_page_id_index").ifExists().execute();
 }

@@ -10,6 +10,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<Comment[]>> {
   const session = await getServerSession(authOptions);
   const email = session?.user?.email;
   const threadId = req.nextUrl.searchParams.get("thread");
+  const page = req.nextUrl.searchParams.get("page");
   const sort = sortSchema.parse(
     req.nextUrl.searchParams.get("sort") ?? undefined
   );
@@ -22,7 +23,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<Comment[]>> {
       return [
         "comments.content",
         "comments.id",
-        "comments.replyCommentId",
+        "comments.threadId",
         "comments.timestamp",
         "User.name as authorName",
         "User.image as authorImage",
@@ -39,7 +40,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<Comment[]>> {
           .select(({ fn: sFn }) => [
             sFn.count<number>("replies.id").as("replies"),
           ])
-          .whereRef("replies.replyCommentId", "=", "comments.id")
+          .whereRef("replies.threadId", "=", "comments.id")
           .as("replies"),
         selectFrom("rates")
           .select("rates.like")
@@ -56,10 +57,14 @@ export async function GET(req: NextRequest): Promise<NextResponse<Comment[]>> {
     query = query.orderBy("timestamp asc");
   }
 
+  if (page) {
+    query = query.where("comments.page", "=", page);
+  }
+
   if (threadId) {
-    query = query.where("comments.replyCommentId", "=", Number(threadId));
+    query = query.where("comments.threadId", "=", Number(threadId));
   } else {
-    query = query.where("comments.replyCommentId", "is", null);
+    query = query.where("comments.threadId", "is", null);
   }
 
   const comments = await query.execute();
@@ -73,7 +78,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<Comment[]>> {
       timestamp: comment.timestamp,
       replies: Number(comment.replies ?? 0),
       liked: comment.liked ?? undefined,
-      replyCommentId: comment.replyCommentId ?? undefined,
+      threadId: comment.threadId ?? undefined,
       author: {
         id: comment.authorId,
         name: comment.authorName ?? "Unknown",
@@ -101,7 +106,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     .values({
       author: email,
       content: body.content,
-      replyCommentId: body.thread,
+      threadId: body.thread,
       timestamp: new Date(Date.now()),
     })
     .execute();

@@ -104,6 +104,10 @@ importers:
         version: 5.2.2
 
   packages/server:
+    dependencies:
+      zod:
+        specifier: ^3.22.4
+        version: 3.22.4
     devDependencies:
       '@types/node':
         specifier: ^20.5.2

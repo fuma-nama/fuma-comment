@@ -63,7 +63,7 @@ export async function DELETE(
     .where((eb) =>
       eb.or([
         eb("comments.id", "=", Number(params.id)),
-        eb("comments.replyCommentId", "=", Number(params.id)),
+        eb("comments.threadId", "=", Number(params.id)),
       ])
     )
     .execute();

@@ -56,8 +56,8 @@ export function onCommentPosted(thread: number | undefined): void {
 }
 
 export function onCommentDeleted(comment: SerializedComment): void {
-  if (comment.replyCommentId) {
-    updateComment(comment.replyCommentId, (c) => ({
+  if (comment.threadId) {
+    updateComment(comment.threadId, (c) => ({
       ...c,
       replies: c.replies - 1,
     }));

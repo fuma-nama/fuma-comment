@@ -1,2 +1,2 @@
 export { Comments } from "./comments";
-export { AuthProvider } from "./auth-provider";
+export * from "./contexts/auth";

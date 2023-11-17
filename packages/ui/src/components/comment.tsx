@@ -48,7 +48,7 @@ export function Comment({
     };
   }, [comment, edit, isReply]);
 
-  const canDisplayComments = !comment.replyCommentId && comment.replies > 0;
+  const canDisplayComments = !comment.threadId && comment.replies > 0;
 
   useLayoutEffect(() => {
     const parsed = new Date(comment.timestamp);
@@ -228,7 +228,7 @@ function CommentActions(): JSX.Element {
         </svg>
         {comment.dislikes}
       </button>
-      {!comment.replyCommentId && isAuthenticated ? (
+      {!comment.threadId && isAuthenticated ? (
         <button
           className={cn(rateVariants({ active: false }))}
           onClick={onReply}
@@ -246,7 +246,7 @@ function CommentMenu(): JSX.Element {
   const { comment, setEdit } = useCommentContext();
 
   const deleteMutation = useSWRMutation(
-    getCommentsKey(comment.replyCommentId),
+    getCommentsKey(comment.threadId),
     ([key]) => fetcher(`${key}/${comment.id}`, { method: "DELETE" }),
     {
       onSuccess() {

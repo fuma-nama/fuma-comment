@@ -9,7 +9,8 @@ export async function fetcher<T = void>(
 }
 
 export function getCommentsKey(
-  thread?: number | null
-): [string, number | undefined] {
-  return ["/api/comments", thread ?? undefined];
+  thread?: number | null,
+  page?: string | null
+): [string, number | undefined, string | undefined] {
+  return ["/api/comments", thread ?? undefined, page ?? undefined];
 }

@@ -1,4 +1,4 @@
-import { type ReactNode, createContext, useContext } from "react";
+import { type ReactNode, createContext, useContext, useMemo } from "react";
 
 export interface Session {
   id: string;
@@ -14,15 +14,32 @@ export interface AuthContextType {
   signIn: ReactNode | (() => void);
 }
 
-const AuthContext = createContext<AuthContextType>({
-  // eslint-disable-next-line @typescript-eslint/no-empty-function -- Placeholder
-  signIn: () => {},
-  session: null,
-  status: "unauthenticated",
-});
-
-export const AuthContextProvider = AuthContext.Provider;
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function useAuthContext(): AuthContextType {
-  return useContext(AuthContext);
+  const auth = useContext(AuthContext);
+
+  if (!auth)
+    throw new Error(
+      "<Comments /> component must be wrapped under <AuthProvider />"
+    );
+  return auth;
+}
+
+export interface AuthProviderProps extends AuthContextType {
+  children: ReactNode;
+}
+
+export function AuthProvider({
+  session,
+  status,
+  signIn,
+  children,
+}: AuthProviderProps): JSX.Element {
+  const value = useMemo(
+    () => ({ session, status, signIn }),
+    [session, status, signIn]
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
