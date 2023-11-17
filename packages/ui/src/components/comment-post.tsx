@@ -75,40 +75,17 @@ export function CommentPost({
   }, [editor, disabled]);
 
   return (
-    <form
-      className={cn("fc-relative fc-flex fc-flex-col", className)}
-      onSubmit={onSubmit}
-    >
+    <form className={cn("fc-relative", className)} onSubmit={onSubmit}>
       {auth.status === "authenticated" && editor ? (
         <>
           <SendButton editor={editor} loading={mutation.isMutating} />
           <CommentEditor aria-disabled={disabled} editor={editor} />
         </>
       ) : (
-        <>
-          <Placeholder>{placeholder}</Placeholder>
-          {auth.status === "unauthenticated" && (
-            <div className="fc-mt-2">
-              <AuthButton />
-            </div>
-          )}
-        </>
+        <Placeholder>{placeholder}</Placeholder>
       )}
     </form>
   );
-}
-
-function AuthButton(): JSX.Element {
-  const { signIn } = useAuthContext();
-
-  if (typeof signIn === "function")
-    return (
-      <button className={cn(buttonVariants())} onClick={signIn} type="button">
-        Sign In
-      </button>
-    );
-
-  return <>{signIn}</>;
 }
 
 function Placeholder({ children }: { children: string }): JSX.Element {

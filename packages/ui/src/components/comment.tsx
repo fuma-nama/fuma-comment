@@ -16,6 +16,7 @@ import { useAuthContext } from "../contexts/auth";
 import {
   onCommentDeleted,
   onLikeUpdated,
+  syncComments,
   updateComment,
   useCommentManager,
 } from "../utils/comment-manager";
@@ -58,7 +59,7 @@ export function Comment({
     <CommentProvider value={context}>
       <div
         className={cn(
-          "fc-group fc-relative fc-flex fc-flex-row fc-gap-2 fc-rounded-xl fc-text-sm fc-px-3 fc-py-5 -fc-mx-3",
+          "fc-group fc-relative fc-flex fc-flex-row fc-text-sm fc-px-3 fc-py-5 -fc-mx-3",
           canDisplayComments && "fc-pb-2"
         )}
       >
@@ -73,7 +74,7 @@ export function Comment({
         ) : (
           <div className="fc-w-8 fc-h-8 fc-rounded-full fc-bg-gradient-to-br fc-from-blue-600 fc-to-red-600" />
         )}
-        <div className="fc-flex-1">
+        <div className="fc-flex-1 fc-ml-2">
           <p className="fc-inline-flex fc-gap-2 fc-items-center fc-mb-2">
             <span className="fc-font-semibold">{comment.author.name}</span>
             <span className="fc-text-muted-foreground fc-text-xs">
@@ -113,7 +114,7 @@ function CommentReply(): JSX.Element {
       />
       <button
         className={cn(
-          buttonVariants({ variant: "secondary", className: "fc-mt-1" })
+          buttonVariants({ variant: "secondary", className: "fc-mt-2" })
         )}
         onClick={onClose}
         type="button"
@@ -144,6 +145,8 @@ function CommentActions(): JSX.Element {
   const { comment, setReply } = useCommentContext();
   const { status } = useAuthContext();
 
+  const isAuthenticated = status === "authenticated";
+
   const onRate = (v: boolean): void => {
     const value = v === comment.liked ? undefined : v;
     void fetcher(
@@ -173,7 +176,7 @@ function CommentActions(): JSX.Element {
             active: comment.liked === true,
           })
         )}
-        disabled={status === "unauthenticated"}
+        disabled={!isAuthenticated}
         onClick={() => {
           onRate(true);
         }}
@@ -202,7 +205,7 @@ function CommentActions(): JSX.Element {
             active: comment.liked === false,
           })
         )}
-        disabled={status === "unauthenticated"}
+        disabled={!isAuthenticated}
         onClick={() => {
           onRate(false);
         }}
@@ -225,7 +228,7 @@ function CommentActions(): JSX.Element {
         </svg>
         {comment.dislikes}
       </button>
-      {!comment.replyCommentId ? (
+      {!comment.replyCommentId && isAuthenticated ? (
         <button
           className={cn(rateVariants({ active: false }))}
           onClick={onReply}
@@ -271,7 +274,16 @@ function CommentMenu(): JSX.Element {
 
   return (
     <Menu>
-      <MenuTrigger className="fc-inline-flex fc-items-center fc-justify-center fc-w-6 fc-h-6 fc-rounded-full fc-opacity-0 group-hover:fc-opacity-100 data-[headlessui-state=open]:fc-bg-accent data-[headlessui-state=open]:fc-opacity-100">
+      <MenuTrigger
+        className={cn(
+          buttonVariants({
+            size: "icon",
+            variant: "ghost",
+            className:
+              "fc-opacity-0 group-hover:fc-opacity-100 data-[headlessui-state=open]:fc-bg-accent data-[headlessui-state=open]:fc-opacity-100",
+          })
+        )}
+      >
         <svg
           className="fc-w-4 fc-h-4"
           fill="none"
@@ -309,6 +321,7 @@ function CommentReplies(): JSX.Element {
     {
       onSuccess(data) {
         updateComment(comment.id, (c) => ({ ...c, replies: data.length }));
+        syncComments(data);
       },
     }
   );
@@ -320,7 +333,7 @@ function CommentReplies(): JSX.Element {
   return (
     <div className="fc-mx-6">
       <button
-        className="fc-px-4 fc-py-4 fc-font-medium fc-text-sm fc-w-full fc-text-left"
+        className="fc-p-4 fc-font-medium fc-text-sm"
         onClick={onOpen}
         type="button"
       >

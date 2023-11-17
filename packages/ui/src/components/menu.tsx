@@ -17,7 +17,7 @@ const menuItemVariants = cva(
 );
 
 const menuItemsVariants = cva(
-  "fc-absolute fc-flex fc-flex-col fc-right-0 fc-mt-4 fc-w-56 fc-origin-top-right fc-divide-y fc-divide-border fc-rounded-md fc-text-popover-foreground fc-bg-popover fc-shadow-lg fc-overflow-hidden fc-z-50 focus-visible:fc-ring-1 focus-visible:fc-ring-ring focus-visible:fc-outline-none"
+  "fc-absolute fc-flex fc-flex-col fc-right-0 fc-mt-6 fc-w-56 fc-origin-top-right fc-divide-y fc-divide-border fc-rounded-md fc-text-popover-foreground fc-bg-popover fc-shadow-lg fc-overflow-hidden fc-z-50 focus-visible:fc-ring-1 focus-visible:fc-ring-ring focus-visible:fc-outline-none"
 );
 
 type MenuItemsProps = HTMLAttributes<HTMLDivElement>;

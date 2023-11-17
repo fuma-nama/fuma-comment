@@ -8,11 +8,9 @@ const listeners = new Map<number, Set<Listener>>();
 export function useCommentManager(
   current: SerializedComment
 ): SerializedComment {
-  const [value, setValue] = useState(current);
+  const [value, setValue] = useState(map.get(current.id) ?? current);
 
   useEffect(() => {
-    map.set(current.id, current);
-
     if (listeners.has(current.id)) {
       listeners.get(current.id)?.add(setValue);
     } else {
@@ -22,9 +20,15 @@ export function useCommentManager(
     return () => {
       listeners.get(current.id)?.delete(setValue);
     };
-  }, [current]);
+  }, [current.id]);
 
   return value;
+}
+
+export function syncComments(comments: SerializedComment[]): void {
+  comments.forEach((comment) => {
+    setComment(comment.id, comment);
+  });
 }
 
 function setComment(id: number, c: SerializedComment): void {

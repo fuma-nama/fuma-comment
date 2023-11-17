@@ -4,16 +4,32 @@ import { fetcher, getCommentsKey } from "./utils/fetcher";
 import { Spinner } from "./components/spinner";
 import { Comment } from "./components/comment";
 import { CommentPost } from "./components/comment-post";
+import { buttonVariants } from "./components/button";
+import { useAuthContext } from "./contexts/auth";
+import { cn } from "./utils/cn";
+import { syncComments } from "./utils/comment-manager";
 
 export function Comments(): JSX.Element {
-  const query = useSWR(getCommentsKey(), ([key]) =>
-    fetcher<SerializedComment[]>(key)
+  const auth = useAuthContext();
+  const query = useSWR(
+    getCommentsKey(),
+    ([key]) => fetcher<SerializedComment[]>(key),
+    {
+      onSuccess(data) {
+        syncComments(data);
+      },
+    }
   );
 
   return (
     <div className="fc-bg-background fc-text-foreground fc-p-4 fc-rounded-xl fc-border fc-border-border">
       <p className="fc-font-bold fc-mb-4">Comments</p>
       <CommentPost />
+      {auth.status === "unauthenticated" && (
+        <div className="fc-mt-2">
+          <AuthButton />
+        </div>
+      )}
       <div className="fc-flex fc-flex-col fc-mt-4 fc-border-t fc-border-border fc-pt-4">
         {query.isLoading ? (
           <Spinner className="fc-w-8 fc-h-8 fc-mx-auto" />
@@ -25,4 +41,17 @@ export function Comments(): JSX.Element {
       </div>
     </div>
   );
+}
+
+function AuthButton(): JSX.Element {
+  const { signIn } = useAuthContext();
+
+  if (typeof signIn === "function")
+    return (
+      <button className={cn(buttonVariants())} onClick={signIn} type="button">
+        Sign In
+      </button>
+    );
+
+  return <>{signIn}</>;
 }

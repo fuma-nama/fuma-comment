@@ -14,8 +14,7 @@ export const buttonVariants = cva(
           "fc-bg-primary fc-text-primary-foreground fc-transition-colors hover:fc-bg-primary/80",
         secondary:
           "fc-bg-card fc-border fc-border-border fc-transition-colors hover:fc-bg-accent",
-        ghost:
-          "fc-text-muted-foreground fc-transition-colors hover:fc-bg-accent/80",
+        ghost: "fc-transition-colors hover:fc-bg-accent/80",
       },
     },
     defaultVariants: {
