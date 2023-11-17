@@ -1,6 +1,6 @@
 "use client";
 import { signIn, useSession } from "next-auth/react";
-import { AuthLayout, Comments } from "ui";
+import { Comments, AuthProvider } from "ui";
 
 export function CommentsWithAuth(): JSX.Element {
   const session = useSession();
@@ -8,12 +8,12 @@ export function CommentsWithAuth(): JSX.Element {
   const id = session.data?.user?.email;
 
   return (
-    <AuthLayout
+    <AuthProvider
       session={id ? { id } : null}
       signIn={() => void signIn("github")}
       status={session.status}
     >
       <Comments />
-    </AuthLayout>
+    </AuthProvider>
   );
 }

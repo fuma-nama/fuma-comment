@@ -1,2 +1,2 @@
 export { Comments } from "./comments";
-export { AuthLayout } from "./auth-layout";
+export { AuthProvider } from "./auth-provider";

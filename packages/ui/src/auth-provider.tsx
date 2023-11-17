@@ -6,7 +6,7 @@ interface AuthLayoutProps extends AuthContextType {
   children: ReactNode;
 }
 
-export function AuthLayout({
+export function AuthProvider({
   session,
   status,
   signIn,
