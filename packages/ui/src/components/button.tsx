@@ -6,6 +6,7 @@ export const buttonVariants = cva(
     variants: {
       size: {
         small: "fc-text-xs fc-px-2 fc-h-8",
+        medium: "fc-px-3 fc-py-2 fc-text-sm",
         default: "fc-text-sm fc-w-20 fc-h-8",
         icon: "fc-w-7 fc-h-7 fc-rounded-full",
       },
