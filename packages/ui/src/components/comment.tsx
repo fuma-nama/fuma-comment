@@ -59,7 +59,7 @@ export function Comment({
     <CommentProvider value={context}>
       <div
         className={cn(
-          "fc-group fc-relative fc-flex fc-flex-row fc-text-sm fc-px-3 fc-py-5 -fc-mx-3",
+          "fc-group fc-relative fc-flex fc-flex-row fc-text-sm fc-px-3 fc-py-5",
           canDisplayComments && "fc-pb-2"
         )}
       >
@@ -331,7 +331,7 @@ function CommentReplies(): JSX.Element {
   };
 
   return (
-    <div className="fc-mx-6">
+    <div className="fc-ml-9">
       <button
         className="fc-p-4 fc-font-medium fc-text-sm"
         onClick={onOpen}
@@ -340,10 +340,10 @@ function CommentReplies(): JSX.Element {
         {comment.replies} Replies
       </button>
       {open ? (
-        <div className="fc-px-4">
+        <div>
           {query.data?.map((reply) => (
             <Comment comment={reply} key={reply.id} />
-          )) ?? <Spinner />}
+          )) ?? <Spinner className="fc-ml-4" />}
         </div>
       ) : null}
     </div>

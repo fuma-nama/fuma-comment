@@ -58,7 +58,7 @@ function List(): JSX.Element {
   );
 
   return (
-    <div className="fc-flex fc-flex-col fc-mt-4 fc-border-t fc-border-border fc-pt-4">
+    <div className="fc-flex fc-flex-col fc-mt-4 fc-border-t fc-border-border fc-pt-4 -fc-mx-3">
       {query.isLoading ? (
         <Spinner className="fc-w-8 fc-h-8 fc-mx-auto" />
       ) : (
