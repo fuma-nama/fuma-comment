@@ -2,7 +2,11 @@ import { z } from "zod";
 import type { AuthInfo, Awaitable } from "../types";
 
 export const patchBodySchema = z.strictObject({
-  content: z.string().trim().min(1),
+  content: z
+    .string()
+    .trim()
+    .min(1)
+    .max(2000, "Comments can't be longer than 2000 characters"),
 });
 
 interface UpdateCommentOptions {

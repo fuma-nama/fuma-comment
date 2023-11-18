@@ -4,7 +4,11 @@ import type { Comment, AuthInfo, Awaitable } from "../types";
 export const sortSchema = z.enum(["oldest", "newest"]).default("newest");
 
 export const postBodySchema = z.strictObject({
-  content: z.string().trim().min(1),
+  content: z
+    .string()
+    .trim()
+    .min(1)
+    .max(2000, "Comments can't be longer than 2000 characters"),
   thread: z.number().optional(),
   page: z.string().max(255).optional(),
 });

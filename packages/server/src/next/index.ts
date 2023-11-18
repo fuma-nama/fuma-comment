@@ -138,8 +138,17 @@ function handleError(handler: RouteHandler): RouteHandler {
       }
 
       if (e instanceof ZodError) {
+        const issuesToString = e.issues
+          .map(
+            (issue) => `${issue.path[issue.path.length - 1]}: ${issue.message}`
+          )
+          .join("\n");
+
         return NextResponse.json(
-          { message: `Invalid Parameter: ${e.message}` },
+          {
+            message: issuesToString,
+            info: e,
+          },
           { status: 400 }
         );
       }

@@ -74,7 +74,7 @@ export function Comment({
         ) : (
           <div className="fc-w-8 fc-h-8 fc-rounded-full fc-bg-gradient-to-br fc-from-blue-600 fc-to-red-600" />
         )}
-        <div className="fc-flex-1 fc-ml-2">
+        <div className="fc-flex-1 fc-w-0 fc-ml-2">
           <p className="fc-inline-flex fc-gap-2 fc-items-center fc-mb-2">
             <span className="fc-font-semibold">{comment.author.name}</span>
             <span className="fc-text-muted-foreground fc-text-xs">
@@ -85,7 +85,9 @@ export function Comment({
             <CommentEdit />
           ) : (
             <>
-              <p className="fc-whitespace-pre-wrap">{comment.content}</p>
+              <p className="fc-whitespace-pre-wrap fc-break-words">
+                {comment.content}
+              </p>
               {isReply ? <CommentReply /> : <CommentActions />}
             </>
           )}
