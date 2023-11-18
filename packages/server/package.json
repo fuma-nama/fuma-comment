@@ -3,6 +3,20 @@
   "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./next": {
+      "import": "./dist/next/index.js",
+      "types": "./dist/next/index.d.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "next": [
+        "./dist/next/index.d.ts"
+      ]
+    }
+  },
   "files": [
     "./dist"
   ],
@@ -13,6 +27,7 @@
     "dev": "tsup --watch"
   },
   "devDependencies": {
+    "next": "^14.0.2",
     "@types/node": "^20.5.2",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",

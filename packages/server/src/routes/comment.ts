@@ -1,7 +1,7 @@
 import { z } from "zod";
-import type { AuthInfo, RouteResponse } from "./types";
+import type { AuthInfo, Awaitable } from "../types";
 
-const patchBodySchema = z.strictObject({
+export const patchBodySchema = z.strictObject({
   content: z.string().trim().min(1),
 });
 
@@ -17,6 +17,6 @@ interface DeleteCommentOptions {
 }
 
 export interface CommentRoute {
-  updateComment: (options: UpdateCommentOptions) => RouteResponse<void>;
-  deleteComment: (options: DeleteCommentOptions) => RouteResponse<void>;
+  updateComment: (options: UpdateCommentOptions) => Awaitable<void>;
+  deleteComment: (options: DeleteCommentOptions) => Awaitable<void>;
 }

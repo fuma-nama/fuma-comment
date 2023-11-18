@@ -1,17 +1,18 @@
 import { z } from "zod";
-import type { Comment } from "..";
-import type { AuthInfo, RouteResponse } from "./types";
+import type { Comment, AuthInfo, Awaitable } from "../types";
 
-const sortSchema = z.enum(["oldest", "newest"]).default("newest");
+export const sortSchema = z.enum(["oldest", "newest"]).default("newest");
 
-const postBodySchema = z.strictObject({
+export const postBodySchema = z.strictObject({
   content: z.string().trim().min(1),
-  thread: z.string().optional(),
+  thread: z.number().optional(),
+  page: z.string().max(255).optional(),
 });
 
 interface GetCommentsOptions {
   sort: z.infer<typeof sortSchema>;
   auth?: AuthInfo;
+  page?: string;
   thread?: string;
 }
 
@@ -21,6 +22,6 @@ interface PostCommentOptions {
 }
 
 export interface CommentsRoute {
-  getComments: (options: GetCommentsOptions) => RouteResponse<Comment[]>;
-  postComment: (options: PostCommentOptions) => RouteResponse<void>;
+  getComments: (options: GetCommentsOptions) => Awaitable<Comment[]>;
+  postComment: (options: PostCommentOptions) => Awaitable<void>;
 }

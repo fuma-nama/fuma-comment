@@ -1,7 +1,7 @@
 import { z } from "zod";
-import type { AuthInfo, RouteResponse } from "./types";
+import type { AuthInfo, Awaitable } from "../types";
 
-const postBodySchema = z.strictObject({
+export const postBodySchema = z.strictObject({
   like: z.boolean(),
 });
 
@@ -19,6 +19,6 @@ interface DeleteRateOptions {
 }
 
 export interface RatesRoute {
-  setRate: (options: SetRateOptions) => RouteResponse<void>;
-  deleteRate: (options: DeleteRateOptions) => RouteResponse<void>;
+  setRate: (options: SetRateOptions) => Awaitable<void>;
+  deleteRate: (options: DeleteRateOptions) => Awaitable<void>;
 }
