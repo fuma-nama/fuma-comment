@@ -5,7 +5,7 @@ export const patchBodySchema = z.strictObject({
   content: z
     .string()
     .trim()
-    .min(1)
+    .min(1, "Comments can't be empty")
     .max(2000, "Comments can't be longer than 2000 characters"),
 });
 

@@ -6,7 +6,7 @@ import { cva } from "cva";
 import useSWR from "swr";
 import { cn } from "../utils/cn";
 import { toLocalString } from "../utils/date";
-import { fetcher, getCommentsKey } from "../utils/fetcher";
+import { fetchComments, fetcher, getCommentsKey } from "../utils/fetcher";
 import {
   type CommentContext,
   useCommentContext,
@@ -318,8 +318,7 @@ function CommentReplies(): JSX.Element {
   const [open, setOpen] = useState(false);
   const query = useSWR(
     open ? getCommentsKey(comment.id) : null,
-    ([api, thread]) =>
-      fetcher<SerializedComment[]>(`${api}?thread=${thread}&sort=oldest`),
+    ([_, thread, page]) => fetchComments({ thread, page, sort: "oldest" }),
     {
       onSuccess(data) {
         updateComment(comment.id, (c) => ({ ...c, replies: data.length }));

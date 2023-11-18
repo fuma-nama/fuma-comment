@@ -3,7 +3,7 @@ import { useCallback, useEffect } from "react";
 import useSWRMutation from "swr/mutation";
 import { useAuthContext } from "../contexts/auth";
 import { cn } from "../utils/cn";
-import { fetcher, getCommentsKey } from "../utils/fetcher";
+import { type FetcherError, fetcher, getCommentsKey } from "../utils/fetcher";
 import { onCommentPosted } from "../utils/comment-manager";
 import { useCommentsContext } from "../contexts/comments";
 import { buttonVariants } from "./button";
@@ -78,15 +78,49 @@ export function CommentPost({
   }, [editor, disabled]);
 
   return (
-    <form className={cn("fc-relative", className)} onSubmit={onSubmit}>
+    <form className={className} onSubmit={onSubmit}>
       {auth.status === "authenticated" && editor ? (
-        <>
-          <SendButton editor={editor} loading={mutation.isMutating} />
+        <div className="fc-relative">
           <CommentEditor aria-disabled={disabled} editor={editor} />
-        </>
+          <button
+            aria-label="Send Comment"
+            className={cn(
+              buttonVariants({
+                className: "fc-absolute fc-right-2 fc-bottom-1.5",
+                size: "icon",
+              })
+            )}
+            disabled={mutation.isMutating || editor.isEmpty}
+            type="submit"
+          >
+            {mutation.isMutating ? (
+              <Spinner />
+            ) : (
+              <svg
+                className="fc-w-4 fc-h-4"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                width="24"
+              >
+                <path d="m22 2-7 20-4-9-9-4Z" />
+                <path d="M22 2 11 13" />
+              </svg>
+            )}
+          </button>
+        </div>
       ) : (
         <Placeholder>{placeholder}</Placeholder>
       )}
+      {mutation.error ? (
+        <p className="fc-text-sm fc-text-error fc-mt-1">
+          {(mutation.error as FetcherError).message}
+        </p>
+      ) : null}
     </form>
   );
 }
@@ -98,46 +132,5 @@ function Placeholder({ children }: { children: string }): JSX.Element {
         {children}
       </div>
     </div>
-  );
-}
-
-function SendButton({
-  editor,
-  loading,
-}: {
-  editor: Editor;
-  loading: boolean;
-}): JSX.Element {
-  return (
-    <button
-      aria-label="Send Comment"
-      className={cn(
-        buttonVariants({
-          className: "fc-absolute fc-right-2 fc-bottom-2 fc-z-10",
-          size: "icon",
-        })
-      )}
-      disabled={loading || editor.isEmpty}
-      type="submit"
-    >
-      {loading ? (
-        <Spinner />
-      ) : (
-        <svg
-          className="fc-w-4 fc-h-4"
-          fill="none"
-          height="24"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-          width="24"
-        >
-          <path d="m22 2-7 20-4-9-9-4Z" />
-          <path d="M22 2 11 13" />
-        </svg>
-      )}
-    </button>
   );
 }

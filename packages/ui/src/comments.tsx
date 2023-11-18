@@ -1,7 +1,6 @@
 import useSWR from "swr";
-import type { SerializedComment } from "server";
 import { useMemo } from "react";
-import { fetcher, getCommentsKey } from "./utils/fetcher";
+import { fetchComments, getCommentsKey } from "./utils/fetcher";
 import { Spinner } from "./components/spinner";
 import { Comment } from "./components/comment";
 import { CommentPost } from "./components/comment-post";
@@ -44,12 +43,7 @@ function List(): JSX.Element {
   const { page } = useCommentsContext();
   const query = useSWR(
     getCommentsKey(undefined, page),
-    ([key, _, p]) => {
-      const params = new URLSearchParams();
-
-      if (p) params.append("page", p);
-      return fetcher<SerializedComment[]>(`${key}?${params.toString()}`);
-    },
+    ([_, thread, p]) => fetchComments({ page: p, thread }),
     {
       onSuccess(data) {
         syncComments(data);
