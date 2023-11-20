@@ -4,7 +4,7 @@ import { Comments, AuthProvider } from "@fuma-comment/ui";
 
 export function CommentsWithAuth(): JSX.Element {
   const session = useSession();
-  const id = session.data?.user?.email;
+  const id = session.data?.user?.id;
 
   return (
     <AuthProvider

@@ -4,7 +4,7 @@ import { sql } from "kysely";
 export async function up(db: Kysely<unknown>): Promise<void> {
   await db.schema
     .createTable("User")
-    .addColumn("id", "uuid", (col) =>
+    .addColumn("id", "varchar(256)", (col) =>
       col.primaryKey().defaultTo(sql`gen_random_uuid()`)
     )
     .addColumn("name", "text")
@@ -15,10 +15,10 @@ export async function up(db: Kysely<unknown>): Promise<void> {
 
   await db.schema
     .createTable("Account")
-    .addColumn("id", "uuid", (col) =>
+    .addColumn("id", "varchar(256)", (col) =>
       col.primaryKey().defaultTo(sql`gen_random_uuid()`)
     )
-    .addColumn("userId", "uuid", (col) =>
+    .addColumn("userId", "varchar(256)", (col) =>
       col.references("User.id").onDelete("cascade").notNull()
     )
     .addColumn("type", "text", (col) => col.notNull())
@@ -35,10 +35,10 @@ export async function up(db: Kysely<unknown>): Promise<void> {
 
   await db.schema
     .createTable("Session")
-    .addColumn("id", "uuid", (col) =>
+    .addColumn("id", "varchar(256)", (col) =>
       col.primaryKey().defaultTo(sql`gen_random_uuid()`)
     )
-    .addColumn("userId", "uuid", (col) =>
+    .addColumn("userId", "varchar(256)", (col) =>
       col.references("User.id").onDelete("cascade").notNull()
     )
     .addColumn("sessionToken", "text", (col) => col.notNull().unique())

@@ -21,6 +21,7 @@
     "react-dom": "^18.2.0",
     "@fuma-comment/server": "workspace:*",
     "@fuma-comment/ui": "workspace:*",
+    "@fuma-comment/kysely-adapter": "workspace:*",
     "zod": "^3.22.4"
   },
   "devDependencies": {
