@@ -1,6 +1,6 @@
-import { RouteError, type StorageAdapter } from "server";
+import { RouteError, type StorageAdapter } from "@fuma-comment/server";
 import { getServerSession } from "next-auth";
-import { NextComment } from "server/next";
+import { NextComment } from "@fuma-comment/server/next";
 import { db } from "@/utils/database";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 

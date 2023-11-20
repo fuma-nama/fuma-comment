@@ -1,8 +1,11 @@
 {
-  "name": "server",
+  "name": "@fuma-comment/server",
   "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "author": "Fuma Nama",
+  "homepage": "https://fuma-comment.vercel.app",
+  "repository": "https://github.com/fuma-nama/fuma-comment",
   "exports": {
     ".": "./dist/index.js",
     "./next": {

@@ -1,6 +1,6 @@
 import { Menu } from "@headlessui/react";
 import { useState, useMemo, useLayoutEffect } from "react";
-import type { SerializedComment } from "server";
+import type { SerializedComment } from "@fuma-comment/server";
 import useSWRMutation from "swr/mutation";
 import { cva } from "cva";
 import useSWR from "swr";

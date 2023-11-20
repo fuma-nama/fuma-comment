@@ -1,6 +1,6 @@
 "use client";
 import { signIn, useSession } from "next-auth/react";
-import { Comments, AuthProvider } from "ui";
+import { Comments, AuthProvider } from "@fuma-comment/ui";
 
 export function CommentsWithAuth(): JSX.Element {
   const session = useSession();

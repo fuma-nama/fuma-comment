@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { SerializedComment } from "server";
+import type { SerializedComment } from "@fuma-comment/server";
 
 export interface CommentContext {
   isEditing: boolean;

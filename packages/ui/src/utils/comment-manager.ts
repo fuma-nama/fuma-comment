@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { SerializedComment } from "server";
+import type { SerializedComment } from "@fuma-comment/server";
 
 type Listener = (update: SerializedComment) => void;
 const map = new Map<number, SerializedComment>();

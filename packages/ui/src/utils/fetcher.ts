@@ -1,4 +1,4 @@
-import type { SerializedComment } from "server";
+import type { SerializedComment } from "@fuma-comment/server";
 
 export interface FetcherError {
   message: string;

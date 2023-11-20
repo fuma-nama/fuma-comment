@@ -1,8 +1,11 @@
 {
-  "name": "ui",
+  "name": "@fuma-comment/ui",
   "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.mts",
+  "author": "Fuma Nama",
+  "homepage": "https://fuma-comment.vercel.app",
+  "repository": "https://github.com/fuma-nama/fuma-comment",
   "files": [
     "./dist"
   ],
@@ -27,7 +30,7 @@
     "postcss-cli": "^10.1.0",
     "postcss-lightningcss": "^1.0.0",
     "react": "^18.2.0",
-    "server": "workspace:^",
+    "@fuma-comment/server": "workspace:^",
     "tailwindcss": "^3.3.5",
     "tsconfig": "workspace:*",
     "tsup": "^7.2.0",
