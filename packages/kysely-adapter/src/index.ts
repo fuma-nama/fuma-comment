@@ -1,4 +1,8 @@
-import { Comment, RouteError, type StorageAdapter } from "@fuma-comment/server";
+import {
+  type Comment,
+  RouteError,
+  type StorageAdapter,
+} from "@fuma-comment/server";
 import { type Kysely, type Generated, type GeneratedAlways, sql } from "kysely";
 
 interface CommentTable {
