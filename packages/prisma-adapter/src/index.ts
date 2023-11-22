@@ -12,6 +12,11 @@ interface Options {
   joinUser: (comments: CommentWithoutUser[]) => Comment[] | Promise<Comment[]>;
 }
 
+/**
+ * Create adapter for Prisma
+ *
+ * Example Schema: {@link https://github.com/fuma-nama/fuma-comment/blob/main/packages/prisma-adapter/prisma/schema.prisma}
+ */
 export function createAdapter({ db, joinUser }: Options): StorageAdapter {
   return {
     async getComments({ auth }) {
