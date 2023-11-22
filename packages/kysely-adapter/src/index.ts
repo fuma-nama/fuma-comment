@@ -3,7 +3,7 @@ import {
   RouteError,
   type StorageAdapter,
 } from "@fuma-comment/server";
-import { type Kysely, type Generated, type GeneratedAlways, sql } from "kysely";
+import { type Kysely, type Generated, type GeneratedAlways } from "kysely";
 
 interface CommentTable {
   id: Generated<number>;
@@ -195,7 +195,7 @@ function _create({
 
         const comments = await query.execute();
 
-        return await joinUser(
+        return joinUser(
           comments.map((comment) => ({
             content: comment.content,
             dislikes: Number(comment.dislikes),

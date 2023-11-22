@@ -1,0 +1,34 @@
+datasource db {
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  relationMode = "prisma"
+}
+
+generator client {
+  provider        = "prisma-client-js"
+}
+
+model Comment {
+    id Int @id @default(autoincrement())
+    page String? @db.VarChar(256)
+    thread Int?
+    author String @db.VarChar(256)
+    content String @db.Text
+    timestamp DateTime @db.Timestamp() @default(now())
+
+    rates Rate[]
+
+    @@index([page])
+}
+
+model Rate {
+    userId String @db.VarChar(256)
+    commentId Int
+    like Boolean
+
+    comment Comment @relation(fields: [commentId], references: [id])
+
+    @@id([userId, commentId])
+    @@index([commentId])
+}
