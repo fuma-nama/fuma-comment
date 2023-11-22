@@ -43,7 +43,7 @@ interface Options<
   db: Kysely<DB>;
 
   /**
-   * Join users with specific table name
+   * Join users with specific table name, default to `users`
    */
   userTableName?: UserTableName;
 
@@ -84,7 +84,7 @@ export function createAdapter<
 
 function _create({
   db,
-  userTableName,
+  userTableName = "users",
   joinUser,
 }: Options<"users">): StorageAdapter {
   return {
@@ -158,83 +158,79 @@ function _create({
         );
       }
 
-      if (userTableName) {
-        let query = db
-          .selectFrom("comments")
-          .innerJoin(userTableName, "comments.author", `${userTableName}.id`)
-          .leftJoin("rates", "comments.id", "rates.commentId")
-          .select(({ fn, selectFrom }) => {
-            return [
-              "comments.content",
-              "comments.id",
-              "comments.threadId",
-              "comments.timestamp",
-              `${userTableName}.name as authorName`,
-              `${userTableName}.image as authorImage`,
-              `${userTableName}.id as authorId`,
-              fn
-                .count<number>("rates.userId")
-                .filterWhere("rates.like", "=", true)
-                .as("likes"),
-              fn
-                .count<number>("rates.userId")
-                .filterWhere("rates.like", "=", false)
-                .as("dislikes"),
-              selectFrom("comments as replies")
-                .select(({ fn: sFn }) => [
-                  sFn.count<number>("replies.id").as("replies"),
-                ])
-                .whereRef("replies.threadId", "=", "comments.id")
-                .as("replies"),
-              selectFrom("rates")
-                .select("rates.like")
-                .where((eb) =>
-                  auth?.id ? eb("rates.userId", "=", auth.id) : eb.val(false)
-                )
-                .whereRef("rates.commentId", "=", "comments.id")
-                .as("liked"),
-            ];
-          })
-          .groupBy(["comments.id", `${userTableName}.id`]);
+      let query = db
+        .selectFrom("comments")
+        .innerJoin(userTableName, "comments.author", `${userTableName}.id`)
+        .leftJoin("rates", "comments.id", "rates.commentId")
+        .select(({ fn, selectFrom }) => {
+          return [
+            "comments.content",
+            "comments.id",
+            "comments.threadId",
+            "comments.timestamp",
+            `${userTableName}.name as authorName`,
+            `${userTableName}.image as authorImage`,
+            `${userTableName}.id as authorId`,
+            fn
+              .count<number>("rates.userId")
+              .filterWhere("rates.like", "=", true)
+              .as("likes"),
+            fn
+              .count<number>("rates.userId")
+              .filterWhere("rates.like", "=", false)
+              .as("dislikes"),
+            selectFrom("comments as replies")
+              .select(({ fn: sFn }) => [
+                sFn.count<number>("replies.id").as("replies"),
+              ])
+              .whereRef("replies.threadId", "=", "comments.id")
+              .as("replies"),
+            selectFrom("rates")
+              .select("rates.like")
+              .where((eb) =>
+                auth?.id ? eb("rates.userId", "=", auth.id) : eb.val(false)
+              )
+              .whereRef("rates.commentId", "=", "comments.id")
+              .as("liked"),
+          ];
+        })
+        .groupBy(["comments.id", `${userTableName}.id`]);
 
-        if (sort === "newest") {
-          query = query.orderBy("timestamp desc");
-        } else {
-          query = query.orderBy("timestamp asc");
-        }
-
-        if (page) {
-          query = query.where("comments.page", "=", page);
-        } else {
-          query = query.where("comments.page", "is", null);
-        }
-
-        if (thread) {
-          query = query.where("comments.threadId", "=", Number(thread));
-        } else {
-          query = query.where("comments.threadId", "is", null);
-        }
-
-        const comments = await query.execute();
-
-        return comments.map((comment) => ({
-          content: comment.content,
-          dislikes: Number(comment.dislikes),
-          likes: Number(comment.likes),
-          id: Number(comment.id),
-          timestamp: comment.timestamp,
-          replies: Number(comment.replies ?? 0),
-          liked: comment.liked ?? undefined,
-          threadId: comment.threadId ?? undefined,
-          author: {
-            id: comment.authorId,
-            name: comment.authorName ?? "Unknown",
-            image: comment.authorImage ?? undefined,
-          },
-        }));
+      if (sort === "newest") {
+        query = query.orderBy("timestamp desc");
+      } else {
+        query = query.orderBy("timestamp asc");
       }
 
-      throw new Error("Must specify a way to select users from comments");
+      if (page) {
+        query = query.where("comments.page", "=", page);
+      } else {
+        query = query.where("comments.page", "is", null);
+      }
+
+      if (thread) {
+        query = query.where("comments.threadId", "=", Number(thread));
+      } else {
+        query = query.where("comments.threadId", "is", null);
+      }
+
+      const comments = await query.execute();
+
+      return comments.map((comment) => ({
+        content: comment.content,
+        dislikes: Number(comment.dislikes),
+        likes: Number(comment.likes),
+        id: Number(comment.id),
+        timestamp: comment.timestamp,
+        replies: Number(comment.replies ?? 0),
+        liked: comment.liked ?? undefined,
+        threadId: comment.threadId ?? undefined,
+        author: {
+          id: comment.authorId,
+          name: comment.authorName ?? "Unknown",
+          image: comment.authorImage ?? undefined,
+        },
+      }));
     },
     async deleteComment({ auth, id }) {
       const target = await db
