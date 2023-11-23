@@ -1,14 +1,14 @@
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-rgb: 235, 205, 235;
+  --foreground: 0, 0, 0;
+  --background: 235, 205, 235;
 }
 
 .dark {
-  --foreground-rgb: 255, 255, 255;
-  --background-rgb: 0, 0, 0;
+  --foreground: 255, 255, 255;
+  --background: 0, 0, 0;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
+  color: rgb(var(--foreground));
+  background: rgb(var(--background));
 }

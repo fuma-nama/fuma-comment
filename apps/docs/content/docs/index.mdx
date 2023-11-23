@@ -1,0 +1,173 @@
+---
+title: Introduction
+---
+
+import { Callout } from "next-docs-ui/components/callout";
+
+<Callout title="In development" type="warn">
+  This package is not production ready yet.
+</Callout>
+
+A less-configuration, flexible library that integrates a comment area into your blog. It doesn't handle Authentication, you can use your own Auth system with Fuma Comment (ex: integrates with Auth.js).
+
+Note that it is not a SaaS, you will need a database (PostgreSQL & MySQL) to continue.
+
+## Client
+
+Currently, we only provide React.js client API. You have to pass authentication data into the `AuthProvider` component, there's an example for NextAuth.
+
+```tsx
+import { signIn, useSession } from "next-auth/react";
+import { Comments, AuthProvider } from "@fuma-comment/react";
+
+export function CommentsWithAuth() {
+  const session = useSession();
+  const id = session.data?.user?.id;
+
+  return (
+    <AuthProvider
+      session={id ? { id } : null}
+      signIn={() => void signIn("github")}
+      status={session.status}
+    >
+      <Comments />
+    </AuthProvider>
+  );
+}
+```
+
+## Server
+
+Fuma Comment supports several web/backend frameworks, including Next.js and Express.
+
+### Next.js
+
+Create `app/api/comments/[[...comment]]/route.ts`.
+
+```ts title="app/api/comments/[[...comment]]/route.ts"
+import { getServerSession } from "next-auth";
+import { NextComment } from "@fuma-comment/next";
+
+export const { GET, DELETE, PATCH, POST } = NextComment({
+  adapter,
+  async getSession() {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) return null;
+
+    return {
+      id: session.user.id,
+    };
+  },
+});
+```
+
+### Express
+
+Pass your express app as a parameter, all the endpoints will be added under `/api/comments`.
+
+```ts
+import { ExressComment } from "@fuma-comment/server/express";
+
+ExressComment({ app, adapter, getSession });
+```
+
+## Database
+
+Aside from server, you need a database to persist comments. Fuma Comment has built-in support for Kysely and Prisma ORM, you may implement your own storage adapter following the instructions in JSDoc of `StorageAdapter`.
+
+### Prisma
+
+First, update your schema to include following tables:
+
+```prisma
+model Comment {
+    id Int @id @default(autoincrement())
+    page String? @db.VarChar(256)
+    thread Int?
+    author String @db.VarChar(256)
+    content String @db.Text
+    timestamp DateTime @db.Timestamp() @default(now())
+
+    rates Rate[]
+
+    @@index([page])
+}
+
+model Rate {
+    userId String @db.VarChar(256)
+    commentId Int
+    like Boolean
+
+    comment Comment @relation(fields: [commentId], references: [id])
+
+    @@id([userId, commentId])
+    @@index([commentId])
+}
+```
+
+Then, create the adapter.
+
+```ts
+import { createAdapter } from "@fuma-comment/prisma-adapter";
+
+const adapter = createAdapter({
+  db,
+  joinUser(comments) {
+    // Fetch user profiles from the authorId property in comments
+  },
+});
+```
+
+### Kysely
+
+First, initialize the required tables with a migration.
+
+```ts
+import type { Kysely } from "kysely";
+import { sql } from "kysely";
+
+export async function up(db: Kysely<unknown>): Promise<void> {
+  await db.schema
+    .createTable("comments")
+    .addColumn("id", "serial", (col) => col.primaryKey())
+    .addColumn("page", "varchar(256)")
+    .addColumn("threadId", "integer")
+    .addColumn("author", "varchar(256)", (col) => col.notNull())
+    .addColumn("content", "text", (col) => col.notNull())
+    .addColumn("timestamp", "timestamp", (col) =>
+      col.defaultTo(sql`now()`).notNull()
+    )
+    .execute();
+
+  await db.schema
+    .createIndex("comments_page_id_index")
+    .on("comments")
+    .column("page")
+    .execute();
+
+  await db.schema
+    .createTable("rates")
+    .addColumn("userId", "varchar(256)")
+    .addColumn("commentId", "integer")
+    .addColumn("like", "boolean", (col) => col.notNull())
+    .addPrimaryKeyConstraint("rates_pk", ["commentId", "userId"])
+    .execute();
+}
+
+export async function down(db: Kysely<unknown>): Promise<void> {
+  await db.schema.dropTable("rates").ifExists().execute();
+  await db.schema.dropTable("comments").ifExists().execute();
+  await db.schema.dropIndex("comments_page_id_index").ifExists().execute();
+}
+```
+
+Then, create the adapter.
+
+```ts
+const adapter = createAdapter({
+  db,
+  joinUser(comments) {
+    // Fetch user profiles from the authorId property in comments
+  },
+});
+```

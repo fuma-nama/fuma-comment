@@ -2,6 +2,7 @@ import "@fuma-comment/react/dist/style.css";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { RootProvider } from "next-docs-ui/provider";
 import { AuthProvider } from "./layout.client";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -17,9 +18,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }): JSX.Element {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <AuthProvider>{children}</AuthProvider>
+        <RootProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </RootProvider>
       </body>
     </html>
   );
