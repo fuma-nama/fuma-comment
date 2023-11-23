@@ -1,0 +1,32 @@
+{
+  "name": "@fuma-comment/next",
+  "version": "0.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "author": "Fuma Nama",
+  "homepage": "https://fuma-comment.vercel.app",
+  "repository": "https://github.com/fuma-nama/fuma-comment",
+  "files": [
+    "./dist"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint .",
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "dependencies": {
+    "@fuma-comment/server": "workspace:*"
+  },
+  "peerDependencies": {
+    "next": ">= 13.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.2",
+    "eslint-config-custom": "workspace:*",
+    "next": "^14.0.2",
+    "tsconfig": "workspace:*",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2"
+  }
+}

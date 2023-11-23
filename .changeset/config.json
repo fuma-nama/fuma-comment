@@ -8,7 +8,8 @@
       "@fuma-comment/kysely-adapter",
       "@fuma-comment/prisma-adapter",
       "@fuma-comment/server",
-      "@fuma-comment/ui"
+      "@fuma-comment/react",
+      "@fuma-comment/next"
     ]
   ],
   "access": "restricted",

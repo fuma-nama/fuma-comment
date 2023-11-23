@@ -47,7 +47,6 @@
     "@types/express": "^4.17.21",
     "@types/node": "^20.5.2",
     "eslint-config-custom": "workspace:*",
-    "next": "^14.0.2",
     "tsconfig": "workspace:*",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2"
