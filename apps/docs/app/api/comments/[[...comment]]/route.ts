@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { NextComment } from "@fuma-comment/server/next";
+import { NextComment } from "@fuma-comment/next";
 import { createAdapter } from "@fuma-comment/kysely-adapter";
 import { db } from "@/utils/database";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
