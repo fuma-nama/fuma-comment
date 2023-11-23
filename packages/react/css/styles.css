@@ -3,37 +3,39 @@
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 100%;
-  --foreground: 0 0% 3.9%;
-  --muted: 0 0% 96.1%;
-  --muted-foreground: 0 0% 45.1%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 15.1%;
-  --card: 0 0% 96.7%;
-  --card-foreground: 0 0% 3.9%;
-  --border: 0 0% 89.8%;
-  --primary: 0 0% 9%;
-  --primary-foreground: 0 0% 98%;
-  --accent: 0 0% 94.1%;
-  --accent-foreground: 0 0% 9%;
-  --ring: 0 0% 63.9%;
+  --fc-background: 0 0% 100%;
+  --fc-foreground: 0 0% 3.9%;
+  --fc-muted: 0 0% 96.1%;
+  --fc-muted-foreground: 0 0% 45.1%;
+  --fc-popover: 0 0% 100%;
+  --fc-popover-foreground: 0 0% 15.1%;
+  --fc-card: 0 0% 96.7%;
+  --fc-card-foreground: 0 0% 3.9%;
+  --fc-border: 0 0% 89.8%;
+  --fc-primary: 0 0% 9%;
+  --fc-primary-foreground: 0 0% 98%;
+  --fc-accent: 0 0% 94.1%;
+  --fc-accent-foreground: 0 0% 9%;
+  --fc-danger: 3 99% 55%;
+  --fc-ring: 0 0% 63.9%;
 }
 
 .dark {
-  --background: 0 0% 3.9%;
-  --foreground: 0 0% 98%;
-  --muted: 0 0% 14.9%;
-  --muted-foreground: 0 0% 60.9%;
-  --popover: 0 0% 7%;
-  --popover-foreground: 0 0% 88%;
-  --card: 0 0% 8%;
-  --card-foreground: 0 0% 98%;
-  --border: 0 0% 18%;
-  --primary: 0 0% 98%;
-  --primary-foreground: 0 0% 9%;
-  --accent: 0 0% 14.9%;
-  --accent-foreground: 0 0% 98%;
-  --ring: 0 0% 14.9%;
+  --fc-background: 0 0% 3.9%;
+  --fc-foreground: 0 0% 98%;
+  --fc-muted: 0 0% 14.9%;
+  --fc-muted-foreground: 0 0% 60.9%;
+  --fc-popover: 0 0% 7%;
+  --fc-popover-foreground: 0 0% 88%;
+  --fc-card: 0 0% 8%;
+  --fc-card-foreground: 0 0% 98%;
+  --fc-border: 0 0% 18%;
+  --fc-primary: 0 0% 98%;
+  --fc-primary-foreground: 0 0% 9%;
+  --fc-accent: 0 0% 14.9%;
+  --fc-accent-foreground: 0 0% 98%;
+  --fc-ring: 0 0% 14.9%;
+  --fc-danger: 3 95% 64%;
 }
 
 .primary-editor {

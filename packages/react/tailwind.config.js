@@ -13,32 +13,32 @@ module.exports = {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        border: "hsl(var(--fc-border))",
+        ring: "hsl(var(--fc-ring))",
+        background: "hsl(var(--fc-background))",
+        foreground: "hsl(var(--fc-foreground))",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "hsl(var(--fc-primary))",
+          foreground: "hsl(var(--fc-primary-foreground))",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "hsl(var(--fc-muted))",
+          foreground: "hsl(var(--fc-muted-foreground))",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "hsl(var(--fc-accent))",
+          foreground: "hsl(var(--fc-accent-foreground))",
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "hsl(var(--fc-popover))",
+          foreground: "hsl(var(--fc-popover-foreground))",
         },
         error: {
-          DEFAULT: "rgb(255,100,100)",
+          DEFAULT: "hsl(var(--fc-danger))",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "hsl(var(--fc-card))",
+          foreground: "hsl(var(--fc-card-foreground))",
         },
       },
     },
