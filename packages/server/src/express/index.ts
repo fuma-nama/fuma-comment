@@ -10,6 +10,11 @@ interface ExpressOptions {
   getSession: (req: Request) => Awaitable<AuthInfo | null>;
 }
 
+/**
+ * Create comments API routes
+ *
+ * Should have `express.json()` body parser enabled
+ */
 export function ExressComment(options: ExpressOptions): void {
   const { adapter, app } = options;
   const custom = CustomComment({ adapter });
