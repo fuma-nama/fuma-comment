@@ -23,8 +23,8 @@ import {
 import { MenuTrigger, MenuItems, MenuItem } from "./menu";
 import { CommentEdit } from "./comment-edit";
 import { buttonVariants } from "./button";
-import { CommentPost } from "./comment-post";
 import { Spinner } from "./spinner";
+import { CommentReply } from "./comment-reply";
 
 export function Comment({
   comment: cached,
@@ -62,6 +62,9 @@ export function Comment({
           "fc-group fc-relative fc-flex fc-flex-row fc-text-sm fc-px-3 fc-py-4",
           canDisplayComments && "fc-pb-2"
         )}
+        data-fc-comment={context.comment.id}
+        data-fc-edit={context.isEditing}
+        data-fc-reply={context.isReplying}
       >
         {comment.author.image ? (
           <img
@@ -92,38 +95,10 @@ export function Comment({
             </>
           )}
         </div>
-        {!context.isEditing && <CommentMenu />}
+        <CommentMenu />
       </div>
       {canDisplayComments ? <CommentReplies /> : null}
     </CommentProvider>
-  );
-}
-
-function CommentReply(): JSX.Element {
-  const { comment, setReply } = useCommentContext();
-
-  const onClose = (): void => {
-    setReply(false);
-  };
-
-  return (
-    <div className="fc-mt-2">
-      <CommentPost
-        autofocus
-        onSent={onClose}
-        placeholder="Reply to comment"
-        thread={comment.id}
-      />
-      <button
-        className={cn(
-          buttonVariants({ variant: "secondary", className: "fc-mt-2" })
-        )}
-        onClick={onClose}
-        type="button"
-      >
-        Cancel
-      </button>
-    </div>
   );
 }
 
@@ -245,7 +220,7 @@ function CommentActions(): JSX.Element {
 
 function CommentMenu(): JSX.Element {
   const { session } = useAuthContext();
-  const { comment, setEdit } = useCommentContext();
+  const { comment, isEditing, isReplying, setEdit } = useCommentContext();
 
   const deleteMutation = useSWRMutation(
     getCommentsKey(comment.threadId),
@@ -281,9 +256,10 @@ function CommentMenu(): JSX.Element {
           buttonVariants({
             size: "icon",
             variant: "ghost",
-            className:
-              "fc-opacity-0 group-hover:fc-opacity-100 data-[headlessui-state=open]:fc-bg-accent data-[headlessui-state=open]:fc-opacity-100",
-          })
+          }),
+          isEditing || isReplying
+            ? "fc-hidden"
+            : "fc-opacity-0 group-hover:fc-opacity-100 data-[headlessui-state=open]:fc-bg-accent data-[headlessui-state=open]:fc-opacity-100"
         )}
       >
         <svg

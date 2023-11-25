@@ -8,7 +8,7 @@ import { useEditor, Extension, EditorContent } from "@tiptap/react";
 import { Document } from "@tiptap/extension-document";
 import { History } from "@tiptap/extension-history";
 import { Text } from "@tiptap/extension-text";
-import type { HTMLAttributes } from "react";
+import { useRef, type HTMLAttributes, type RefObject } from "react";
 import { cn } from "../utils/cn";
 
 export interface UseCommentEditorProps
@@ -16,6 +16,8 @@ export interface UseCommentEditorProps
   defaultValue?: string;
   placeholder?: string;
   onSubmit?: (editor: Editor) => void;
+  onEscape?: (editor: Editor) => void;
+  disabled?: boolean;
 }
 
 export interface CommentEditorProps extends HTMLAttributes<HTMLDivElement> {
@@ -25,11 +27,14 @@ export interface CommentEditorProps extends HTMLAttributes<HTMLDivElement> {
 
 export function useCommentEditor({
   defaultValue,
-  placeholder = "Leave comment",
+  placeholder,
   onSubmit,
+  onEscape,
+  disabled = false,
   ...props
-}: UseCommentEditorProps): Editor | null {
-  return useEditor({
+}: UseCommentEditorProps): RefObject<Editor | null> {
+  const ref = useRef<Editor | null>(null);
+  const editor = useEditor({
     content: defaultValue ? getContentFromText(defaultValue) : undefined,
     extensions: [
       Document,
@@ -39,17 +44,20 @@ export function useCommentEditor({
       History,
       Paragraph,
       Text,
-      Placeholder.configure({ placeholder }),
+      Placeholder.configure({ placeholder, showOnlyWhenEditable: false }),
       Extension.create({
         addKeyboardShortcuts() {
           return {
             "Shift-Enter": () => {
               if (onSubmit) {
                 onSubmit(this.editor as Editor);
-                return true;
               }
 
-              return false;
+              return true;
+            },
+            Escape: () => {
+              onEscape?.(this.editor as Editor);
+              return true;
             },
           };
         },
@@ -57,6 +65,13 @@ export function useCommentEditor({
     ],
     ...props,
   });
+
+  ref.current = editor;
+  if (editor && editor.isEditable !== !disabled) {
+    editor.setEditable(!disabled);
+  }
+
+  return ref;
 }
 
 export function CommentEditor({
@@ -64,13 +79,26 @@ export function CommentEditor({
   variant = "primary",
   ...props
 }: CommentEditorProps): JSX.Element {
+  const editor = cn(
+    variant === "primary" && "primary-editor",
+    variant === "secondary" && "secondary-editor",
+    className
+  );
+
+  if (!props.editor) {
+    return (
+      <div aria-disabled className={editor} {...props}>
+        <div className="tiptap fc-text-sm fc-text-muted-foreground">
+          {props.placeholder}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <EditorContent
-      className={cn(
-        variant === "primary" && "primary-editor",
-        variant === "secondary" && "secondary-editor",
-        className
-      )}
+      aria-disabled={!props.editor.isEditable}
+      className={editor}
       {...props}
     />
   );

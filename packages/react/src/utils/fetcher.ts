@@ -53,3 +53,37 @@ export function fetchComments({
 
   return fetcher(`/api/comments?${params.toString()}`);
 }
+
+export async function postComment({
+  content,
+  page,
+  thread,
+}: {
+  content: string;
+  thread?: number;
+  page?: string;
+}): Promise<void> {
+  await fetcher("/api/comments", {
+    method: "POST",
+    body: JSON.stringify({
+      thread,
+      page,
+      content,
+    }),
+  });
+}
+
+export async function editComment({
+  id,
+  content,
+}: {
+  id: number;
+  content: string;
+}): Promise<void> {
+  await fetcher(`/api/comments/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      content,
+    }),
+  });
+}

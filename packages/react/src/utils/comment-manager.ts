@@ -49,7 +49,7 @@ export function updateComment(
   setComment(commentId, updateFn(comment));
 }
 
-export function onCommentPosted(thread: number | undefined): void {
+export function onCommentReplied(thread: number | undefined): void {
   if (thread) {
     updateComment(thread, (c) => ({ ...c, replies: c.replies + 1 }));
   }

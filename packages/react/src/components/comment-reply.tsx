@@ -1,22 +1,24 @@
 import useSWRMutation from "swr/mutation";
-import { useAuthContext } from "../contexts/auth";
 import { cn } from "../utils/cn";
 import {
   type FetcherError,
   getCommentsKey,
   postComment,
 } from "../utils/fetcher";
+import { useCommentContext } from "../contexts/comment";
+import { onCommentReplied } from "../utils/comment-manager";
 import { useCommentsContext } from "../contexts/comments";
 import { buttonVariants } from "./button";
 import { getEditorContent, useCommentEditor, CommentEditor } from "./editor";
 import { Spinner } from "./spinner";
 
-export function CommentPost(): JSX.Element {
-  const placeholder = "Leave comment";
-  const auth = useAuthContext();
+export function CommentReply(): JSX.Element {
+  const placeholder = "Reply to comment";
   const { page } = useCommentsContext();
+  const { comment, setReply } = useCommentContext();
+
   const mutation = useSWRMutation(
-    getCommentsKey(undefined, page),
+    getCommentsKey(comment.threadId, page),
     (key, { arg }: { arg: { content: string } }) =>
       postComment({
         thread: key[1],
@@ -25,11 +27,17 @@ export function CommentPost(): JSX.Element {
       }),
     {
       onSuccess: () => {
-        editor.current?.commands.clearContent();
+        onCommentReplied(comment.threadId);
+        onClose();
       },
     }
   );
-  const disabled = mutation.isMutating || auth.status !== "authenticated";
+
+  const onClose = (): void => {
+    setReply(false);
+  };
+
+  const disabled = mutation.isMutating;
 
   const submit = (): void => {
     if (!editor.current) return;
@@ -41,7 +49,9 @@ export function CommentPost(): JSX.Element {
 
   const editor = useCommentEditor({
     placeholder,
+    autofocus: true,
     onSubmit: submit,
+    onEscape: onClose,
     disabled,
   });
 
@@ -51,38 +61,27 @@ export function CommentPost(): JSX.Element {
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <div className="fc-relative">
-        <CommentEditor editor={editor.current} placeholder={placeholder} />
+    <form className="fc-mt-2" onSubmit={onSubmit}>
+      <CommentEditor editor={editor.current} placeholder={placeholder} />
+      <div className="fc-flex fc-flex-row fc-gap-1 fc-mt-2">
         <button
-          aria-label="Send Comment"
-          className={cn(
-            buttonVariants({
-              className: "fc-absolute fc-right-2 fc-bottom-1.5",
-              size: "icon",
-            })
-          )}
-          disabled={disabled || editor.current?.isEmpty}
+          className={cn(buttonVariants({ className: "fc-gap-2" }))}
+          disabled={disabled || !editor.current || editor.current.isEmpty}
           type="submit"
         >
-          {mutation.isMutating ? (
-            <Spinner />
-          ) : (
-            <svg
-              className="fc-w-4 fc-h-4"
-              fill="none"
-              height="24"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              width="24"
-            >
-              <path d="m22 2-7 20-4-9-9-4Z" />
-              <path d="M22 2 11 13" />
-            </svg>
+          {mutation.isMutating ? <Spinner /> : null}
+          Reply
+        </button>
+        <button
+          className={cn(
+            buttonVariants({
+              variant: "secondary",
+            })
           )}
+          onClick={onClose}
+          type="button"
+        >
+          Cancel
         </button>
       </div>
       {mutation.error ? (

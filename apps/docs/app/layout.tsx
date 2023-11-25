@@ -1,5 +1,3 @@
-import "@fuma-comment/react/dist/style.css";
-import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { RootProvider } from "next-docs-ui/provider";

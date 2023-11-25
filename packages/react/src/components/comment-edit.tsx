@@ -1,8 +1,6 @@
-import type { Editor } from "@tiptap/react";
-import { useCallback } from "react";
 import useSWRMutation from "swr/mutation";
 import { cn } from "../utils/cn";
-import { fetcher, getCommentsKey } from "../utils/fetcher";
+import { editComment, getCommentsKey } from "../utils/fetcher";
 import { useCommentContext } from "../contexts/comment";
 import { updateComment } from "../utils/comment-manager";
 import { buttonVariants } from "./button";
@@ -14,55 +12,50 @@ export function CommentEdit(): JSX.Element {
 
   const mutation = useSWRMutation(
     getCommentsKey(comment.threadId),
-    ([key], { arg }: { arg: { id: number; content: string } }) =>
-      fetcher(`${key}/${arg.id}`, {
-        method: "PATCH",
-        body: JSON.stringify({ content: arg.content }),
-      })
+    (_, { arg }: { arg: { id: number; content: string } }) => editComment(arg)
   );
 
-  const submit = useCallback(
-    (instance: Editor): void => {
-      const content = getEditorContent(instance.getJSON());
+  const onClose = (): void => {
+    setEdit(false);
+  };
 
-      if (content.length === 0) return;
-      void mutation.trigger(
-        { id: comment.id, content },
-        {
-          revalidate: false,
-          onSuccess: () => {
-            updateComment(comment.id, (c) => ({ ...c, content }));
-            setEdit(false);
-          },
-        }
-      );
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- mutation objects shouldn't be included
-    [comment.id]
-  );
+  const submit = (): void => {
+    if (!editor.current) return;
+    const content = getEditorContent(editor.current.getJSON());
 
+    if (content.length === 0) return;
+    void mutation.trigger(
+      { id: comment.id, content },
+      {
+        revalidate: false,
+        onSuccess: () => {
+          updateComment(comment.id, (c) => ({ ...c, content }));
+          onClose();
+        },
+      }
+    );
+  };
+
+  const disabled = mutation.isMutating;
   const editor = useCommentEditor({
+    disabled,
     placeholder: "Edit Message",
     defaultValue: comment.content,
     onSubmit: submit,
+    onEscape: onClose,
     autofocus: "all",
   });
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    if (editor === null) return;
-    submit(editor);
+    submit();
     e.preventDefault();
-  };
-
-  const onCancel = (): void => {
-    setEdit(false);
   };
 
   return (
     <form onSubmit={onSubmit}>
       <CommentEditor
         className="fc-border fc-border-border fc-bg-background fc-rounded-md"
-        editor={editor}
+        editor={editor.current}
         variant="secondary"
       />
       <div className="fc-flex fc-flex-row fc-gap-1 fc-mt-2">
@@ -71,7 +64,7 @@ export function CommentEdit(): JSX.Element {
           className={cn(
             buttonVariants({ variant: "primary", className: "fc-gap-2" })
           )}
-          disabled={mutation.isMutating || editor?.isEmpty}
+          disabled={disabled || editor.current?.isEmpty}
           type="submit"
         >
           {mutation.isMutating ? (
@@ -95,8 +88,8 @@ export function CommentEdit(): JSX.Element {
           Edit
         </button>
         <button
-          className={cn(buttonVariants({ variant: "ghost" }))}
-          onClick={onCancel}
+          className={cn(buttonVariants({ variant: "secondary" }))}
+          onClick={onClose}
           type="button"
         >
           Cancel

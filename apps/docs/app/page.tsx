@@ -1,3 +1,5 @@
+import "@fuma-comment/react/dist/style.css";
+import "./globals.css";
 import { CommentsWithAuth } from "./page.client";
 
 export default function Page(): JSX.Element {
