@@ -18,7 +18,7 @@ export function CommentReply(): JSX.Element {
   const { comment, setReply } = useCommentContext();
 
   const mutation = useSWRMutation(
-    getCommentsKey(comment.threadId, page),
+    getCommentsKey(comment.id, page),
     (key, { arg }: { arg: { content: string } }) =>
       postComment({
         thread: key[1],
@@ -27,7 +27,7 @@ export function CommentReply(): JSX.Element {
       }),
     {
       onSuccess: () => {
-        onCommentReplied(comment.threadId);
+        onCommentReplied(comment.id);
         onClose();
       },
     }
