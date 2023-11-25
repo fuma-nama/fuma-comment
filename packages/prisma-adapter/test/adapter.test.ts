@@ -1,0 +1,160 @@
+import { afterAll, beforeAll, describe, expect, test } from "vitest";
+import { PrismaClient } from "@prisma/client";
+import { createAdapter } from "../src";
+import { clear, init } from "./utils";
+
+const db = new PrismaClient();
+
+beforeAll(async () => {
+  await db.$connect();
+  await init();
+
+  await db.comment.createMany({
+    data: [
+      {
+        author: "mock_user",
+        content: "Hello World 1",
+        timestamp: new Date(Date.parse("3/12/2023")),
+      },
+      {
+        author: "mock_user",
+        content: "Hello World 2",
+        timestamp: new Date(Date.parse("4/12/2023")),
+      },
+    ],
+  });
+
+  await db.rate.createMany({
+    data: [{ commentId: 1, like: true, userId: "mock_user" }],
+  });
+}, 20 * 1000);
+
+afterAll(async () => {
+  await clear(db);
+}, 20 * 1000);
+
+describe("Adapter", () => {
+  const adapter = createAdapter({
+    db,
+    joinUser(comments) {
+      return comments.map((comment) => ({
+        ...comment,
+        author: { id: comment.authorId, name: "Mock User" },
+      }));
+    },
+  });
+
+  test("Get Comments (Newest)", async () => {
+    const rows = await adapter.getComments({ sort: "newest" });
+
+    expect(rows, "Result sorted correctly").toEqual([
+      expect.objectContaining({ id: 2 }),
+      expect.objectContaining({ id: 1 }),
+    ]);
+  });
+
+  test("Get Comments (Newest, Auth)", async () => {
+    const rows = await adapter.getComments({
+      sort: "newest",
+      auth: { id: "mock_user" },
+    });
+
+    expect(rows, "Result correct").toEqual([
+      expect.objectContaining({ id: 2 }),
+      expect.objectContaining({ id: 1, liked: true }),
+    ]);
+  });
+
+  test("Get Comments (Oldest)", async () => {
+    const rows = await adapter.getComments({
+      sort: "oldest",
+    });
+
+    expect(rows, "Result sorted correctly").toEqual([
+      expect.objectContaining({ id: 1 }),
+      expect.objectContaining({ id: 2 }),
+    ]);
+  });
+
+  test("Get Comments (Oldest, Auth)", async () => {
+    const rows = await adapter.getComments({
+      sort: "oldest",
+      auth: { id: "mock_user" },
+    });
+
+    expect(rows, "Result correct").toEqual([
+      expect.objectContaining({ id: 1, liked: true }),
+      expect.objectContaining({ id: 2 }),
+    ]);
+  });
+
+  test("Add Comment", async () => {
+    await adapter.postComment({
+      auth: { id: "mock_user" },
+      body: { content: "Hello World 3" },
+    });
+    const comments = await adapter.getComments({ sort: "oldest" });
+
+    expect(comments.length, "New comment added").toBe(3);
+  });
+
+  test("Edit Comment", async () => {
+    await adapter.updateComment({
+      id: "3",
+      auth: { id: "mock_user" },
+      body: { content: "Hello World Update" },
+    });
+    const row = (await adapter.getComments({ sort: "oldest" })).find(
+      (comment) => comment.id === 3
+    );
+
+    expect(row?.content, "Content has updated").toBe("Hello World Update");
+  });
+
+  test("Delete Comment", async () => {
+    await adapter.deleteComment({
+      id: "3",
+      auth: { id: "mock_user" },
+    });
+    const hasRemoved = (await adapter.getComments({ sort: "oldest" })).every(
+      (comment) => comment.id !== 3
+    );
+
+    expect(hasRemoved, "Comment should be removed").toBe(true);
+  });
+
+  test("Add Rate", async () => {
+    const id = 2;
+    await adapter.setRate({
+      auth: { id: "mock_user" },
+      body: { like: true },
+      id: id.toString(),
+    });
+
+    const comments = await adapter.getComments({
+      sort: "oldest",
+      auth: { id: "mock_user" },
+    });
+
+    const updated = comments.find((comment) => comment.id === id);
+    expect(updated?.liked, "Has liked comment").toBe(true);
+    expect(updated?.likes, "Likes count should be increased").toBe(1);
+  });
+
+  test("Remove Rate", async () => {
+    const id = 2;
+    await adapter.deleteRate({
+      auth: { id: "mock_user" },
+      id: id.toString(),
+    });
+
+    const comments = await adapter.getComments({
+      sort: "oldest",
+      auth: { id: "mock_user" },
+    });
+
+    const updated = comments.find((comment) => comment.id === id);
+    expect(updated?.liked, "Has no rate on comment").toBe(undefined);
+    expect(updated?.likes, "Likes count should be decreased").toBe(0);
+  });
+});

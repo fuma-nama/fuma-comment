@@ -13,6 +13,7 @@
   "scripts": {
     "lint": "eslint .",
     "build": "tsup",
+    "test:integrate": "vitest run",
     "dev": "tsup --watch"
   },
   "peerDependencies": {
@@ -21,10 +22,13 @@
   "devDependencies": {
     "@fuma-comment/server": "workspace:*",
     "@types/node": "^20.5.2",
+    "@types/pg": "^8.10.9",
     "eslint-config-custom": "workspace:*",
     "kysely": "^0.26.3",
+    "pg": "^8.11.3",
     "tsconfig": "workspace:*",
     "tsup": "^7.2.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.6"
   }
 }

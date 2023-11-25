@@ -8,6 +8,7 @@
     },
     "lint": {},
     "test": {},
+    "test:integrate": {},
     "dev": {
       "cache": false,
       "persistent": true

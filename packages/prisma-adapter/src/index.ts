@@ -19,8 +19,13 @@ interface Options {
  */
 export function createAdapter({ db, joinUser }: Options): StorageAdapter {
   return {
-    async getComments({ auth }) {
+    async getComments({ auth, sort, page, thread }) {
       const result = await db.comment.findMany({
+        orderBy: [{ timestamp: sort === "newest" ? "desc" : "asc" }],
+        where: {
+          page,
+          thread: thread ? Number(thread) : undefined,
+        },
         include: {
           rates: auth
             ? {
