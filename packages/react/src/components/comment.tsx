@@ -59,7 +59,7 @@ export function Comment({
     <CommentProvider value={context}>
       <div
         className={cn(
-          "fc-group fc-relative fc-flex fc-flex-row fc-text-sm fc-px-3 fc-py-4",
+          "fc-group fc-relative fc-flex fc-flex-row fc-px-3 fc-py-4 fc-text-sm",
           canDisplayComments && "fc-pb-2"
         )}
         data-fc-comment={context.comment.id}
@@ -69,18 +69,18 @@ export function Comment({
         {comment.author.image ? (
           <img
             alt="avatar"
-            className="fc-w-8 fc-h-8 fc-rounded-full fc-bg-card fc-select-none"
+            className="fc-h-8 fc-w-8 fc-select-none fc-rounded-full fc-bg-card"
             height={32}
             src={comment.author.image}
             width={32}
           />
         ) : (
-          <div className="fc-w-8 fc-h-8 fc-rounded-full fc-bg-gradient-to-br fc-from-blue-600 fc-to-red-600" />
+          <div className="fc-h-8 fc-w-8 fc-rounded-full fc-bg-gradient-to-br fc-from-blue-600 fc-to-red-600" />
         )}
-        <div className="fc-flex-1 fc-w-0 fc-ml-2">
-          <p className="fc-inline-flex fc-gap-2 fc-items-center fc-mb-2">
+        <div className="fc-ml-2 fc-w-0 fc-flex-1">
+          <p className="fc-mb-2 fc-inline-flex fc-items-center fc-gap-2">
             <span className="fc-font-semibold">{comment.author.name}</span>
-            <span className="fc-text-muted-foreground fc-text-xs">
+            <span className="fc-text-xs fc-text-muted-foreground">
               {timestamp}
             </span>
           </p>
@@ -146,7 +146,7 @@ function CommentActions(): JSX.Element {
   };
 
   return (
-    <div className="fc-flex fc-flex-row fc-gap-1 fc-mt-2">
+    <div className="fc-mt-2 fc-flex fc-flex-row fc-gap-1">
       <button
         className={cn(
           rateVariants({
@@ -161,7 +161,7 @@ function CommentActions(): JSX.Element {
       >
         <svg
           aria-label="Like"
-          className="fc-w-4 fc-h-4"
+          className="fc-h-4 fc-w-4"
           fill="none"
           height="24"
           stroke="currentColor"
@@ -190,7 +190,7 @@ function CommentActions(): JSX.Element {
       >
         <svg
           aria-label="Dislike"
-          className="fc-w-4 fc-h-4"
+          className="fc-h-4 fc-w-4"
           fill="none"
           height="24"
           stroke="currentColor"
@@ -263,7 +263,7 @@ function CommentMenu(): JSX.Element {
         )}
       >
         <svg
-          className="fc-w-4 fc-h-4"
+          className="fc-h-4 fc-w-4"
           fill="none"
           height="24"
           stroke="currentColor"

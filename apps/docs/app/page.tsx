@@ -4,10 +4,10 @@ import { CommentsWithAuth } from "./page.client";
 
 export default function Page(): JSX.Element {
   return (
-    <main className="flex flex-col py-12 container">
+    <main className="container flex flex-col py-12">
       <CommentsWithAuth
         title={
-          <div className="flex flex-row gap-4 items-center">
+          <div className="flex flex-row items-center gap-4">
             <h1 className="font-bold">Fuma Comment</h1>
             <Link className="font-mono text-sm font-bold" href="/docs">
               /docs
@@ -20,7 +20,7 @@ export default function Page(): JSX.Element {
               rel="noreferrer noopener"
             >
               <svg
-                className="w-6 h-6"
+                className="h-6 w-6"
                 fill="none"
                 height="24"
                 stroke="currentColor"

@@ -69,7 +69,7 @@ export function CommentPost(): JSX.Element {
             <Spinner />
           ) : (
             <svg
-              className="fc-w-4 fc-h-4"
+              className="fc-h-4 fc-w-4"
               fill="none"
               height="24"
               stroke="currentColor"
@@ -86,7 +86,7 @@ export function CommentPost(): JSX.Element {
         </button>
       </div>
       {mutation.error ? (
-        <p className="fc-text-sm fc-text-error fc-mt-1">
+        <p className="fc-mt-1 fc-text-sm fc-text-error">
           {(mutation.error as FetcherError).message}
         </p>
       ) : null}

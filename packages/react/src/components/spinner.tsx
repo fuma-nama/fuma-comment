@@ -9,13 +9,13 @@ export const Spinner = forwardRef<
   return (
     <div
       className={cn(
-        "fc-w-4 fc-h-4 fc-rounded-full fc-border-2 fc-border-border",
+        "fc-h-4 fc-w-4 fc-rounded-full fc-border-2 fc-border-border",
         className
       )}
       ref={ref}
       {...props}
     >
-      <div className="fc-w-full fc-h-full fc-rounded-full fc-border-l-2 fc-border-primary fc-animate-spin" />
+      <div className="fc-h-full fc-w-full fc-animate-spin fc-rounded-full fc-border-l-2 fc-border-primary" />
     </div>
   );
 });

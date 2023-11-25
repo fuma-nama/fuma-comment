@@ -14,10 +14,13 @@ const project = resolve(process.cwd(), "tsconfig.json");
 
 module.exports = {
   extends: [
-    "@vercel/style-guide/eslint/browser",
-    "@vercel/style-guide/eslint/typescript",
-    "@vercel/style-guide/eslint/react",
-  ].map(require.resolve),
+    ...[
+      "@vercel/style-guide/eslint/browser",
+      "@vercel/style-guide/eslint/typescript",
+      "@vercel/style-guide/eslint/react",
+    ].map(require.resolve),
+    "plugin:tailwindcss/recommended",
+  ],
   parserOptions: {
     project,
   },
@@ -25,6 +28,9 @@ module.exports = {
     JSX: true,
   },
   settings: {
+    tailwindcss: {
+      callees: ["clsx", "cva", "cn"],
+    },
     "import/resolver": {
       typescript: {
         project,

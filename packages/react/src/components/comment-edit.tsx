@@ -54,11 +54,11 @@ export function CommentEdit(): JSX.Element {
   return (
     <form onSubmit={onSubmit}>
       <CommentEditor
-        className="fc-border fc-border-border fc-bg-background fc-rounded-md"
+        className="fc-rounded-md fc-border fc-border-border fc-bg-background"
         editor={editor.current}
         variant="secondary"
       />
-      <div className="fc-flex fc-flex-row fc-gap-1 fc-mt-2">
+      <div className="fc-mt-2 fc-flex fc-flex-row fc-gap-1">
         <button
           aria-label="Edit"
           className={cn(
@@ -71,7 +71,7 @@ export function CommentEdit(): JSX.Element {
             <Spinner />
           ) : (
             <svg
-              className="fc-w-4 fc-h-4"
+              className="fc-h-4 fc-w-4"
               fill="none"
               height="24"
               stroke="currentColor"

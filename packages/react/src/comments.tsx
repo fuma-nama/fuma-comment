@@ -35,13 +35,13 @@ export const Comments = forwardRef<HTMLDivElement, CommentsProps>(
       <CommentsProvider value={context}>
         <div
           className={cn(
-            "fc-bg-background fc-text-foreground fc-p-4 fc-rounded-xl fc-border fc-border-border",
+            "fc-rounded-xl fc-border fc-border-border fc-bg-background fc-p-4 fc-text-foreground",
             className
           )}
           ref={ref}
           {...props}
         >
-          <div className="fc-font-bold fc-mb-4">{title}</div>
+          <div className="fc-mb-4 fc-font-bold">{title}</div>
 
           <CommentPost />
           {auth.status === "unauthenticated" && (
@@ -71,9 +71,9 @@ function List(): JSX.Element {
   );
 
   return (
-    <div className="fc-flex fc-flex-col fc-mt-4 fc-border-t fc-border-border fc-pt-4 -fc-mx-3">
+    <div className="-fc-mx-3 fc-mt-4 fc-flex fc-flex-col fc-border-t fc-border-border fc-pt-4">
       {query.isLoading ? (
-        <Spinner className="fc-w-8 fc-h-8 fc-mx-auto" />
+        <Spinner className="fc-mx-auto fc-h-8 fc-w-8" />
       ) : (
         query.data?.map((comment) => (
           <Comment comment={comment} key={comment.id} />

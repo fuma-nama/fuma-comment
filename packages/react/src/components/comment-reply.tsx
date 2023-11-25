@@ -63,7 +63,7 @@ export function CommentReply(): JSX.Element {
   return (
     <form className="fc-mt-2" onSubmit={onSubmit}>
       <CommentEditor editor={editor.current} placeholder={placeholder} />
-      <div className="fc-flex fc-flex-row fc-gap-1 fc-mt-2">
+      <div className="fc-mt-2 fc-flex fc-flex-row fc-gap-1">
         <button
           className={cn(buttonVariants({ className: "fc-gap-2" }))}
           disabled={disabled || !editor.current || editor.current.isEmpty}
@@ -85,7 +85,7 @@ export function CommentReply(): JSX.Element {
         </button>
       </div>
       {mutation.error ? (
-        <p className="fc-text-sm fc-text-error fc-mt-1">
+        <p className="fc-mt-1 fc-text-sm fc-text-error">
           {(mutation.error as FetcherError).message}
         </p>
       ) : null}
