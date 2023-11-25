@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import type { HTMLAttributes } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 import { forwardRef, useMemo } from "react";
 import { fetchComments, getCommentsKey } from "./utils/fetcher";
 import { Spinner } from "./components/spinner";
@@ -11,12 +11,18 @@ import { cn } from "./utils/cn";
 import { syncComments } from "./utils/comment-manager";
 import { CommentsProvider, useCommentsContext } from "./contexts/comments";
 
-interface CommentsProps extends HTMLAttributes<HTMLDivElement> {
+export interface CommentsProps
+  extends Omit<HTMLAttributes<HTMLDivElement>, "page" | "title"> {
+  title?: ReactNode;
+
+  /**
+   * Comments will be grouped by `page`
+   */
   page?: string;
 }
 
 export const Comments = forwardRef<HTMLDivElement, CommentsProps>(
-  ({ page, className, ...props }, ref) => {
+  ({ page, className, title = <p>Comments</p>, ...props }, ref) => {
     const auth = useAuthContext();
     const context = useMemo(
       () => ({
@@ -35,7 +41,8 @@ export const Comments = forwardRef<HTMLDivElement, CommentsProps>(
           ref={ref}
           {...props}
         >
-          <p className="fc-font-bold fc-mb-4">Comments</p>
+          <div className="fc-font-bold fc-mb-4">{title}</div>
+
           <CommentPost />
           {auth.status === "unauthenticated" && (
             <div className="fc-mt-2">

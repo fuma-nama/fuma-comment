@@ -9,7 +9,10 @@ export default function RootDocsLayout({
   children: ReactNode;
 }): JSX.Element {
   return (
-    <DocsLayout nav={{ title: "Fuma Comment" }} tree={tree}>
+    <DocsLayout
+      nav={{ title: <span className="font-bold">Fuma Comment</span> }}
+      tree={tree}
+    >
       {children}
     </DocsLayout>
   );

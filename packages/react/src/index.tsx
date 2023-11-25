@@ -1,2 +1,2 @@
-export { Comments } from "./comments";
+export * from "./comments";
 export * from "./contexts/auth";
