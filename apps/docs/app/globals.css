@@ -1,4 +1,3 @@
-@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -10,13 +9,4 @@
 .dark {
   --app-foreground: 255, 255, 255;
   --app-background: 0, 0, 0;
-}
-
-body {
-  color: rgb(var(--app-foreground));
-  background: rgb(var(--app-background));
-}
-
-* {
-  border-color: hsl(var(--border));
 }
