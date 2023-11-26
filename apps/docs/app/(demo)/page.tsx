@@ -19,7 +19,7 @@ export default function Page(): JSX.Element {
               rel="noreferrer noopener"
             >
               <svg
-                className="h-6 w-6"
+                className="h-5 w-5"
                 fill="none"
                 height="24"
                 stroke="currentColor"

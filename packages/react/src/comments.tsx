@@ -1,97 +1,38 @@
-import useSWR from "swr";
 import type { HTMLAttributes, ReactNode } from "react";
-import { forwardRef, useMemo } from "react";
-import { fetchComments, getCommentsKey } from "./utils/fetcher";
-import { Spinner } from "./components/spinner";
-import { Comment } from "./components/comment";
-import { CommentPost } from "./components/comment-post";
-import { buttonVariants } from "./components/button";
-import { useAuthContext } from "./contexts/auth";
+import { forwardRef } from "react";
 import { cn } from "./utils/cn";
-import { syncComments } from "./utils/comment-manager";
-import { CommentsProvider, useCommentsContext } from "./contexts/comments";
+import * as atom from "./atom";
 
 export interface CommentsProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, "page" | "title"> {
+  extends Omit<
+      HTMLAttributes<HTMLDivElement>,
+      keyof atom.CommentsProviderProps | "title"
+    >,
+    atom.CommentsProviderProps {
   title?: ReactNode;
-
-  /**
-   * Comments will be grouped by `page`
-   */
-  page?: string;
 }
 
 export const Comments = forwardRef<HTMLDivElement, CommentsProps>(
-  ({ page, className, title = <p>Comments</p>, ...props }, ref) => {
-    const auth = useAuthContext();
-    const context = useMemo(
-      () => ({
-        page,
-      }),
-      [page]
-    );
-
+  ({ page, className, title, ...props }, ref) => {
     return (
-      <CommentsProvider value={context}>
+      <atom.CommentsProvider page={page}>
         <div
           className={cn(
-            "fc-rounded-xl fc-border fc-border-border fc-bg-background fc-p-4 fc-text-foreground",
+            "fc-rounded-xl fc-border fc-border-border fc-bg-background fc-text-foreground",
             className
           )}
           ref={ref}
           {...props}
         >
-          <div className="fc-mb-4 fc-font-bold">{title}</div>
-
-          <CommentPost />
-          {auth.status === "unauthenticated" && (
-            <div className="fc-mt-2">
-              <AuthButton />
-            </div>
-          )}
-          <List />
+          <div className="fc-border-b fc-border-border fc-p-3">
+            {title ? <div className="fc-mb-2">{title}</div> : null}
+            <atom.CommentsPost />
+          </div>
+          <atom.CommentsList />
         </div>
-      </CommentsProvider>
+      </atom.CommentsProvider>
     );
   }
 );
 
 Comments.displayName = "Comments";
-
-function List(): JSX.Element {
-  const { page } = useCommentsContext();
-  const query = useSWR(
-    getCommentsKey(undefined, page),
-    ([_, thread, p]) => fetchComments({ page: p, thread }),
-    {
-      onSuccess(data) {
-        syncComments(data);
-      },
-    }
-  );
-
-  return (
-    <div className="-fc-mx-3 fc-mt-4 fc-flex fc-flex-col fc-border-t fc-border-border fc-pt-4">
-      {query.isLoading ? (
-        <Spinner className="fc-mx-auto fc-h-8 fc-w-8" />
-      ) : (
-        query.data?.map((comment) => (
-          <Comment comment={comment} key={comment.id} />
-        ))
-      )}
-    </div>
-  );
-}
-
-function AuthButton(): JSX.Element {
-  const { signIn } = useAuthContext();
-
-  if (typeof signIn === "function")
-    return (
-      <button className={cn(buttonVariants())} onClick={signIn} type="button">
-        Sign In
-      </button>
-    );
-
-  return <>{signIn}</>;
-}

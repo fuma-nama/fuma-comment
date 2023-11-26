@@ -10,6 +10,21 @@
     "./dist"
   ],
   "license": "MIT",
+  "exports": {
+    ".": "./dist/index.js",
+    "./style.css": "./dist/style.css",
+    "./atom": {
+      "import": "./dist/atom.js",
+      "types": "./dist/atom.d.mts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "atom": [
+        "./dist/atom.d.mts"
+      ]
+    }
+  },
   "scripts": {
     "lint": "eslint .",
     "build": "tsup && postcss css/styles.css -o ./dist/style.css",

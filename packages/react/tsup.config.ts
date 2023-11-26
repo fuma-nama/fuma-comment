@@ -1,7 +1,7 @@
 import { defineConfig } from "tsup";
 
 const config = defineConfig({
-  entry: ["./src/index.tsx"],
+  entry: ["./src/index.tsx", "./src/atom.tsx"],
   format: "esm",
   dts: true,
   banner: () => ({ js: "'use client';" }),
