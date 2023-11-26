@@ -2,6 +2,8 @@
   "name": "fuma-comment",
   "private": true,
   "scripts": {
+    "version": "changeset version",
+    "release": "turbo run build --filter=./packages/* && changeset publish",
     "build": "turbo run build",
     "dev": "turbo run dev",
     "test": "turbo run test",
