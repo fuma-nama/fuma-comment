@@ -1,4 +1,3 @@
-import "@fuma-comment/react/dist/style.css";
 import Link from "next/link";
 import { CommentsWithAuth } from "./page.client";
 

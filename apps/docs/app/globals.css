@@ -3,16 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --foreground: 0, 0, 0;
-  --background: 235, 205, 235;
+  --app-foreground: 0, 0, 0;
+  --app-background: 235, 205, 235;
 }
 
 .dark {
-  --foreground: 255, 255, 255;
-  --background: 0, 0, 0;
+  --app-foreground: 255, 255, 255;
+  --app-background: 0, 0, 0;
 }
 
 body {
-  color: rgb(var(--foreground));
-  background: rgb(var(--background));
+  color: rgb(var(--app-foreground));
+  background: rgb(var(--app-background));
 }
