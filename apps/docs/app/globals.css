@@ -16,3 +16,7 @@ body {
   color: rgb(var(--app-foreground));
   background: rgb(var(--app-background));
 }
+
+* {
+  border-color: hsl(var(--border));
+}
