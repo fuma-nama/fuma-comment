@@ -3,108 +3,190 @@ import { Gapcursor } from "@tiptap/extension-gapcursor";
 import { HardBreak } from "@tiptap/extension-hard-break";
 import { Paragraph } from "@tiptap/extension-paragraph";
 import { Placeholder } from "@tiptap/extension-placeholder";
-import type { Editor, EditorOptions, JSONContent } from "@tiptap/react";
-import { useEditor, Extension, EditorContent } from "@tiptap/react";
+import type { JSONContent } from "@tiptap/react";
+import { Editor, Extension, EditorContent } from "@tiptap/react";
 import { Document } from "@tiptap/extension-document";
 import { History } from "@tiptap/extension-history";
 import { Text } from "@tiptap/extension-text";
-import { useRef, type HTMLAttributes, type RefObject } from "react";
+import type { HTMLAttributes } from "react";
+import { useRef, forwardRef, useState, useCallback, useEffect } from "react";
+import { cva } from "cva";
 import { cn } from "../utils/cn";
 
-export interface UseCommentEditorProps
-  extends Omit<Partial<EditorOptions>, "content" | "extensions"> {
+export interface UseCommentEditor {
+  editor: Editor;
+  isEmpty: boolean;
+  getValue: () => string;
+  clearValue: () => void;
+}
+
+export interface EditorProps {
+  variant?: "primary" | "secondary";
+  autofocus?: "start" | "end" | "all" | number | boolean;
   defaultValue?: string;
   placeholder?: string;
-  onSubmit?: (editor: Editor) => void;
-  onEscape?: (editor: Editor) => void;
   disabled?: boolean;
+  editor: UseCommentEditor | null;
+  onChange?: (editor: UseCommentEditor) => void;
+  onSubmit?: (editor: UseCommentEditor) => void;
+  onEscape?: (editor: UseCommentEditor) => void;
+  editorProps?: HTMLAttributes<HTMLDivElement>;
 }
 
-export interface CommentEditorProps extends HTMLAttributes<HTMLDivElement> {
-  editor: Editor | null;
-  variant?: "primary" | "secondary";
+export function useCommentEditor(): [
+  editor: UseCommentEditor | null,
+  setEditor: (editor: UseCommentEditor) => void,
+] {
+  return useState<UseCommentEditor | null>(null);
 }
 
-export function useCommentEditor({
-  defaultValue,
-  placeholder,
-  onSubmit,
-  onEscape,
-  disabled = false,
-  ...props
-}: UseCommentEditorProps): RefObject<Editor | null> {
-  const ref = useRef<Editor | null>(null);
-  const editor = useEditor({
-    content: defaultValue ? getContentFromText(defaultValue) : undefined,
-    extensions: [
-      Document,
-      Dropcursor,
-      Gapcursor,
-      HardBreak,
-      History,
-      Paragraph,
-      Text,
-      Placeholder.configure({ placeholder, showOnlyWhenEditable: false }),
-      Extension.create({
-        addKeyboardShortcuts() {
-          return {
-            "Shift-Enter": () => {
-              if (onSubmit) {
-                onSubmit(this.editor as Editor);
-              }
-
-              return true;
-            },
-            Escape: () => {
-              onEscape?.(this.editor as Editor);
-              return true;
-            },
-          };
-        },
-      }),
-    ],
-    ...props,
-  });
-
-  ref.current = editor;
-  if (editor && editor.isEditable !== !disabled) {
-    editor.setEditable(!disabled);
+const editorVariants = cva(
+  "fc-min-h-[40px] fc-text-sm focus-visible:fc-outline-none focus-visible:fc-ring-2 focus-visible:fc-ring-ring",
+  {
+    variants: {
+      variant: {
+        primary:
+          "fc-rounded-xl fc-border fc-border-border fc-bg-card fc-px-3 fc-py-1.5 fc-transition-colors hover:fc-bg-accent focus-visible:fc-bg-card",
+        secondary:
+          "fc-rounded-md fc-border fc-border-border fc-bg-background fc-p-1.5",
+      },
+    },
   }
+);
 
-  return ref;
+/**
+ * Always call the latest rendered callback
+ *
+ * For instance, you added a `onClick` listener to button. When the listener is re-constructed in the next render, the new listener will called instead
+ */
+function useLatestCallback<T extends (...args: unknown[]) => unknown>(
+  latest: T
+): T {
+  const ref = useRef<T>(latest);
+  ref.current = latest;
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- Wrapped with refs
+  return useCallback(((...args) => ref.current(...args)) as T, []);
 }
 
-export function CommentEditor({
-  className,
-  variant = "primary",
-  ...props
-}: CommentEditorProps): JSX.Element {
-  const editor = cn(
-    variant === "primary" && "primary-editor",
-    variant === "secondary" && "secondary-editor",
-    className
-  );
+export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
+  (
+    {
+      editor,
+      variant = "primary",
+      defaultValue,
+      disabled = false,
+      placeholder,
+      autofocus,
+      editorProps,
+      onChange,
+      ...props
+    },
+    ref
+  ) => {
+    const innerEditor = editor?.editor ?? null;
+    const onSubmit = useLatestCallback(() => {
+      if (editor) props.onSubmit?.(editor);
+      return true;
+    });
+    const onEscape = useLatestCallback(() => {
+      if (editor) props.onEscape?.(editor);
+      return true;
+    });
 
-  if (!props.editor) {
-    return (
-      <div aria-disabled className={editor} {...props}>
-        <div className="tiptap fc-text-sm fc-text-muted-foreground">
-          {props.placeholder}
+    useEffect(() => {
+      const instance = new Editor({
+        autofocus,
+        content: defaultValue ? getContentFromText(defaultValue) : undefined,
+        editorProps: {
+          attributes: {
+            class: cn(editorVariants({ variant })),
+          },
+        },
+        extensions: [
+          Document,
+          Dropcursor,
+          Gapcursor,
+          HardBreak,
+          History,
+          Paragraph,
+          Text,
+          Placeholder.configure({
+            placeholder,
+            showOnlyWhenEditable: false,
+          }),
+          Extension.create({
+            addKeyboardShortcuts() {
+              return {
+                "Shift-Enter": onSubmit,
+                Escape: onEscape,
+              };
+            },
+          }),
+        ],
+        onTransaction() {
+          onChange?.(createCommentEditor(instance));
+        },
+      });
+
+      return () => {
+        instance.destroy();
+      };
+    }, [
+      autofocus,
+      defaultValue,
+      onChange,
+      onEscape,
+      onSubmit,
+      placeholder,
+      variant,
+    ]);
+
+    const className = cn(
+      "aria-disabled:fc-cursor-not-allowed aria-disabled:fc-opacity-80",
+      editorProps?.className
+    );
+
+    if (!innerEditor) {
+      return (
+        <div aria-disabled ref={ref} {...editorProps} className={className}>
+          <div className={cn(editorVariants({ variant, className: "tiptap" }))}>
+            <p className="is-editor-empty" data-placeholder={placeholder} />
+          </div>
         </div>
-      </div>
+      );
+    }
+
+    innerEditor.setEditable(!disabled);
+
+    return (
+      <EditorContent
+        aria-disabled={disabled}
+        editor={innerEditor}
+        ref={ref}
+        {...editorProps}
+        className={className}
+      />
     );
   }
+);
 
-  return (
-    <EditorContent
-      aria-disabled={!props.editor.isEditable}
-      className={editor}
-      {...props}
-    />
-  );
+CommentEditor.displayName = "Editor";
+
+function createCommentEditor(editor: Editor): UseCommentEditor {
+  return {
+    editor,
+    isEmpty: editor.isEmpty,
+    getValue() {
+      return getEditorContent(editor.getJSON());
+    },
+    clearValue() {
+      editor.commands.clearContent(true);
+    },
+  };
 }
 
-export function getContentFromText(text: string): JSONContent {
+function getContentFromText(text: string): JSONContent {
   return {
     type: "doc",
     content: text.split("\n").map((paragraph) => ({
@@ -115,7 +197,7 @@ export function getContentFromText(text: string): JSONContent {
   };
 }
 
-export function getEditorContent(content: JSONContent): string {
+function getEditorContent(content: JSONContent): string {
   const s = [content.text ?? ""];
 
   for (const child of content.content ?? []) {

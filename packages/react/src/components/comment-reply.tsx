@@ -9,13 +9,13 @@ import { useCommentContext } from "../contexts/comment";
 import { onCommentReplied } from "../utils/comment-manager";
 import { useCommentsContext } from "../contexts/comments";
 import { buttonVariants } from "./button";
-import { getEditorContent, useCommentEditor, CommentEditor } from "./editor";
+import { CommentEditor, useCommentEditor } from "./editor";
 import { Spinner } from "./spinner";
 
 export function CommentReply(): JSX.Element {
-  const placeholder = "Reply to comment";
   const { page } = useCommentsContext();
   const { comment, setReply } = useCommentContext();
+  const [editor, setEditor] = useCommentEditor();
 
   const mutation = useSWRMutation(
     getCommentsKey(comment.id, page),
@@ -40,20 +40,12 @@ export function CommentReply(): JSX.Element {
   const disabled = mutation.isMutating;
 
   const submit = (): void => {
-    if (!editor.current) return;
-    const content = getEditorContent(editor.current.getJSON());
+    if (!editor) return;
+    const content = editor.getValue();
 
     if (content.length === 0) return;
     void mutation.trigger({ content });
   };
-
-  const editor = useCommentEditor({
-    placeholder,
-    autofocus: true,
-    onSubmit: submit,
-    onEscape: onClose,
-    disabled,
-  });
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     submit();
@@ -62,11 +54,19 @@ export function CommentReply(): JSX.Element {
 
   return (
     <form className="fc-mt-2" onSubmit={onSubmit}>
-      <CommentEditor editor={editor.current} placeholder={placeholder} />
+      <CommentEditor
+        autofocus
+        disabled={disabled}
+        editor={editor}
+        onChange={setEditor}
+        onEscape={onClose}
+        onSubmit={submit}
+        placeholder="Reply to comment"
+      />
       <div className="fc-mt-2 fc-flex fc-flex-row fc-gap-1">
         <button
           className={cn(buttonVariants({ className: "fc-gap-2" }))}
-          disabled={disabled || !editor.current || editor.current.isEmpty}
+          disabled={disabled || (editor?.isEmpty ?? true)}
           type="submit"
         >
           {mutation.isMutating ? <Spinner /> : null}

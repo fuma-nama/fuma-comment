@@ -8,13 +8,13 @@ import {
 } from "../utils/fetcher";
 import { useCommentsContext } from "../contexts/comments";
 import { buttonVariants } from "./button";
-import { getEditorContent, useCommentEditor, CommentEditor } from "./editor";
+import { CommentEditor, useCommentEditor } from "./editor";
 import { Spinner } from "./spinner";
 
 export function CommentPost(): JSX.Element {
-  const placeholder = "Leave comment";
   const auth = useAuthContext();
   const { page } = useCommentsContext();
+  const [editor, setEditor] = useCommentEditor();
   const mutation = useSWRMutation(
     getCommentsKey(undefined, page),
     (key, { arg }: { arg: { content: string } }) =>
@@ -25,25 +25,19 @@ export function CommentPost(): JSX.Element {
       }),
     {
       onSuccess: () => {
-        editor.current?.commands.clearContent();
+        editor?.clearValue();
       },
     }
   );
   const disabled = mutation.isMutating || auth.status !== "authenticated";
 
   const submit = (): void => {
-    if (!editor.current) return;
-    const content = getEditorContent(editor.current.getJSON());
+    if (!editor) return;
+    const content = editor.getValue();
 
     if (content.length === 0) return;
     void mutation.trigger({ content });
   };
-
-  const editor = useCommentEditor({
-    placeholder,
-    onSubmit: submit,
-    disabled,
-  });
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     submit();
@@ -53,7 +47,13 @@ export function CommentPost(): JSX.Element {
   return (
     <form onSubmit={onSubmit}>
       <div className="fc-relative">
-        <CommentEditor editor={editor.current} placeholder={placeholder} />
+        <CommentEditor
+          disabled={disabled}
+          editor={editor}
+          onChange={setEditor}
+          onSubmit={submit}
+          placeholder="Leave comment"
+        />
         <button
           aria-label="Send Comment"
           className={cn(
@@ -62,7 +62,7 @@ export function CommentPost(): JSX.Element {
               size: "icon",
             })
           )}
-          disabled={disabled || editor.current?.isEmpty}
+          disabled={disabled || (editor?.isEmpty ?? true)}
           type="submit"
         >
           {mutation.isMutating ? (

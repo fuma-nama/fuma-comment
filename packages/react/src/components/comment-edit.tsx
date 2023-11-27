@@ -4,10 +4,11 @@ import { editComment, getCommentsKey } from "../utils/fetcher";
 import { useCommentContext } from "../contexts/comment";
 import { updateComment } from "../utils/comment-manager";
 import { buttonVariants } from "./button";
-import { getEditorContent, useCommentEditor, CommentEditor } from "./editor";
+import { CommentEditor, useCommentEditor } from "./editor";
 import { Spinner } from "./spinner";
 
 export function CommentEdit(): JSX.Element {
+  const [editor, setEditor] = useCommentEditor();
   const { comment, setEdit } = useCommentContext();
 
   const mutation = useSWRMutation(
@@ -20,8 +21,8 @@ export function CommentEdit(): JSX.Element {
   };
 
   const submit = (): void => {
-    if (!editor.current) return;
-    const content = getEditorContent(editor.current.getJSON());
+    if (!editor) return;
+    const content = editor.getValue();
 
     if (content.length === 0) return;
     void mutation.trigger(
@@ -36,16 +37,6 @@ export function CommentEdit(): JSX.Element {
     );
   };
 
-  const disabled = mutation.isMutating;
-  const editor = useCommentEditor({
-    disabled,
-    placeholder: "Edit Message",
-    defaultValue: comment.content,
-    onSubmit: submit,
-    onEscape: onClose,
-    autofocus: "all",
-  });
-
   const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     submit();
     e.preventDefault();
@@ -54,8 +45,13 @@ export function CommentEdit(): JSX.Element {
   return (
     <form onSubmit={onSubmit}>
       <CommentEditor
-        className="fc-rounded-md fc-border fc-border-border fc-bg-background"
-        editor={editor.current}
+        autofocus="end"
+        disabled={mutation.isMutating}
+        editor={editor}
+        onChange={setEditor}
+        onEscape={onClose}
+        onSubmit={submit}
+        placeholder="Edit Message"
         variant="secondary"
       />
       <div className="fc-mt-2 fc-flex fc-flex-row fc-gap-1">
@@ -64,7 +60,7 @@ export function CommentEdit(): JSX.Element {
           className={cn(
             buttonVariants({ variant: "primary", className: "fc-gap-2" })
           )}
-          disabled={disabled || editor.current?.isEmpty}
+          disabled={mutation.isMutating || (editor?.isEmpty ?? true)}
           type="submit"
         >
           {mutation.isMutating ? (
