@@ -207,65 +207,71 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
         {...editorProps}
         className={className}
       >
-        <div className="fc-mb-1 fc-flex fc-flex-row fc-gap-0.5">
-          <button
-            aria-label="Toggle Bold"
-            className={cn(
-              toggleVariants({
-                active: innerEditor.isActive("bold"),
-              })
-            )}
-            disabled={!innerEditor.can().toggleBold()}
-            onClick={() => innerEditor.chain().focus().toggleBold().run()}
-            type="button"
-          >
-            <BoldIcon className="fc-h-4 fc-w-4" />
-          </button>
-          <button
-            aria-label="Toggle Strike"
-            className={cn(
-              toggleVariants({
-                active: innerEditor.isActive("strike"),
-              })
-            )}
-            disabled={!innerEditor.can().toggleStrike()}
-            onClick={() => innerEditor.chain().focus().toggleStrike().run()}
-            type="button"
-          >
-            <StrikethroughIcon className="fc-h-4 fc-w-4" />
-          </button>
-          <button
-            aria-label="Toggle Italic"
-            className={cn(
-              toggleVariants({
-                active: innerEditor.isActive("italic"),
-              })
-            )}
-            disabled={!innerEditor.can().toggleItalic()}
-            onClick={() => innerEditor.chain().focus().toggleItalic().run()}
-            type="button"
-          >
-            <ItalicIcon className="fc-h-4 fc-w-4" />
-          </button>
-          <button
-            aria-label="Toggle Code"
-            className={cn(
-              toggleVariants({
-                active: innerEditor.isActive("code"),
-              })
-            )}
-            disabled={!innerEditor.can().toggleCode()}
-            onClick={() => innerEditor.chain().focus().toggleCode().run()}
-            type="button"
-          >
-            <CodeIcon className="fc-h-4 fc-w-4" />
-          </button>
-          <UpdateLinkMenu editor={innerEditor} />
-        </div>
+        <ActionBar editor={innerEditor} />
       </EditorContent>
     );
   }
 );
+
+function ActionBar({ editor }: { editor: Editor }): JSX.Element {
+  return (
+    <div className="fc-mb-1 fc-flex fc-flex-row fc-gap-0.5">
+      <button
+        aria-label="Toggle Bold"
+        className={cn(
+          toggleVariants({
+            active: editor.isActive("bold"),
+          })
+        )}
+        disabled={!editor.can().toggleBold()}
+        onClick={() => editor.chain().focus().toggleBold().run()}
+        type="button"
+      >
+        <BoldIcon className="fc-h-4 fc-w-4" />
+      </button>
+      <button
+        aria-label="Toggle Strike"
+        className={cn(
+          toggleVariants({
+            active: editor.isActive("strike"),
+          })
+        )}
+        disabled={!editor.can().toggleStrike()}
+        onClick={() => editor.chain().focus().toggleStrike().run()}
+        type="button"
+      >
+        <StrikethroughIcon className="fc-h-4 fc-w-4" />
+      </button>
+      <button
+        aria-label="Toggle Italic"
+        className={cn(
+          toggleVariants({
+            active: editor.isActive("italic"),
+          })
+        )}
+        disabled={!editor.can().toggleItalic()}
+        onClick={() => editor.chain().focus().toggleItalic().run()}
+        type="button"
+      >
+        <ItalicIcon className="fc-h-4 fc-w-4" />
+      </button>
+      <button
+        aria-label="Toggle Code"
+        className={cn(
+          toggleVariants({
+            active: editor.isActive("code"),
+          })
+        )}
+        disabled={!editor.can().toggleCode()}
+        onClick={() => editor.chain().focus().toggleCode().run()}
+        type="button"
+      >
+        <CodeIcon className="fc-h-4 fc-w-4" />
+      </button>
+      <UpdateLinkMenu editor={editor} />
+    </div>
+  );
+}
 
 function UpdateLinkMenu({ editor }: { editor: Editor }): JSX.Element {
   const [name, setName] = useState("");
@@ -386,7 +392,7 @@ function createCommentEditor(editor: Editor): UseCommentEditor {
     editor,
     isEmpty: editor.isEmpty,
     getValue() {
-      return getEditorContent(editor.getJSON());
+      return editor.getText({ blockSeparator: "\n" });
     },
     clearValue() {
       editor.commands.clearContent(true);
@@ -403,15 +409,4 @@ function getContentFromText(text: string): JSONContent {
         paragraph.length === 0 ? [] : [{ type: "text", text: paragraph }],
     })),
   };
-}
-
-function getEditorContent(content: JSONContent): string {
-  const s = [content.text ?? ""];
-
-  for (const child of content.content ?? []) {
-    s.push(getEditorContent(child));
-    if (child.type === "paragraph") s.push("\n");
-  }
-
-  return s.join("");
 }
