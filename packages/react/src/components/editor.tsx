@@ -25,7 +25,7 @@ import { Link } from "@tiptap/extension-link";
 import { cn } from "../utils/cn";
 import { buttonVariants } from "./button";
 import { inputVariants } from "./input";
-import { Dialog, DialogTitle } from "./dialog";
+import { Dialog } from "./dialog";
 
 export interface UseCommentEditor {
   editor: Editor;
@@ -141,7 +141,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
                 "fc-bg-muted fc-border fc-border-border fc-rounded-sm fc-p-0.5 fc-m-0.5",
             },
           }),
-          Link.configure({
+          Link.extend({ inclusive: false }).configure({
             openOnClick: false,
             HTMLAttributes: {
               class: "fc-font-medium fc-underline",
@@ -268,8 +268,8 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 );
 
 function UpdateLinkMenu({ editor }: { editor: Editor }): JSX.Element {
-  const href = editor.getAttributes("link").href as string | undefined;
-  const [value, setValue] = useState<string>("");
+  const [name, setName] = useState("");
+  const [value, setValue] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   const closeModal = (): void => {
@@ -277,20 +277,35 @@ function UpdateLinkMenu({ editor }: { editor: Editor }): JSX.Element {
   };
 
   const openModal = (): void => {
+    editor.commands.extendMarkRange("link");
+
+    const href = editor.getAttributes("link").href as string | undefined;
+    const selection = editor.state.selection;
+    const selected = editor.state.doc.textBetween(selection.from, selection.to);
+
+    setName(selected);
     setValue(href ?? "");
     setIsOpen(true);
   };
 
   const set = (): void => {
+    if (value.trim().length === 0) return;
     closeModal();
+    const content = name.length > 0 ? name : value;
 
-    if (href) {
-      editor.chain().extendMarkRange("link").setLink({ href: value }).run();
+    if (!editor.state.selection.empty) {
+      editor
+        .chain()
+        .extendMarkRange("link")
+        .deleteSelection()
+        .setLink({ href: value })
+        .insertContent(content)
+        .run();
     } else {
       editor
         .chain()
         .setLink({ href: value })
-        .insertContent(value)
+        .insertContent(content)
         .unsetMark("link")
         .insertContent(" ")
         .run();
@@ -300,7 +315,7 @@ function UpdateLinkMenu({ editor }: { editor: Editor }): JSX.Element {
   const unset = (): void => {
     closeModal();
 
-    editor.chain().extendMarkRange("link").unsetLink().run();
+    editor.commands.unsetMark("link");
   };
 
   return (
@@ -326,12 +341,18 @@ function UpdateLinkMenu({ editor }: { editor: Editor }): JSX.Element {
             e.stopPropagation();
           }}
         >
-          <DialogTitle as="h3" className="fc-mb-2 fc-font-medium">
-            Add Link
-          </DialogTitle>
-
           <input
             className={cn(inputVariants())}
+            id="name"
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
+            placeholder="Name (optional)"
+            value={name}
+          />
+          <input
+            className={cn(inputVariants())}
+            id="url"
             onChange={(e) => {
               setValue(e.target.value);
             }}
@@ -342,7 +363,7 @@ function UpdateLinkMenu({ editor }: { editor: Editor }): JSX.Element {
             <button className={cn(buttonVariants())} type="submit">
               Save
             </button>
-            {href ? (
+            {editor.isActive("link") ? (
               <button
                 className={cn(buttonVariants({ variant: "secondary" }))}
                 onClick={unset}
