@@ -1,4 +1,5 @@
 import useSWRMutation from "swr/mutation";
+import { SendIcon } from "lucide-react";
 import { useAuthContext } from "../contexts/auth";
 import { cn } from "../utils/cn";
 import {
@@ -68,20 +69,7 @@ export function CommentPost(): JSX.Element {
           {mutation.isMutating ? (
             <Spinner />
           ) : (
-            <svg
-              className="fc-h-4 fc-w-4"
-              fill="none"
-              height="24"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              width="24"
-            >
-              <path d="m22 2-7 20-4-9-9-4Z" />
-              <path d="M22 2 11 13" />
-            </svg>
+            <SendIcon className="fc-h-4 fc-w-4" />
           )}
         </button>
       </div>
