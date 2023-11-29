@@ -190,7 +190,11 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
     if (!innerEditor) {
       return (
         <div aria-disabled ref={ref} {...editorProps} className={className}>
-          <div className={cn(editorVariants({ variant, className: "tiptap" }))}>
+          <div
+            className={cn(
+              editorVariants({ variant, className: "tiptap fc-mt-7" })
+            )}
+          >
             <p className="is-editor-empty" data-placeholder={placeholder} />
           </div>
         </div>
