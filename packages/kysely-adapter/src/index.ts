@@ -40,18 +40,6 @@ interface Options<DB extends Database = Database> {
  * Create storage adapter for Kysely
  *
  * ```
- * const adapter = createAdapter({ db })
- * ```
- *
- * The `users` table is required for authentication, you may change its name.
- *
- * ```
- * const adapter = createAdapter({ db, userTableName: "User" })
- * ```
- *
- * Moreover, you can manually select users from comments instead if `users` table doesn't exist
- *
- * ```
  * createAdapter({ db, joinUser: comments => ... })
  * ```
  *

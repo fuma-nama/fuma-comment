@@ -16,17 +16,16 @@ export const { GET, DELETE, PATCH, POST } = NextComment({
         .where("User.id", "in", authorIds)
         .execute();
 
-      return comments.map((comment) => {
-        const profile = profiles.find((p) => p.id === comment.authorId) ?? {
-          id: comment.authorId,
-          name: comment.authorId,
-        };
+      return comments.flatMap((comment) => {
+        const profile = profiles.find((p) => p.id === comment.authorId);
+        if (!profile) return [];
 
         return {
           ...comment,
           author: {
             id: profile.id,
             name: profile.name ?? "",
+            image: profile.image ?? undefined,
           },
         } satisfies Comment;
       });
