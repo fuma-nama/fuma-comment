@@ -19,7 +19,7 @@ export function CommentReply(): JSX.Element {
 
   const mutation = useSWRMutation(
     getCommentsKey(comment.id, page),
-    (key, { arg }: { arg: { content: string } }) =>
+    (key, { arg }: { arg: { content: object } }) =>
       postComment({
         thread: key[1],
         page: key[2],

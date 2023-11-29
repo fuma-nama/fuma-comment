@@ -1,3 +1,4 @@
+import type { Content } from "@fuma-comment/server";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { PrismaClient } from "@prisma/client";
 import { createAdapter } from "../src";
@@ -13,12 +14,12 @@ beforeAll(async () => {
     data: [
       {
         author: "mock_user",
-        content: "Hello World 1",
+        content: createContent("Hello World 1") as object,
         timestamp: new Date(Date.parse("3/12/2023")),
       },
       {
         author: "mock_user",
-        content: "Hello World 2",
+        content: createContent("Hello World 2") as object,
         timestamp: new Date(Date.parse("4/12/2023")),
       },
     ],
@@ -91,7 +92,7 @@ describe("Adapter", () => {
   test("Add Comment", async () => {
     await adapter.postComment({
       auth: { id: "mock_user" },
-      body: { content: "Hello World 3" },
+      body: { content: createContent("Hello World 3") },
     });
     const comments = await adapter.getComments({ sort: "oldest" });
 
@@ -99,16 +100,17 @@ describe("Adapter", () => {
   });
 
   test("Edit Comment", async () => {
+    const newContent = createContent("Hello World");
     await adapter.updateComment({
       id: "3",
       auth: { id: "mock_user" },
-      body: { content: "Hello World Update" },
+      body: { content: newContent },
     });
     const row = (await adapter.getComments({ sort: "oldest" })).find(
       (comment) => comment.id === 3
     );
 
-    expect(row?.content, "Content has updated").toBe("Hello World Update");
+    expect(row?.content, "Content has updated").toStrictEqual(newContent);
   });
 
   test("Delete Comment", async () => {
@@ -158,3 +160,20 @@ describe("Adapter", () => {
     expect(updated?.likes, "Likes count should be decreased").toBe(0);
   });
 });
+
+function createContent(raw: string): Content {
+  return {
+    type: "docs",
+    content: [
+      {
+        type: "paragraph",
+        content: [
+          {
+            type: "text",
+            text: raw,
+          },
+        ],
+      },
+    ],
+  };
+}

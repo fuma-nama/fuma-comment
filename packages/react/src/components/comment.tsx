@@ -4,7 +4,7 @@ import useSWRMutation from "swr/mutation";
 import { cva } from "cva";
 import useSWR from "swr";
 import { MoreVerticalIcon, ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
-import type { Editor } from "@tiptap/react";
+import { type Editor, type JSONContent } from "@tiptap/react";
 import { cn } from "../utils/cn";
 import { toLocalString } from "../utils/date";
 import { fetchComments, fetcher, getCommentsKey } from "../utils/fetcher";
@@ -26,6 +26,7 @@ import { CommentEdit } from "./comment-edit";
 import { buttonVariants } from "./button";
 import { Spinner } from "./spinner";
 import { CommentReply } from "./comment-reply";
+import { ContentRenderer } from "./comment-renderer";
 
 export function Comment({
   comment: cached,
@@ -81,19 +82,19 @@ export function Comment({
           <div className="fc-h-8 fc-w-8 fc-rounded-full fc-bg-gradient-to-br fc-from-blue-600 fc-to-red-600" />
         )}
         <div className="fc-ml-2 fc-w-0 fc-flex-1">
-          <p className="fc-mb-2 fc-inline-flex fc-items-center fc-gap-2">
-            <span className="fc-font-semibold">{comment.author.name}</span>
+          <div className="fc-mb-2 fc-flex fc-flex-row fc-items-center fc-gap-2">
+            <span className="fc-overflow-hidden fc-overflow-ellipsis fc-whitespace-nowrap fc-font-semibold">
+              {comment.author.name}
+            </span>
             <span className="fc-text-xs fc-text-muted-foreground">
               {timestamp}
             </span>
-          </p>
+          </div>
           {edit ? (
             <CommentEdit />
           ) : (
             <>
-              <p className="fc-whitespace-pre-wrap fc-break-words">
-                {comment.content}
-              </p>
+              <ContentRenderer content={comment.content} />
               {isReply ? <CommentReply /> : <CommentActions />}
             </>
           )}
@@ -213,7 +214,9 @@ function CommentMenu(): JSX.Element {
     (session.permissions?.delete || session.id === comment.author.id);
 
   const onCopy = (): void => {
-    void navigator.clipboard.writeText(comment.content);
+    const text = getTextFromContent(comment.content as JSONContent);
+
+    void navigator.clipboard.writeText(text);
   };
 
   const onEdit = (): void => {
@@ -294,4 +297,14 @@ function CommentReplies(): JSX.Element {
       ) : null}
     </div>
   );
+}
+
+function getTextFromContent(content: JSONContent): string {
+  if (content.type === "text") return content.text ?? "";
+  const child = (content.content?.map((c) => getTextFromContent(c)) ?? [])
+    .join("")
+    .trimEnd();
+
+  if (content.type === "paragraph") return `${child}\n`;
+  return child;
 }

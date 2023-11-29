@@ -54,7 +54,7 @@ export function createAdapter({ db, joinUser }: Options): StorageAdapter {
           return {
             id: row.id,
             authorId: row.author,
-            content: row.content,
+            content: row.content as object,
             likes,
             dislikes,
             replies,
@@ -82,7 +82,7 @@ export function createAdapter({ db, joinUser }: Options): StorageAdapter {
       await db.comment.createMany({
         data: {
           author: auth.id,
-          content: body.content,
+          content: body.content as object,
           page: body.page,
           thread: body.thread,
         },
@@ -108,7 +108,7 @@ export function createAdapter({ db, joinUser }: Options): StorageAdapter {
     },
     async updateComment({ id, auth, body }) {
       await db.comment.updateMany({
-        data: { content: body.content },
+        data: { content: body.content as object },
         where: { author: auth.id, id: Number(id) },
       });
     },

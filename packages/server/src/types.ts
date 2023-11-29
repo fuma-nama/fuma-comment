@@ -1,6 +1,7 @@
 import type { CommentRoute } from "./routes/comment";
 import type { CommentsRoute } from "./routes/comments";
 import type { RatesRoute } from "./routes/rates";
+import type { RichContentSchema } from "./routes/content";
 
 export interface AuthInfo {
   /** User ID, must be unique */
@@ -61,7 +62,10 @@ export interface Comment {
 
   author: UserProfile;
 
-  content: string;
+  /**
+   * The JSON content object (From rich editor)
+   */
+  content: object;
 
   /**
    * Amount of likes
@@ -96,3 +100,5 @@ export interface UserProfile {
 }
 
 export type StorageAdapter = CommentsRoute & CommentRoute & RatesRoute;
+
+export type Content = RichContentSchema;

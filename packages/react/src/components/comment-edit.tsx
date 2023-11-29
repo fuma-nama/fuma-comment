@@ -15,7 +15,7 @@ export function CommentEdit(): JSX.Element {
   if (editor) editorRef.current = editor.editor;
   const mutation = useSWRMutation(
     getCommentsKey(comment.threadId),
-    (_, { arg }: { arg: { id: number; content: string } }) => editComment(arg)
+    (_, { arg }: { arg: { id: number; content: object } }) => editComment(arg)
   );
 
   const onClose = (): void => {

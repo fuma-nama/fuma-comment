@@ -59,7 +59,7 @@ export async function postComment({
   page,
   thread,
 }: {
-  content: string;
+  content: object;
   thread?: number;
   page?: string;
 }): Promise<void> {
@@ -78,7 +78,7 @@ export async function editComment({
   content,
 }: {
   id: number;
-  content: string;
+  content: object;
 }): Promise<void> {
   await fetcher(`/api/comments/${id}`, {
     method: "PATCH",

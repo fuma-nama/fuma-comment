@@ -2,26 +2,13 @@ import type { Kysely } from "kysely";
 import { sql } from "kysely";
 
 export async function up(db: Kysely<unknown>): Promise<void> {
-  /* With authentication (Optional)
-    await db.schema
-    .createTable("users")
-    .addColumn("id", "varchar(256)", (col) =>
-      col.primaryKey().defaultTo(sql`gen_random_uuid()`)
-    )
-    .addColumn("name", "text")
-    .addColumn("email", "text", (col) => col.unique().notNull())
-    .addColumn("emailVerified", "timestamptz")
-    .addColumn("image", "text")
-    .execute();
-    */
-
   await db.schema
     .createTable("comments")
     .addColumn("id", "serial", (col) => col.primaryKey())
     .addColumn("page", "varchar(256)")
     .addColumn("threadId", "integer")
     .addColumn("author", "varchar(256)", (col) => col.notNull())
-    .addColumn("content", "text", (col) => col.notNull())
+    .addColumn("content", "json", (col) => col.notNull())
     .addColumn("timestamp", "timestamp", (col) =>
       col.defaultTo(sql`now()`).notNull()
     )

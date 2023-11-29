@@ -6,10 +6,9 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .createTable("comments")
     .addColumn("id", "serial", (col) => col.primaryKey())
     .addColumn("page", "varchar(256)")
-    // The root comment of reply
     .addColumn("threadId", "integer")
     .addColumn("author", "varchar(256)", (col) => col.notNull())
-    .addColumn("content", "text", (col) => col.notNull())
+    .addColumn("content", "json", (col) => col.notNull())
     .addColumn("timestamp", "timestamp", (col) =>
       col.defaultTo(sql`now()`).notNull()
     )

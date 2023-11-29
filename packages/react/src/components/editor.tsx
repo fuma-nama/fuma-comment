@@ -30,14 +30,14 @@ import { Dialog, DialogContent, DialogTrigger } from "./dialog";
 export interface UseCommentEditor {
   editor: Editor;
   isEmpty: boolean;
-  getValue: () => string;
+  getValue: () => JSONContent;
   clearValue: () => void;
 }
 
 export interface EditorProps {
   variant?: "primary" | "secondary";
   autofocus?: "start" | "end" | "all" | number | boolean;
-  defaultValue?: string;
+  defaultValue?: JSONContent;
   placeholder?: string;
   disabled?: boolean;
   editor: UseCommentEditor | null;
@@ -123,7 +123,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
     useEffect(() => {
       const instance = new Editor({
         autofocus,
-        content: defaultValue ? getContentFromText(defaultValue) : undefined,
+        content: defaultValue,
         editorProps: {
           attributes: {
             class: cn(editorVariants({ variant })),
@@ -400,21 +400,10 @@ function createCommentEditor(editor: Editor): UseCommentEditor {
     editor,
     isEmpty: editor.isEmpty,
     getValue() {
-      return editor.getText({ blockSeparator: "\n" });
+      return editor.getJSON();
     },
     clearValue() {
       editor.commands.clearContent(true);
     },
-  };
-}
-
-function getContentFromText(text: string): JSONContent {
-  return {
-    type: "doc",
-    content: text.split("\n").map((paragraph) => ({
-      type: "paragraph",
-      content:
-        paragraph.length === 0 ? [] : [{ type: "text", text: paragraph }],
-    })),
   };
 }

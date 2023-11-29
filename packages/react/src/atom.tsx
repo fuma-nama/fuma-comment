@@ -77,14 +77,20 @@ export const CommentsList = forwardRef<
   );
 
   return (
-    <div className={cn("fc-flex fc-flex-col", className)} ref={ref} {...props}>
-      {query.isLoading ? (
-        <Spinner className="fc-mx-auto fc-my-4 fc-h-8 fc-w-8" />
-      ) : (
-        query.data?.map((comment) => (
-          <Comment comment={comment} key={comment.id} />
-        ))
+    <div
+      className={cn("fc-flex fc-min-h-[80px] fc-flex-col", className)}
+      ref={ref}
+      {...props}
+    >
+      {query.isLoading ? <Spinner className="fc-m-auto fc-h-8 fc-w-8" /> : null}
+      {query.data?.length === 0 && (
+        <p className="fc-m-auto fc-text-center fc-text-sm fc-text-muted-foreground">
+          No comments
+        </p>
       )}
+      {query.data?.map((comment) => (
+        <Comment comment={comment} key={comment.id} />
+      ))}
     </div>
   );
 });

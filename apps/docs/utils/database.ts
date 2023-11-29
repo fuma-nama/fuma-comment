@@ -6,7 +6,7 @@ interface CommentTable {
   threadId?: number;
   page?: string;
   author: string;
-  content: string;
+  content: object;
   timestamp: Generated<Date>;
 }
 

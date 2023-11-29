@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { PostgresDialect, Kysely } from "kysely";
 import { Pool } from "pg";
+import type { Content } from "@fuma-comment/server";
 import { createAdapter, type Database } from "../src";
 import { down, up } from "../migrations/000-init";
 
@@ -12,7 +13,7 @@ const dialect = new PostgresDialect({
   }),
 });
 
-const db = new Kysely<Database<never>>({ dialect });
+const db = new Kysely<Database>({ dialect });
 
 beforeAll(async () => {
   await up(db as Kysely<unknown>);
@@ -22,12 +23,12 @@ beforeAll(async () => {
     .values([
       {
         author: "mock_user",
-        content: "Hello World 1",
+        content: createContent("Hello World 1"),
         timestamp: new Date(Date.parse("3/12/2023")),
       },
       {
         author: "mock_user",
-        content: "Hello World 2",
+        content: createContent("Hello World 2"),
         timestamp: new Date(Date.parse("4/12/2023")),
       },
     ])
@@ -101,26 +102,25 @@ describe("Adapter", () => {
   test("Add Comment", async () => {
     await adapter.postComment({
       auth: { id: "mock_user" },
-      body: { content: "Hello World 3" },
+      body: { content: createContent("Hello World 3") },
     });
-    const rows = await db.selectFrom("comments").selectAll().execute();
+    const comments = await adapter.getComments({ sort: "oldest" });
 
-    expect(rows.length, "New comment added").toBe(3);
+    expect(comments.length, "New comment added").toBe(3);
   });
 
   test("Edit Comment", async () => {
+    const newContent = createContent("Hello World");
     await adapter.updateComment({
       id: "3",
       auth: { id: "mock_user" },
-      body: { content: "Hello World Update" },
+      body: { content: newContent },
     });
-    const row = await db
-      .selectFrom("comments")
-      .where("comments.id", "=", 3)
-      .selectAll()
-      .executeTakeFirst();
+    const row = (await adapter.getComments({ sort: "oldest" })).find(
+      (comment) => comment.id === 3
+    );
 
-    expect(row?.content, "Content has updated").toBe("Hello World Update");
+    expect(row?.content, "Content has updated").toStrictEqual(newContent);
   });
 
   test("Delete Comment", async () => {
@@ -128,13 +128,11 @@ describe("Adapter", () => {
       id: "3",
       auth: { id: "mock_user" },
     });
-    const rows = await db
-      .selectFrom("comments")
-      .where("comments.id", "=", 3)
-      .selectAll()
-      .execute();
+    const hasRemoved = (await adapter.getComments({ sort: "oldest" })).every(
+      (comment) => comment.id !== 3
+    );
 
-    expect(rows.length, "Comment should be removed").toBe(0);
+    expect(hasRemoved, "Comment should be removed").toBe(true);
   });
 
   test("Add Rate", async () => {
@@ -172,3 +170,20 @@ describe("Adapter", () => {
     expect(updated?.likes, "Likes count should be decreased").toBe(0);
   });
 });
+
+function createContent(raw: string): Content {
+  return {
+    type: "docs",
+    content: [
+      {
+        type: "paragraph",
+        content: [
+          {
+            type: "text",
+            text: raw,
+          },
+        ],
+      },
+    ],
+  };
+}

@@ -1,12 +1,9 @@
 import { z } from "zod";
 import type { AuthInfo, Awaitable } from "../types";
+import { contentSchema } from "./content";
 
 export const patchBodySchema = z.strictObject({
-  content: z
-    .string()
-    .trim()
-    .min(1, "Comments can't be empty")
-    .max(2000, "Comments can't be longer than 2000 characters"),
+  content: contentSchema,
 });
 
 interface UpdateCommentOptions {

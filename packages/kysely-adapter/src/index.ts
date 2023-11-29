@@ -3,14 +3,14 @@ import {
   RouteError,
   type StorageAdapter,
 } from "@fuma-comment/server";
-import { type Kysely, type Generated, type GeneratedAlways } from "kysely";
+import { type Kysely, type Generated } from "kysely";
 
 interface CommentTable {
   id: Generated<number>;
   threadId?: number;
   page?: string;
   author: string;
-  content: string;
+  content: object;
   timestamp: Generated<Date>;
 }
 
@@ -20,37 +20,20 @@ interface RateTable {
   like: boolean;
 }
 
-interface UserTable {
-  id: GeneratedAlways<string>;
-  name: string | null;
-  email: string;
-  image: string | null;
-}
-
-export type Database<UserTableName extends string> = {
+export interface Database {
   comments: CommentTable;
   rates: RateTable;
-} & {
-  [K in UserTableName]: UserTable;
-};
+}
 
 type CommentWithoutUser = Omit<Comment, "author"> & { authorId: string };
 
-interface Options<
-  UserTableName extends string,
-  DB extends Database<UserTableName> = Database<UserTableName>,
-> {
+interface Options<DB extends Database = Database> {
   db: Kysely<DB>;
 
   /**
-   * Join users with specific table name, default to `users`
+   * Fetch user profiles from the authorId property in comments
    */
-  userTableName?: UserTableName;
-
-  /**
-   * Manually join User table after selecting comments
-   */
-  joinUser?: (comments: CommentWithoutUser[]) => Comment[] | Promise<Comment[]>;
+  joinUser: (comments: CommentWithoutUser[]) => Comment[] | Promise<Comment[]>;
 }
 
 /**
@@ -74,93 +57,18 @@ interface Options<
  *
  * Example migration: {@link https://github.com/fuma-nama/fuma-comment/blob/main/packages/kysely-adapter/migrations/000-init.ts}
  */
-export function createAdapter<
-  UserTableName extends string = never,
-  DB extends Database<UserTableName> = Database<UserTableName>,
->(options: Options<UserTableName, DB>): StorageAdapter {
+export function createAdapter<DB extends Database = Database>(
+  options: Options<DB>
+): StorageAdapter {
   // bypress type errors
-  return _create(options as unknown as Options<"users">);
+  return _create(options as unknown as Options);
 }
 
-function _create({
-  db,
-  userTableName = "users",
-  joinUser,
-}: Options<"users">): StorageAdapter {
+function _create({ db, joinUser }: Options): StorageAdapter {
   return {
     async getComments({ auth, sort, thread, page }) {
-      if (joinUser) {
-        let query = db
-          .selectFrom("comments")
-          .leftJoin("rates", "comments.id", "rates.commentId")
-          .select(({ fn, selectFrom }) => {
-            return [
-              "comments.content",
-              "comments.id",
-              "comments.threadId",
-              "comments.timestamp",
-              "comments.author",
-              fn
-                .count<number>("rates.userId")
-                .filterWhere("rates.like", "=", true)
-                .as("likes"),
-              fn
-                .count<number>("rates.userId")
-                .filterWhere("rates.like", "=", false)
-                .as("dislikes"),
-              selectFrom("comments as replies")
-                .select(({ fn: sFn }) => [
-                  sFn.count<number>("replies.id").as("replies"),
-                ])
-                .whereRef("replies.threadId", "=", "comments.id")
-                .as("replies"),
-              selectFrom("rates")
-                .select("rates.like")
-                .where("rates.userId", "=", auth?.id ?? null)
-                .whereRef("rates.commentId", "=", "comments.id")
-                .as("liked"),
-            ];
-          })
-          .groupBy(["comments.id"]);
-
-        if (sort === "newest") {
-          query = query.orderBy("timestamp desc");
-        } else {
-          query = query.orderBy("timestamp asc");
-        }
-
-        if (page) {
-          query = query.where("comments.page", "=", page);
-        } else {
-          query = query.where("comments.page", "is", null);
-        }
-
-        if (thread) {
-          query = query.where("comments.threadId", "=", Number(thread));
-        } else {
-          query = query.where("comments.threadId", "is", null);
-        }
-
-        const comments = await query.execute();
-
-        return joinUser(
-          comments.map((comment) => ({
-            content: comment.content,
-            dislikes: Number(comment.dislikes),
-            likes: Number(comment.likes),
-            id: Number(comment.id),
-            timestamp: comment.timestamp,
-            replies: Number(comment.replies ?? 0),
-            liked: comment.liked ?? undefined,
-            threadId: comment.threadId ?? undefined,
-            authorId: comment.author,
-          }))
-        );
-      }
-
       let query = db
         .selectFrom("comments")
-        .innerJoin(userTableName, "comments.author", `${userTableName}.id`)
         .leftJoin("rates", "comments.id", "rates.commentId")
         .select(({ fn, selectFrom }) => {
           return [
@@ -168,9 +76,7 @@ function _create({
             "comments.id",
             "comments.threadId",
             "comments.timestamp",
-            `${userTableName}.name as authorName`,
-            `${userTableName}.image as authorImage`,
-            `${userTableName}.id as authorId`,
+            "comments.author",
             fn
               .count<number>("rates.userId")
               .filterWhere("rates.like", "=", true)
@@ -187,14 +93,12 @@ function _create({
               .as("replies"),
             selectFrom("rates")
               .select("rates.like")
-              .where((eb) =>
-                auth?.id ? eb("rates.userId", "=", auth.id) : eb.val(false)
-              )
+              .where("rates.userId", "=", auth?.id ?? null)
               .whereRef("rates.commentId", "=", "comments.id")
               .as("liked"),
           ];
         })
-        .groupBy(["comments.id", `${userTableName}.id`]);
+        .groupBy(["comments.id"]);
 
       if (sort === "newest") {
         query = query.orderBy("timestamp desc");
@@ -216,21 +120,19 @@ function _create({
 
       const comments = await query.execute();
 
-      return comments.map((comment) => ({
-        content: comment.content,
-        dislikes: Number(comment.dislikes),
-        likes: Number(comment.likes),
-        id: Number(comment.id),
-        timestamp: comment.timestamp,
-        replies: Number(comment.replies ?? 0),
-        liked: comment.liked ?? undefined,
-        threadId: comment.threadId ?? undefined,
-        author: {
-          id: comment.authorId,
-          name: comment.authorName ?? "Unknown",
-          image: comment.authorImage ?? undefined,
-        },
-      }));
+      return joinUser(
+        comments.map((comment) => ({
+          content: comment.content,
+          dislikes: Number(comment.dislikes),
+          likes: Number(comment.likes),
+          id: Number(comment.id),
+          timestamp: comment.timestamp,
+          replies: Number(comment.replies ?? 0),
+          liked: comment.liked ?? undefined,
+          threadId: comment.threadId ?? undefined,
+          authorId: comment.author,
+        }))
+      );
     },
     async deleteComment({ auth, id }) {
       const target = await db
