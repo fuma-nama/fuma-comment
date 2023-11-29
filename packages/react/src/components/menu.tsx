@@ -1,76 +1,52 @@
-import { Menu as Base, Transition } from "@headlessui/react";
+import * as Primitive from "@radix-ui/react-dropdown-menu";
 import { cva } from "cva";
-import type { ButtonHTMLAttributes, HTMLAttributes } from "react";
-import { Fragment, forwardRef } from "react";
+import { forwardRef } from "react";
 import { cn } from "../utils/cn";
 
 const menuItemVariants = cva(
-  "fc-px-3 fc-py-1.5 fc-text-left fc-transition-colors disabled:fc-cursor-not-allowed disabled:fc-opacity-80",
-  {
-    variants: {
-      active: {
-        true: "fc-bg-accent fc-text-accent-foreground",
-        false: "",
-      },
-    },
-  }
+  "fc-cursor-pointer fc-px-3 fc-py-1.5 fc-text-left fc-transition-colors focus-visible:fc-outline-none disabled:fc-cursor-not-allowed disabled:fc-opacity-80 data-[highlighted]:fc-bg-accent data-[highlighted]:fc-text-accent-foreground"
 );
 
 const menuItemsVariants = cva(
-  "fc-absolute fc-right-0 fc-z-50 fc-flex fc-w-56 fc-origin-top-right fc-flex-col fc-divide-y fc-divide-border fc-overflow-hidden fc-rounded-md fc-bg-popover fc-text-popover-foreground fc-shadow-lg focus-visible:fc-outline-none focus-visible:fc-ring-1 focus-visible:fc-ring-ring"
+  "fc-flex fc-w-56 fc-animate-fadeIn fc-flex-col fc-divide-y fc-divide-border fc-overflow-hidden fc-rounded-md fc-bg-popover fc-text-sm fc-text-popover-foreground fc-shadow-lg focus-visible:fc-outline-none focus-visible:fc-ring-1 focus-visible:fc-ring-ring data-[state=closed]:fc-animate-fadeOut"
 );
 
-type MenuItemsProps = HTMLAttributes<HTMLDivElement>;
-
-const MenuItems = forwardRef<HTMLDivElement, MenuItemsProps>(
-  ({ className, ...props }, ref) => {
-    return (
-      <Transition
-        as={Fragment}
-        enter="transition fc-ease-out fc-duration-100"
-        enterFrom="transform fc-opacity-0 fc-scale-95"
-        enterTo="transform fc-opacity-100 fc-scale-100"
-        leave="transition fc-ease-in fc-duration-75"
-        leaveFrom="transform fc-opacity-100 fc-scale-100"
-        leaveTo="transform fc-opacity-0 fc-scale-95"
+const MenuItems = forwardRef<
+  HTMLDivElement,
+  Primitive.DropdownMenuContentProps
+>(({ className, ...props }, ref) => {
+  return (
+    <Primitive.Portal>
+      <Primitive.Content
+        className={cn(menuItemsVariants({ className }))}
+        ref={ref}
+        {...props}
       >
-        <Base.Items
-          className={cn(menuItemsVariants({ className }))}
-          ref={ref}
-          {...props}
-        >
-          {props.children}
-        </Base.Items>
-      </Transition>
-    );
-  }
-);
+        {props.children}
+      </Primitive.Content>
+    </Primitive.Portal>
+  );
+});
 
-MenuItems.displayName = Base.Items.displayName;
+MenuItems.displayName = "MenuItems";
 
-type MenuItemProps = ButtonHTMLAttributes<HTMLButtonElement>;
-
-const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
+const MenuItem = forwardRef<HTMLDivElement, Primitive.DropdownMenuItemProps>(
   ({ className, ...props }, ref) => {
     return (
-      <Base.Item>
-        {({ active }) => (
-          <button
-            className={cn(menuItemVariants({ active, className }))}
-            ref={ref}
-            type="button"
-            {...props}
-          >
-            {props.children}
-          </button>
-        )}
-      </Base.Item>
+      <Primitive.Item
+        className={cn(menuItemVariants({ className }))}
+        ref={ref}
+        {...props}
+      >
+        {props.children}
+      </Primitive.Item>
     );
   }
 );
 
-MenuItem.displayName = Base.Item.displayName;
+MenuItem.displayName = "MenuItem";
 
-const MenuTrigger: (typeof Base)["Button"] = Base.Button;
+const MenuTrigger = Primitive.Trigger;
+const Menu = Primitive.Root;
 
-export { Base as Menu, MenuItems, MenuItem, MenuTrigger };
+export { Menu, MenuItems, MenuItem, MenuTrigger };

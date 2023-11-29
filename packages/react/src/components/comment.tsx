@@ -1,10 +1,10 @@
-import { Menu } from "@headlessui/react";
-import { useState, useMemo, useLayoutEffect } from "react";
+import { useState, useMemo, useLayoutEffect, useRef } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
 import useSWRMutation from "swr/mutation";
 import { cva } from "cva";
 import useSWR from "swr";
 import { MoreVerticalIcon, ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
+import type { Editor } from "@tiptap/react";
 import { cn } from "../utils/cn";
 import { toLocalString } from "../utils/date";
 import { fetchComments, fetcher, getCommentsKey } from "../utils/fetcher";
@@ -21,7 +21,7 @@ import {
   updateComment,
   useCommentManager,
 } from "../utils/comment-manager";
-import { MenuTrigger, MenuItems, MenuItem } from "./menu";
+import { MenuTrigger, MenuItems, MenuItem, Menu } from "./menu";
 import { CommentEdit } from "./comment-edit";
 import { buttonVariants } from "./button";
 import { Spinner } from "./spinner";
@@ -36,6 +36,7 @@ export function Comment({
   const [edit, setEdit] = useState(false);
   const [isReply, setIsReply] = useState(false);
   const comment = useCommentManager(cached);
+  const editorRef = useRef<Editor | null>(null);
 
   const context = useMemo<CommentContext>(() => {
     return {
@@ -46,6 +47,7 @@ export function Comment({
       },
       setReply: setIsReply,
       comment,
+      editorRef,
     };
   }, [comment, edit, isReply]);
 
@@ -193,7 +195,7 @@ function CommentActions(): JSX.Element {
 
 function CommentMenu(): JSX.Element {
   const { session } = useAuthContext();
-  const { comment, isEditing, isReplying, setEdit } = useCommentContext();
+  const { comment, editorRef, setEdit } = useCommentContext();
 
   const deleteMutation = useSWRMutation(
     getCommentsKey(comment.threadId),
@@ -230,19 +232,23 @@ function CommentMenu(): JSX.Element {
           buttonVariants({
             size: "icon",
             variant: "ghost",
-          }),
-          isEditing || isReplying
-            ? "fc-hidden"
-            : "fc-opacity-0 group-hover:fc-opacity-100 data-[headlessui-state=open]:fc-bg-accent data-[headlessui-state=open]:fc-opacity-100"
+            className:
+              "fc-opacity-0 group-hover:fc-opacity-100 data-[state=open]:fc-bg-accent data-[state=open]:fc-opacity-100",
+          })
         )}
       >
         <MoreVerticalIcon className="fc-h-4 fc-w-4" />
       </MenuTrigger>
-      <MenuItems>
-        <MenuItem onClick={onCopy}>Copy</MenuItem>
-        {canEdit ? <MenuItem onClick={onEdit}>Edit</MenuItem> : null}
+      <MenuItems
+        onCloseAutoFocus={(e) => {
+          editorRef.current?.commands.focus("end");
+          e.preventDefault();
+        }}
+      >
+        <MenuItem onSelect={onCopy}>Copy</MenuItem>
+        {canEdit ? <MenuItem onSelect={onEdit}>Edit</MenuItem> : null}
         {canDelete ? (
-          <MenuItem disabled={deleteMutation.isMutating} onClick={onDelete}>
+          <MenuItem disabled={deleteMutation.isMutating} onSelect={onDelete}>
             Delete
           </MenuItem>
         ) : null}

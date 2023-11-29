@@ -10,8 +10,9 @@ import { Spinner } from "./spinner";
 
 export function CommentEdit(): JSX.Element {
   const [editor, setEditor] = useCommentEditor();
-  const { comment, setEdit } = useCommentContext();
+  const { comment, editorRef, setEdit } = useCommentContext();
 
+  if (editor) editorRef.current = editor.editor;
   const mutation = useSWRMutation(
     getCommentsKey(comment.threadId),
     (_, { arg }: { arg: { id: number; content: string } }) => editComment(arg)
@@ -46,7 +47,7 @@ export function CommentEdit(): JSX.Element {
   return (
     <form onSubmit={onSubmit}>
       <CommentEditor
-        autofocus="end"
+        defaultValue={comment.content}
         disabled={mutation.isMutating}
         editor={editor}
         onChange={setEditor}

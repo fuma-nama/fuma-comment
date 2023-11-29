@@ -25,7 +25,7 @@ import { Link } from "@tiptap/extension-link";
 import { cn } from "../utils/cn";
 import { buttonVariants } from "./button";
 import { inputVariants } from "./input";
-import { Dialog } from "./dialog";
+import { Dialog, DialogContent, DialogTrigger } from "./dialog";
 
 export interface UseCommentEditor {
   editor: Editor;
@@ -278,25 +278,9 @@ function UpdateLinkMenu({ editor }: { editor: Editor }): JSX.Element {
   const [value, setValue] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const closeModal = (): void => {
-    setIsOpen(false);
-  };
-
-  const openModal = (): void => {
-    editor.commands.extendMarkRange("link");
-
-    const href = editor.getAttributes("link").href as string | undefined;
-    const selection = editor.state.selection;
-    const selected = editor.state.doc.textBetween(selection.from, selection.to);
-
-    setName(selected);
-    setValue(href ?? "");
-    setIsOpen(true);
-  };
-
   const set = (): void => {
     if (value.trim().length === 0) return;
-    closeModal();
+    onOpenChange(false);
     const content = name.length > 0 ? name : value;
 
     if (!editor.state.selection.empty) {
@@ -306,6 +290,7 @@ function UpdateLinkMenu({ editor }: { editor: Editor }): JSX.Element {
         .deleteSelection()
         .setLink({ href: value })
         .insertContent(content)
+        .focus()
         .run();
     } else {
       editor
@@ -314,39 +299,62 @@ function UpdateLinkMenu({ editor }: { editor: Editor }): JSX.Element {
         .insertContent(content)
         .unsetMark("link")
         .insertContent(" ")
+        .focus()
         .run();
     }
   };
 
-  const unset = (): void => {
-    closeModal();
+  const onOpenChange = (v: boolean): void => {
+    if (v) {
+      editor.commands.extendMarkRange("link");
 
-    editor.commands.unsetMark("link");
+      const href = editor.getAttributes("link").href as string | undefined;
+      const selection = editor.state.selection;
+      const selected = editor.state.doc.textBetween(
+        selection.from,
+        selection.to
+      );
+
+      setName(selected);
+      setValue(href ?? "");
+    }
+
+    setIsOpen(v);
+  };
+
+  const unset = (): void => {
+    onOpenChange(false);
+
+    editor.chain().focus().unsetMark("link").run();
   };
 
   return (
-    <>
-      <button
+    <Dialog onOpenChange={onOpenChange} open={isOpen}>
+      <DialogTrigger
         aria-label="Toggle Link"
         className={cn(
           toggleVariants({
             active: editor.isActive("link"),
           })
         )}
-        onClick={openModal}
+        disabled={!editor.can().setLink({ href: "" })}
         type="button"
       >
         <LinkIcon className="fc-h-4 fc-w-4" />
-      </button>
-      <Dialog isOpen={isOpen} onClose={closeModal}>
-        <form
-          className="fc-flex fc-flex-col"
-          onSubmit={(e) => {
-            set();
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-        >
+      </DialogTrigger>
+      <DialogContent
+        asChild
+        className="fc-gap-1"
+        onCloseAutoFocus={(e) => {
+          e.preventDefault();
+        }}
+        onSubmit={(e) => {
+          set();
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+      >
+        <form>
           <input
             className={cn(inputVariants())}
             id="name"
@@ -380,8 +388,8 @@ function UpdateLinkMenu({ editor }: { editor: Editor }): JSX.Element {
             ) : null}
           </div>
         </form>
-      </Dialog>
-    </>
+      </DialogContent>
+    </Dialog>
   );
 }
 

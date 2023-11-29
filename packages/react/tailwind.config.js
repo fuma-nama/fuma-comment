@@ -5,6 +5,40 @@ module.exports = {
   prefix: "fc-",
   theme: {
     extend: {
+      keyframes: {
+        fadeIn: {
+          from: { opacity: 0, transform: "translateY(20px)" },
+          to: { opacity: 1, transform: "translateY(0)" },
+        },
+        fadeOut: {
+          from: { opacity: 1, transform: "translateY(0px)" },
+          to: { opacity: 0, transform: "translateY(20px)" },
+        },
+        dialogShow: {
+          from: { opacity: 0, transform: "translate(-50%, -50%) scale(0.8)" },
+          to: { opacity: 1, transform: "translate(-50%, -50%) scale(1)" },
+        },
+        dialogHide: {
+          from: { opacity: 1, transform: "translate(-50%, -50%) scale(1)" },
+          to: { opacity: 0, transform: "translate(-50%, -50%) scale(0.8)" },
+        },
+        overlayShow: {
+          from: { opacity: 0 },
+          to: { opacity: 1 },
+        },
+        overlayHide: {
+          from: { opacity: 1 },
+          to: { opacity: 0 },
+        },
+      },
+      animation: {
+        fadeIn: "fadeIn 400ms cubic-bezier(0.16, 1, 0.3, 1)",
+        fadeOut: "fadeOut 400ms cubic-bezier(0.16, 1, 0.3, 1)",
+        overlayShow: "overlayShow 400ms cubic-bezier(0.16, 1, 0.3, 1)",
+        overlayHide: "overlayHide 400ms cubic-bezier(0.16, 1, 0.3, 1)",
+        dialogShow: "dialogShow 400ms cubic-bezier(0.16, 1, 0.3, 1)",
+        dialogHide: "dialogHide 400ms cubic-bezier(0.16, 1, 0.3, 1)",
+      },
       colors: {
         border: "hsl(var(--fc-border))",
         ring: "hsl(var(--fc-ring))",
