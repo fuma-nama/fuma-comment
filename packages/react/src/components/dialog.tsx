@@ -11,10 +11,10 @@ export function DialogContent({
 }: Primitive.DialogContentProps): JSX.Element {
   return (
     <Primitive.Portal>
-      <Primitive.Overlay className="fc-fixed fc-inset-0 fc-bg-background/50 data-[state=open]:fc-animate-overlayShow" />
+      <Primitive.Overlay className="fc-fixed fc-inset-0 fc-bg-background/70 data-[state=open]:fc-animate-overlayShow" />
       <Primitive.Content
         className={cn(
-          "fc-fixed fc-left-[50%] fc-top-[50%] fc-flex fc-w-full fc-max-w-md fc-translate-x-[-50%] fc-translate-y-[-50%] fc-flex-col fc-rounded-2xl fc-bg-popover fc-p-4 fc-shadow-xl data-[state=closed]:fc-animate-dialogHide data-[state=open]:fc-animate-dialogShow",
+          "fc-border fc-border-border fc-fixed fc-left-[50%] fc-top-[50%] fc-flex fc-w-full fc-max-w-md fc-translate-x-[-50%] fc-translate-y-[-50%] fc-flex-col fc-rounded-2xl fc-bg-popover fc-p-4 fc-shadow-lg data-[state=closed]:fc-animate-dialogHide data-[state=open]:fc-animate-dialogShow",
           className
         )}
         {...props}
