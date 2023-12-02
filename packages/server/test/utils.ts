@@ -1,5 +1,5 @@
 import { vi } from "vitest";
-import type { StorageAdapter } from "../src";
+import type { Content, StorageAdapter } from "../src";
 
 export const mockAdapter: StorageAdapter = {
   deleteComment: vi.fn(),
@@ -9,3 +9,20 @@ export const mockAdapter: StorageAdapter = {
   setRate: vi.fn(),
   updateComment: vi.fn(),
 };
+
+export function createContent(raw: string): Content {
+  return {
+    type: "docs",
+    content: [
+      {
+        type: "paragraph",
+        content: [
+          {
+            type: "text",
+            text: raw,
+          },
+        ],
+      },
+    ],
+  };
+}

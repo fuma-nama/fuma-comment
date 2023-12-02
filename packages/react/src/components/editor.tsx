@@ -158,7 +158,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
           Extension.create({
             addKeyboardShortcuts() {
               return {
-                "Shift-Enter": onSubmit,
+                Enter: onSubmit,
                 Escape: onEscape,
               };
             },

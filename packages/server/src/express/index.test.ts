@@ -1,6 +1,6 @@
 import express, { json } from "express";
 import { describe, expect, test } from "vitest";
-import { mockAdapter } from "../../test/utils";
+import { createContent, mockAdapter } from "../../test/utils";
 import { ExressComment } from ".";
 
 const app = express();
@@ -43,7 +43,7 @@ describe("Express Server Routes", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        content: "Hello World",
+        content: createContent("Hello World"),
       }),
     });
 
@@ -56,7 +56,9 @@ describe("Express Server Routes", () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify({
+        content: createContent(""),
+      }),
     });
 
     expect(result.ok).toBe(false);
@@ -69,7 +71,7 @@ describe("Express Server Routes", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        content: "Hello World",
+        content: createContent("Hello World"),
       }),
     });
 
@@ -82,7 +84,9 @@ describe("Express Server Routes", () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify({
+        content: createContent(""),
+      }),
     });
 
     expect(result.ok).toBe(false);

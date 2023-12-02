@@ -27,6 +27,7 @@ const marks: Marks = {
   bold: {
     className: "fc-font-bold",
   },
+
   strike: {
     className: "fc-line-through",
   },

@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 import type { StorageAdapter } from "../types";
+import { createContent } from "../../test/utils";
 import type { CustomRequest } from ".";
 import { CustomComment } from ".";
 
@@ -81,7 +82,7 @@ describe("Custom Comment Routes", () => {
       name: "Normal",
       req: {
         body() {
-          return { content: "Hello World" };
+          return { content: createContent("Hello World") };
         },
         getSession() {
           return { id: "mock_user" };
@@ -95,7 +96,7 @@ describe("Custom Comment Routes", () => {
       name: "Invalid",
       req: {
         body() {
-          return { content: " " };
+          return { content: createContent(" ") };
         },
         getSession() {
           return { id: "mock_user" };
@@ -109,7 +110,7 @@ describe("Custom Comment Routes", () => {
       name: "Unauthorized",
       req: {
         body() {
-          return { content: "Hello World" };
+          return { content: createContent("Hello World") };
         },
         getSession() {
           return null;
@@ -130,7 +131,7 @@ describe("Custom Comment Routes", () => {
       name: "Normal",
       req: {
         body() {
-          return { content: "Hello World" };
+          return { content: createContent("Hello World") };
         },
         getSession() {
           return { id: "mock_user" };
@@ -144,7 +145,7 @@ describe("Custom Comment Routes", () => {
       name: "Invalid",
       req: {
         body() {
-          return { content: " " };
+          return { content: createContent(" ") };
         },
         getSession() {
           return { id: "mock_user" };
@@ -158,7 +159,7 @@ describe("Custom Comment Routes", () => {
       name: "Unauthorized",
       req: {
         body() {
-          return { content: "Hello World" };
+          return { content: createContent("Hello World") };
         },
         getSession() {
           return null;
