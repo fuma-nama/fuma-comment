@@ -166,7 +166,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
       };
     }, [autofocus, _defaultValue, onChange, onEscape, onSubmit, placeholder]);
 
-    const className = cn(editorVariants({ className: editorProps?.className }));
+    const className = cn(editorVariants());
 
     if (!innerEditor) {
       return (
@@ -185,9 +185,8 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
       <div
         aria-disabled={disabled}
         className={className}
-        onMouseDown={(e) => {
-          if (!innerEditor.isFocused) innerEditor.commands.focus();
-          e.preventDefault();
+        onMouseUp={() => {
+          innerEditor.commands.focus();
         }}
         ref={ref}
       >
