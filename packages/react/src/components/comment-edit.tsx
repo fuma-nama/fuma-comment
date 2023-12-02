@@ -58,7 +58,6 @@ export function CommentEdit(): JSX.Element {
         onEscape={onClose}
         onSubmit={submit}
         placeholder="Edit Message"
-        variant="secondary"
       />
       <div className="fc-mt-2 fc-flex fc-flex-row fc-gap-1">
         <button

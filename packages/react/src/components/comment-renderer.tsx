@@ -1,5 +1,6 @@
 import type { JSONContent } from "@tiptap/react";
 import type { ReactNode } from "react";
+import { cva } from "cva";
 import { cn } from "../utils/cn";
 
 interface Mark {
@@ -12,6 +13,10 @@ type BaseRenderer = (props: {
   className: string;
   children: ReactNode;
 }) => JSX.Element;
+
+export const codeVariants = cva(
+  "fc-rounded-sm fc-border fc-border-border fc-bg-muted fc-p-0.5"
+);
 
 const defaultRenderer: BaseRenderer = (props) => <span {...props} />;
 
@@ -35,7 +40,7 @@ const marks: Marks = {
     className: "fc-italic",
   },
   code: {
-    className: "fc-bg-muted fc-p-0.5 fc-border fc-border-border fc-rounded-sm",
+    className: codeVariants(),
     element: () => (props) => <code {...props} />,
   },
   link: {

@@ -26,6 +26,7 @@ import { cn } from "../utils/cn";
 import { buttonVariants } from "./button";
 import { inputVariants } from "./input";
 import { Dialog, DialogContent, DialogTrigger } from "./dialog";
+import { codeVariants } from "./comment-renderer";
 
 export interface UseCommentEditor {
   editor: Editor;
@@ -35,7 +36,6 @@ export interface UseCommentEditor {
 }
 
 export interface EditorProps {
-  variant?: "primary" | "secondary";
   autofocus?: "start" | "end" | "all" | number | boolean;
   defaultValue?: JSONContent;
   placeholder?: string;
@@ -55,17 +55,11 @@ export function useCommentEditor(): [
 }
 
 const editorVariants = cva(
-  "fc-min-h-[40px] fc-text-sm focus-visible:fc-outline-none focus-visible:fc-ring-2 focus-visible:fc-ring-ring",
-  {
-    variants: {
-      variant: {
-        primary:
-          "fc-rounded-xl fc-border fc-border-border fc-bg-card fc-px-3 fc-py-1.5 fc-pr-10 fc-transition-colors hover:fc-bg-accent focus-visible:fc-bg-card",
-        secondary:
-          "fc-rounded-md fc-border fc-border-border fc-bg-background fc-p-1.5",
-      },
-    },
-  }
+  "fc-rounded-xl fc-border fc-border-border fc-bg-card fc-pb-1 fc-text-sm fc-transition-colors focus-within:fc-ring-2 focus-within:fc-ring-ring aria-disabled:fc-cursor-not-allowed aria-disabled:fc-opacity-80"
+);
+
+const tiptapVariants = cva(
+  "fc-min-h-[40px] fc-px-3 fc-py-2 focus-visible:fc-outline-none"
 );
 
 const toggleVariants = cva(
@@ -74,7 +68,6 @@ const toggleVariants = cva(
     variants: {
       active: {
         true: "fc-bg-accent fc-text-accent-foreground",
-        false: "fc-text-muted-foreground",
       },
     },
   }
@@ -99,7 +92,6 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
   (
     {
       editor,
-      variant = "primary",
       defaultValue,
       disabled = false,
       placeholder,
@@ -127,7 +119,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
         content: _defaultValue,
         editorProps: {
           attributes: {
-            class: cn(editorVariants({ variant })),
+            class: cn(tiptapVariants()),
           },
         },
         extensions: [
@@ -138,8 +130,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
           Strike,
           Code.configure({
             HTMLAttributes: {
-              class:
-                "fc-bg-muted fc-border fc-border-border fc-rounded-sm fc-p-0.5 fc-m-0.5",
+              class: codeVariants(),
             },
           }),
           Link.extend({ inclusive: false }).configure({
@@ -173,26 +164,14 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
       return () => {
         instance.destroy();
       };
-    }, [
-      autofocus,
-      _defaultValue,
-      onChange,
-      onEscape,
-      onSubmit,
-      placeholder,
-      variant,
-    ]);
+    }, [autofocus, _defaultValue, onChange, onEscape, onSubmit, placeholder]);
 
-    const className = cn(
-      "aria-disabled:fc-cursor-not-allowed aria-disabled:fc-opacity-80",
-      editorProps?.className
-    );
+    const className = cn(editorVariants({ className: editorProps?.className }));
 
     if (!innerEditor) {
       return (
-        <div aria-disabled ref={ref} {...editorProps} className={className}>
-          <div className="fc-mb-1 fc-h-6" />
-          <div className={cn(editorVariants({ variant, className: "tiptap" }))}>
+        <div aria-disabled className={className} ref={ref}>
+          <div className={cn(tiptapVariants({ className: "tiptap" }))}>
             <p className="is-editor-empty" data-placeholder={placeholder} />
           </div>
         </div>
@@ -202,22 +181,17 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
     innerEditor.setEditable(!disabled);
 
     return (
-      <EditorContent
-        aria-disabled={disabled}
-        editor={innerEditor}
-        ref={ref}
-        {...editorProps}
-        className={className}
-      >
+      <div aria-disabled={disabled} className={className} ref={ref}>
+        <EditorContent editor={innerEditor} {...editorProps} />
         <ActionBar editor={innerEditor} />
-      </EditorContent>
+      </div>
     );
   }
 );
 
 function ActionBar({ editor }: { editor: Editor }): JSX.Element {
   return (
-    <div className="fc-mb-1 fc-flex fc-flex-row fc-gap-0.5">
+    <div className="fc-flex fc-flex-row fc-gap-0.5 fc-px-1.5">
       <button
         aria-label="Toggle Bold"
         className={cn(
