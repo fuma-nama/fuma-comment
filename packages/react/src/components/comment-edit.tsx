@@ -1,5 +1,6 @@
 import useSWRMutation from "swr/mutation";
 import { PencilIcon } from "lucide-react";
+import { useEffect } from "react";
 import { cn } from "../utils/cn";
 import { editComment, getCommentsKey } from "../utils/fetcher";
 import { useCommentContext } from "../contexts/comment";
@@ -10,9 +11,8 @@ import { Spinner } from "./spinner";
 
 export function CommentEdit(): JSX.Element {
   const [editor, setEditor] = useCommentEditor();
-  const { comment, editorRef, setEdit } = useCommentContext();
+  const { comment, setEdit } = useCommentContext();
 
-  if (editor) editorRef.current = editor.editor;
   const mutation = useSWRMutation(
     getCommentsKey(comment.threadId),
     (_, { arg }: { arg: { id: number; content: object } }) => editComment(arg)
@@ -43,6 +43,10 @@ export function CommentEdit(): JSX.Element {
     submit();
     e.preventDefault();
   };
+
+  useEffect(() => {
+    editor?.editor.commands.focus("end");
+  }, [editor]);
 
   return (
     <form onSubmit={onSubmit}>

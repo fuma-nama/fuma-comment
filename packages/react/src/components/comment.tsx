@@ -1,10 +1,10 @@
-import { useState, useMemo, useLayoutEffect, useRef } from "react";
+import { useState, useMemo, useLayoutEffect } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
 import useSWRMutation from "swr/mutation";
 import { cva } from "cva";
 import useSWR from "swr";
 import { MoreVerticalIcon, ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
-import { type Editor, type JSONContent } from "@tiptap/react";
+import { type JSONContent } from "@tiptap/react";
 import { cn } from "../utils/cn";
 import { toLocalString } from "../utils/date";
 import { fetchComments, fetcher, getCommentsKey } from "../utils/fetcher";
@@ -37,7 +37,6 @@ export function Comment({
   const [edit, setEdit] = useState(false);
   const [isReply, setIsReply] = useState(false);
   const comment = useCommentManager(cached);
-  const editorRef = useRef<Editor | null>(null);
 
   const context = useMemo<CommentContext>(() => {
     return {
@@ -48,7 +47,6 @@ export function Comment({
       },
       setReply: setIsReply,
       comment,
-      editorRef,
     };
   }, [comment, edit, isReply]);
 
@@ -196,7 +194,7 @@ function CommentActions(): JSX.Element {
 
 function CommentMenu(): JSX.Element {
   const { session } = useAuthContext();
-  const { comment, editorRef, setEdit } = useCommentContext();
+  const { comment, setEdit } = useCommentContext();
 
   const deleteMutation = useSWRMutation(
     getCommentsKey(comment.threadId),
@@ -244,7 +242,6 @@ function CommentMenu(): JSX.Element {
       </MenuTrigger>
       <MenuItems
         onCloseAutoFocus={(e) => {
-          editorRef.current?.commands.focus("end");
           e.preventDefault();
         }}
       >

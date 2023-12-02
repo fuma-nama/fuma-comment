@@ -1,7 +1,5 @@
-import type { MutableRefObject } from "react";
 import { createContext, useContext } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
-import type { Editor } from "@tiptap/react";
 
 export interface CommentContext {
   isEditing: boolean;
@@ -9,7 +7,6 @@ export interface CommentContext {
   setEdit: (v: boolean) => void;
   setReply: (v: boolean) => void;
   comment: SerializedComment;
-  editorRef: MutableRefObject<Editor | null>;
 }
 
 const CommentContext = createContext<CommentContext | undefined>(undefined);

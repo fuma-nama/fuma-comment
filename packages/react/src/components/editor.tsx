@@ -103,13 +103,14 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
       defaultValue,
       disabled = false,
       placeholder,
-      autofocus,
+      autofocus = false,
       editorProps,
       onChange,
       ...props
     },
     ref
   ) => {
+    const _defaultValue = useRef(defaultValue).current;
     const innerEditor = editor?.editor ?? null;
     const onSubmit = useLatestCallback(() => {
       if (editor) props.onSubmit?.(editor);
@@ -123,7 +124,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
     useEffect(() => {
       const instance = new Editor({
         autofocus,
-        content: defaultValue,
+        content: _defaultValue,
         editorProps: {
           attributes: {
             class: cn(editorVariants({ variant })),
@@ -158,7 +159,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
           Extension.create({
             addKeyboardShortcuts() {
               return {
-                Enter: onSubmit,
+                "Mod-Enter": onSubmit,
                 Escape: onEscape,
               };
             },
@@ -174,7 +175,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
       };
     }, [
       autofocus,
-      defaultValue,
+      _defaultValue,
       onChange,
       onEscape,
       onSubmit,
@@ -190,11 +191,8 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
     if (!innerEditor) {
       return (
         <div aria-disabled ref={ref} {...editorProps} className={className}>
-          <div
-            className={cn(
-              editorVariants({ variant, className: "tiptap fc-mt-7" })
-            )}
-          >
+          <div className="fc-mb-1 fc-h-6" />
+          <div className={cn(editorVariants({ variant, className: "tiptap" }))}>
             <p className="is-editor-empty" data-placeholder={placeholder} />
           </div>
         </div>
