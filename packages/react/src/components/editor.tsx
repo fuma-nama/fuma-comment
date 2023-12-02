@@ -181,7 +181,16 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
     innerEditor.setEditable(!disabled);
 
     return (
-      <div aria-disabled={disabled} className={className} ref={ref}>
+      // eslint-disable-next-line jsx-a11y/no-static-element-interactions -- trigger focus
+      <div
+        aria-disabled={disabled}
+        className={className}
+        onMouseDown={(e) => {
+          if (!innerEditor.isFocused) innerEditor.commands.focus();
+          e.preventDefault();
+        }}
+        ref={ref}
+      >
         <EditorContent editor={innerEditor} {...editorProps} />
         <ActionBar editor={innerEditor} />
       </div>
