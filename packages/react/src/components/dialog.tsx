@@ -1,5 +1,7 @@
 import * as Primitive from "@radix-ui/react-dialog";
+import { XIcon } from "lucide-react";
 import { cn } from "../utils/cn";
+import { buttonVariants } from "./button";
 
 export const Dialog = Primitive.Root;
 export const DialogTrigger = Primitive.Trigger;
@@ -19,10 +21,33 @@ export function DialogContent({
         )}
         {...props}
       >
+        <Primitive.Close
+          className={cn(
+            buttonVariants({
+              variant: "ghost",
+              size: "icon",
+              className: "fc-absolute fc-right-3 fc-top-3",
+            })
+          )}
+        >
+          <XIcon className="fc-h-4 fc-w-4" />
+        </Primitive.Close>
         {children}
       </Primitive.Content>
     </Primitive.Portal>
   );
 }
 
-export const DialogTitle = Primitive.Title;
+export function DialogTitle({
+  className,
+  ...props
+}: Primitive.DialogTitleProps): JSX.Element {
+  return (
+    <Primitive.Title
+      className={cn("fc-mb-2 fc-font-semibold", className)}
+      {...props}
+    >
+      {props.children}
+    </Primitive.Title>
+  );
+}
