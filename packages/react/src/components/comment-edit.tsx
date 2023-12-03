@@ -44,9 +44,11 @@ export function CommentEdit(): JSX.Element {
     e.preventDefault();
   };
 
+  const innerEditor = editor?.editor;
+
   useEffect(() => {
-    editor?.editor.commands.focus("end");
-  }, [editor]);
+    innerEditor?.commands.focus("end");
+  }, [innerEditor]);
 
   return (
     <form onSubmit={onSubmit}>

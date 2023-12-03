@@ -17,16 +17,20 @@ import { cva } from "cva";
 import {
   BoldIcon,
   CodeIcon,
+  ImageIcon,
   ItalicIcon,
   LinkIcon,
   StrikethroughIcon,
 } from "lucide-react";
 import { Link } from "@tiptap/extension-link";
+import useSWRMutation from "swr/mutation";
 import { cn } from "../utils/cn";
+import { useStorage } from "../contexts/storage";
 import { buttonVariants } from "./button";
 import { inputVariants } from "./input";
-import { Dialog, DialogContent, DialogTrigger } from "./dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./dialog";
 import { codeVariants } from "./comment-renderer";
+import { Spinner } from "./spinner";
 
 export interface UseCommentEditor {
   editor: Editor;
@@ -199,61 +203,148 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 
 function ActionBar({ editor }: { editor: Editor }): JSX.Element {
   return (
-    <div className="fc-flex fc-flex-row fc-gap-0.5 fc-px-1.5">
-      <button
-        aria-label="Toggle Bold"
-        className={cn(
-          toggleVariants({
-            active: editor.isActive("bold"),
-          })
-        )}
-        disabled={!editor.can().toggleBold()}
-        onClick={() => editor.chain().focus().toggleBold().run()}
-        type="button"
-      >
-        <BoldIcon className="fc-h-4 fc-w-4" />
-      </button>
-      <button
-        aria-label="Toggle Strike"
-        className={cn(
-          toggleVariants({
-            active: editor.isActive("strike"),
-          })
-        )}
-        disabled={!editor.can().toggleStrike()}
-        onClick={() => editor.chain().focus().toggleStrike().run()}
-        type="button"
-      >
-        <StrikethroughIcon className="fc-h-4 fc-w-4" />
-      </button>
-      <button
-        aria-label="Toggle Italic"
-        className={cn(
-          toggleVariants({
-            active: editor.isActive("italic"),
-          })
-        )}
-        disabled={!editor.can().toggleItalic()}
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-        type="button"
-      >
-        <ItalicIcon className="fc-h-4 fc-w-4" />
-      </button>
-      <button
-        aria-label="Toggle Code"
-        className={cn(
-          toggleVariants({
-            active: editor.isActive("code"),
-          })
-        )}
-        disabled={!editor.can().toggleCode()}
-        onClick={() => editor.chain().focus().toggleCode().run()}
-        type="button"
-      >
-        <CodeIcon className="fc-h-4 fc-w-4" />
-      </button>
+    <div className="fc-flex fc-flex-row fc-items-center fc-gap-0.5 fc-px-1.5">
+      {[
+        {
+          name: "bold",
+          icon: <BoldIcon className="fc-h-4 fc-w-4" />,
+        },
+        {
+          name: "strike",
+          icon: <StrikethroughIcon className="fc-h-4 fc-w-4" />,
+        },
+        {
+          name: "italic",
+          icon: <ItalicIcon className="fc-h-4 fc-w-4" />,
+        },
+        {
+          name: "code",
+          icon: <CodeIcon className="fc-h-4 fc-w-4" />,
+        },
+      ].map((mark) => (
+        <button
+          aria-label={`Toggle ${mark.name}`}
+          className={cn(
+            toggleVariants({
+              active: editor.isActive(mark.name),
+            })
+          )}
+          disabled={!editor.can().toggleMark(mark.name)}
+          key={mark.name}
+          onMouseDown={(e) => {
+            editor.commands.toggleMark(mark.name);
+            e.preventDefault();
+          }}
+          type="button"
+        >
+          {mark.icon}
+        </button>
+      ))}
       <UpdateLinkMenu editor={editor} />
+      <div className="fc-mx-1 fc-h-4 fc-w-px fc-bg-border" role="none" />
+      <UploadMenu editor={editor} />
     </div>
+  );
+}
+
+function UploadMenu({ editor }: { editor: Editor }): JSX.Element {
+  const [isOpen, setIsOpen] = useState(false);
+  const [file, setFile] = useState<Blob | null>(null);
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const storage = useStorage();
+  const mutation = useSWRMutation(
+    "upload image",
+    (_, { arg }: { arg: { file: Blob } }) => storage.upload(arg.file),
+    {
+      onSuccess: () => {
+        setIsOpen(false);
+        editor.commands.focus();
+      },
+    }
+  );
+
+  useEffect(() => {
+    const url = file ? URL.createObjectURL(file) : null;
+
+    setFileUrl(url);
+    return () => {
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [file]);
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    if (file) {
+      void mutation.trigger({ file });
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFile(e.target.files.item(0));
+    }
+  };
+
+  return (
+    <Dialog onOpenChange={setIsOpen} open={isOpen}>
+      {storage.enabled ? (
+        <DialogTrigger
+          aria-label="Upload Image"
+          className={cn(toggleVariants())}
+          type="button"
+        >
+          <ImageIcon className="fc-h-4 fc-w-4" />
+        </DialogTrigger>
+      ) : null}
+      <DialogContent
+        onCloseAutoFocus={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <DialogTitle>Add Image</DialogTitle>
+        <form className="fc-flex fc-flex-col" onSubmit={onSubmit}>
+          <input
+            accept="image/png, image/jpeg"
+            hidden
+            id="image"
+            onChange={onChange}
+            type="file"
+          />
+          {fileUrl ? (
+            <label
+              className="fc-cursor-pointer fc-overflow-hidden fc-rounded-xl fc-border fc-border-border fc-bg-muted"
+              htmlFor="image"
+            >
+              <img
+                alt="preview"
+                className="fc-mx-auto fc-max-h-96"
+                src={fileUrl}
+              />
+            </label>
+          ) : (
+            <label
+              className="fc-cursor-pointer fc-rounded-xl fc-border fc-border-border fc-bg-background fc-p-4 fc-text-center fc-text-sm fc-font-medium fc-text-muted-foreground"
+              htmlFor="image"
+            >
+              Upload Image
+            </label>
+          )}
+
+          <div className="fc-mt-2 fc-flex fc-gap-1">
+            <button
+              className={cn(buttonVariants({ className: "fc-gap-2" }))}
+              disabled={mutation.isMutating}
+              type="submit"
+            >
+              {mutation.isMutating ? <Spinner /> : null}
+              Save
+            </button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -261,32 +352,6 @@ function UpdateLinkMenu({ editor }: { editor: Editor }): JSX.Element {
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-
-  const set = (): void => {
-    if (value.trim().length === 0) return;
-    onOpenChange(false);
-    const content = name.length > 0 ? name : value;
-
-    if (!editor.state.selection.empty) {
-      editor
-        .chain()
-        .extendMarkRange("link")
-        .deleteSelection()
-        .setLink({ href: value })
-        .insertContent(content)
-        .focus()
-        .run();
-    } else {
-      editor
-        .chain()
-        .setLink({ href: value })
-        .insertContent(content)
-        .unsetMark("link")
-        .insertContent(" ")
-        .focus()
-        .run();
-    }
-  };
 
   const onOpenChange = (v: boolean): void => {
     if (v) {
@@ -312,33 +377,51 @@ function UpdateLinkMenu({ editor }: { editor: Editor }): JSX.Element {
     editor.chain().focus().unsetMark("link").run();
   };
 
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (value.trim().length === 0) return;
+    onOpenChange(false);
+    const content = name.length > 0 ? name : value;
+
+    if (!editor.state.selection.empty) {
+      editor
+        .chain()
+        .deleteSelection()
+        .setLink({ href: value })
+        .insertContent(content)
+        .focus()
+        .run();
+    } else {
+      editor
+        .chain()
+        .setLink({ href: value })
+        .insertContent(content)
+        .unsetMark("link")
+        .insertContent(" ")
+        .focus()
+        .run();
+    }
+  };
+
   return (
     <Dialog onOpenChange={onOpenChange} open={isOpen}>
       <DialogTrigger
         aria-label="Toggle Link"
-        className={cn(
-          toggleVariants({
-            active: editor.isActive("link"),
-          })
-        )}
+        className={cn(toggleVariants())}
         disabled={!editor.can().setLink({ href: "" })}
         type="button"
       >
         <LinkIcon className="fc-h-4 fc-w-4" />
       </DialogTrigger>
       <DialogContent
-        asChild
-        className="fc-gap-1"
         onCloseAutoFocus={(e) => {
           e.preventDefault();
         }}
-        onSubmit={(e) => {
-          set();
-          e.preventDefault();
-          e.stopPropagation();
-        }}
       >
-        <form>
+        <DialogTitle>Add Link</DialogTitle>
+        <form className="fc-flex fc-flex-col fc-gap-1" onSubmit={onSubmit}>
           <input
             className={cn(inputVariants())}
             id="name"
@@ -355,6 +438,7 @@ function UpdateLinkMenu({ editor }: { editor: Editor }): JSX.Element {
               setValue(e.target.value);
             }}
             placeholder="URL"
+            type="url"
             value={value}
           />
           <div className="fc-mt-2 fc-flex fc-gap-1">
