@@ -170,6 +170,8 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
         },
       });
 
+      onChange?.(createCommentEditor(instance));
+
       return () => {
         instance.destroy();
       };
