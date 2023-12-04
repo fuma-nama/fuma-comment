@@ -89,7 +89,7 @@ export function ContentRenderer({
     return (
       <img
         alt="upload"
-        className="fc-max-h-60 fc-max-w-xl fc-rounded-lg"
+        className="fc-max-h-60 fc-max-w-full fc-rounded-lg"
         src={content.attrs.src}
       />
     );

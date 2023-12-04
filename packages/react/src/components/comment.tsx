@@ -61,7 +61,7 @@ export function Comment({
     <CommentProvider value={context}>
       <div
         className={cn(
-          "fc-group fc-relative fc-flex fc-flex-row fc-px-3 fc-py-4 fc-text-sm",
+          "fc-group fc-relative fc-flex fc-flex-row fc-gap-2 fc-px-3 fc-py-4 fc-text-sm",
           canDisplayComments && "fc-pb-2"
         )}
         data-fc-comment={context.comment.id}
@@ -79,7 +79,7 @@ export function Comment({
         ) : (
           <div className="fc-h-8 fc-w-8 fc-rounded-full fc-bg-gradient-to-br fc-from-blue-600 fc-to-red-600" />
         )}
-        <div className="fc-ml-2 fc-w-0 fc-flex-1">
+        <div className="fc-w-0 fc-flex-1">
           <div className="fc-mb-2 fc-flex fc-flex-row fc-items-center fc-gap-2">
             <span className="fc-overflow-hidden fc-overflow-ellipsis fc-whitespace-nowrap fc-font-semibold">
               {comment.author.name}
@@ -87,6 +87,7 @@ export function Comment({
             <span className="fc-text-xs fc-text-muted-foreground">
               {timestamp}
             </span>
+            <CommentMenu />
           </div>
           {edit ? (
             <CommentEdit />
@@ -97,7 +98,6 @@ export function Comment({
             </>
           )}
         </div>
-        <CommentMenu />
       </div>
       {canDisplayComments ? <CommentReplies /> : null}
     </CommentProvider>
@@ -194,7 +194,7 @@ function CommentActions(): JSX.Element {
 
 function CommentMenu(): JSX.Element {
   const { session } = useAuthContext();
-  const { comment, setEdit } = useCommentContext();
+  const { comment, isEditing, isReplying, setEdit } = useCommentContext();
 
   const deleteMutation = useSWRMutation(
     getCommentsKey(comment.threadId),
@@ -234,9 +234,10 @@ function CommentMenu(): JSX.Element {
             size: "icon",
             variant: "ghost",
             className:
-              "fc-opacity-0 group-hover:fc-opacity-100 data-[state=open]:fc-bg-accent data-[state=open]:fc-opacity-100",
+              "fc-ml-auto fc-opacity-0 group-hover:fc-opacity-100 data-[state=open]:fc-bg-accent data-[state=open]:fc-opacity-100 disabled:fc-invisible",
           })
         )}
+        disabled={isEditing || isReplying}
       >
         <MoreVerticalIcon className="fc-h-4 fc-w-4" />
       </MenuTrigger>

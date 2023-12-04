@@ -47,7 +47,7 @@
 }
 
 .tiptap img {
-  @apply fc-rounded-lg fc-max-w-xl fc-max-h-60;
+  @apply fc-rounded-lg fc-max-w-full fc-max-h-60;
 }
 
 .tiptap img.ProseMirror-selectednode {
