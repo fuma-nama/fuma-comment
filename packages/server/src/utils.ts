@@ -1,11 +1,31 @@
 import type { Content } from "./types";
 
-export function getTextFromContent(content: Content): string {
-  if (content.type === "text") return content.text ?? "";
-  const child = (content.content?.map((c) => getTextFromContent(c)) ?? [])
+type Serializers = Record<
+  string,
+  (content: Content, children: string) => string
+>;
+
+const defaultSerializers: Serializers = {
+  text: (content) => {
+    return content.text ?? "";
+  },
+  paragraph: (_, child) => {
+    return `${child}\n`;
+  },
+};
+
+export function getTextFromContent(
+  content: Content,
+  customSerializer?: Serializers
+): string {
+  const serializers = { ...defaultSerializers, ...customSerializer };
+  const child = (
+    content.content?.map((c) => getTextFromContent(c, customSerializer)) ?? []
+  )
     .join("")
     .trimEnd();
 
-  if (content.type === "paragraph") return `${child}\n`;
+  if (content.type in serializers)
+    return serializers[content.type](content, child);
   return child;
 }

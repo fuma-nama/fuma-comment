@@ -19,10 +19,26 @@ const richContentSchema: z.ZodType<RichContentSchema> = z.lazy(() =>
   })
 );
 
+export const imageContentSchema = z.object({
+  type: z.literal("image"),
+  attrs: z.object({
+    src: z.string().startsWith("http"),
+  }),
+});
+
 export const contentSchema = richContentSchema.superRefine(
   (obj, { addIssue }) => {
     const objString = JSON.stringify(obj);
-    const text = getTextFromContent(obj).trim();
+    let imageCount = 0;
+    const text = getTextFromContent(obj, {
+      image: (content) => {
+        imageCount++;
+        const result = imageContentSchema.safeParse(content);
+
+        if (result.success) return `[Image](${result.data.attrs.src})`;
+        return "";
+      },
+    }).trim();
 
     if (text.length === 0) {
       addIssue({ code: "custom", message: "Content can't be empty" });
@@ -33,6 +49,13 @@ export const contentSchema = richContentSchema.superRefine(
       addIssue({
         code: "custom",
         message: "Content can't be longer than 2000 characters",
+      });
+    }
+
+    if (imageCount > 2) {
+      addIssue({
+        code: "custom",
+        message: "You cannot add more than 2 images",
       });
     }
 

@@ -32,7 +32,6 @@ const marks: Marks = {
   bold: {
     className: "fc-font-bold",
   },
-
   strike: {
     className: "fc-line-through",
   },
@@ -60,6 +59,7 @@ const marks: Marks = {
     },
   },
 };
+
 function renderText(content: JSONContent): JSX.Element {
   let getElement = defaultRenderer;
   const className: string[] = [];
@@ -83,6 +83,16 @@ export function ContentRenderer({
 }): JSX.Element {
   if (content.type === "text") {
     return renderText(content);
+  }
+
+  if (content.type === "image" && typeof content.attrs?.src === "string") {
+    return (
+      <img
+        alt="upload"
+        className="fc-max-h-60 fc-max-w-xl fc-rounded-lg"
+        src={content.attrs.src}
+      />
+    );
   }
 
   const joined: ReactNode[] = content.content?.map((child, i) => (

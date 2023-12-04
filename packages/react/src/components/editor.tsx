@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { Link } from "@tiptap/extension-link";
 import useSWRMutation from "swr/mutation";
+import { Image } from "@tiptap/extension-image";
 import { cn } from "../utils/cn";
 import { useStorage } from "../contexts/storage";
 import { buttonVariants } from "./button";
@@ -139,13 +140,11 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
           }),
           Link.extend({ inclusive: false }).configure({
             openOnClick: false,
-            HTMLAttributes: {
-              class: "fc-font-medium fc-underline",
-            },
           }),
           Italic,
           History,
           Paragraph,
+          Image,
           Text,
           Placeholder.configure({
             placeholder,
@@ -249,16 +248,53 @@ function ActionBar({ editor }: { editor: Editor }): JSX.Element {
 
 function UploadMenu({ editor }: { editor: Editor }): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
+  const storage = useStorage();
+
+  return (
+    <Dialog onOpenChange={setIsOpen} open={isOpen}>
+      {storage.enabled ? (
+        <DialogTrigger
+          aria-label="Upload Image"
+          className={cn(toggleVariants())}
+          type="button"
+        >
+          <ImageIcon className="fc-h-4 fc-w-4" />
+        </DialogTrigger>
+      ) : null}
+      <DialogContent
+        onCloseAutoFocus={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <DialogTitle>Add Image</DialogTitle>
+        <UploadDialogContent
+          editor={editor}
+          onClose={() => {
+            setIsOpen(false);
+          }}
+        />
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function UploadDialogContent({
+  editor,
+  onClose,
+}: {
+  editor: Editor;
+  onClose: () => void;
+}): JSX.Element {
+  const storage = useStorage();
   const [file, setFile] = useState<Blob | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
-  const storage = useStorage();
   const mutation = useSWRMutation(
     "upload image",
     (_, { arg }: { arg: { file: Blob } }) => storage.upload(arg.file),
     {
-      onSuccess: () => {
-        setIsOpen(false);
-        editor.commands.focus();
+      onSuccess: (data) => {
+        onClose();
+        editor.chain().setImage({ src: data.url }).focus().run();
       },
     }
   );
@@ -288,63 +324,41 @@ function UploadMenu({ editor }: { editor: Editor }): JSX.Element {
   };
 
   return (
-    <Dialog onOpenChange={setIsOpen} open={isOpen}>
-      {storage.enabled ? (
-        <DialogTrigger
-          aria-label="Upload Image"
-          className={cn(toggleVariants())}
-          type="button"
+    <form className="fc-flex fc-flex-col" onSubmit={onSubmit}>
+      <input
+        accept="image/png, image/jpeg"
+        hidden
+        id="image"
+        onChange={onChange}
+        type="file"
+      />
+      {fileUrl ? (
+        <label
+          className="fc-cursor-pointer fc-overflow-hidden fc-rounded-xl fc-border fc-border-border fc-bg-muted"
+          htmlFor="image"
         >
-          <ImageIcon className="fc-h-4 fc-w-4" />
-        </DialogTrigger>
-      ) : null}
-      <DialogContent
-        onCloseAutoFocus={(e) => {
-          e.preventDefault();
-        }}
-      >
-        <DialogTitle>Add Image</DialogTitle>
-        <form className="fc-flex fc-flex-col" onSubmit={onSubmit}>
-          <input
-            accept="image/png, image/jpeg"
-            hidden
-            id="image"
-            onChange={onChange}
-            type="file"
-          />
-          {fileUrl ? (
-            <label
-              className="fc-cursor-pointer fc-overflow-hidden fc-rounded-xl fc-border fc-border-border fc-bg-muted"
-              htmlFor="image"
-            >
-              <img
-                alt="preview"
-                className="fc-mx-auto fc-max-h-96"
-                src={fileUrl}
-              />
-            </label>
-          ) : (
-            <label
-              className="fc-cursor-pointer fc-rounded-xl fc-border fc-border-border fc-bg-background fc-p-4 fc-text-center fc-text-sm fc-font-medium fc-text-muted-foreground"
-              htmlFor="image"
-            >
-              Upload Image
-            </label>
-          )}
+          <img alt="preview" className="fc-mx-auto fc-max-h-96" src={fileUrl} />
+        </label>
+      ) : (
+        <label
+          className="fc-cursor-pointer fc-rounded-xl fc-border fc-border-border fc-bg-background fc-p-4 fc-text-center fc-text-sm fc-font-medium fc-text-muted-foreground"
+          htmlFor="image"
+        >
+          Upload Image
+        </label>
+      )}
 
-          <div className="fc-mt-2 fc-flex fc-gap-1">
-            <button
-              className={cn(buttonVariants({ className: "fc-gap-2" }))}
-              disabled={mutation.isMutating}
-              type="submit"
-            >
-              {mutation.isMutating ? <Spinner /> : null}
-              Save
-            </button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+      <div className="fc-mt-2 fc-flex fc-gap-1">
+        <button
+          className={cn(buttonVariants({ className: "fc-gap-2" }))}
+          disabled={mutation.isMutating}
+          type="submit"
+        >
+          {mutation.isMutating ? <Spinner /> : null}
+          Save
+        </button>
+      </div>
+    </form>
   );
 }
 

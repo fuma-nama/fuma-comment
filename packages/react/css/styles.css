@@ -45,3 +45,15 @@
   pointer-events: none;
   @apply fc-text-muted-foreground;
 }
+
+.tiptap img {
+  @apply fc-rounded-lg fc-max-w-xl fc-max-h-60;
+}
+
+.tiptap img.ProseMirror-selectednode {
+  @apply fc-ring-2 fc-ring-primary;
+}
+
+.tiptap a {
+  @apply fc-font-medium fc-underline;
+}
