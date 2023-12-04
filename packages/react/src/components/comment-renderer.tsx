@@ -86,11 +86,20 @@ export function ContentRenderer({
   }
 
   if (content.type === "image" && typeof content.attrs?.src === "string") {
+    const attrs = content.attrs as {
+      src: string;
+      alt?: string;
+      height?: number;
+      width?: number;
+    };
+
     return (
       <img
-        alt="upload"
-        className="fc-max-h-60 fc-max-w-full fc-rounded-lg"
+        alt={attrs.alt ?? "upload"}
+        className="fc-max-h-60 fc-w-auto fc-max-w-full fc-rounded-lg"
+        height={attrs.height}
         src={content.attrs.src}
+        width={attrs.width}
       />
     );
   }

@@ -12,7 +12,7 @@ import { Document } from "@tiptap/extension-document";
 import { History } from "@tiptap/extension-history";
 import { Text } from "@tiptap/extension-text";
 import type { HTMLAttributes } from "react";
-import { useRef, forwardRef, useState, useCallback, useEffect } from "react";
+import { useRef, forwardRef, useState, useEffect } from "react";
 import { cva } from "cva";
 import {
   BoldIcon,
@@ -27,6 +27,7 @@ import useSWRMutation from "swr/mutation";
 import { Image } from "@tiptap/extension-image";
 import { cn } from "../utils/cn";
 import { useStorage } from "../contexts/storage";
+import { useLatestCallback, useObjectURL } from "../utils/hooks";
 import { buttonVariants } from "./button";
 import { inputVariants } from "./input";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./dialog";
@@ -78,20 +79,25 @@ const toggleVariants = cva(
   }
 );
 
-/**
- * Always call the latest rendered callback
- *
- * For instance, you added a `onClick` listener to button. When the listener is re-constructed in the next render, the new listener will called instead
- */
-function useLatestCallback<T extends (...args: unknown[]) => unknown>(
-  latest: T
-): T {
-  const ref = useRef<T>(latest);
-  ref.current = latest;
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- Wrapped with refs
-  return useCallback(((...args) => ref.current(...args)) as T, []);
-}
+const ImageWithWidth = Image.extend({
+  addAttributes() {
+    return {
+      src: {
+        isRequired: true,
+        default: null,
+      },
+      width: {
+        default: null,
+      },
+      height: {
+        default: null,
+      },
+      alt: {
+        default: null,
+      },
+    };
+  },
+});
 
 export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
   (
@@ -144,7 +150,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
           Italic,
           History,
           Paragraph,
-          Image,
+          ImageWithWidth,
           Text,
           Placeholder.configure({
             placeholder,
@@ -287,26 +293,27 @@ function UploadDialogContent({
 }): JSX.Element {
   const storage = useStorage();
   const [file, setFile] = useState<Blob | null>(null);
-  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const fileUrl = useObjectURL(file);
   const mutation = useSWRMutation(
     "upload image",
     (_, { arg }: { arg: { file: Blob } }) => storage.upload(arg.file),
     {
       onSuccess: (data) => {
         onClose();
-        editor.chain().setImage({ src: data.url }).focus().run();
+        editor
+          .chain()
+          .setImage({
+            src: data.url,
+            alt: data.alt,
+            // @ts-expect-error -- add width, height properties
+            width: data.width,
+            height: data.height,
+          })
+          .focus()
+          .run();
       },
     }
   );
-
-  useEffect(() => {
-    const url = file ? URL.createObjectURL(file) : null;
-
-    setFileUrl(url);
-    return () => {
-      if (url) URL.revokeObjectURL(url);
-    };
-  }, [file]);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     if (file) {

@@ -6,6 +6,10 @@ interface UploadResponse {
    * Absolute URL to the uploaded resource
    */
   url: string;
+
+  alt?: string;
+  width?: number;
+  height?: number;
 }
 
 export interface StorageContext {

@@ -23,10 +23,14 @@ const storage: StorageContext = {
     if (res.ok) {
       const result = (await res.json()) as {
         secure_url: string;
+        width: number;
+        height: number;
       };
 
       return {
         url: result.secure_url,
+        width: result.width,
+        height: result.height,
       };
     }
 
