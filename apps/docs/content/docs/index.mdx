@@ -44,6 +44,62 @@ All components are pre-styled with Tailwind CSS, notice that it also normalizes 
 import "@fuma-comment/react/style.css";
 ```
 
+### Image Uploading
+
+The default rich editor doesn't come with any image uploading features, you have to configure it manually to integrate with AWS S3, Cloudinary or other cloud storage services.
+
+Here is an example for Cloudinary, with unauthorizated requests:
+
+```tsx
+import type { StorageContext, CommentsProps } from "@fuma-comment/react";
+import { Comments, AuthProvider, StorageProvider } from "@fuma-comment/react";
+
+const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME;
+
+const storage: StorageContext = {
+  enabled: true,
+  async upload(file) {
+    const body = new FormData();
+    body.append("file", file);
+    body.append("upload_preset", "fuma_comment");
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+      {
+        method: "POST",
+        body,
+      }
+    );
+
+    if (res.ok) {
+      const result = (await res.json()) as {
+        secure_url: string;
+        width: number;
+        height: number;
+      };
+
+      return {
+        url: result.secure_url,
+        width: result.width,
+        height: result.height,
+      };
+    }
+
+    throw new Error("Failed to upload file");
+  },
+};
+
+export function MyComponent() {
+  return (
+    <AuthProvider>
+      <StorageProvider storage={storage}>
+        <Comments />
+      </StorageProvider>
+    </AuthProvider>
+  );
+}
+```
+
 ## Server
 
 Fuma Comment supports several web/backend frameworks, including Next.js and Express.
@@ -93,7 +149,7 @@ model Comment {
     page String? @db.VarChar(256)
     thread Int?
     author String @db.VarChar(256)
-    content String @db.Text
+    content Json @db.Json
     timestamp DateTime @db.Timestamp() @default(now())
 
     rates Rate[]
@@ -141,7 +197,7 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .addColumn("page", "varchar(256)")
     .addColumn("threadId", "integer")
     .addColumn("author", "varchar(256)", (col) => col.notNull())
-    .addColumn("content", "text", (col) => col.notNull())
+    .addColumn("content", "json", (col) => col.notNull())
     .addColumn("timestamp", "timestamp", (col) =>
       col.defaultTo(sql`now()`).notNull()
     )
