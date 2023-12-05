@@ -230,7 +230,7 @@ function CommentMenu(): JSX.Element {
             size: "icon",
             variant: "ghost",
             className:
-              "fc-ml-auto fc-opacity-0 group-hover:fc-opacity-100 state-open:fc-bg-accent state-open:fc-opacity-100 disabled:fc-invisible",
+              "fc-ml-auto fc-opacity-0 group-hover:fc-opacity-100 rtx-state-open:fc-bg-accent rtx-state-open:fc-opacity-100 disabled:fc-invisible",
           })
         )}
         disabled={isEditing || isReplying}
