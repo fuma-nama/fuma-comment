@@ -70,4 +70,5 @@ module.exports = {
       },
     },
   },
+  plugins: [require("tailwindcss-radix")({ variantPrefix: false })],
 };

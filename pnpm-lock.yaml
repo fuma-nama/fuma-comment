@@ -339,6 +339,9 @@ importers:
       tailwindcss:
         specifier: ^3.3.5
         version: 3.3.5
+      tailwindcss-radix:
+        specifier: ^2.8.0
+        version: 2.8.0
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -9217,6 +9220,10 @@ packages:
     dependencies:
       '@babel/runtime': 7.23.2
     dev: false
+
+  /tailwindcss-radix@2.8.0:
+    resolution: {integrity: sha512-1k1UfoIYgVyBl13FKwwoKavjnJ5VEaUClCTAsgz3VLquN4ay/lyaMPzkbqD71sACDs2fRGImytAUlMb4TzOt1A==}
+    dev: true
 
   /tailwindcss@3.3.5:
     resolution: {integrity: sha512-5SEZU4J7pxZgSkv7FP1zY8i2TIAOooNZ1e/OGtxIEv6GltpoiXUqWvLy89+a10qYTB1N5Ifkuw9lqQkN9sscvA==}
