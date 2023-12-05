@@ -209,6 +209,8 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 );
 
 function ActionBar({ editor }: { editor: Editor }): JSX.Element {
+  const storage = useStorage();
+
   return (
     <div className="fc-flex fc-flex-row fc-items-center fc-gap-0.5 fc-px-1.5">
       {[
@@ -236,7 +238,7 @@ function ActionBar({ editor }: { editor: Editor }): JSX.Element {
               active: editor.isActive(mark.name),
             })
           )}
-          disabled={!editor.can().toggleMark(mark.name)}
+          disabled={!editor.can().toggleMark(mark.name) || !editor.isEditable}
           key={mark.name}
           onMouseDown={(e) => {
             editor.commands.toggleMark(mark.name);
@@ -247,28 +249,30 @@ function ActionBar({ editor }: { editor: Editor }): JSX.Element {
           {mark.icon}
         </button>
       ))}
-      <UpdateLinkMenu editor={editor} />
-      <div className="fc-mx-1 fc-h-4 fc-w-px fc-bg-border" role="none" />
-      <UploadMenu editor={editor} />
+      <UpdateLink editor={editor} />
+      {storage.enabled ? (
+        <>
+          <div className="fc-mx-1 fc-h-4 fc-w-px fc-bg-border" role="none" />
+          <UploadMenu editor={editor} />
+        </>
+      ) : null}
     </div>
   );
 }
 
 function UploadMenu({ editor }: { editor: Editor }): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
-  const storage = useStorage();
 
   return (
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
-      {storage.enabled ? (
-        <DialogTrigger
-          aria-label="Upload Image"
-          className={cn(toggleVariants())}
-          type="button"
-        >
-          <ImageIcon className="fc-h-4 fc-w-4" />
-        </DialogTrigger>
-      ) : null}
+      <DialogTrigger
+        aria-label="Upload Image"
+        className={cn(toggleVariants())}
+        disabled={!editor.can().setImage({ src: "" }) || !editor.isEditable}
+        type="button"
+      >
+        <ImageIcon className="fc-h-4 fc-w-4" />
+      </DialogTrigger>
       <DialogContent
         onCloseAutoFocus={(e) => {
           e.preventDefault();
@@ -371,31 +375,59 @@ function UploadDialogContent({
   );
 }
 
-function UpdateLinkMenu({ editor }: { editor: Editor }): JSX.Element {
-  const [name, setName] = useState("");
-  const [value, setValue] = useState("");
+function UpdateLink({ editor }: { editor: Editor }): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
 
-  const onOpenChange = (v: boolean): void => {
-    if (v) {
-      editor.commands.extendMarkRange("link");
+  return (
+    <Dialog onOpenChange={setIsOpen} open={isOpen}>
+      <DialogTrigger
+        aria-label="Toggle Link"
+        className={cn(toggleVariants())}
+        disabled={!editor.can().setLink({ href: "" }) || !editor.isEditable}
+        type="button"
+      >
+        <LinkIcon className="fc-h-4 fc-w-4" />
+      </DialogTrigger>
+      <DialogContent
+        onCloseAutoFocus={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <DialogTitle>Add Link</DialogTitle>
+        <UpdateLinkDialogContent
+          editor={editor}
+          onClose={() => {
+            setIsOpen(false);
+          }}
+        />
+      </DialogContent>
+    </Dialog>
+  );
+}
 
-      const href = editor.getAttributes("link").href as string | undefined;
-      const selection = editor.state.selection;
-      const selected = editor.state.doc.textBetween(
-        selection.from,
-        selection.to
-      );
+function UpdateLinkDialogContent({
+  editor,
+  onClose,
+}: {
+  editor: Editor;
+  onClose: () => void;
+}): JSX.Element {
+  const [name, setName] = useState("");
+  const [value, setValue] = useState("");
 
-      setName(selected);
-      setValue(href ?? "");
-    }
+  useEffect(() => {
+    editor.commands.extendMarkRange("link");
 
-    setIsOpen(v);
-  };
+    const href = editor.getAttributes("link").href as string | undefined;
+    const selection = editor.state.selection;
+    const selected = editor.state.doc.textBetween(selection.from, selection.to);
+
+    setName(selected);
+    setValue(href ?? "");
+  }, [editor]);
 
   const unset = (): void => {
-    onOpenChange(false);
+    onClose();
 
     editor.chain().focus().unsetMark("link").run();
   };
@@ -405,9 +437,9 @@ function UpdateLinkMenu({ editor }: { editor: Editor }): JSX.Element {
     e.stopPropagation();
 
     if (value.trim().length === 0) return;
-    onOpenChange(false);
     const content = name.length > 0 ? name : value;
 
+    onClose();
     if (!editor.state.selection.empty) {
       editor
         .chain()
@@ -429,58 +461,41 @@ function UpdateLinkMenu({ editor }: { editor: Editor }): JSX.Element {
   };
 
   return (
-    <Dialog onOpenChange={onOpenChange} open={isOpen}>
-      <DialogTrigger
-        aria-label="Toggle Link"
-        className={cn(toggleVariants())}
-        disabled={!editor.can().setLink({ href: "" })}
-        type="button"
-      >
-        <LinkIcon className="fc-h-4 fc-w-4" />
-      </DialogTrigger>
-      <DialogContent
-        onCloseAutoFocus={(e) => {
-          e.preventDefault();
+    <form className="fc-flex fc-flex-col fc-gap-1" onSubmit={onSubmit}>
+      <input
+        className={cn(inputVariants())}
+        id="name"
+        onChange={(e) => {
+          setName(e.target.value);
         }}
-      >
-        <DialogTitle>Add Link</DialogTitle>
-        <form className="fc-flex fc-flex-col fc-gap-1" onSubmit={onSubmit}>
-          <input
-            className={cn(inputVariants())}
-            id="name"
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
-            placeholder="Name (optional)"
-            value={name}
-          />
-          <input
-            className={cn(inputVariants())}
-            id="url"
-            onChange={(e) => {
-              setValue(e.target.value);
-            }}
-            placeholder="URL"
-            type="url"
-            value={value}
-          />
-          <div className="fc-mt-2 fc-flex fc-gap-1">
-            <button className={cn(buttonVariants())} type="submit">
-              Save
-            </button>
-            {editor.isActive("link") ? (
-              <button
-                className={cn(buttonVariants({ variant: "secondary" }))}
-                onClick={unset}
-                type="button"
-              >
-                Unset
-              </button>
-            ) : null}
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+        placeholder="Name (optional)"
+        value={name}
+      />
+      <input
+        className={cn(inputVariants())}
+        id="url"
+        onChange={(e) => {
+          setValue(e.target.value);
+        }}
+        placeholder="URL"
+        type="url"
+        value={value}
+      />
+      <div className="fc-mt-2 fc-flex fc-gap-1">
+        <button className={cn(buttonVariants())} type="submit">
+          Save
+        </button>
+        {editor.isActive("link") ? (
+          <button
+            className={cn(buttonVariants({ variant: "secondary" }))}
+            onClick={unset}
+            type="button"
+          >
+            Unset
+          </button>
+        ) : null}
+      </div>
+    </form>
   );
 }
 

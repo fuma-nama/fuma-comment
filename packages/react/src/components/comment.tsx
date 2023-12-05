@@ -42,9 +42,7 @@ export function Comment({
     return {
       isEditing: edit,
       isReplying: isReply,
-      setEdit: (v) => {
-        setEdit(v);
-      },
+      setEdit,
       setReply: setIsReply,
       comment,
     };
@@ -71,10 +69,8 @@ export function Comment({
         {comment.author.image ? (
           <img
             alt="avatar"
-            className="fc-h-8 fc-w-8 fc-select-none fc-rounded-full fc-bg-card"
-            height={32}
+            className="fc-h-8 fc-w-8 fc-select-none fc-rounded-full fc-bg-muted"
             src={comment.author.image}
-            width={32}
           />
         ) : (
           <div className="fc-h-8 fc-w-8 fc-rounded-full fc-bg-gradient-to-br fc-from-blue-600 fc-to-red-600" />
