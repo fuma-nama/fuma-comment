@@ -24,7 +24,7 @@ export function createAdapter({ db, joinUser }: Options): StorageAdapter {
         orderBy: [{ timestamp: sort === "newest" ? "desc" : "asc" }],
         where: {
           page,
-          thread: thread ? Number(thread) : undefined,
+          thread: thread ? Number(thread) : null,
         },
         include: {
           rates: auth
