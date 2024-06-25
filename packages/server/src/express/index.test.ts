@@ -17,7 +17,7 @@ ExressComment({
 app.listen(port);
 
 function doFetch(path: string, init: RequestInit = {}): Promise<Response> {
-  return fetch(new URL(path, `http://localhost:${port}`), init);
+  return fetch(new URL(path, `http://localhost:${port.toString()}`), init);
 }
 
 describe("Express Server Routes", () => {

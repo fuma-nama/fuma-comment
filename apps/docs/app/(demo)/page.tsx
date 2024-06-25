@@ -19,7 +19,7 @@ export default function Page(): JSX.Element {
               href="https://github.com/fuma-nama/fuma-comment"
               rel="noreferrer noopener"
             >
-              <GithubIcon className="h-5 w-5" />
+              <GithubIcon className="size-5" />
             </a>
           </div>
         }

@@ -44,5 +44,7 @@ module.exports = {
   rules: {
     "no-console": "off",
     "import/no-default-export": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
   },
 };
