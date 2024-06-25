@@ -1,2 +1,3 @@
 next-env.d.ts
 .map.ts
+.env.production

@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.6",
+    "dotenv-cli": "^7.4.2",
     "eslint": "^8.56.0",
     "prettier": "^3.3.2",
     "tsconfig": "workspace:*",

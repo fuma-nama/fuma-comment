@@ -11,6 +11,9 @@ importers:
       '@changesets/cli':
         specifier: ^2.27.6
         version: 2.27.6
+      dotenv-cli:
+        specifier: ^7.4.2
+        version: 7.4.2
       eslint:
         specifier: ^8.56.0
         version: 8.56.0
@@ -50,9 +53,6 @@ importers:
       '@vercel/postgres':
         specifier: ^0.9.0
         version: 0.9.0
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.4.5
       fumadocs-core:
         specifier: ^12.2.5
         version: 12.2.5(@types/react@18.3.3)(next@14.2.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
