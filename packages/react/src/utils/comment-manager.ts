@@ -6,7 +6,7 @@ const map = new Map<number, SerializedComment>();
 const listeners = new Map<number, Set<Listener>>();
 
 export function useCommentManager(
-  current: SerializedComment
+  current: SerializedComment,
 ): SerializedComment {
   const [value, setValue] = useState(map.get(current.id) ?? current);
 
@@ -41,7 +41,7 @@ function setComment(id: number, c: SerializedComment): void {
 
 export function updateComment(
   commentId: number,
-  updateFn: (comment: SerializedComment) => SerializedComment
+  updateFn: (comment: SerializedComment) => SerializedComment,
 ): void {
   const comment = map.get(commentId);
 
@@ -66,7 +66,7 @@ export function onCommentDeleted(comment: SerializedComment): void {
 
 export function onLikeUpdated(
   commentId: number,
-  value: boolean | undefined
+  value: boolean | undefined,
 ): void {
   updateComment(commentId, (comment) => {
     let likes: number = comment.likes;

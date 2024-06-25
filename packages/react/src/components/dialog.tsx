@@ -17,7 +17,7 @@ export function DialogContent({
       <Primitive.Content
         className={cn(
           "fc-fixed fc-left-[50%] fc-top-[50%] fc-flex fc-w-full fc-max-w-md fc-translate-x-[-50%] fc-translate-y-[-50%] fc-flex-col fc-rounded-2xl fc-border fc-border-border fc-bg-popover fc-p-4 fc-shadow-lg rtx-state-closed:fc-animate-dialogHide rtx-state-open:fc-animate-dialogShow",
-          className
+          className,
         )}
         {...props}
       >
@@ -28,7 +28,7 @@ export function DialogContent({
               variant: "ghost",
               size: "icon",
               className: "fc-absolute fc-right-3 fc-top-3",
-            })
+            }),
           )}
         >
           <XIcon className="fc-h-4 fc-w-4" />

@@ -20,7 +20,7 @@ async function clearMysql(prisma: PrismaClient): Promise<void> {
 async function clearPostgres(prisma: PrismaClient): Promise<void> {
   await prisma.$transaction([
     ...tables.map((table) =>
-      prisma.$executeRawUnsafe(`TRUNCATE ${table} CASCADE;`)
+      prisma.$executeRawUnsafe(`TRUNCATE ${table} CASCADE;`),
     ),
   ]);
 }
@@ -35,7 +35,7 @@ export async function init(): Promise<void> {
 
 export async function clear(
   prisma: PrismaClient,
-  provider: "postgres" | "mysql" = "postgres"
+  provider: "postgres" | "mysql" = "postgres",
 ): Promise<void> {
   const executeClear = {
     mysql: clearMysql,

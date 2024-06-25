@@ -35,7 +35,7 @@ export function CommentsProvider({
     () => ({
       page,
     }),
-    [page]
+    [page],
   );
 
   return <Provider value={context}>{children}</Provider>;
@@ -73,7 +73,7 @@ export const CommentsList = forwardRef<
       onSuccess(data) {
         syncComments(data);
       },
-    }
+    },
   );
 
   return (

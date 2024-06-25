@@ -27,7 +27,7 @@ export function ExressComment(options: ExpressOptions): void {
 
   app.post("/api/comments", async (req, res) => {
     const result = await custom["POST /api/comments"](
-      readRequest(req, options)
+      readRequest(req, options),
     );
 
     sendResponse(res, result);
@@ -35,7 +35,7 @@ export function ExressComment(options: ExpressOptions): void {
 
   app.patch("/api/comments/:id", async (req, res) => {
     const result = await custom["PATCH /api/comments/[id]"](
-      readRequest(req, options)
+      readRequest(req, options),
     );
 
     sendResponse(res, result);
@@ -43,7 +43,7 @@ export function ExressComment(options: ExpressOptions): void {
 
   app.delete("/api/comments/:id", async (req, res) => {
     const result = await custom["DELETE /api/comments/[id]"](
-      readRequest(req, options)
+      readRequest(req, options),
     );
 
     sendResponse(res, result);
@@ -51,7 +51,7 @@ export function ExressComment(options: ExpressOptions): void {
 
   app.post("/api/comments/:id/rate", async (req, res) => {
     const result = await custom["POST /api/comments/[id]/rate"](
-      readRequest(req, options)
+      readRequest(req, options),
     );
 
     sendResponse(res, result);
@@ -59,7 +59,7 @@ export function ExressComment(options: ExpressOptions): void {
 
   app.delete("/api/comments/:id/rate", async (req, res) => {
     const result = await custom["DELETE /api/comments/[id]/rate"](
-      readRequest(req, options)
+      readRequest(req, options),
     );
 
     sendResponse(res, result);

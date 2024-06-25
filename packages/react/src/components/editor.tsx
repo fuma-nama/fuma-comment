@@ -61,11 +61,11 @@ export function useCommentEditor(): [
 }
 
 const editorVariants = cva(
-  "fc-rounded-xl fc-border fc-border-border fc-bg-card fc-pb-1 fc-text-sm fc-transition-colors focus-within:fc-ring-2 focus-within:fc-ring-ring aria-disabled:fc-cursor-not-allowed aria-disabled:fc-opacity-80"
+  "fc-rounded-xl fc-border fc-border-border fc-bg-card fc-pb-1 fc-text-sm fc-transition-colors focus-within:fc-ring-2 focus-within:fc-ring-ring aria-disabled:fc-cursor-not-allowed aria-disabled:fc-opacity-80",
 );
 
 const tiptapVariants = cva(
-  "fc-min-h-[40px] fc-px-3 fc-py-2 focus-visible:fc-outline-none"
+  "fc-min-h-[40px] fc-px-3 fc-py-2 focus-visible:fc-outline-none",
 );
 
 const toggleVariants = cva(
@@ -76,7 +76,7 @@ const toggleVariants = cva(
         true: "fc-bg-accent fc-text-accent-foreground",
       },
     },
-  }
+  },
 );
 
 const ImageWithWidth = Image.extend({
@@ -111,7 +111,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
       onChange,
       ...props
     },
-    ref
+    ref,
   ) => {
     const _defaultValue = useRef(defaultValue).current;
     const innerEditor = editor?.editor ?? null;
@@ -205,7 +205,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
         <ActionBar editor={innerEditor} />
       </div>
     );
-  }
+  },
 );
 
 function ActionBar({ editor }: { editor: Editor }): JSX.Element {
@@ -236,7 +236,7 @@ function ActionBar({ editor }: { editor: Editor }): JSX.Element {
           className={cn(
             toggleVariants({
               active: editor.isActive(mark.name),
-            })
+            }),
           )}
           disabled={!editor.can().toggleMark(mark.name) || !editor.isEditable}
           key={mark.name}
@@ -318,7 +318,7 @@ function UploadDialogContent({
           .focus()
           .run();
       },
-    }
+    },
   );
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {

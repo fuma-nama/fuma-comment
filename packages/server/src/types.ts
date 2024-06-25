@@ -25,24 +25,24 @@ export type Serialize<T> = // JSON Primitives
   T extends JsonPrimitive | undefined
     ? T
     : // Tuples
-    T extends [unknown, ...unknown[]]
-    ? SerializeTupleOrObject<T>
-    : // Arrays
-    T extends (infer U)[]
-    ? Serialize<U>[]
-    : // Map & Set
-    T extends Map<never, never> | Set<never>
-    ? object
-    : // Not supported
-    T extends NonJsonPrimitive
-    ? never
-    : // with `toJson`
-    T extends { toJSON: () => infer U }
-    ? U
-    : // Without `toJson`
-    T extends object
-    ? SerializeTupleOrObject<T>
-    : never;
+      T extends [unknown, ...unknown[]]
+      ? SerializeTupleOrObject<T>
+      : // Arrays
+        T extends (infer U)[]
+        ? Serialize<U>[]
+        : // Map & Set
+          T extends Map<never, never> | Set<never>
+          ? object
+          : // Not supported
+            T extends NonJsonPrimitive
+            ? never
+            : // with `toJson`
+              T extends { toJSON: () => infer U }
+              ? U
+              : // Without `toJson`
+                T extends object
+                ? SerializeTupleOrObject<T>
+                : never;
 
 export interface Comment {
   /**

@@ -15,7 +15,7 @@ type BaseRenderer = (props: {
 }) => JSX.Element;
 
 export const codeVariants = cva(
-  "fc-rounded-sm fc-border fc-border-border fc-bg-muted fc-p-0.5"
+  "fc-rounded-sm fc-border fc-border-border fc-bg-muted fc-p-0.5",
 );
 
 const defaultRenderer: BaseRenderer = (props) => <span {...props} />;

@@ -16,7 +16,7 @@ const richContentSchemaLeaf = z
 const richContentSchema: z.ZodType<RichContentSchema> = z.lazy(() =>
   richContentSchemaLeaf.extend({
     content: z.array(richContentSchema).optional(),
-  })
+  }),
 );
 
 export const imageContentSchema = z.object({
@@ -65,5 +65,5 @@ export const contentSchema = richContentSchema.superRefine(
         message: "Content is too large",
       });
     }
-  }
+  },
 );

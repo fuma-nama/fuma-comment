@@ -17,7 +17,7 @@ const storage: StorageContext = {
       {
         method: "POST",
         body,
-      }
+      },
     );
 
     if (res.ok) {

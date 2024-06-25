@@ -71,7 +71,7 @@ export function CustomComment({
     "GET /api/comments": handleError(async ({ getSession, queryParams }) => {
       const auth = (await getSession()) ?? undefined;
       const sort = comments.sortSchema.parse(
-        queryParams.get("sort") ?? undefined
+        queryParams.get("sort") ?? undefined,
       );
       const page = queryParams.get("page") ?? undefined;
       const thread = queryParams.get("thread") ?? undefined;
@@ -104,7 +104,7 @@ export function CustomComment({
 
         await adapter.setRate({ id, auth, body: content });
         return { type: "success", data: { message: "Successful" } };
-      }
+      },
     ),
     "PATCH /api/comments/[id]": handleError(
       async ({ getSession, body, params }) => {
@@ -116,7 +116,7 @@ export function CustomComment({
 
         await adapter.updateComment({ id, auth, body: content });
         return { type: "success", data: { message: "Successful" } };
-      }
+      },
     ),
     "DELETE /api/comments/[id]": handleError(async ({ getSession, params }) => {
       const auth = (await getSession()) ?? undefined;
@@ -136,7 +136,7 @@ export function CustomComment({
 
         await adapter.deleteRate({ id, auth });
         return { type: "success", data: { message: "Successful" } };
-      }
+      },
     ),
   };
 
@@ -159,7 +159,7 @@ export function CustomComment({
           const issuesToString = e.issues
             .map(
               (issue) =>
-                `${issue.path[issue.path.length - 1]}: ${issue.message}`
+                `${issue.path[issue.path.length - 1]}: ${issue.message}`,
             )
             .join("\n");
 

@@ -15,7 +15,7 @@ export function CommentEdit(): JSX.Element {
 
   const mutation = useSWRMutation(
     getCommentsKey(comment.threadId),
-    (_, { arg }: { arg: { id: number; content: object } }) => editComment(arg)
+    (_, { arg }: { arg: { id: number; content: object } }) => editComment(arg),
   );
 
   const onClose = (): void => {
@@ -35,7 +35,7 @@ export function CommentEdit(): JSX.Element {
           updateComment(comment.id, (c) => ({ ...c, content }));
           onClose();
         },
-      }
+      },
     );
   };
 
@@ -65,7 +65,7 @@ export function CommentEdit(): JSX.Element {
         <button
           aria-label="Edit"
           className={cn(
-            buttonVariants({ variant: "primary", className: "fc-gap-2" })
+            buttonVariants({ variant: "primary", className: "fc-gap-2" }),
           )}
           disabled={mutation.isMutating || (editor?.isEmpty ?? true)}
           type="submit"

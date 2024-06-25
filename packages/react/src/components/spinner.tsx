@@ -10,7 +10,7 @@ export const Spinner = forwardRef<
     <div
       className={cn(
         "fc-h-4 fc-w-4 fc-rounded-full fc-border-2 fc-border-border",
-        className
+        className,
       )}
       ref={ref}
       {...props}

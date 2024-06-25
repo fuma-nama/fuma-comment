@@ -1,9 +1,8 @@
-import type { KyselyAuth, Database } from "@auth/kysely-adapter";
-import { KyselyAdapter } from "@auth/kysely-adapter";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { type AuthOptions } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import { z } from "zod";
-import { db } from "@/utils/database";
+import { prisma } from "@/utils/database";
 
 const env = z
   .object({ GITHUB_ID: z.string(), GITHUB_SECRET: z.string() })
@@ -21,7 +20,8 @@ declare module "next-auth" {
 }
 
 export const authOptions: AuthOptions = {
-  adapter: KyselyAdapter(db as unknown as KyselyAuth<Database>),
+  // @ts-expect-error -- types
+  adapter: PrismaAdapter(prisma),
   callbacks: {
     session: ({ session, token }) => {
       if (session.user) {

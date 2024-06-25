@@ -30,7 +30,7 @@ export function CommentReply(): JSX.Element {
         onCommentReplied(comment.id);
         onClose();
       },
-    }
+    },
   );
 
   const onClose = (): void => {
@@ -76,7 +76,7 @@ export function CommentReply(): JSX.Element {
           className={cn(
             buttonVariants({
               variant: "secondary",
-            })
+            }),
           )}
           onClick={onClose}
           type="button"

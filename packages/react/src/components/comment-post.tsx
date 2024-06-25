@@ -28,7 +28,7 @@ export function CommentPost(): JSX.Element {
       onSuccess: () => {
         editor?.clearValue();
       },
-    }
+    },
   );
   const disabled = mutation.isMutating || auth.status !== "authenticated";
 
@@ -61,7 +61,7 @@ export function CommentPost(): JSX.Element {
             buttonVariants({
               className: "fc-absolute fc-right-2 fc-bottom-1.5",
               size: "icon",
-            })
+            }),
           )}
           disabled={disabled || (editor?.isEmpty ?? true)}
           type="submit"

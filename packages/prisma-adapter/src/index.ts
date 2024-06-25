@@ -63,7 +63,7 @@ export function createAdapter({ db, joinUser }: Options): StorageAdapter {
             page: row.page ?? undefined,
             threadId: row.thread ?? undefined,
           } satisfies CommentWithoutUser;
-        })
+        }),
       );
 
       return joinUser(mappedResults);

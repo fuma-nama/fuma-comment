@@ -1,52 +1,44 @@
+import { getPage, getPages } from "@/app/source";
 import type { Metadata } from "next";
-import { MDXContent } from "next-docs-ui/mdx";
-import { DocsPage } from "next-docs-ui/page";
-import { findNeighbour } from "next-docs-zeta/server";
+import { DocsPage, DocsBody } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
-import { utils, tree, pages } from "@/app/source";
 
-export default function Page({
+export default async function Page({
   params,
 }: {
   params: { slug?: string[] };
-}): JSX.Element {
-  const page = utils.getPage(params.slug);
+}) {
+  const page = getPage(params.slug);
 
-  if (!page) {
+  if (page == null) {
     notFound();
   }
 
-  const neighbour = findNeighbour(tree, utils.getPageUrl(params.slug));
-  // eslint-disable-next-line @typescript-eslint/unbound-method -- Component
-  const Content = page.data.default;
+  const MDX = page.data.exports.default;
 
   return (
-    <DocsPage footer={neighbour} toc={page.data.toc}>
-      <MDXContent>
-        <h1>{page.matter.title}</h1>
-        <Content />
-      </MDXContent>
+    <DocsPage toc={page.data.exports.toc} full={page.data.full}>
+      <DocsBody>
+        <h1>{page.data.title}</h1>
+        <MDX />
+      </DocsBody>
     </DocsPage>
   );
 }
 
-export function generateStaticParams(): { slug: string[] }[] {
-  return pages.map((page) => ({
+export async function generateStaticParams() {
+  return getPages().map((page) => ({
     slug: page.slugs,
   }));
 }
 
-export function generateMetadata({
-  params,
-}: {
-  params: { slug?: string[] };
-}): Metadata {
-  const page = utils.getPage(params.slug);
+export function generateMetadata({ params }: { params: { slug?: string[] } }) {
+  const page = getPage(params.slug);
 
-  if (!page) notFound();
+  if (page == null) notFound();
 
   return {
-    title: page.matter.title,
-    description: page.matter.description,
-  };
+    title: page.data.title,
+    description: page.data.description,
+  } satisfies Metadata;
 }

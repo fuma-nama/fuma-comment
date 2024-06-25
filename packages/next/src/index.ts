@@ -10,7 +10,7 @@ type RouteHandler = (
     params: {
       comment?: string[];
     };
-  }
+  },
 ) => Promise<NextResponse>;
 
 interface NextCommentRouter {

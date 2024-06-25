@@ -60,7 +60,7 @@ export function Comment({
       <div
         className={cn(
           "fc-group fc-relative fc-flex fc-flex-row fc-gap-2 fc-px-3 fc-py-4 fc-text-sm",
-          canDisplayComments && "fc-pb-2"
+          canDisplayComments && "fc-pb-2",
         )}
         data-fc-comment={context.comment.id}
         data-fc-edit={context.isEditing}
@@ -113,7 +113,7 @@ const rateVariants = cva(
         false: "fc-text-muted-foreground",
       },
     },
-  }
+  },
 );
 
 function CommentActions(): JSX.Element {
@@ -133,7 +133,7 @@ function CommentActions(): JSX.Element {
         : {
             method: "POST",
             body: JSON.stringify({ like: value }),
-          }
+          },
     );
 
     onLikeUpdated(comment.id, value);
@@ -149,7 +149,7 @@ function CommentActions(): JSX.Element {
         className={cn(
           rateVariants({
             active: comment.liked === true,
-          })
+          }),
         )}
         disabled={!isAuthenticated}
         onClick={() => {
@@ -164,7 +164,7 @@ function CommentActions(): JSX.Element {
         className={cn(
           rateVariants({
             active: comment.liked === false,
-          })
+          }),
         )}
         disabled={!isAuthenticated}
         onClick={() => {
@@ -199,7 +199,7 @@ function CommentMenu(): JSX.Element {
       onSuccess() {
         onCommentDeleted(comment);
       },
-    }
+    },
   );
 
   const canEdit = session !== null && session.id === comment.author.id;
@@ -231,7 +231,7 @@ function CommentMenu(): JSX.Element {
             variant: "ghost",
             className:
               "fc-ml-auto fc-opacity-0 group-hover:fc-opacity-100 rtx-state-open:fc-bg-accent rtx-state-open:fc-opacity-100 disabled:fc-invisible",
-          })
+          }),
         )}
         disabled={isEditing || isReplying}
       >
@@ -265,7 +265,7 @@ function CommentReplies(): JSX.Element {
         updateComment(comment.id, (c) => ({ ...c, replies: data.length }));
         syncComments(data);
       },
-    }
+    },
   );
 
   const onOpen = (): void => {

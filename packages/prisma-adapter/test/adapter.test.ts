@@ -107,7 +107,7 @@ describe("Adapter", () => {
       body: { content: newContent },
     });
     const row = (await adapter.getComments({ sort: "oldest" })).find(
-      (comment) => comment.id === 3
+      (comment) => comment.id === 3,
     );
 
     expect(row?.content, "Content has updated").toStrictEqual(newContent);
@@ -119,7 +119,7 @@ describe("Adapter", () => {
       auth: { id: "mock_user" },
     });
     const hasRemoved = (await adapter.getComments({ sort: "oldest" })).every(
-      (comment) => comment.id !== 3
+      (comment) => comment.id !== 3,
     );
 
     expect(hasRemoved, "Comment should be removed").toBe(true);

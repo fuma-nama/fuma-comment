@@ -6,7 +6,7 @@ export interface FetcherError {
 
 export async function fetcher<T = void>(
   url: string,
-  init?: RequestInit
+  init?: RequestInit,
 ): Promise<T> {
   const response = await fetch(url, init);
 
@@ -32,7 +32,7 @@ export async function fetcher<T = void>(
 
 export function getCommentsKey(
   thread?: number | null,
-  page?: string | null
+  page?: string | null,
 ): [api: string, thread: number | undefined, page: string | undefined] {
   return ["/api/comments", thread ?? undefined, page ?? undefined];
 }

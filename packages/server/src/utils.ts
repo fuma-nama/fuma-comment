@@ -16,7 +16,7 @@ const defaultSerializers: Serializers = {
 
 export function getTextFromContent(
   content: Content,
-  customSerializer?: Serializers
+  customSerializer?: Serializers,
 ): string {
   const serializers = { ...defaultSerializers, ...customSerializer };
   const child = (

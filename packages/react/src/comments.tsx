@@ -19,7 +19,7 @@ export const Comments = forwardRef<HTMLDivElement, CommentsProps>(
         <div
           className={cn(
             "fc-rounded-xl fc-border fc-border-border fc-bg-background fc-text-foreground",
-            className
+            className,
           )}
           ref={ref}
           {...props}
@@ -32,7 +32,7 @@ export const Comments = forwardRef<HTMLDivElement, CommentsProps>(
         </div>
       </atom.CommentsProvider>
     );
-  }
+  },
 );
 
 Comments.displayName = "Comments";

@@ -1,8 +1,8 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
-  "globalEnv": ["NEXT_PUBLIC_CLOUDINARY_CLOUDNAME"],
-  "pipeline": {
+  "globalEnv": ["NEXT_PUBLIC_CLOUDINARY_CLOUDNAME", "DATABASE_URL", "GITHUB_ID", "GITHUB_SECRET", "NEXTAUTH_SECRET"],
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]

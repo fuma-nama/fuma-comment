@@ -21,7 +21,7 @@ export function useAuthContext(): AuthContextType {
 
   if (!auth)
     throw new Error(
-      "<Comments /> component must be wrapped under <AuthProvider />"
+      "<Comments /> component must be wrapped under <AuthProvider />",
     );
   return auth;
 }
@@ -38,7 +38,7 @@ export function AuthProvider({
 }: AuthProviderProps): JSX.Element {
   const value = useMemo(
     () => ({ session, status, signIn }),
-    [session, status, signIn]
+    [session, status, signIn],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
