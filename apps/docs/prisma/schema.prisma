@@ -1,7 +1,7 @@
 model Comment {
     id Int @id @default(autoincrement())
     page String? @db.VarChar(256)
-    thread Int?
+    thread Int? @map("threadId")
     author String @db.VarChar(256)
     content Json @db.Json
     timestamp DateTime @db.Timestamp() @default(now())
