@@ -10,13 +10,13 @@ export function DialogContent({
   children,
   className,
   ...props
-}: Primitive.DialogContentProps): JSX.Element {
+}: Primitive.DialogContentProps): React.ReactElement {
   return (
     <Primitive.Portal>
       <Primitive.Overlay className="fc-fixed fc-inset-0 fc-bg-background/70 rtx-state-closed:fc-animate-overlayHide rtx-state-open:fc-animate-overlayShow" />
       <Primitive.Content
         className={cn(
-          "fc-fixed fc-left-[50%] fc-top-[50%] fc-flex fc-w-full fc-max-w-md fc-translate-x-[-50%] fc-translate-y-[-50%] fc-flex-col fc-rounded-2xl fc-border fc-border-border fc-bg-popover fc-p-4 fc-shadow-lg rtx-state-closed:fc-animate-dialogHide rtx-state-open:fc-animate-dialogShow",
+          "fc-fixed fc-left-1/2 fc-top-1/2 fc-flex fc-w-full fc-max-w-md -fc-translate-x-1/2 -fc-translate-y-1/2 fc-flex-col fc-rounded-2xl fc-border fc-border-border fc-bg-popover fc-p-4 fc-shadow-lg rtx-state-closed:fc-animate-dialogHide rtx-state-open:fc-animate-dialogShow",
           className,
         )}
         {...props}
