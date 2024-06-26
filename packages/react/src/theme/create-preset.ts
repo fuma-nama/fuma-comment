@@ -36,8 +36,8 @@ export function createPreset(): PresetsConfig {
           },
         },
         animation: {
-          fadeIn: "fadeIn 400ms cubic-bezier(0.16, 1, 0.3, 1)",
-          fadeOut: "fadeOut 400ms cubic-bezier(0.16, 1, 0.3, 1)",
+          fadeIn: "fadeIn 200ms cubic-bezier(0.16, 1, 0.3, 1)",
+          fadeOut: "fadeOut 200ms cubic-bezier(0.16, 1, 0.3, 1)",
           overlayShow: "overlayShow 400ms cubic-bezier(0.16, 1, 0.3, 1)",
           overlayHide: "overlayHide 400ms cubic-bezier(0.16, 1, 0.3, 1)",
           dialogShow: "dialogShow 400ms cubic-bezier(0.16, 1, 0.3, 1)",

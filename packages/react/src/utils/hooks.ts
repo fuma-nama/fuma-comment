@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
  *
  * For instance, you added a `onClick` listener to button. When the listener is re-constructed in the next render, the new listener will called instead
  */
-export function useLatestCallback<T extends (...args: unknown[]) => unknown>(
+export function useLatestCallback<T extends (...args: never[]) => unknown>(
   latest: T,
 ): T {
   const ref = useRef<T>(latest);

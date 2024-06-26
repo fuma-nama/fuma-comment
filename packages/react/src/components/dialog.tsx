@@ -1,10 +1,11 @@
 import * as Primitive from "@radix-ui/react-dialog";
-import { XIcon } from "lucide-react";
+import { X } from "lucide-react";
 import { cn } from "../utils/cn";
 import { buttonVariants } from "./button";
 
 export const Dialog = Primitive.Root;
 export const DialogTrigger = Primitive.Trigger;
+export const DialogDescription = Primitive.Description;
 
 export function DialogContent({
   children,
@@ -27,11 +28,11 @@ export function DialogContent({
             buttonVariants({
               variant: "ghost",
               size: "icon",
-              className: "absolute right-3 top-3",
+              className: "absolute text-fc-muted-foreground right-3 top-3",
             }),
           )}
         >
-          <XIcon className="size-4" />
+          <X className="size-4" />
         </Primitive.Close>
       </Primitive.Content>
     </Primitive.Portal>

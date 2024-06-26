@@ -10,5 +10,11 @@ module.exports = {
   ],
   rules: {
     "@typescript-eslint/no-invalid-void-type": "off",
+    "tailwindcss/no-custom-classname": [
+      "warn",
+      {
+        whitelist: ["is-editor-empty", "tiptap"],
+      },
+    ],
   },
 };

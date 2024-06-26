@@ -1,4 +1,4 @@
-import { useState, useMemo, useLayoutEffect } from "react";
+import { useState, useMemo, useLayoutEffect, useCallback } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
 import useSWRMutation from "swr/mutation";
 import { cva } from "cva";
@@ -139,9 +139,9 @@ function CommentActions(): JSX.Element {
     onLikeUpdated(comment.id, value);
   };
 
-  const onReply = (): void => {
+  const onReply = useCallback(() => {
     setReply(true);
-  };
+  }, [setReply]);
 
   return (
     <div className="mt-2 flex flex-row gap-1">

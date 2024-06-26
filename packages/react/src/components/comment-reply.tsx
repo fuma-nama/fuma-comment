@@ -1,4 +1,5 @@
 import useSWRMutation from "swr/mutation";
+import { useRef, useState } from "react";
 import { cn } from "../utils/cn";
 import {
   type FetcherError,
@@ -8,14 +9,16 @@ import {
 import { useCommentContext } from "../contexts/comment";
 import { onCommentReplied } from "../utils/comment-manager";
 import { useCommentsContext } from "../contexts/comments";
+import { useLatestCallback } from "../utils/hooks";
 import { buttonVariants } from "./button";
-import { CommentEditor, useCommentEditor } from "./editor";
+import { CommentEditor, type UseCommentEditor } from "./editor";
 import { Spinner } from "./spinner";
 
-export function CommentReply(): JSX.Element {
+export function CommentReply(): React.ReactElement {
   const { page } = useCommentsContext();
+  const [isEmpty, setIsEmpty] = useState(true);
+  const editorRef = useRef<UseCommentEditor>();
   const { comment, setReply } = useCommentContext();
-  const [editor, setEditor] = useCommentEditor();
 
   const mutation = useSWRMutation(
     getCommentsKey(comment.id, page),
@@ -28,37 +31,39 @@ export function CommentReply(): JSX.Element {
     {
       onSuccess: () => {
         onCommentReplied(comment.id);
-        onClose();
+        setReply(false);
       },
     },
   );
 
-  const onClose = (): void => {
+  const onClose = useLatestCallback(() => {
     setReply(false);
-  };
+  });
 
   const disabled = mutation.isMutating;
 
-  const submit = (): void => {
-    if (!editor) return;
-    const content = editor.getValue();
+  const submit = useLatestCallback(() => {
+    if (!editorRef.current) return;
+    const content = editorRef.current.getJSON();
 
     if (content.length === 0) return;
     void mutation.trigger({ content });
-  };
+  });
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  const onSubmit = useLatestCallback((e: React.FormEvent<HTMLFormElement>) => {
     submit();
     e.preventDefault();
-  };
+  });
 
   return (
     <form className="mt-2" onSubmit={onSubmit}>
       <CommentEditor
         autofocus
         disabled={disabled}
-        editor={editor}
-        onChange={setEditor}
+        editorRef={editorRef}
+        onChange={(v) => {
+          setIsEmpty(v.isEmpty);
+        }}
         onEscape={onClose}
         onSubmit={submit}
         placeholder="Reply to comment"
@@ -66,7 +71,7 @@ export function CommentReply(): JSX.Element {
       <div className="mt-2 flex flex-row gap-1">
         <button
           className={cn(buttonVariants({ className: "gap-2" }))}
-          disabled={disabled || (editor?.isEmpty ?? true)}
+          disabled={disabled || isEmpty}
           type="submit"
         >
           {mutation.isMutating ? <Spinner /> : null}

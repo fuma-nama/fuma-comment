@@ -1,5 +1,6 @@
 import useSWRMutation from "swr/mutation";
 import { SendIcon } from "lucide-react";
+import { useRef, useState } from "react";
 import { useAuthContext } from "../contexts/auth";
 import { cn } from "../utils/cn";
 import {
@@ -8,14 +9,16 @@ import {
   postComment,
 } from "../utils/fetcher";
 import { useCommentsContext } from "../contexts/comments";
+import { useLatestCallback } from "../utils/hooks";
 import { buttonVariants } from "./button";
-import { CommentEditor, useCommentEditor } from "./editor";
+import { CommentEditor, type UseCommentEditor } from "./editor";
 import { Spinner } from "./spinner";
 
-export function CommentPost(): JSX.Element {
+export function CommentPost(): React.ReactElement {
   const auth = useAuthContext();
   const { page } = useCommentsContext();
-  const [editor, setEditor] = useCommentEditor();
+  const [isEmpty, setIsEmpty] = useState(true);
+  const editorRef = useRef<UseCommentEditor>();
   const mutation = useSWRMutation(
     getCommentsKey(undefined, page),
     (key, { arg }: { arg: { content: object } }) =>
@@ -26,32 +29,34 @@ export function CommentPost(): JSX.Element {
       }),
     {
       onSuccess: () => {
-        editor?.clearValue();
+        editorRef.current?.commands.clearContent(true);
       },
     },
   );
   const disabled = mutation.isMutating || auth.status !== "authenticated";
 
-  const submit = (): void => {
-    if (!editor) return;
-    const content = editor.getValue();
+  const submit = useLatestCallback(() => {
+    if (!editorRef.current) return;
+    const content = editorRef.current.getJSON();
 
     if (content.length === 0) return;
     void mutation.trigger({ content });
-  };
+  });
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  const onSubmit = useLatestCallback((e: React.FormEvent<HTMLFormElement>) => {
     submit();
     e.preventDefault();
-  };
+  });
 
   return (
     <form onSubmit={onSubmit}>
       <div className="relative">
         <CommentEditor
+          editorRef={editorRef}
           disabled={disabled}
-          editor={editor}
-          onChange={setEditor}
+          onChange={(v) => {
+            setIsEmpty(v.isEmpty);
+          }}
           onSubmit={submit}
           placeholder="Leave comment"
         />
@@ -63,7 +68,7 @@ export function CommentPost(): JSX.Element {
               size: "icon",
             }),
           )}
-          disabled={disabled || (editor?.isEmpty ?? true)}
+          disabled={disabled || isEmpty}
           type="submit"
         >
           {mutation.isMutating ? <Spinner /> : <SendIcon className="size-4" />}
