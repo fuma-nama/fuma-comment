@@ -18,14 +18,14 @@ export const Comments = forwardRef<HTMLDivElement, CommentsProps>(
       <atom.CommentsProvider page={page}>
         <div
           className={cn(
-            "fc-rounded-xl fc-border fc-border-border fc-bg-background fc-text-foreground",
+            "rounded-xl border border-fc-border bg-fc-background text-fc-foreground",
             className,
           )}
           ref={ref}
           {...props}
         >
-          <div className="fc-border-b fc-border-border fc-p-3">
-            {title ? <div className="fc-mb-2">{title}</div> : null}
+          <div className="border-b border-fc-border p-3">
+            {title ? <div className="mb-2">{title}</div> : null}
             <atom.CommentsPost />
           </div>
           <atom.CommentsList />

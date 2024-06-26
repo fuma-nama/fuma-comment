@@ -4,11 +4,11 @@ import { forwardRef } from "react";
 import { cn } from "../utils/cn";
 
 const menuItemVariants = cva(
-  "fc-cursor-pointer fc-px-3 fc-py-1.5 fc-text-left fc-transition-colors focus-visible:fc-outline-none disabled:fc-cursor-not-allowed disabled:fc-opacity-80 rtx-highlighted:fc-bg-accent rtx-highlighted:fc-text-accent-foreground",
+  "cursor-pointer px-3 py-1.5 text-left transition-colors focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-80 data-[highlighted]:bg-fc-accent data-[highlighted]:text-fc-accent-foreground",
 );
 
 const menuItemsVariants = cva(
-  "fc-flex fc-w-56 fc-animate-fadeIn fc-flex-col fc-divide-y fc-divide-border fc-overflow-hidden fc-rounded-md fc-bg-popover fc-text-sm fc-text-popover-foreground fc-shadow-lg focus-visible:fc-outline-none focus-visible:fc-ring-1 focus-visible:fc-ring-ring rtx-state-closed:fc-animate-fadeOut",
+  "flex w-56 animate-fadeIn flex-col divide-y divide-fc-border overflow-hidden rounded-md bg-fc-popover text-sm text-fc-popover-foreground shadow-lg focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-fc-ring data-[state=closed]:animate-fadeOut",
 );
 
 const MenuItems = forwardRef<

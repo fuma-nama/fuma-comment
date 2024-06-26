@@ -47,7 +47,7 @@ export function CommentPost(): JSX.Element {
 
   return (
     <form onSubmit={onSubmit}>
-      <div className="fc-relative">
+      <div className="relative">
         <CommentEditor
           disabled={disabled}
           editor={editor}
@@ -59,22 +59,18 @@ export function CommentPost(): JSX.Element {
           aria-label="Send Comment"
           className={cn(
             buttonVariants({
-              className: "fc-absolute fc-right-2 fc-bottom-1.5",
+              className: "absolute right-2 bottom-1.5",
               size: "icon",
             }),
           )}
           disabled={disabled || (editor?.isEmpty ?? true)}
           type="submit"
         >
-          {mutation.isMutating ? (
-            <Spinner />
-          ) : (
-            <SendIcon className="fc-h-4 fc-w-4" />
-          )}
+          {mutation.isMutating ? <Spinner /> : <SendIcon className="size-4" />}
         </button>
       </div>
       {mutation.error ? (
-        <p className="fc-mt-1 fc-text-sm fc-text-error">
+        <p className="mt-1 text-sm text-fc-error">
           {(mutation.error as FetcherError).message}
         </p>
       ) : null}

@@ -15,7 +15,7 @@ type BaseRenderer = (props: {
 }) => JSX.Element;
 
 export const codeVariants = cva(
-  "fc-rounded-sm fc-border fc-border-border fc-bg-muted fc-p-0.5",
+  "rounded-sm border border-fc-border bg-fc-muted p-0.5",
 );
 
 const defaultRenderer: BaseRenderer = (props) => <span {...props} />;
@@ -30,20 +30,20 @@ type Marks = Record<
 
 const marks: Marks = {
   bold: {
-    className: "fc-font-bold",
+    className: "font-bold",
   },
   strike: {
-    className: "fc-line-through",
+    className: "line-through",
   },
   italic: {
-    className: "fc-italic",
+    className: "italic",
   },
   code: {
     className: codeVariants(),
     element: () => (props) => <code {...props} />,
   },
   link: {
-    className: "fc-font-medium fc-underline",
+    className: "font-medium underline",
     element(mark) {
       const href = mark.attrs?.href;
       if (typeof href === "string")
@@ -96,7 +96,7 @@ export function ContentRenderer({
     return (
       <img
         alt={attrs.alt ?? "upload"}
-        className="fc-max-h-60 fc-w-auto fc-max-w-full fc-rounded-lg"
+        className="max-h-60 w-auto max-w-full rounded-lg"
         height={attrs.height}
         src={content.attrs.src}
         width={attrs.width}
@@ -114,11 +114,7 @@ export function ContentRenderer({
   }
 
   if (content.type === "doc") {
-    return (
-      <div className="fc-grid fc-whitespace-pre-wrap fc-break-words">
-        {joined}
-      </div>
-    );
+    return <div className="grid whitespace-pre-wrap break-words">{joined}</div>;
   }
 
   return <>{joined}</>;

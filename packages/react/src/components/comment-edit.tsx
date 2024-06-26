@@ -61,11 +61,11 @@ export function CommentEdit(): JSX.Element {
         onSubmit={submit}
         placeholder="Edit Message"
       />
-      <div className="fc-mt-2 fc-flex fc-flex-row fc-gap-1">
+      <div className="mt-2 flex flex-row gap-1">
         <button
           aria-label="Edit"
           className={cn(
-            buttonVariants({ variant: "primary", className: "fc-gap-2" }),
+            buttonVariants({ variant: "primary", className: "gap-2" }),
           )}
           disabled={mutation.isMutating || (editor?.isEmpty ?? true)}
           type="submit"
@@ -73,7 +73,7 @@ export function CommentEdit(): JSX.Element {
           {mutation.isMutating ? (
             <Spinner />
           ) : (
-            <PencilIcon className="fc-h-4 fc-w-4" />
+            <PencilIcon className="size-4" />
           )}
           Edit
         </button>

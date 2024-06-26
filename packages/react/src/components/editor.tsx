@@ -61,19 +61,17 @@ export function useCommentEditor(): [
 }
 
 const editorVariants = cva(
-  "fc-rounded-xl fc-border fc-border-border fc-bg-card fc-pb-1 fc-text-sm fc-transition-colors focus-within:fc-ring-2 focus-within:fc-ring-ring aria-disabled:fc-cursor-not-allowed aria-disabled:fc-opacity-80",
+  "rounded-xl border border-fc-border bg-fc-card pb-1 text-sm transition-colors focus-within:ring-2 focus-within:ring-fc-ring aria-disabled:cursor-not-allowed aria-disabled:opacity-80",
 );
 
-const tiptapVariants = cva(
-  "fc-min-h-[40px] fc-px-3 fc-py-2 focus-visible:fc-outline-none",
-);
+const tiptapVariants = cva("min-h-[40px] px-3 py-2 focus-visible:outline-none");
 
 const toggleVariants = cva(
-  "fc-inline-flex fc-rounded-md fc-p-1 disabled:fc-cursor-not-allowed disabled:fc-opacity-50",
+  "inline-flex rounded-md p-1 disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       active: {
-        true: "fc-bg-accent fc-text-accent-foreground",
+        true: "bg-fc-accent text-fc-accent-foreground",
       },
     },
   },
@@ -212,23 +210,23 @@ function ActionBar({ editor }: { editor: Editor }): JSX.Element {
   const storage = useStorage();
 
   return (
-    <div className="fc-flex fc-flex-row fc-items-center fc-gap-0.5 fc-px-1.5">
+    <div className="flex flex-row items-center gap-0.5 px-1.5">
       {[
         {
           name: "bold",
-          icon: <BoldIcon className="fc-h-4 fc-w-4" />,
+          icon: <BoldIcon className="size-4" />,
         },
         {
           name: "strike",
-          icon: <StrikethroughIcon className="fc-h-4 fc-w-4" />,
+          icon: <StrikethroughIcon className="size-4" />,
         },
         {
           name: "italic",
-          icon: <ItalicIcon className="fc-h-4 fc-w-4" />,
+          icon: <ItalicIcon className="size-4" />,
         },
         {
           name: "code",
-          icon: <CodeIcon className="fc-h-4 fc-w-4" />,
+          icon: <CodeIcon className="size-4" />,
         },
       ].map((mark) => (
         <button
@@ -252,7 +250,7 @@ function ActionBar({ editor }: { editor: Editor }): JSX.Element {
       <UpdateLink editor={editor} />
       {storage.enabled ? (
         <>
-          <div className="fc-mx-1 fc-h-4 fc-w-px fc-bg-border" role="none" />
+          <div className="mx-1 h-4 w-px bg-fc-border" role="none" />
           <UploadMenu editor={editor} />
         </>
       ) : null}
@@ -271,7 +269,7 @@ function UploadMenu({ editor }: { editor: Editor }): JSX.Element {
         disabled={!editor.can().setImage({ src: "" }) || !editor.isEditable}
         type="button"
       >
-        <ImageIcon className="fc-h-4 fc-w-4" />
+        <ImageIcon className="size-4" />
       </DialogTrigger>
       <DialogContent
         onCloseAutoFocus={(e) => {
@@ -337,7 +335,7 @@ function UploadDialogContent({
   };
 
   return (
-    <form className="fc-flex fc-flex-col" onSubmit={onSubmit}>
+    <form className="flex flex-col" onSubmit={onSubmit}>
       <input
         accept="image/png, image/jpeg"
         hidden
@@ -347,23 +345,23 @@ function UploadDialogContent({
       />
       {fileUrl ? (
         <label
-          className="fc-cursor-pointer fc-overflow-hidden fc-rounded-xl fc-border fc-border-border fc-bg-muted"
+          className="cursor-pointer overflow-hidden rounded-xl border border-fc-border bg-fc-muted"
           htmlFor="image"
         >
-          <img alt="preview" className="fc-mx-auto fc-max-h-96" src={fileUrl} />
+          <img alt="preview" className="mx-auto max-h-96" src={fileUrl} />
         </label>
       ) : (
         <label
-          className="fc-cursor-pointer fc-rounded-xl fc-border fc-border-border fc-bg-background fc-p-4 fc-text-center fc-text-sm fc-font-medium fc-text-muted-foreground"
+          className="cursor-pointer rounded-xl border border-fc-border bg-fc-background p-4 text-center text-sm font-medium text-fc-muted-foreground"
           htmlFor="image"
         >
           Upload Image
         </label>
       )}
 
-      <div className="fc-mt-2 fc-flex fc-gap-1">
+      <div className="mt-2 flex gap-1">
         <button
-          className={cn(buttonVariants({ className: "fc-gap-2" }))}
+          className={cn(buttonVariants({ className: "gap-2" }))}
           disabled={mutation.isMutating}
           type="submit"
         >
@@ -386,7 +384,7 @@ function UpdateLink({ editor }: { editor: Editor }): JSX.Element {
         disabled={!editor.can().setLink({ href: "" }) || !editor.isEditable}
         type="button"
       >
-        <LinkIcon className="fc-h-4 fc-w-4" />
+        <LinkIcon className="size-4" />
       </DialogTrigger>
       <DialogContent
         onCloseAutoFocus={(e) => {
@@ -461,7 +459,7 @@ function UpdateLinkDialogContent({
   };
 
   return (
-    <form className="fc-flex fc-flex-col fc-gap-1" onSubmit={onSubmit}>
+    <form className="flex flex-col gap-1" onSubmit={onSubmit}>
       <input
         className={cn(inputVariants())}
         id="name"
@@ -481,7 +479,7 @@ function UpdateLinkDialogContent({
         type="url"
         value={value}
       />
-      <div className="fc-mt-2 fc-flex fc-gap-1">
+      <div className="mt-2 flex gap-1">
         <button className={cn(buttonVariants())} type="submit">
           Save
         </button>

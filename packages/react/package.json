@@ -2,7 +2,7 @@
   "name": "@fuma-comment/react",
   "version": "0.1.1",
   "main": "./dist/index.js",
-  "types": "./dist/index.d.mts",
+  "types": "./dist/index.d.ts",
   "author": "Fuma Nama",
   "homepage": "https://fuma-comment.vercel.app",
   "repository": "https://github.com/fuma-nama/fuma-comment",
@@ -10,18 +10,30 @@
     "./dist"
   ],
   "license": "MIT",
+  "type": "module",
   "exports": {
-    ".": "./dist/index.js",
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
     "./style.css": "./dist/style.css",
     "./atom": {
       "import": "./dist/atom.js",
-      "types": "./dist/atom.d.mts"
+      "types": "./dist/atom.d.ts"
+    },
+    "./theme": {
+      "import": "./dist/theme/index.js",
+      "require": "./dist/theme/index.js",
+      "types": "./dist/theme/index.d.ts"
     }
   },
   "typesVersions": {
     "*": {
       "atom": [
-        "./dist/atom.d.mts"
+        "./dist/atom.d.ts"
+      ],
+      "theme": [
+        "./dist/theme/index.d.ts"
       ]
     }
   },

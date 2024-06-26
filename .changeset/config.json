@@ -5,7 +5,6 @@
   "fixed": [],
   "linked": [
     [
-      "@fuma-comment/kysely-adapter",
       "@fuma-comment/prisma-adapter",
       "@fuma-comment/server",
       "@fuma-comment/react",

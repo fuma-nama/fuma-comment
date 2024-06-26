@@ -59,8 +59,8 @@ export function Comment({
     <CommentProvider value={context}>
       <div
         className={cn(
-          "fc-group fc-relative fc-flex fc-flex-row fc-gap-2 fc-px-3 fc-py-4 fc-text-sm",
-          canDisplayComments && "fc-pb-2",
+          "group relative flex flex-row gap-2 px-3 py-4 text-sm",
+          canDisplayComments && "pb-2",
         )}
         data-fc-comment={context.comment.id}
         data-fc-edit={context.isEditing}
@@ -69,18 +69,18 @@ export function Comment({
         {comment.author.image ? (
           <img
             alt="avatar"
-            className="fc-h-8 fc-w-8 fc-select-none fc-rounded-full fc-bg-muted"
+            className="size-8 select-none rounded-full bg-fc-muted"
             src={comment.author.image}
           />
         ) : (
-          <div className="fc-h-8 fc-w-8 fc-rounded-full fc-bg-gradient-to-br fc-from-blue-600 fc-to-red-600" />
+          <div className="size-8 rounded-full bg-gradient-to-br from-blue-600 to-red-600" />
         )}
-        <div className="fc-w-0 fc-flex-1">
-          <div className="fc-mb-2 fc-flex fc-flex-row fc-items-center fc-gap-2">
-            <span className="fc-overflow-hidden fc-overflow-ellipsis fc-whitespace-nowrap fc-font-semibold">
+        <div className="w-0 flex-1">
+          <div className="mb-2 flex flex-row items-center gap-2">
+            <span className="truncate font-semibold">
               {comment.author.name}
             </span>
-            <span className="fc-text-xs fc-text-muted-foreground">
+            <span className="text-xs text-fc-muted-foreground">
               {timestamp}
             </span>
             <CommentMenu />
@@ -104,13 +104,13 @@ const rateVariants = cva(
   buttonVariants({
     variant: "secondary",
     size: "small",
-    className: "fc-gap-1.5",
+    className: "gap-1.5",
   }),
   {
     variants: {
       active: {
-        true: "fc-bg-accent fc-text-accent-foreground",
-        false: "fc-text-muted-foreground",
+        true: "bg-fc-accent text-fc-accent-foreground",
+        false: "text-fc-muted-foreground",
       },
     },
   },
@@ -144,7 +144,7 @@ function CommentActions(): JSX.Element {
   };
 
   return (
-    <div className="fc-mt-2 fc-flex fc-flex-row fc-gap-1">
+    <div className="mt-2 flex flex-row gap-1">
       <button
         className={cn(
           rateVariants({
@@ -157,7 +157,7 @@ function CommentActions(): JSX.Element {
         }}
         type="button"
       >
-        <ThumbsUpIcon aria-label="Like" className="fc-h-4 fc-w-4" />
+        <ThumbsUpIcon aria-label="Like" className="size-4" />
         {comment.likes}
       </button>
       <button
@@ -172,7 +172,7 @@ function CommentActions(): JSX.Element {
         }}
         type="button"
       >
-        <ThumbsDownIcon aria-label="Dislike" className="fc-h-4 fc-w-4" />
+        <ThumbsDownIcon aria-label="Dislike" className="size-4" />
         {comment.dislikes}
       </button>
       {!comment.threadId && isAuthenticated ? (
@@ -230,12 +230,12 @@ function CommentMenu(): JSX.Element {
             size: "icon",
             variant: "ghost",
             className:
-              "fc-ml-auto fc-opacity-0 group-hover:fc-opacity-100 rtx-state-open:fc-bg-accent rtx-state-open:fc-opacity-100 disabled:fc-invisible",
+              "ml-auto opacity-0 group-hover:opacity-100 data-[state=open]:bg-fc-accent data-[state=open]:opacity-100 disabled:invisible",
           }),
         )}
         disabled={isEditing || isReplying}
       >
-        <MoreVerticalIcon className="fc-h-4 fc-w-4" />
+        <MoreVerticalIcon className="size-4" />
       </MenuTrigger>
       <MenuItems
         onCloseAutoFocus={(e) => {
@@ -273,13 +273,13 @@ function CommentReplies(): JSX.Element {
   };
 
   return (
-    <div className="fc-ml-10">
+    <div className="ml-10">
       <button
         className={cn(buttonVariants({ variant: "ghost", size: "medium" }))}
         onClick={onOpen}
         type="button"
       >
-        {open && query.isLoading ? <Spinner className="fc-mr-2" /> : null}
+        {open && query.isLoading ? <Spinner className="mr-2" /> : null}
         {comment.replies} Replies
       </button>
       {open ? (

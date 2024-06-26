@@ -13,10 +13,10 @@ export function DialogContent({
 }: Primitive.DialogContentProps): React.ReactElement {
   return (
     <Primitive.Portal>
-      <Primitive.Overlay className="fc-fixed fc-inset-0 fc-bg-background/70 rtx-state-closed:fc-animate-overlayHide rtx-state-open:fc-animate-overlayShow" />
+      <Primitive.Overlay className="fixed inset-0 bg-fc-background/70 data-[state=close]:animate-overlayHide data-[state=open]:animate-overlayShow" />
       <Primitive.Content
         className={cn(
-          "fc-fixed fc-left-1/2 fc-top-1/2 fc-flex fc-w-full fc-max-w-md -fc-translate-x-1/2 -fc-translate-y-1/2 fc-flex-col fc-rounded-2xl fc-border fc-border-border fc-bg-popover fc-p-4 fc-shadow-lg rtx-state-closed:fc-animate-dialogHide rtx-state-open:fc-animate-dialogShow",
+          "fixed left-1/2 top-1/2 flex w-full max-w-md -translate-x-1/2 -translate-y-1/2 flex-col rounded-2xl border border-fc-border bg-fc-popover p-4 shadow-lg data-[state=closed]:animate-dialogHide data-[state=open]:animate-dialogShow",
           className,
         )}
         {...props}
@@ -27,11 +27,11 @@ export function DialogContent({
             buttonVariants({
               variant: "ghost",
               size: "icon",
-              className: "fc-absolute fc-right-3 fc-top-3",
+              className: "absolute right-3 top-3",
             }),
           )}
         >
-          <XIcon className="fc-h-4 fc-w-4" />
+          <XIcon className="size-4" />
         </Primitive.Close>
       </Primitive.Content>
     </Primitive.Portal>
@@ -43,10 +43,7 @@ export function DialogTitle({
   ...props
 }: Primitive.DialogTitleProps): JSX.Element {
   return (
-    <Primitive.Title
-      className={cn("fc-mb-2 fc-font-semibold", className)}
-      {...props}
-    >
+    <Primitive.Title className={cn("mb-2 font-semibold", className)} {...props}>
       {props.children}
     </Primitive.Title>
   );

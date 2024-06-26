@@ -1,3 +1,5 @@
+"use client";
+
 import {
   useMemo,
   type ReactNode,
@@ -48,11 +50,7 @@ export const CommentsPost = forwardRef<
   const auth = useAuthContext();
 
   return (
-    <div
-      className={cn("fc-flex fc-flex-col fc-gap-2", className)}
-      ref={ref}
-      {...props}
-    >
+    <div className={cn("flex flex-col gap-2", className)} ref={ref} {...props}>
       <CommentPost />
       {auth.status === "unauthenticated" && <AuthButton />}
     </div>
@@ -78,13 +76,13 @@ export const CommentsList = forwardRef<
 
   return (
     <div
-      className={cn("fc-flex fc-min-h-[80px] fc-flex-col", className)}
+      className={cn("flex min-h-[80px] flex-col", className)}
       ref={ref}
       {...props}
     >
-      {query.isLoading ? <Spinner className="fc-m-auto fc-h-8 fc-w-8" /> : null}
+      {query.isLoading ? <Spinner className="m-auto size-8" /> : null}
       {query.data?.length === 0 && (
-        <p className="fc-m-auto fc-text-center fc-text-sm fc-text-muted-foreground">
+        <p className="m-auto text-center text-sm text-fc-muted-foreground">
           No comments
         </p>
       )}

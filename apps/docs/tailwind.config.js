@@ -1,12 +1,13 @@
-import { createPreset } from 'fumadocs-ui/tailwind-plugin';
+import { createPreset as createCommentPreset } from "@fuma-comment/react/theme";
+import { createPreset as createDocsPreset } from "fumadocs-ui/tailwind-plugin";
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'class',
-  presets: [createPreset()],
+  darkMode: "class",
+  presets: [createCommentPreset(), createDocsPreset()],
   content: [
-    './node_modules/fumadocs-ui/dist/**/*.js',
-
+    "./node_modules/fumadocs-ui/dist/**/*.js",
+    "./node_modules/@fuma-comment/react/dist/**/*.js",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./content/**/*.{js,ts,jsx,tsx,mdx}",
@@ -24,6 +25,6 @@ export default {
           "2xl": "1400px",
         },
       },
-    }
-  }
+    },
+  },
 };

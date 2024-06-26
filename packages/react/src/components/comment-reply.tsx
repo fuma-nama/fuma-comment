@@ -53,7 +53,7 @@ export function CommentReply(): JSX.Element {
   };
 
   return (
-    <form className="fc-mt-2" onSubmit={onSubmit}>
+    <form className="mt-2" onSubmit={onSubmit}>
       <CommentEditor
         autofocus
         disabled={disabled}
@@ -63,9 +63,9 @@ export function CommentReply(): JSX.Element {
         onSubmit={submit}
         placeholder="Reply to comment"
       />
-      <div className="fc-mt-2 fc-flex fc-flex-row fc-gap-1">
+      <div className="mt-2 flex flex-row gap-1">
         <button
-          className={cn(buttonVariants({ className: "fc-gap-2" }))}
+          className={cn(buttonVariants({ className: "gap-2" }))}
           disabled={disabled || (editor?.isEmpty ?? true)}
           type="submit"
         >
@@ -85,7 +85,7 @@ export function CommentReply(): JSX.Element {
         </button>
       </div>
       {mutation.error ? (
-        <p className="fc-mt-1 fc-text-sm fc-text-error">
+        <p className="mt-1 text-sm text-fc-error">
           {(mutation.error as FetcherError).message}
         </p>
       ) : null}
