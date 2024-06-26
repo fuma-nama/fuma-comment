@@ -16,7 +16,7 @@ model Rate {
     commentId Int
     like Boolean
 
-    comment Comment @relation(fields: [commentId], references: [id])
+    comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
     @@id([userId, commentId])
     @@index([commentId])
