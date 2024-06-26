@@ -66,6 +66,7 @@
     "typescript": "^5.5.2"
   },
   "dependencies": {
+    "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-dropdown-menu": "^2.1.1",
     "@tiptap/extension-bold": "^2.4.0",

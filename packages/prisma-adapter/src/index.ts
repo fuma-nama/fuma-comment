@@ -1,7 +1,9 @@
 import type { PrismaClient } from "@prisma/client";
-import type { Comment, StorageAdapter } from "@fuma-comment/server";
-
-type CommentWithoutUser = Omit<Comment, "author"> & { authorId: string };
+import type {
+  Comment,
+  StorageAdapter,
+  UserProfile,
+} from "@fuma-comment/server";
 
 interface Options {
   db: PrismaClient;
@@ -9,7 +11,7 @@ interface Options {
   /**
    * Manually join User table after selecting comments
    */
-  joinUser: (comments: CommentWithoutUser[]) => Comment[] | Promise<Comment[]>;
+  getUsers: (userIds: string[]) => UserProfile[] | Promise<UserProfile[]>;
 }
 
 /**
@@ -17,15 +19,19 @@ interface Options {
  *
  * Example Schema: {@link https://github.com/fuma-nama/fuma-comment/blob/main/packages/prisma-adapter/prisma/schema.prisma}
  */
-export function createAdapter({ db, joinUser }: Options): StorageAdapter {
+export function createAdapter({ db, getUsers }: Options): StorageAdapter {
   return {
-    async getComments({ auth, sort, page, thread }) {
+    async getComments({ auth, sort, page, thread, before, limit }) {
       const result = await db.comment.findMany({
         orderBy: [{ timestamp: sort === "newest" ? "desc" : "asc" }],
         where: {
           page,
           thread: thread ? Number(thread) : null,
+          timestamp: {
+            lt: before,
+          },
         },
+        take: limit,
         include: {
           rates: auth
             ? {
@@ -39,8 +45,9 @@ export function createAdapter({ db, joinUser }: Options): StorageAdapter {
               },
         },
       });
+      const userInfos = await getUsers(result.map((c) => c.author));
 
-      const mappedResults = await Promise.all(
+      return await Promise.all(
         result.map(async (row) => {
           const selfRate = row.rates.length > 0 ? row.rates[0] : null;
           const replies = await db.comment.count({ where: { thread: row.id } });
@@ -53,7 +60,10 @@ export function createAdapter({ db, joinUser }: Options): StorageAdapter {
 
           return {
             id: row.id,
-            authorId: row.author,
+            author: userInfos.find((c) => c.id === row.author) ?? {
+              id: "unknown",
+              name: "Deleted User",
+            },
             content: row.content as object,
             likes,
             dislikes,
@@ -62,11 +72,9 @@ export function createAdapter({ db, joinUser }: Options): StorageAdapter {
             liked: selfRate?.like ?? undefined,
             page: row.page ?? undefined,
             threadId: row.thread ?? undefined,
-          } satisfies CommentWithoutUser;
+          } satisfies Comment;
         }),
       );
-
-      return joinUser(mappedResults);
     },
     async deleteComment({ auth, id }) {
       await db.comment.delete({ where: { id: Number(id), author: auth.id } });
@@ -79,7 +87,7 @@ export function createAdapter({ db, joinUser }: Options): StorageAdapter {
       });
     },
     async postComment({ auth, body }) {
-      await db.comment.createMany({
+      const v = await db.comment.create({
         data: {
           author: auth.id,
           content: body.content as object,
@@ -87,6 +95,16 @@ export function createAdapter({ db, joinUser }: Options): StorageAdapter {
           thread: body.thread,
         },
       });
+
+      return {
+        ...v,
+        page: v.page ?? undefined,
+        author: (await getUsers([v.author]))[0],
+        content: v.content as object,
+        likes: 0,
+        dislikes: 0,
+        replies: 0,
+      } satisfies Comment;
     },
     async setRate({ id, auth, body }) {
       await db.rate.upsert({

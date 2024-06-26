@@ -1,30 +1,31 @@
 import useSWRMutation from "swr/mutation";
 import { SendIcon } from "lucide-react";
 import { useRef, useState } from "react";
-import { useAuthContext } from "../contexts/auth";
-import { cn } from "../utils/cn";
+import { useAuthContext } from "../../contexts/auth";
+import { cn } from "../../utils/cn";
 import {
   type FetcherError,
   getCommentsKey,
   postComment,
-} from "../utils/fetcher";
-import { useCommentsContext } from "../contexts/comments";
-import { useLatestCallback } from "../utils/hooks";
-import { buttonVariants } from "./button";
-import { CommentEditor, type UseCommentEditor } from "./editor";
-import { Spinner } from "./spinner";
+} from "../../utils/fetcher";
+import { useCommentsContext } from "../../contexts/comments";
+import { useLatestCallback } from "../../utils/hooks";
+import { buttonVariants } from "../button";
+import { CommentEditor, type UseCommentEditor } from "../editor";
+import { Spinner } from "../spinner";
 
-export function CommentPost(): React.ReactElement {
+export function CreateForm(): React.ReactElement {
   const auth = useAuthContext();
   const { page } = useCommentsContext();
   const [isEmpty, setIsEmpty] = useState(true);
   const editorRef = useRef<UseCommentEditor>();
   const mutation = useSWRMutation(
-    getCommentsKey(undefined, page),
-    (key, { arg }: { arg: { content: object } }) =>
+    getCommentsKey({
+      page,
+    }),
+    (_, { arg }: { arg: { content: object } }) =>
       postComment({
-        thread: key[1],
-        page: key[2],
+        page,
         ...arg,
       }),
     {

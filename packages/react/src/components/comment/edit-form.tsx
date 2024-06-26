@@ -1,22 +1,24 @@
 import useSWRMutation from "swr/mutation";
 import { Pencil } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { cn } from "../utils/cn";
-import { editComment, getCommentsKey } from "../utils/fetcher";
-import { useCommentContext } from "../contexts/comment";
-import { updateComment } from "../utils/comment-manager";
-import { useLatestCallback } from "../utils/hooks";
-import { buttonVariants } from "./button";
-import { CommentEditor, type UseCommentEditor } from "./editor";
-import { Spinner } from "./spinner";
+import { cn } from "../../utils/cn";
+import { editComment, getCommentsKey } from "../../utils/fetcher";
+import { useCommentContext } from "../../contexts/comment";
+import { updateComment } from "../../utils/comment-manager";
+import { useLatestCallback } from "../../utils/hooks";
+import { buttonVariants } from "../button";
+import { CommentEditor, type UseCommentEditor } from "../editor";
+import { Spinner } from "../spinner";
 
-export function CommentEdit(): JSX.Element {
+export function EditForm(): React.ReactNode {
   const editorRef = useRef<UseCommentEditor>();
   const [isEmpty, setIsEmpty] = useState(false);
   const { comment, setEdit } = useCommentContext();
 
   const mutation = useSWRMutation(
-    getCommentsKey(comment.threadId),
+    getCommentsKey({
+      thread: comment.threadId,
+    }),
     (_, { arg }: { arg: { id: number; content: object } }) => editComment(arg),
   );
 

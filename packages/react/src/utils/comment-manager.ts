@@ -1,26 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
+import { createListener } from "./use-listener";
+import { updateCommentList } from "./comment-list";
 
-type Listener = (update: SerializedComment) => void;
-const map = new Map<number, SerializedComment>();
-const listeners = new Map<number, Set<Listener>>();
+type Item = SerializedComment;
 
-export function useCommentManager(
-  current: SerializedComment,
-): SerializedComment {
-  const [value, setValue] = useState(map.get(current.id) ?? current);
+const map = new Map<number, Item>();
 
-  useEffect(() => {
-    if (listeners.has(current.id)) {
-      listeners.get(current.id)?.add(setValue);
-    } else {
-      listeners.set(current.id, new Set([setValue]));
-    }
+const { useListener, trigger } = createListener<[Item]>();
 
-    return () => {
-      listeners.get(current.id)?.delete(setValue);
-    };
-  }, [current.id]);
+export function useCommentManager(id: number): Item | undefined {
+  const [value, setValue] = useState(() => map.get(id));
+  useListener(id, setValue);
 
   return value;
 }
@@ -31,17 +22,14 @@ export function syncComments(comments: SerializedComment[]): void {
   });
 }
 
-function setComment(id: number, c: SerializedComment): void {
+function setComment(id: number, c: Item): void {
   map.set(id, c);
-
-  listeners.get(id)?.forEach((fn) => {
-    fn(c);
-  });
+  trigger(id, c);
 }
 
 export function updateComment(
   commentId: number,
-  updateFn: (comment: SerializedComment) => SerializedComment,
+  updateFn: (comment: Item) => Item,
 ): void {
   const comment = map.get(commentId);
 
@@ -49,9 +37,16 @@ export function updateComment(
   setComment(commentId, updateFn(comment));
 }
 
-export function onCommentReplied(thread: number | undefined): void {
+export function onCommentReplied(
+  thread: number | undefined,
+  comment: SerializedComment,
+): void {
   if (thread) {
-    updateComment(thread, (c) => ({ ...c, replies: c.replies + 1 }));
+    updateCommentList([comment.page, thread], (v) => [...v, comment]);
+    updateComment(thread, (c) => ({
+      ...c,
+      replies: c.replies + 1,
+    }));
   }
 }
 

@@ -1,16 +1,14 @@
 import { getServerSession } from "next-auth";
 import { NextComment } from "@fuma-comment/next";
 import { createAdapter } from "@fuma-comment/prisma-adapter";
-import type { Comment } from "@fuma-comment/server";
 import { prisma } from "@/utils/database";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
   adapter: createAdapter({
     db: prisma,
-    joinUser: async (comments) => {
-      const authorIds = comments.map((c) => c.authorId);
-      const profiles = await prisma.user.findMany({
+    async getUsers(userIds) {
+      const res = await prisma.user.findMany({
         select: {
           id: true,
           name: true,
@@ -18,24 +16,16 @@ export const { GET, DELETE, PATCH, POST } = NextComment({
         },
         where: {
           id: {
-            in: authorIds,
+            in: userIds,
           },
         },
       });
 
-      return comments.flatMap((comment) => {
-        const profile = profiles.find((p) => p.id === comment.authorId);
-        if (!profile) return [];
-
-        return {
-          ...comment,
-          author: {
-            id: profile.id,
-            name: profile.name ?? "",
-            image: profile.image ?? undefined,
-          },
-        } satisfies Comment;
-      });
+      return res.map((user) => ({
+        ...user,
+        image: user.image ?? undefined,
+        name: user.name ?? "Unknown User",
+      }));
     },
   }),
   async getSession() {

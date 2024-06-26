@@ -44,7 +44,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./dialog";
-import { codeVariants } from "./comment-renderer";
+import { codeVariants } from "./comment/content-renderer";
 import { UploadImage } from "./functions/image-upload";
 import { HyperLink } from "./functions/hyper-link";
 import { Spinner } from "./spinner";

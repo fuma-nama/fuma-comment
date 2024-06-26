@@ -11,6 +11,16 @@ export const postBodySchema = z.strictObject({
 });
 
 interface GetCommentsOptions {
+  /**
+   * Fetch comments after a specific timestamp
+   */
+  before?: Date;
+
+  /**
+   * Count to fetch
+   */
+  limit: number;
+
   sort: z.infer<typeof sortSchema>;
   auth?: AuthInfo;
   page?: string;
@@ -24,5 +34,5 @@ interface PostCommentOptions {
 
 export interface CommentsRoute {
   getComments: (options: GetCommentsOptions) => Awaitable<Comment[]>;
-  postComment: (options: PostCommentOptions) => Awaitable<void>;
+  postComment: (options: PostCommentOptions) => Awaitable<Comment>;
 }

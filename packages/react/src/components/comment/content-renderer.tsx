@@ -1,7 +1,7 @@
 import type { JSONContent } from "@tiptap/react";
 import type { ReactNode } from "react";
 import { cva } from "cva";
-import { cn } from "../utils/cn";
+import { cn } from "../../utils/cn";
 
 interface Mark {
   type: string;

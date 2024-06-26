@@ -1,18 +1,18 @@
 import useSWRMutation from "swr/mutation";
 import { useRef, useState } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "../../utils/cn";
 import {
   type FetcherError,
   getCommentsKey,
   postComment,
-} from "../utils/fetcher";
-import { useCommentContext } from "../contexts/comment";
-import { onCommentReplied } from "../utils/comment-manager";
-import { useCommentsContext } from "../contexts/comments";
-import { useLatestCallback } from "../utils/hooks";
-import { buttonVariants } from "./button";
-import { CommentEditor, type UseCommentEditor } from "./editor";
-import { Spinner } from "./spinner";
+} from "../../utils/fetcher";
+import { useCommentContext } from "../../contexts/comment";
+import { onCommentReplied } from "../../utils/comment-manager";
+import { useCommentsContext } from "../../contexts/comments";
+import { useLatestCallback } from "../../utils/hooks";
+import { buttonVariants } from "../button";
+import { CommentEditor, type UseCommentEditor } from "../editor";
+import { Spinner } from "../spinner";
 
 export function CommentReply(): React.ReactElement {
   const { page } = useCommentsContext();
@@ -21,16 +21,19 @@ export function CommentReply(): React.ReactElement {
   const { comment, setReply } = useCommentContext();
 
   const mutation = useSWRMutation(
-    getCommentsKey(comment.id, page),
-    (key, { arg }: { arg: { content: object } }) =>
+    getCommentsKey({
+      thread: comment.id,
+      page,
+    }),
+    (_, { arg }: { arg: { content: object } }) =>
       postComment({
-        thread: key[1],
-        page: key[2],
+        thread: comment.id,
+        page,
         ...arg,
       }),
     {
-      onSuccess: () => {
-        onCommentReplied(comment.id);
+      onSuccess(data) {
+        onCommentReplied(comment.id, data);
         setReply(false);
       },
     },

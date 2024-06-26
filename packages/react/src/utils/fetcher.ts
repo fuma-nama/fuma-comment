@@ -31,25 +31,36 @@ export async function fetcher<T = void>(
 }
 
 export function getCommentsKey(
-  thread?: number | null,
-  page?: string | null,
-): [api: string, thread: number | undefined, page: string | undefined] {
-  return ["/api/comments", thread ?? undefined, page ?? undefined];
+  options: CommentOptions,
+): [api: string, args: CommentOptions] {
+  return ["/api/comments", options];
+}
+
+export interface CommentOptions {
+  thread?: number;
+  page?: string;
+  limit?: number;
+
+  /**
+   * Fetch comments after a specific timestamp
+   */
+  before?: Date;
+  sort?: "newest" | "oldest";
 }
 
 export function fetchComments({
   page,
   thread,
   sort,
-}: Partial<{
-  thread: number;
-  page: string;
-  sort: "newest" | "oldest";
-}>): Promise<SerializedComment[]> {
+  before,
+  limit,
+}: CommentOptions): Promise<SerializedComment[]> {
   const params = new URLSearchParams();
   if (page) params.append("page", page);
   if (thread) params.append("thread", thread.toString());
   if (sort) params.append("sort", sort);
+  if (before) params.append("before", before.getTime().toString());
+  if (limit) params.append("limit", limit.toString());
 
   return fetcher(`/api/comments?${params.toString()}`);
 }
@@ -62,8 +73,8 @@ export async function postComment({
   content: object;
   thread?: number;
   page?: string;
-}): Promise<void> {
-  await fetcher("/api/comments", {
+}): Promise<SerializedComment> {
+  return await fetcher("/api/comments", {
     method: "POST",
     body: JSON.stringify({
       thread,

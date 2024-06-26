@@ -6,19 +6,12 @@ import {
   type HTMLAttributes,
   forwardRef,
 } from "react";
-import useSWR from "swr";
-import {
-  CommentsProvider as Provider,
-  useCommentsContext,
-} from "./contexts/comments";
-import { fetchComments, getCommentsKey } from "./utils/fetcher";
-import { syncComments } from "./utils/comment-manager";
+import { CommentsProvider as Provider } from "./contexts/comments";
 import { useAuthContext } from "./contexts/auth";
-import { Spinner } from "./components/spinner";
-import { Comment } from "./components/comment";
 import { buttonVariants } from "./components/button";
 import { cn } from "./utils/cn";
-import { CommentPost } from "./components/comment-post";
+import { CreateForm } from "./components/comment/create-form";
+import { CommentList } from "./components/comment/list";
 
 export interface CommentsProviderProps {
   /**
@@ -51,7 +44,7 @@ export const CommentsPost = forwardRef<
 
   return (
     <div className={cn("flex flex-col gap-2", className)} ref={ref} {...props}>
-      <CommentPost />
+      <CreateForm />
       {auth.status === "unauthenticated" && <AuthButton />}
     </div>
   );
@@ -63,39 +56,20 @@ export const CommentsList = forwardRef<
   HTMLDivElement,
   HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  const { page } = useCommentsContext();
-  const query = useSWR(
-    getCommentsKey(undefined, page),
-    ([_, thread, p]) => fetchComments({ page: p, thread }),
-    {
-      onSuccess(data) {
-        syncComments(data);
-      },
-    },
-  );
-
   return (
     <div
       className={cn("flex min-h-[80px] flex-col", className)}
       ref={ref}
       {...props}
     >
-      {query.isLoading ? <Spinner className="m-auto size-8" /> : null}
-      {query.data?.length === 0 && (
-        <p className="m-auto text-center text-sm text-fc-muted-foreground">
-          No comments
-        </p>
-      )}
-      {query.data?.map((comment) => (
-        <Comment comment={comment} key={comment.id} />
-      ))}
+      <CommentList />
     </div>
   );
 });
 
 CommentsList.displayName = "CommentsList";
 
-function AuthButton(): JSX.Element {
+function AuthButton(): React.ReactNode {
   const { signIn } = useAuthContext();
 
   if (typeof signIn === "function")
@@ -105,5 +79,5 @@ function AuthButton(): JSX.Element {
       </button>
     );
 
-  return <>{signIn}</>;
+  return signIn;
 }

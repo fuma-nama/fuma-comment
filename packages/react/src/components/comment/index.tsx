@@ -2,41 +2,49 @@ import { useState, useMemo, useLayoutEffect, useCallback } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
 import useSWRMutation from "swr/mutation";
 import { cva } from "cva";
-import useSWR from "swr";
-import { MoreVerticalIcon, ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
+import {
+  ChevronDown,
+  MoreVerticalIcon,
+  ThumbsDownIcon,
+  ThumbsUpIcon,
+} from "lucide-react";
 import { type JSONContent } from "@tiptap/react";
-import { cn } from "../utils/cn";
-import { toLocalString } from "../utils/date";
-import { fetchComments, fetcher, getCommentsKey } from "../utils/fetcher";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@radix-ui/react-collapsible";
+import { cn } from "../../utils/cn";
+import { toLocalString } from "../../utils/date";
+import { fetcher, getCommentsKey } from "../../utils/fetcher";
 import {
   type CommentContext,
   useCommentContext,
   CommentProvider,
-} from "../contexts/comment";
-import { useAuthContext } from "../contexts/auth";
+} from "../../contexts/comment";
+import { useAuthContext } from "../../contexts/auth";
 import {
   onCommentDeleted,
   onLikeUpdated,
-  syncComments,
-  updateComment,
   useCommentManager,
-} from "../utils/comment-manager";
-import { MenuTrigger, MenuItems, MenuItem, Menu } from "./menu";
-import { CommentEdit } from "./comment-edit";
-import { buttonVariants } from "./button";
-import { Spinner } from "./spinner";
-import { CommentReply } from "./comment-reply";
-import { ContentRenderer } from "./comment-renderer";
+} from "../../utils/comment-manager";
+import { useLatestCallback } from "../../utils/hooks";
+import { MenuTrigger, MenuItems, MenuItem, Menu } from "../menu";
+import { buttonVariants } from "../button";
+import { EditForm } from "./edit-form";
+import { CommentReply } from "./reply";
+import { ContentRenderer } from "./content-renderer";
+import { CommentList } from "./list";
 
 export function Comment({
   comment: cached,
 }: {
   comment: SerializedComment;
-}): JSX.Element {
+}): React.ReactElement {
   const [timestamp, setTimestamp] = useState("");
   const [edit, setEdit] = useState(false);
   const [isReply, setIsReply] = useState(false);
-  const comment = useCommentManager(cached);
+  const comment = useCommentManager(cached.id) ?? cached;
 
   const context = useMemo<CommentContext>(() => {
     return {
@@ -86,7 +94,7 @@ export function Comment({
             <CommentMenu />
           </div>
           {edit ? (
-            <CommentEdit />
+            <EditForm />
           ) : (
             <>
               <ContentRenderer content={comment.content} />
@@ -119,10 +127,9 @@ const rateVariants = cva(
 function CommentActions(): JSX.Element {
   const { comment, setReply } = useCommentContext();
   const { status } = useAuthContext();
-
   const isAuthenticated = status === "authenticated";
 
-  const onRate = (v: boolean): void => {
+  const onRate = useLatestCallback((v: boolean) => {
     const value = v === comment.liked ? undefined : v;
     void fetcher(
       `/api/comments/${comment.id}/rate`,
@@ -137,7 +144,7 @@ function CommentActions(): JSX.Element {
     );
 
     onLikeUpdated(comment.id, value);
-  };
+  });
 
   const onReply = useCallback(() => {
     setReply(true);
@@ -188,12 +195,14 @@ function CommentActions(): JSX.Element {
   );
 }
 
-function CommentMenu(): JSX.Element {
+function CommentMenu(): React.ReactNode {
   const { session } = useAuthContext();
   const { comment, isEditing, isReplying, setEdit } = useCommentContext();
 
   const deleteMutation = useSWRMutation(
-    getCommentsKey(comment.threadId),
+    getCommentsKey({
+      thread: comment.threadId,
+    }),
     ([key]) => fetcher(`${key}/${comment.id}`, { method: "DELETE" }),
     {
       onSuccess() {
@@ -207,19 +216,19 @@ function CommentMenu(): JSX.Element {
     session !== null &&
     (session.permissions?.delete || session.id === comment.author.id);
 
-  const onCopy = (): void => {
+  const onCopy = useCallback(() => {
     const text = getTextFromContent(comment.content as JSONContent);
 
     void navigator.clipboard.writeText(text);
-  };
+  }, [comment.content]);
 
-  const onEdit = (): void => {
+  const onEdit = useCallback(() => {
     setEdit(true);
-  };
+  }, [setEdit]);
 
-  const onDelete = (): void => {
+  const onDelete = useCallback((): void => {
     void deleteMutation.trigger();
-  };
+  }, [deleteMutation]);
 
   return (
     <Menu>
@@ -254,42 +263,37 @@ function CommentMenu(): JSX.Element {
   );
 }
 
-function CommentReplies(): JSX.Element {
+function CommentReplies(): React.ReactElement {
   const { comment } = useCommentContext();
   const [open, setOpen] = useState(false);
-  const query = useSWR(
-    open ? getCommentsKey(comment.id) : null,
-    ([_, thread, page]) => fetchComments({ thread, page, sort: "oldest" }),
-    {
-      onSuccess(data) {
-        updateComment(comment.id, (c) => ({ ...c, replies: data.length }));
-        syncComments(data);
-      },
-    },
-  );
-
-  const onOpen = (): void => {
-    setOpen((prev) => !prev);
-  };
 
   return (
-    <div className="ml-10">
-      <button
-        className={cn(buttonVariants({ variant: "ghost", size: "medium" }))}
-        onClick={onOpen}
-        type="button"
+    <Collapsible
+      className="mx-3 rounded-lg border border-fc-border bg-fc-card"
+      open={open}
+      onOpenChange={setOpen}
+    >
+      <CollapsibleTrigger
+        className={cn(
+          buttonVariants({
+            variant: "ghost",
+            size: "medium",
+            className: "gap-3",
+          }),
+        )}
       >
-        {open && query.isLoading ? <Spinner className="mr-2" /> : null}
+        <ChevronDown
+          className={cn(
+            "-ml-0.5 size-4 transition-transform",
+            open && "rotate-180",
+          )}
+        />
         {comment.replies} Replies
-      </button>
-      {open ? (
-        <div>
-          {query.data?.map((reply) => (
-            <Comment comment={reply} key={reply.id} />
-          ))}
-        </div>
-      ) : null}
-    </div>
+      </CollapsibleTrigger>
+      <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-fc-accordion-up data-[state=open]:animate-fc-accordion-down">
+        <CommentList threadId={comment.id} />
+      </CollapsibleContent>
+    </Collapsible>
   );
 }
 

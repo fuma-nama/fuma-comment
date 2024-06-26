@@ -73,12 +73,21 @@ export function CustomComment({
       const sort = comments.sortSchema.parse(
         queryParams.get("sort") ?? undefined,
       );
+      const before = queryParams.get("before");
+      const limit = Math.min(50, Number(queryParams.get("limit") ?? 40));
       const page = queryParams.get("page") ?? undefined;
       const thread = queryParams.get("thread") ?? undefined;
 
       return {
         type: "success",
-        data: await adapter.getComments({ sort, auth, thread, page }),
+        data: await adapter.getComments({
+          sort,
+          auth,
+          thread,
+          limit,
+          page,
+          before: before ? new Date(Number(before)) : undefined,
+        }),
       };
     }),
     "POST /api/comments": handleError(async ({ body, getSession }) => {
@@ -86,12 +95,9 @@ export function CustomComment({
       const content = comments.postBodySchema.parse(await body());
       if (!auth) return NOT_AUTHORIZED;
 
-      await adapter.postComment({ auth, body: content });
       return {
         type: "success",
-        data: {
-          message: "Successful",
-        },
+        data: await adapter.postComment({ auth, body: content }),
       };
     }),
     "POST /api/comments/[id]/rate": handleError(
