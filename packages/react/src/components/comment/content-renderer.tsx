@@ -12,7 +12,7 @@ interface Mark {
 type BaseRenderer = (props: {
   className: string;
   children: ReactNode;
-}) => JSX.Element;
+}) => ReactNode;
 
 export const codeVariants = cva(
   "rounded-sm border border-fc-border bg-fc-muted p-0.5",
@@ -60,7 +60,7 @@ const marks: Marks = {
   },
 };
 
-function renderText(content: JSONContent): JSX.Element {
+function renderText(content: JSONContent): ReactNode {
   let getElement = defaultRenderer;
   const className: string[] = [];
 
@@ -80,7 +80,7 @@ export function ContentRenderer({
   content,
 }: {
   content: JSONContent;
-}): JSX.Element {
+}): ReactNode {
   if (content.type === "text") {
     return renderText(content);
   }

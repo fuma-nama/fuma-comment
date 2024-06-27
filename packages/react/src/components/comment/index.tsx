@@ -27,8 +27,9 @@ import { useLatestCallback } from "../../utils/hooks";
 import { MenuTrigger, MenuItems, MenuItem, Menu } from "../menu";
 import { buttonVariants } from "../button";
 import type { UseCommentEditor } from "../editor";
+import { Dialog, DialogContent, DialogTrigger } from "../dialog";
 import { EditForm } from "./edit-form";
-import { CommentReply } from "./reply";
+import { ReplyForm, ReplyHeader } from "./reply-form";
 import { ContentRenderer } from "./content-renderer";
 import { CommentList } from "./list";
 
@@ -96,7 +97,7 @@ export function Comment({
           ) : (
             <>
               <ContentRenderer content={comment.content} />
-              {isReply ? <CommentReply /> : <CommentActions />}
+              <CommentActions />
             </>
           )}
         </div>
@@ -123,7 +124,7 @@ const rateVariants = cva(
 );
 
 function CommentActions(): React.ReactNode {
-  const { comment, setReply } = useCommentContext();
+  const { comment, isReplying, setReply } = useCommentContext();
   const { status } = useAuthContext();
   const isAuthenticated = status === "authenticated";
 
@@ -142,10 +143,6 @@ function CommentActions(): React.ReactNode {
 
     onLikeUpdated(comment.id, v === comment.liked ? undefined : v);
   });
-
-  const onReply = useCallback(() => {
-    setReply(true);
-  }, [setReply]);
 
   return (
     <div className="mt-2 flex flex-row gap-1">
@@ -180,13 +177,15 @@ function CommentActions(): React.ReactNode {
         {comment.dislikes}
       </button>
       {!comment.threadId && isAuthenticated ? (
-        <button
-          className={cn(rateVariants({ active: false }))}
-          onClick={onReply}
-          type="button"
-        >
-          Reply
-        </button>
+        <Dialog open={isReplying} onOpenChange={setReply}>
+          <DialogTrigger className={cn(rateVariants({ active: false }))}>
+            Reply
+          </DialogTrigger>
+          <DialogContent>
+            <ReplyHeader />
+            <ReplyForm />
+          </DialogContent>
+        </Dialog>
       ) : null}
     </div>
   );

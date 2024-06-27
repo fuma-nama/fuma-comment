@@ -13,8 +13,32 @@ import { useLatestCallback } from "../../utils/hooks";
 import { buttonVariants } from "../button";
 import { CommentEditor, type UseCommentEditor } from "../editor";
 import { Spinner } from "../spinner";
+import { DialogTitle } from "../dialog";
+import { toLocalString } from "../../utils/date";
+import { ContentRenderer } from "./content-renderer";
 
-export function CommentReply(): React.ReactElement {
+export function ReplyHeader() {
+  const { comment } = useCommentContext();
+
+  return (
+    <>
+      <DialogTitle>Replying to {comment.author.name}</DialogTitle>
+      <div className="mb-2 flex flex-col gap-4 rounded-xl border border-fc-border p-3 text-sm">
+        <div className="flex flex-row items-center gap-2 text-xs text-fc-muted-foreground">
+          <img
+            alt="avatar"
+            className="size-6 select-none rounded-full bg-fc-muted"
+            src={comment.author.image}
+          />
+          <span>{toLocalString(new Date(comment.timestamp))}</span>
+        </div>
+        <ContentRenderer content={comment.content} />
+      </div>
+    </>
+  );
+}
+
+export function ReplyForm() {
   const { page } = useCommentsContext();
   const [isEmpty, setIsEmpty] = useState(true);
   const editorRef = useRef<UseCommentEditor>();
@@ -60,7 +84,7 @@ export function CommentReply(): React.ReactElement {
   });
 
   return (
-    <form className="mt-2" onSubmit={onSubmit}>
+    <form onSubmit={onSubmit}>
       <CommentEditor
         autofocus
         disabled={disabled}
