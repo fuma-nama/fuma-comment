@@ -1,13 +1,8 @@
-import { useState, useMemo, useLayoutEffect, useCallback } from "react";
+import { useState, useMemo, useLayoutEffect, useCallback, useRef } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
 import useSWRMutation from "swr/mutation";
 import { cva } from "cva";
-import {
-  ChevronDown,
-  MoreVerticalIcon,
-  ThumbsDownIcon,
-  ThumbsUpIcon,
-} from "lucide-react";
+import { ChevronDown, MoreVertical, ThumbsDown, ThumbsUp } from "lucide-react";
 import { type JSONContent } from "@tiptap/react";
 import {
   Collapsible,
@@ -31,6 +26,7 @@ import {
 import { useLatestCallback } from "../../utils/hooks";
 import { MenuTrigger, MenuItems, MenuItem, Menu } from "../menu";
 import { buttonVariants } from "../button";
+import type { UseCommentEditor } from "../editor";
 import { EditForm } from "./edit-form";
 import { CommentReply } from "./reply";
 import { ContentRenderer } from "./content-renderer";
@@ -44,6 +40,7 @@ export function Comment({
   const [timestamp, setTimestamp] = useState("");
   const [edit, setEdit] = useState(false);
   const [isReply, setIsReply] = useState(false);
+  const editorRef = useRef<UseCommentEditor>();
   const comment = useCommentManager(cached.id) ?? cached;
 
   const context = useMemo<CommentContext>(() => {
@@ -51,6 +48,7 @@ export function Comment({
       isEditing: edit,
       isReplying: isReply,
       setEdit,
+      editorRef,
       setReply: setIsReply,
       comment,
     };
@@ -67,7 +65,7 @@ export function Comment({
     <CommentProvider value={context}>
       <div
         className={cn(
-          "group relative flex flex-row gap-2 px-3 py-4 text-sm",
+          "relative flex flex-row gap-2 px-3 py-4 text-sm",
           canDisplayComments && "pb-2",
         )}
         data-fc-comment={context.comment.id}
@@ -124,26 +122,25 @@ const rateVariants = cva(
   },
 );
 
-function CommentActions(): JSX.Element {
+function CommentActions(): React.ReactNode {
   const { comment, setReply } = useCommentContext();
   const { status } = useAuthContext();
   const isAuthenticated = status === "authenticated";
 
   const onRate = useLatestCallback((v: boolean) => {
-    const value = v === comment.liked ? undefined : v;
     void fetcher(
       `/api/comments/${comment.id}/rate`,
-      value === undefined
+      v === comment.liked
         ? {
             method: "DELETE",
           }
         : {
             method: "POST",
-            body: JSON.stringify({ like: value }),
+            body: JSON.stringify({ like: v }),
           },
     );
 
-    onLikeUpdated(comment.id, value);
+    onLikeUpdated(comment.id, v === comment.liked ? undefined : v);
   });
 
   const onReply = useCallback(() => {
@@ -164,7 +161,7 @@ function CommentActions(): JSX.Element {
         }}
         type="button"
       >
-        <ThumbsUpIcon aria-label="Like" className="size-4" />
+        <ThumbsUp aria-label="Like" className="size-4" />
         {comment.likes}
       </button>
       <button
@@ -179,7 +176,7 @@ function CommentActions(): JSX.Element {
         }}
         type="button"
       >
-        <ThumbsDownIcon aria-label="Dislike" className="size-4" />
+        <ThumbsDown aria-label="Dislike" className="size-4" />
         {comment.dislikes}
       </button>
       {!comment.threadId && isAuthenticated ? (
@@ -197,7 +194,8 @@ function CommentActions(): JSX.Element {
 
 function CommentMenu(): React.ReactNode {
   const { session } = useAuthContext();
-  const { comment, isEditing, isReplying, setEdit } = useCommentContext();
+  const { comment, editorRef, isEditing, isReplying, setEdit } =
+    useCommentContext();
 
   const deleteMutation = useSWRMutation(
     getCommentsKey({
@@ -208,6 +206,7 @@ function CommentMenu(): React.ReactNode {
       onSuccess() {
         onCommentDeleted(comment);
       },
+      revalidate: false,
     },
   );
 
@@ -239,15 +238,16 @@ function CommentMenu(): React.ReactNode {
             size: "icon",
             variant: "ghost",
             className:
-              "ml-auto opacity-0 group-hover:opacity-100 data-[state=open]:bg-fc-accent data-[state=open]:opacity-100 disabled:invisible",
+              "ml-auto text-fc-muted-foreground data-[state=open]:bg-fc-accent data-[state=open]:text-fc-accent-foreground disabled:invisible",
           }),
         )}
         disabled={isEditing || isReplying}
       >
-        <MoreVerticalIcon className="size-4" />
+        <MoreVertical className="size-4" />
       </MenuTrigger>
       <MenuItems
         onCloseAutoFocus={(e) => {
+          editorRef.current?.commands.focus("end");
           e.preventDefault();
         }}
       >
@@ -269,7 +269,7 @@ function CommentReplies(): React.ReactElement {
 
   return (
     <Collapsible
-      className="mx-3 rounded-lg border border-fc-border bg-fc-card"
+      className="border-y border-fc-border bg-fc-card pl-3"
       open={open}
       onOpenChange={setOpen}
     >
@@ -278,7 +278,7 @@ function CommentReplies(): React.ReactElement {
           buttonVariants({
             variant: "ghost",
             size: "medium",
-            className: "gap-3",
+            className: "gap-3.5",
           }),
         )}
       >

@@ -13,6 +13,7 @@ import { useLatestCallback } from "../../utils/hooks";
 import { buttonVariants } from "../button";
 import { CommentEditor, type UseCommentEditor } from "../editor";
 import { Spinner } from "../spinner";
+import { updateCommentList } from "../../utils/comment-list";
 
 export function CreateForm(): React.ReactElement {
   const auth = useAuthContext();
@@ -29,9 +30,11 @@ export function CreateForm(): React.ReactElement {
         ...arg,
       }),
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        updateCommentList([data.page, data.threadId], (v) => [data, ...v]);
         editorRef.current?.commands.clearContent(true);
       },
+      revalidate: false,
     },
   );
   const disabled = mutation.isMutating || auth.status !== "authenticated";

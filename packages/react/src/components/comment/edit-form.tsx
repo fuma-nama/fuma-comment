@@ -1,19 +1,18 @@
 import useSWRMutation from "swr/mutation";
 import { Pencil } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { cn } from "../../utils/cn";
 import { editComment, getCommentsKey } from "../../utils/fetcher";
 import { useCommentContext } from "../../contexts/comment";
 import { updateComment } from "../../utils/comment-manager";
 import { useLatestCallback } from "../../utils/hooks";
 import { buttonVariants } from "../button";
-import { CommentEditor, type UseCommentEditor } from "../editor";
+import { CommentEditor } from "../editor";
 import { Spinner } from "../spinner";
 
 export function EditForm(): React.ReactNode {
-  const editorRef = useRef<UseCommentEditor>();
   const [isEmpty, setIsEmpty] = useState(false);
-  const { comment, setEdit } = useCommentContext();
+  const { comment, editorRef, setEdit } = useCommentContext();
 
   const mutation = useSWRMutation(
     getCommentsKey({
@@ -47,10 +46,6 @@ export function EditForm(): React.ReactNode {
     submit();
     e.preventDefault();
   });
-
-  useEffect(() => {
-    editorRef.current?.commands.focus("end");
-  }, []);
 
   return (
     <form onSubmit={onSubmit}>

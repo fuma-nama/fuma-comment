@@ -46,7 +46,7 @@ export const CommentList = forwardRef<HTMLDivElement, CommentListProps>(
         {!query.isLoading &&
           typeof cursor === "undefined" &&
           list.length === 0 && (
-            <p className="m-auto text-center text-sm text-fc-muted-foreground">
+            <p className="mx-auto my-4 text-center text-sm text-fc-muted-foreground">
               No comments
             </p>
           )}

@@ -32,8 +32,9 @@ export function CommentReply(): React.ReactElement {
         ...arg,
       }),
     {
+      revalidate: false,
       onSuccess(data) {
-        onCommentReplied(comment.id, data);
+        onCommentReplied(data);
         setReply(false);
       },
     },

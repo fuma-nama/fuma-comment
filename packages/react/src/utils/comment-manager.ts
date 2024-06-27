@@ -37,13 +37,11 @@ export function updateComment(
   setComment(commentId, updateFn(comment));
 }
 
-export function onCommentReplied(
-  thread: number | undefined,
-  comment: SerializedComment,
-): void {
-  if (thread) {
-    updateCommentList([comment.page, thread], (v) => [...v, comment]);
-    updateComment(thread, (c) => ({
+export function onCommentReplied(reply: SerializedComment): void {
+  updateCommentList([reply.page, reply.threadId], (v) => [reply, ...v]);
+
+  if (reply.threadId) {
+    updateComment(reply.threadId, (c) => ({
       ...c,
       replies: c.replies + 1,
     }));
@@ -51,6 +49,9 @@ export function onCommentReplied(
 }
 
 export function onCommentDeleted(comment: SerializedComment): void {
+  updateCommentList([comment.page, comment.threadId], (v) =>
+    v.filter((item) => item.id !== comment.id),
+  );
   if (comment.threadId) {
     updateComment(comment.threadId, (c) => ({
       ...c,
