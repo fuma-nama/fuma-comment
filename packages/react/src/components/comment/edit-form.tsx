@@ -19,6 +19,12 @@ export function EditForm(): React.ReactNode {
       thread: comment.threadId,
     }),
     (_, { arg }: { arg: { id: number; content: object } }) => editComment(arg),
+    {
+      revalidate: false,
+      onSuccess() {
+        setEdit(false);
+      },
+    },
   );
 
   const onClose = useLatestCallback(() => {
@@ -33,10 +39,8 @@ export function EditForm(): React.ReactNode {
     void mutation.trigger(
       { id: comment.id, content },
       {
-        revalidate: false,
         onSuccess() {
-          setEdit(false);
-          updateComment(comment.id, (c) => ({ ...c, content }));
+          updateComment(comment.id, (item) => ({ ...item, content }));
         },
       },
     );

@@ -38,20 +38,24 @@ export function updateComment(
 }
 
 export function onCommentReplied(reply: SerializedComment): void {
-  updateCommentList([reply.page, reply.threadId], (v) => [reply, ...v]);
+  updateCommentList([reply.page, reply.threadId], (v) =>
+    v ? [reply, ...v] : undefined,
+  );
 
   if (reply.threadId) {
-    updateComment(reply.threadId, (c) => ({
-      ...c,
-      replies: c.replies + 1,
-    }));
+    updateComment(reply.threadId, (c) => {
+      console.log(c);
+
+      return { ...c, replies: c.replies + 1 };
+    });
   }
 }
 
 export function onCommentDeleted(comment: SerializedComment): void {
   updateCommentList([comment.page, comment.threadId], (v) =>
-    v.filter((item) => item.id !== comment.id),
+    v?.filter((item) => item.id !== comment.id),
   );
+
   if (comment.threadId) {
     updateComment(comment.threadId, (c) => ({
       ...c,

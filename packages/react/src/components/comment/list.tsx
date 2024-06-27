@@ -31,7 +31,7 @@ export const CommentList = forwardRef<HTMLDivElement, CommentListProps>(
       ([_, options]) => fetchComments(options),
       {
         onSuccess(data) {
-          updateCommentList([page, threadId], (v) => [...v, ...data]);
+          updateCommentList([page, threadId], (v = []) => [...v, ...data]);
           syncComments(data);
         },
       },

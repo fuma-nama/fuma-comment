@@ -23,12 +23,18 @@ export function useCommentList(id: KeyArray): SerializedComment[] {
 
 export function updateCommentList(
   id: KeyArray,
-  update: (prev: SerializedComment[]) => SerializedComment[],
+  update: (
+    prev: SerializedComment[] | undefined,
+  ) => SerializedComment[] | undefined,
 ): void {
   const key = getKey(id);
-  const list = data.get(key) ?? [];
-  data.set(key, update(list));
-  trigger(key);
+  const list = data.get(key);
+  const updated = update(list);
+
+  if (updated) {
+    data.set(key, updated);
+    trigger(key);
+  }
 }
 
 function getKey(id: KeyArray): string {

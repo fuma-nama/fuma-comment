@@ -28,6 +28,7 @@ import { MenuTrigger, MenuItems, MenuItem, Menu } from "../menu";
 import { buttonVariants } from "../button";
 import type { UseCommentEditor } from "../editor";
 import { Dialog, DialogContent, DialogTrigger } from "../dialog";
+import { Avatar } from "../avatar";
 import { EditForm } from "./edit-form";
 import { ReplyForm, ReplyHeader } from "./reply-form";
 import { ContentRenderer } from "./content-renderer";
@@ -73,16 +74,12 @@ export function Comment({
         data-fc-edit={context.isEditing}
         data-fc-reply={context.isReplying}
       >
-        {comment.author.image ? (
-          <img
-            alt="avatar"
-            className="size-8 select-none rounded-full bg-fc-muted"
-            src={comment.author.image}
-          />
-        ) : (
-          <div className="size-8 rounded-full bg-gradient-to-br from-blue-600 to-red-600" />
-        )}
-        <div className="w-0 flex-1">
+        <Avatar
+          placeholder={comment.author.name}
+          image={comment.author.image}
+          className="shrink-0"
+        />
+        <div className="min-w-0 flex-1 overflow-hidden">
           <div className="mb-2 flex flex-row items-center gap-2">
             <span className="truncate font-semibold">
               {comment.author.name}

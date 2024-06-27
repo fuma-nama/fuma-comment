@@ -98,7 +98,6 @@ export function createAdapter({ db, getUsers }: Options): StorageAdapter {
 
       return {
         id: v.id,
-        liked: false,
         timestamp: v.timestamp,
         threadId: v.thread ?? undefined,
         page: v.page ?? undefined,
