@@ -1,5 +1,5 @@
 import useSWRMutation from "swr/mutation";
-import { useRef, useState } from "react";
+import { type ReactNode, useRef, useState } from "react";
 import { cn } from "../../utils/cn";
 import {
   type FetcherError,
@@ -18,7 +18,7 @@ import { toLocalString } from "../../utils/date";
 import { Avatar } from "../avatar";
 import { ContentRenderer } from "./content-renderer";
 
-export function ReplyHeader() {
+export function ReplyHeader(): ReactNode {
   const { comment } = useCommentContext();
 
   return (
@@ -39,7 +39,7 @@ export function ReplyHeader() {
   );
 }
 
-export function ReplyForm() {
+export function ReplyForm(): ReactNode {
   const { page } = useCommentsContext();
   const [isEmpty, setIsEmpty] = useState(true);
   const editorRef = useRef<UseCommentEditor>();
