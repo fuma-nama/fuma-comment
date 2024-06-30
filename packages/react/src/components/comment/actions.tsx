@@ -1,5 +1,5 @@
 import { ThumbsDown, ThumbsUp } from "lucide-react";
-import { cva } from "cva";
+import { cva } from "class-variance-authority";
 import { useCommentContext } from "../../contexts/comment";
 import { useAuthContext } from "../../contexts/auth";
 import { useLatestCallback } from "../../utils/hooks";
