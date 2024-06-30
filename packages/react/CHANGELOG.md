@@ -1,5 +1,11 @@
 # @fuma-comment/react
 
+## 0.3.0
+
+### Minor Changes
+
+- 56e6e1a: Change the time sorting of replies
+
 ## 0.2.0
 
 ### Minor Changes
