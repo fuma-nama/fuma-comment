@@ -7,16 +7,19 @@ import { Spinner } from "../spinner";
 import { syncComments } from "../../utils/comment-manager";
 import { updateCommentList, useCommentList } from "../../utils/comment-list";
 import { useCommentsContext } from "../../contexts/comments";
+import { Replies } from "./replies";
+import { Actions } from "./actions";
 import { Comment } from "./index";
 
 const count = 40;
 
 export interface CommentListProps extends HTMLAttributes<HTMLDivElement> {
   threadId?: number;
+  isSubThread?: boolean;
 }
 
 export const CommentList = forwardRef<HTMLDivElement, CommentListProps>(
-  ({ threadId, ...props }, ref) => {
+  ({ threadId, isSubThread = false, ...props }, ref) => {
     const { page } = useCommentsContext();
     const [cursor, setCursor] = useState<number>();
     const list = useCommentList([page, threadId]);
@@ -25,7 +28,9 @@ export const CommentList = forwardRef<HTMLDivElement, CommentListProps>(
       getCommentsKey({
         thread: threadId,
         page,
-        before: typeof cursor === "number" ? new Date(cursor) : undefined,
+        sort: isSubThread ? "oldest" : "newest",
+        [isSubThread ? "after" : "before"]:
+          typeof cursor === "number" ? new Date(cursor) : undefined,
         limit: count,
       }),
       ([_, options]) => fetchComments(options),
@@ -51,7 +56,13 @@ export const CommentList = forwardRef<HTMLDivElement, CommentListProps>(
             </p>
           )}
         {list.map((reply) => (
-          <Comment comment={reply} key={reply.id} />
+          <Comment
+            comment={reply}
+            key={reply.id}
+            actions={<Actions canReply={!isSubThread} />}
+          >
+            {!isSubThread ? <Replies /> : null}
+          </Comment>
         ))}
         {query.data && query.data.length >= count ? (
           <button

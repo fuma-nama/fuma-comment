@@ -44,60 +44,23 @@ All components are pre-styled with Tailwind CSS, notice that it also normalizes 
 import "@fuma-comment/react/style.css";
 ```
 
-### Image Uploading
+For Tailwind CSS projects, use the official Tailwind CSS plugin.
 
-The default rich editor doesn't come with any image uploading features, you have to configure it manually to integrate with AWS S3, Cloudinary or other cloud storage services.
+```js
+import { createPreset } from "@fuma-comment/react/theme";
 
-Here is an example for Cloudinary, with unauthorizated requests:
+/** @type {import('tailwindcss').Config} */
+export default {
+  darkMode: "class",
+  presets: [createPreset()],
+  content: [
+    "./node_modules/@fuma-comment/react/dist/**/*.js",
 
-```tsx
-import type { StorageContext, CommentsProps } from "@fuma-comment/react";
-import { Comments, AuthProvider, StorageProvider } from "@fuma-comment/react";
-
-const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME;
-
-const storage: StorageContext = {
-  enabled: true,
-  async upload(file) {
-    const body = new FormData();
-    body.append("file", file);
-    body.append("upload_preset", "fuma_comment");
-
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-      {
-        method: "POST",
-        body,
-      },
-    );
-
-    if (res.ok) {
-      const result = (await res.json()) as {
-        secure_url: string;
-        width: number;
-        height: number;
-      };
-
-      return {
-        url: result.secure_url,
-        width: result.width,
-        height: result.height,
-      };
-    }
-
-    throw new Error("Failed to upload file");
-  },
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./content/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
 };
-
-export function MyComponent() {
-  return (
-    <AuthProvider>
-      <StorageProvider storage={storage}>
-        <Comments />
-      </StorageProvider>
-    </AuthProvider>
-  );
-}
 ```
 
 ## Server

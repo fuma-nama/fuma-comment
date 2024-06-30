@@ -10,6 +10,8 @@ module.exports = {
   ],
   rules: {
     "@typescript-eslint/no-invalid-void-type": "off",
+    // we have bundler and React.js to handle this
+    "import/no-cycle": "warn",
     "tailwindcss/no-custom-classname": [
       "warn",
       {

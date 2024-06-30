@@ -14,6 +14,11 @@ interface GetCommentsOptions {
   /**
    * Fetch comments after a specific timestamp
    */
+  after?: Date;
+
+  /**
+   * Fetch comments before a specific timestamp
+   */
   before?: Date;
 
   /**

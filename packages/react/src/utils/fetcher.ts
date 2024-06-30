@@ -42,9 +42,14 @@ export interface CommentOptions {
   limit?: number;
 
   /**
-   * Fetch comments after a specific timestamp
+   * Fetch comments before a specific timestamp
    */
   before?: Date;
+
+  /**
+   * Fetch comments after a specific timestamp
+   */
+  after?: Date;
   sort?: "newest" | "oldest";
 }
 
@@ -53,6 +58,7 @@ export function fetchComments({
   thread,
   sort,
   before,
+  after,
   limit,
 }: CommentOptions): Promise<SerializedComment[]> {
   const params = new URLSearchParams();
@@ -61,6 +67,7 @@ export function fetchComments({
   if (sort) params.append("sort", sort);
   if (before) params.append("before", before.getTime().toString());
   if (limit) params.append("limit", limit.toString());
+  if (after) params.append("after", after.getTime().toString());
 
   return fetcher(`/api/comments?${params.toString()}`);
 }

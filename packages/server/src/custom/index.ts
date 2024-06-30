@@ -74,6 +74,7 @@ export function CustomComment({
         queryParams.get("sort") ?? undefined,
       );
       const before = queryParams.get("before");
+      const after = queryParams.get("after");
       const limit = Math.min(50, Number(queryParams.get("limit") ?? 40));
       const page = queryParams.get("page") ?? undefined;
       const thread = queryParams.get("thread") ?? undefined;
@@ -86,6 +87,7 @@ export function CustomComment({
           thread,
           limit,
           page,
+          after: after ? new Date(Number(after)) : undefined,
           before: before ? new Date(Number(before)) : undefined,
         }),
       };

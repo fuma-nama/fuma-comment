@@ -21,7 +21,7 @@ interface Options {
  */
 export function createAdapter({ db, getUsers }: Options): StorageAdapter {
   return {
-    async getComments({ auth, sort, page, thread, before, limit }) {
+    async getComments({ auth, sort, page, after, thread, before, limit }) {
       const result = await db.comment.findMany({
         orderBy: [{ timestamp: sort === "newest" ? "desc" : "asc" }],
         where: {
@@ -29,6 +29,7 @@ export function createAdapter({ db, getUsers }: Options): StorageAdapter {
           thread: thread ? Number(thread) : null,
           timestamp: {
             lt: before,
+            gt: after,
           },
         },
         take: limit,

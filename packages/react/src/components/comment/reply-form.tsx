@@ -50,10 +50,9 @@ export function ReplyForm(): ReactNode {
       thread: comment.id,
       page,
     }),
-    (_, { arg }: { arg: { content: object } }) =>
+    (key, { arg }: { arg: { content: object } }) =>
       postComment({
-        thread: comment.id,
-        page,
+        ...key[1],
         ...arg,
       }),
     {

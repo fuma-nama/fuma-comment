@@ -39,13 +39,11 @@ export function updateComment(
 
 export function onCommentReplied(reply: SerializedComment): void {
   updateCommentList([reply.page, reply.threadId], (v) =>
-    v ? [reply, ...v] : undefined,
+    v ? [...v, reply] : undefined,
   );
 
   if (reply.threadId) {
     updateComment(reply.threadId, (c) => {
-      console.log(c);
-
       return { ...c, replies: c.replies + 1 };
     });
   }

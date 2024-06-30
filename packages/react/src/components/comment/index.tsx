@@ -1,14 +1,15 @@
-import { useState, useMemo, useLayoutEffect, useCallback, useRef } from "react";
+import {
+  useState,
+  useMemo,
+  useLayoutEffect,
+  useCallback,
+  useRef,
+  type ReactNode,
+} from "react";
 import type { SerializedComment } from "@fuma-comment/server";
 import useSWRMutation from "swr/mutation";
-import { cva } from "cva";
-import { ChevronDown, MoreVertical, ThumbsDown, ThumbsUp } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import { type JSONContent } from "@tiptap/react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@radix-ui/react-collapsible";
 import { cn } from "../../utils/cn";
 import { toLocalString } from "../../utils/date";
 import { fetcher, getCommentsKey } from "../../utils/fetcher";
@@ -20,24 +21,23 @@ import {
 import { useAuthContext } from "../../contexts/auth";
 import {
   onCommentDeleted,
-  onLikeUpdated,
   useCommentManager,
 } from "../../utils/comment-manager";
-import { useLatestCallback } from "../../utils/hooks";
 import { MenuTrigger, MenuItems, MenuItem, Menu } from "../menu";
 import { buttonVariants } from "../button";
 import type { UseCommentEditor } from "../editor";
-import { Dialog, DialogContent, DialogTrigger } from "../dialog";
 import { Avatar } from "../avatar";
 import { EditForm } from "./edit-form";
-import { ReplyForm, ReplyHeader } from "./reply-form";
 import { ContentRenderer } from "./content-renderer";
-import { CommentList } from "./list";
 
 export function Comment({
   comment: cached,
+  actions,
+  children,
 }: {
   comment: SerializedComment;
+  actions?: ReactNode;
+  children?: ReactNode;
 }): React.ReactElement {
   const [timestamp, setTimestamp] = useState("");
   const [edit, setEdit] = useState(false);
@@ -56,8 +56,6 @@ export function Comment({
     };
   }, [comment, edit, isReply]);
 
-  const canDisplayComments = !comment.threadId && comment.replies > 0;
-
   useLayoutEffect(() => {
     const parsed = new Date(comment.timestamp);
     setTimestamp(toLocalString(parsed));
@@ -66,10 +64,7 @@ export function Comment({
   return (
     <CommentProvider value={context}>
       <div
-        className={cn(
-          "relative flex flex-row gap-2 px-3 py-4 text-sm",
-          canDisplayComments && "pb-2",
-        )}
+        className="relative flex flex-row gap-2 px-3 py-4 text-sm"
         data-fc-comment={context.comment.id}
         data-fc-edit={context.isEditing}
         data-fc-reply={context.isReplying}
@@ -94,97 +89,13 @@ export function Comment({
           ) : (
             <>
               <ContentRenderer content={comment.content} />
-              <CommentActions />
+              {actions}
             </>
           )}
         </div>
       </div>
-      {canDisplayComments ? <CommentReplies /> : null}
+      {children}
     </CommentProvider>
-  );
-}
-
-const rateVariants = cva(
-  buttonVariants({
-    variant: "secondary",
-    size: "small",
-    className: "gap-1.5",
-  }),
-  {
-    variants: {
-      active: {
-        true: "bg-fc-accent text-fc-accent-foreground",
-        false: "text-fc-muted-foreground",
-      },
-    },
-  },
-);
-
-function CommentActions(): React.ReactNode {
-  const { comment, isReplying, setReply } = useCommentContext();
-  const { status } = useAuthContext();
-  const isAuthenticated = status === "authenticated";
-
-  const onRate = useLatestCallback((v: boolean) => {
-    void fetcher(
-      `/api/comments/${comment.id}/rate`,
-      v === comment.liked
-        ? {
-            method: "DELETE",
-          }
-        : {
-            method: "POST",
-            body: JSON.stringify({ like: v }),
-          },
-    );
-
-    onLikeUpdated(comment.id, v === comment.liked ? undefined : v);
-  });
-
-  return (
-    <div className="mt-2 flex flex-row gap-1">
-      <button
-        className={cn(
-          rateVariants({
-            active: comment.liked === true,
-          }),
-        )}
-        disabled={!isAuthenticated}
-        onClick={() => {
-          onRate(true);
-        }}
-        type="button"
-      >
-        <ThumbsUp aria-label="Like" className="size-4" />
-        {comment.likes}
-      </button>
-      <button
-        className={cn(
-          rateVariants({
-            active: comment.liked === false,
-          }),
-        )}
-        disabled={!isAuthenticated}
-        onClick={() => {
-          onRate(false);
-        }}
-        type="button"
-      >
-        <ThumbsDown aria-label="Dislike" className="size-4" />
-        {comment.dislikes}
-      </button>
-      {!comment.threadId && isAuthenticated ? (
-        <Dialog open={isReplying} onOpenChange={setReply}>
-          <DialogTrigger className={cn(rateVariants({ active: false }))}>
-            Reply
-          </DialogTrigger>
-          <DialogContent>
-            <ReplyHeader />
-            <ReplyForm />
-          </DialogContent>
-        </Dialog>
-      ) : null}
-    </div>
   );
 }
 
@@ -256,40 +167,6 @@ function CommentMenu(): React.ReactNode {
         ) : null}
       </MenuItems>
     </Menu>
-  );
-}
-
-function CommentReplies(): React.ReactElement {
-  const { comment } = useCommentContext();
-  const [open, setOpen] = useState(false);
-
-  return (
-    <Collapsible
-      className="border-y border-fc-border bg-fc-card pl-3"
-      open={open}
-      onOpenChange={setOpen}
-    >
-      <CollapsibleTrigger
-        className={cn(
-          buttonVariants({
-            variant: "ghost",
-            size: "medium",
-            className: "gap-3.5",
-          }),
-        )}
-      >
-        <ChevronDown
-          className={cn(
-            "-ml-0.5 size-4 transition-transform",
-            open && "rotate-180",
-          )}
-        />
-        {comment.replies} Replies
-      </CollapsibleTrigger>
-      <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-fc-accordion-up data-[state=open]:animate-fc-accordion-down">
-        <CommentList threadId={comment.id} />
-      </CollapsibleContent>
-    </Collapsible>
   );
 }
 

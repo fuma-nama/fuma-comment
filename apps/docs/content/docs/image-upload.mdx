@@ -1,0 +1,57 @@
+---
+title: Image Upload
+---
+
+The default rich editor doesn't come with any image uploading features, you have to configure it manually to integrate with AWS S3, Cloudinary or other cloud storage services.
+
+Here is an example for Cloudinary, with unauthorized requests:
+
+```tsx
+import type { StorageContext } from "@fuma-comment/react";
+import { Comments, AuthProvider, StorageProvider } from "@fuma-comment/react";
+
+const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME;
+
+const storage: StorageContext = {
+  enabled: true,
+  async upload(file) {
+    const body = new FormData();
+    body.append("file", file);
+    body.append("upload_preset", "fuma_comment");
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+      {
+        method: "POST",
+        body,
+      },
+    );
+
+    if (res.ok) {
+      const result = (await res.json()) as {
+        secure_url: string;
+        width: number;
+        height: number;
+      };
+
+      return {
+        url: result.secure_url,
+        width: result.width,
+        height: result.height,
+      };
+    }
+
+    throw new Error("Failed to upload file");
+  },
+};
+
+export function MyComponent() {
+  return (
+    <AuthProvider>
+      <StorageProvider storage={storage}>
+        <Comments />
+      </StorageProvider>
+    </AuthProvider>
+  );
+}
+```

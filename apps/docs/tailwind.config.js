@@ -4,7 +4,7 @@ import { createPreset as createDocsPreset } from "fumadocs-ui/tailwind-plugin";
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: "class",
-  presets: [createCommentPreset(), createDocsPreset()],
+  presets: [createDocsPreset(), createCommentPreset()],
   content: [
     "./node_modules/fumadocs-ui/dist/**/*.js",
     "./node_modules/@fuma-comment/react/dist/**/*.js",
@@ -15,8 +15,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        foreground: "rgb(var(--app-foreground))",
-        background: "rgb(var(--app-background))",
+        "app-foreground": "rgb(var(--app-foreground))",
+        "app-background": "rgb(var(--app-background))",
       },
       container: {
         center: true,
