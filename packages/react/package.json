@@ -84,7 +84,7 @@
     "@tiptap/extension-text": "^2.4.0",
     "@tiptap/pm": "^2.4.0",
     "@tiptap/react": "^2.4.0",
-    "cva": "npm:class-variance-authority@^0.7.0",
+    "class-variance-authority": "^0.7.0",
     "lucide-react": "^0.396.0",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.3.0"

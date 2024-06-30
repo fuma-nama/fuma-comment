@@ -1,5 +1,5 @@
 import * as Primitive from "@radix-ui/react-dropdown-menu";
-import { cva } from "cva";
+import { cva } from "class-variance-authority";
 import { forwardRef } from "react";
 import { cn } from "../utils/cn";
 

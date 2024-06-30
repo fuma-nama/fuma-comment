@@ -1,6 +1,6 @@
 import type { JSONContent } from "@tiptap/react";
 import type { ReactNode } from "react";
-import { cva } from "cva";
+import { cva } from "class-variance-authority";
 import { cn } from "../../utils/cn";
 
 interface Mark {

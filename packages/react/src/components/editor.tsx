@@ -23,7 +23,7 @@ import {
   useCallback,
   type MutableRefObject,
 } from "react";
-import { cva } from "cva";
+import { cva } from "class-variance-authority";
 import {
   BoldIcon,
   CodeIcon,
