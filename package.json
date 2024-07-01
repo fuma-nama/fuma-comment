@@ -19,6 +19,6 @@
     "prettier": "^3.3.2",
     "tsconfig": "workspace:*",
     "tsup": "^8.1.0",
-    "turbo": "^2.0.5"
+    "turbo": "^2.0.6"
   }
 }

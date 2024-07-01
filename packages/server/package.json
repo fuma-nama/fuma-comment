@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
-    "@types/node": "^20.14.8",
+    "@types/node": "^20.14.9",
     "eslint-config-custom": "workspace:*",
     "express": "^4.19.2",
     "tsconfig": "workspace:*",
