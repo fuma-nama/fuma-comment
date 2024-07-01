@@ -1,5 +1,11 @@
 # @fuma-comment/prisma-adapter
 
+## 0.3.2
+
+### Patch Changes
+
+- 62fbce9: Remove postinstall scripts
+
 ## 0.3.1
 
 ### Patch Changes
