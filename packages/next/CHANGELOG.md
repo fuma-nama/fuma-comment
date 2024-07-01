@@ -1,5 +1,13 @@
 # @fuma-comment/next
 
+## 0.3.1
+
+### Patch Changes
+
+- c329a6e: Bump deps
+- Updated dependencies [c329a6e]
+  - @fuma-comment/server@0.3.1
+
 ## 0.3.0
 
 ### Patch Changes
