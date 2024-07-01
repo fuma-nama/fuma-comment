@@ -14,7 +14,6 @@
     "lint": "eslint .",
     "test:integrate": "vitest run",
     "build": "tsup",
-    "postinstall": "prisma generate",
     "dev": "tsup --watch"
   },
   "devDependencies": {
