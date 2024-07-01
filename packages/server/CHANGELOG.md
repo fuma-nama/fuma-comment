@@ -1,5 +1,11 @@
 # @fuma-comment/server
 
+## 0.3.1
+
+### Patch Changes
+
+- c329a6e: Bump deps
+
 ## 0.3.0
 
 ### Minor Changes
