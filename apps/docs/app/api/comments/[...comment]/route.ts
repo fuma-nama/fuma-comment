@@ -28,6 +28,7 @@ export const { GET, DELETE, PATCH, POST } = NextComment({
       }));
     },
   }),
+  role: "database",
   async getSession() {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) return null;

@@ -62,9 +62,9 @@ export interface CustomCommentOptions {
   /**
    * Where to fetch role information
    *
-   * `database` - From Storage Adapter
-   * `auth` - From Auth Provider (custom `getSession` function)
-   * `none` - Role system disabled (default)
+   * - `database`: From Storage Adapter
+   * - `auth`: From Auth Provider (custom `getSessionWithRole` function)
+   * - `none`: Role system disabled (default)
    */
   role?: "database" | "auth" | "none";
   adapter: StorageAdapter;
