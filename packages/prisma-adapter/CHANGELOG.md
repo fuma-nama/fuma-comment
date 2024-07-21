@@ -1,5 +1,11 @@
 # @fuma-comment/prisma-adapter
 
+## 0.4.0
+
+### Minor Changes
+
+- b45a063: Make the `page` parameter required on all API endpoints
+
 ## 0.3.2
 
 ### Patch Changes
