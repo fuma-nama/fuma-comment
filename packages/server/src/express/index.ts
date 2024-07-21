@@ -32,8 +32,8 @@ interface ExpressOptions extends CustomCommentOptions {
  * Should have `express.json()` body parser enabled
  */
 export function ExpressComment(options: ExpressOptions): void {
-  const { adapter, app } = options;
-  const custom = CustomComment({ adapter });
+  const { app } = options;
+  const custom = CustomComment(options);
 
   Object.keys(custom).forEach((key) => {
     const fn = custom[key as keyof typeof custom];

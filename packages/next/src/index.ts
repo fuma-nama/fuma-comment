@@ -66,8 +66,7 @@ function createRequest(
 }
 
 export function NextComment(options: NextCommentOptions): NextCommentRouter {
-  const { adapter } = options;
-  const internal = CustomComment({ adapter });
+  const internal = CustomComment(options);
 
   return {
     GET: async (req, context) => {
