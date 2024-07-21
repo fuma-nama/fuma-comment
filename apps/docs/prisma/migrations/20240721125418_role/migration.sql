@@ -10,7 +10,8 @@ ALTER TABLE "Rate" DROP CONSTRAINT "Rate_commentId_fkey";
 
 -- AlterTable
 ALTER TABLE "Comment"
-ALTER COLUMN "page" SET DEFAULT 'default',
+ALTER COLUMN "page" TYPE varchar(256) USING (COALESCE("page", "default")),
+ALTER COLUMN "page" SET DEFAULT "default"
 ALTER COLUMN "page" SET NOT NULL;
 
 -- CreateTable
