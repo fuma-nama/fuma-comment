@@ -8,7 +8,7 @@ Here is an example for Cloudinary, with unauthorized requests:
 
 ```tsx
 import type { StorageContext } from "@fuma-comment/react";
-import { Comments, AuthProvider, StorageProvider } from "@fuma-comment/react";
+import { Comments, StorageProvider } from "@fuma-comment/react";
 
 const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME;
 
@@ -45,13 +45,11 @@ const storage: StorageContext = {
   },
 };
 
-export function MyComponent() {
+export function CommentsWithAuth() {
   return (
-    <AuthProvider>
-      <StorageProvider storage={storage}>
-        <Comments />
-      </StorageProvider>
-    </AuthProvider>
+    <StorageProvider storage={storage}>
+      <Comments />
+    </StorageProvider>
   );
 }
 ```

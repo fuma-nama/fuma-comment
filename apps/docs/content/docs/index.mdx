@@ -17,21 +17,17 @@ Note that it is not a SaaS, you will need a database (PostgreSQL & MySQL) to con
 Currently, we only provide React.js client API. You have to pass authentication data into the `AuthProvider` component, there's an example for NextAuth.
 
 ```tsx
-import { signIn, useSession } from "next-auth/react";
-import { Comments, AuthProvider } from "@fuma-comment/react";
+import { signIn } from "next-auth/react";
+import { Comments } from "@fuma-comment/react";
 
 export function CommentsWithAuth() {
-  const session = useSession();
-  const id = session.data?.user?.id;
-
   return (
-    <AuthProvider
-      session={id ? { id } : null}
-      signIn={() => void signIn("github")}
-      status={session.status}
-    >
-      <Comments />
-    </AuthProvider>
+    <Comments
+      auth={{
+        // function to sign in
+        signIn: () => void signIn("github"),
+      }}
+    />
   );
 }
 ```
@@ -63,6 +59,63 @@ export default {
 };
 ```
 
+## Database
+
+You need a database to persist comments. Fuma Comment has built-in support for Prisma ORM, you may implement your own storage adapter following the instructions in TSDoc of `StorageAdapter`.
+
+### Prisma
+
+First, update your schema to include following tables:
+
+```prisma
+// optional for Role System based on database
+model Role {
+  userId    String  @id @db.VarChar(256)
+  name      String  @db.VarChar(256)
+  canDelete Boolean
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  page      String   @db.VarChar(256)
+  thread    Int?
+  author    String   @db.VarChar(256)
+  content   Json     @db.Json
+  timestamp DateTime @default(now()) @db.Timestamp()
+
+  rates Rate[]
+
+  @@index([page])
+}
+
+model Rate {
+  userId    String  @db.VarChar(256)
+  commentId Int
+  like      Boolean
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@id([userId, commentId])
+  @@index([commentId])
+}
+```
+
+Then, create the adapter.
+
+```ts
+import { createAdapter } from "@fuma-comment/prisma-adapter";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+const adapter = createAdapter({
+  db: prisma,
+  getUsers(userIds) {
+    // Fetch user profile from the user id
+  },
+});
+```
+
 ## Server
 
 Fuma Comment supports several web/backend frameworks, including Next.js and Express.
@@ -76,9 +129,9 @@ import { getServerSession } from "next-auth";
 import { NextComment } from "@fuma-comment/next";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
-  adapter,
+  adapter, // storage adapter
   async getSession() {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession();
     if (!session?.user?.id) return null;
 
     return {
@@ -96,51 +149,4 @@ Pass your express app as a parameter, all the endpoints will be added under `/ap
 import { ExressComment } from "@fuma-comment/server/express";
 
 ExressComment({ app, adapter, getSession });
-```
-
-## Database
-
-Aside from server, you need a database to persist comments. Fuma Comment has built-in support for Kysely and Prisma ORM, you may implement your own storage adapter following the instructions in JSDoc of `StorageAdapter`.
-
-### Prisma
-
-First, update your schema to include following tables:
-
-```prisma
-model Comment {
-    id Int @id @default(autoincrement())
-    page String? @db.VarChar(256)
-    thread Int?
-    author String @db.VarChar(256)
-    content Json @db.Json
-    timestamp DateTime @db.Timestamp() @default(now())
-
-    rates Rate[]
-
-    @@index([page])
-}
-
-model Rate {
-    userId String @db.VarChar(256)
-    commentId Int
-    like Boolean
-
-    comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
-
-    @@id([userId, commentId])
-    @@index([commentId])
-}
-```
-
-Then, create the adapter.
-
-```ts
-import { createAdapter } from "@fuma-comment/prisma-adapter";
-
-const adapter = createAdapter({
-  db,
-  getUsers(userIds) {
-    // Fetch user profile from the user id
-  },
-});
 ```

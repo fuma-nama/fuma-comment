@@ -1,0 +1,45 @@
+---
+title: Role System
+description: Implement Role System in Fuma Comment
+---
+
+## Introduction
+
+It's common to have roles like moderators in a comment area.
+Fuma comment supports Role System based on your database and the Auth Provider (e.g. Clerk).
+
+### Database
+
+In the Fuma Comment function, set the `role` option to `database`.
+
+For example, on Next.js:
+
+```ts title="app/api/comments/[[...comment]]/route.ts"
+import { NextComment } from "@fuma-comment/next";
+
+export const { GET, DELETE, PATCH, POST } = NextComment({
+  role: "database",
+  // other options
+});
+```
+
+Fuma Comment will now fetch the role information of users and use it to determine their permissions.
+To give roles to a user, add new records to the `Role` table.
+
+### Auth Provider
+
+Some Auth providers like Clerk has native support for Role system.
+
+You can define a custom function to fetch user info alone with their role information.
+
+```ts title="app/api/comments/[[...comment]]/route.ts"
+import { NextComment } from "@fuma-comment/next";
+
+export const { GET, DELETE, PATCH, POST } = NextComment({
+  role: "auth",
+  async getSessionWithRole(req, { page }) {
+    // ...
+  },
+  // other options
+});
+```
