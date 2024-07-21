@@ -40,7 +40,7 @@ const mockAdapter: StorageAdapter = {
     return null;
   },
   getCommentAuthor() {
-    return null;
+    return "mock_user";
   },
 };
 
@@ -57,7 +57,7 @@ describe("Custom Comment Routes", () => {
         body() {
           return null;
         },
-        params: new Map(),
+        params: new Map([["page", "default"]]),
         queryParams: new Map(),
       },
       success: true,
@@ -71,7 +71,7 @@ describe("Custom Comment Routes", () => {
         body() {
           return null;
         },
-        params: new Map(),
+        params: new Map([["page", "default"]]),
         queryParams: new Map(),
       },
       success: true,
@@ -90,7 +90,7 @@ describe("Custom Comment Routes", () => {
       },
       success: false,
     },
-  ])("GET /api/comments $name", async ({ req, success }) => {
+  ])("Get Comments $name", async ({ req, success }) => {
     const result = await app["GET /comments/[page]"](req);
 
     expect(result.type).toBe(success ? "success" : "error");
@@ -139,7 +139,7 @@ describe("Custom Comment Routes", () => {
       },
       success: false,
     },
-  ])("POST /api/comments $name", async ({ req, success }) => {
+  ])("Post Comments $name", async ({ req, success }) => {
     const result = await app["POST /comments/[page]"](req);
 
     expect(result.type).toBe(success ? "success" : "error");
@@ -155,7 +155,10 @@ describe("Custom Comment Routes", () => {
         getSession() {
           return { id: "mock_user" };
         },
-        params: new Map([["id", "test"]]),
+        params: new Map([
+          ["id", "test"],
+          ["page", "default"],
+        ]),
         queryParams: new Map(),
       },
       success: true,
@@ -194,7 +197,7 @@ describe("Custom Comment Routes", () => {
       },
       success: false,
     },
-  ])("PATCH /api/comments/[id] $name", async ({ req, success }) => {
+  ])("Update Comments $name", async ({ req, success }) => {
     const result = await app["PATCH /comments/[page]/[id]"](req);
 
     expect(result.type).toBe(success ? "success" : "error");
@@ -235,7 +238,7 @@ describe("Custom Comment Routes", () => {
       },
       success: false,
     },
-  ])("DELETE /api/comments/[id] $name", async ({ req, success }) => {
+  ])("Delete Comments $name", async ({ req, success }) => {
     const result = await app["DELETE /comments/[page]/[id]"](req);
 
     expect(result.type).toBe(success ? "success" : "error");

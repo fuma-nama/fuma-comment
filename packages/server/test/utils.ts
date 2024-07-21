@@ -9,7 +9,7 @@ export const mockAdapter: StorageAdapter = {
   setRate: vi.fn(),
   updateComment: vi.fn(),
   getRole: vi.fn(),
-  getCommentAuthor: vi.fn(),
+  getCommentAuthor: vi.fn().mockImplementation(() => "mock_user"),
 };
 
 export function createContent(raw: string): Content {

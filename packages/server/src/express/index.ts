@@ -44,6 +44,9 @@ export function ExpressComment(options: ExpressOptions): void {
       ...path.split("/"),
     ]
       .filter((v) => v.length > 0)
+      .map((v) =>
+        v.startsWith("[") && v.endsWith("]") ? `:${v.slice(1, -1)}` : v,
+      )
       .join("/");
 
     app[method.toLowerCase() as "get" | "post" | "patch" | "delete"](
@@ -53,7 +56,7 @@ export function ExpressComment(options: ExpressOptions): void {
           .then((result) => {
             sendResponse(res, result);
           })
-          .catch((e) => {
+          .catch((e: unknown) => {
             throw e;
           });
       },

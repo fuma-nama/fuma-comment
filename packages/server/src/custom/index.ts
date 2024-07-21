@@ -255,7 +255,7 @@ export function CustomComment({
           const issuesToString = e.issues
             .map(
               (issue) =>
-                `${issue.path[issue.path.length - 1].toString()}: ${issue.message}`,
+                `${(issue.path.at(-1) ?? "root").toString()}: ${issue.message}`,
             )
             .join("\n");
 
