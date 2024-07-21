@@ -1,5 +1,18 @@
 # @fuma-comment/next
 
+## 0.4.0
+
+### Minor Changes
+
+- b45a063: Support Roles
+- b45a063: Make the `page` parameter required on all API endpoints
+
+### Patch Changes
+
+- Updated dependencies [b45a063]
+- Updated dependencies [b45a063]
+  - @fuma-comment/server@0.4.0
+
 ## 0.3.1
 
 ### Patch Changes
