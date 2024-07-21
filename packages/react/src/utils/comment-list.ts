@@ -3,7 +3,7 @@ import { useState } from "react";
 import { createListener } from "./use-listener";
 import { useLatestCallback } from "./hooks";
 
-type KeyArray = [page: string | undefined, threadId: number | undefined];
+type KeyArray = [page: string, threadId: string | undefined];
 const data = new Map<string, SerializedComment[]>();
 const { useListener, trigger } = createListener<[]>();
 
@@ -38,5 +38,5 @@ export function updateCommentList(
 }
 
 function getKey(id: KeyArray): string {
-  return `${id[0] ?? "unset"}:${id[1] ?? "unset"}`;
+  return `${id[0]}:${id[1] ?? "unset"}`;
 }

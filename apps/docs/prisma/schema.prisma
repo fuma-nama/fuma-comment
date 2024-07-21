@@ -1,25 +1,31 @@
 model Comment {
-    id Int @id @default(autoincrement())
-    page String? @db.VarChar(256)
-    thread Int? @map("threadId")
-    author String @db.VarChar(256)
-    content Json @db.Json
-    timestamp DateTime @db.Timestamp() @default(now())
+  id        Int      @id @default(autoincrement())
+  page      String   @default("default") @db.VarChar(256)
+  thread    Int?     @map("threadId")
+  author    String   @db.VarChar(256)
+  content   Json     @db.Json
+  timestamp DateTime @default(now()) @db.Timestamp()
 
-    rates Rate[]
+  rates Rate[]
 
-    @@index([page])
+  @@index([page])
 }
 
 model Rate {
-    userId String @db.VarChar(256)
-    commentId Int
-    like Boolean
+  userId    String  @db.VarChar(256)
+  commentId Int
+  like      Boolean
 
-    comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
-    @@id([userId, commentId])
-    @@index([commentId])
+  @@id([userId, commentId])
+  @@index([commentId])
+}
+
+model Role {
+  userId    String  @id @db.VarChar(256)
+  name      String
+  canDelete Boolean
 }
 
 datasource db {
@@ -32,9 +38,9 @@ generator client {
 }
 
 model User {
-  id            String          @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String          @unique
+  email         String    @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]

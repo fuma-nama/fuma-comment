@@ -17,7 +17,7 @@ export interface CommentsProviderProps {
   /**
    * Comments will be grouped by `page`
    */
-  page?: string;
+  page: string;
 
   children?: ReactNode;
 }
@@ -25,7 +25,7 @@ export interface CommentsProviderProps {
 export function CommentsProvider({
   page,
   children,
-}: CommentsProviderProps): JSX.Element {
+}: CommentsProviderProps): React.ReactNode {
   const context = useMemo(
     () => ({
       page,

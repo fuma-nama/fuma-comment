@@ -1,13 +1,29 @@
-/* eslint-disable @typescript-eslint/no-misused-promises -- the misuse detection doesn't work properly */
 import type { Express, Request, Response } from "express";
-import type { AuthInfo, Awaitable, StorageAdapter } from "../types";
-import type { CustomRequest, CustomResponse } from "../custom";
+import type { AuthInfo, AuthInfoWithRole, Awaitable } from "../types";
+import type {
+  CustomCommentOptions,
+  CustomRequest,
+  CustomResponse,
+} from "../custom";
 import { CustomComment } from "../custom";
 
-interface ExpressOptions {
+interface ExpressOptions extends CustomCommentOptions {
   app: Express;
-  adapter: StorageAdapter;
+  /**
+   * Base URL of API endpoints
+   */
+  baseUrl?: string;
+
+  /** Get user session */
   getSession: (req: Request) => Awaitable<AuthInfo | null>;
+
+  /** Get user session with role information */
+  getSessionWithRole?: (
+    req: Request,
+    options: {
+      page: string;
+    },
+  ) => Awaitable<AuthInfoWithRole | null>;
 }
 
 /**
@@ -15,63 +31,55 @@ interface ExpressOptions {
  *
  * Should have `express.json()` body parser enabled
  */
-export function ExressComment(options: ExpressOptions): void {
+export function ExpressComment(options: ExpressOptions): void {
   const { adapter, app } = options;
   const custom = CustomComment({ adapter });
 
-  app.get("/api/comments", async (req, res) => {
-    const result = await custom["GET /api/comments"](readRequest(req, options));
+  Object.keys(custom).forEach((key) => {
+    const fn = custom[key as keyof typeof custom];
+    const [method, path] = key.split(" ");
 
-    sendResponse(res, result);
-  });
+    const pathWithBase = [
+      ...(options.baseUrl ?? "").split("/"),
+      ...path.split("/"),
+    ]
+      .filter((v) => v.length > 0)
+      .join("/");
 
-  app.post("/api/comments", async (req, res) => {
-    const result = await custom["POST /api/comments"](
-      readRequest(req, options),
+    app[method.toLowerCase() as "get" | "post" | "patch" | "delete"](
+      `/${pathWithBase}`,
+      (req, res) => {
+        void fn(readRequest(req, options))
+          .then((result) => {
+            sendResponse(res, result);
+          })
+          .catch((e) => {
+            throw e;
+          });
+      },
     );
-
-    sendResponse(res, result);
-  });
-
-  app.patch("/api/comments/:id", async (req, res) => {
-    const result = await custom["PATCH /api/comments/[id]"](
-      readRequest(req, options),
-    );
-
-    sendResponse(res, result);
-  });
-
-  app.delete("/api/comments/:id", async (req, res) => {
-    const result = await custom["DELETE /api/comments/[id]"](
-      readRequest(req, options),
-    );
-
-    sendResponse(res, result);
-  });
-
-  app.post("/api/comments/:id/rate", async (req, res) => {
-    const result = await custom["POST /api/comments/[id]/rate"](
-      readRequest(req, options),
-    );
-
-    sendResponse(res, result);
-  });
-
-  app.delete("/api/comments/:id/rate", async (req, res) => {
-    const result = await custom["DELETE /api/comments/[id]/rate"](
-      readRequest(req, options),
-    );
-
-    sendResponse(res, result);
   });
 }
 
 function readRequest(req: Request, options: ExpressOptions): CustomRequest {
+  const getSessionWithRole = options.getSessionWithRole;
+
   return {
     body: () => req.body as unknown,
     getSession: () => options.getSession(req),
-    params: new Map(Object.entries(req.params)),
-    queryParams: new Map(Object.entries(req.query) as [string, string][]),
+    params: {
+      get(key) {
+        return req.params[key];
+      },
+    },
+    queryParams: {
+      get(key) {
+        return req.query[key] as string;
+      },
+    },
+    getSessionWithRole: getSessionWithRole
+      ? (v) => getSessionWithRole(req, v)
+      : undefined,
   };
 }
 

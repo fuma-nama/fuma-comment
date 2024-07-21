@@ -1,14 +1,14 @@
 import express, { json } from "express";
 import { describe, expect, test } from "vitest";
 import { createContent, mockAdapter } from "../../test/utils";
-import { ExressComment } from ".";
+import { ExpressComment } from ".";
 
 const app = express();
 const port = 4000;
 
 app.use(json());
 
-ExressComment({
+ExpressComment({
   app,
   adapter: mockAdapter,
   getSession: () => ({ id: "mock_user" }),
@@ -21,23 +21,23 @@ function doFetch(path: string, init: RequestInit = {}): Promise<Response> {
 }
 
 describe("Express Server Routes", () => {
-  test("GET /api/comments", async () => {
-    const result = await doFetch("/api/comments", { method: "GET" });
+  test("Get Comments", async () => {
+    const result = await doFetch("/comments/page", { method: "GET" });
 
     expect(result.ok).toBe(true);
     expect(await result.json()).toStrictEqual([]);
   });
 
-  test("GET /api/comments - Invalid", async () => {
-    const result = await doFetch("/api/comments?sort=invalid", {
+  test("Get Comments - Invalid", async () => {
+    const result = await doFetch("/comments/page?sort=invalid", {
       method: "GET",
     });
 
     expect(result.ok).toBe(false);
   });
 
-  test("POST /api/comments", async () => {
-    const result = await doFetch("/api/comments", {
+  test("Post Comments", async () => {
+    const result = await doFetch("/comments/page", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -50,8 +50,8 @@ describe("Express Server Routes", () => {
     expect(result.ok).toBe(true);
   });
 
-  test("POST /api/comments - Invalid", async () => {
-    const result = await doFetch("/api/comments", {
+  test("Post Comments - Invalid", async () => {
+    const result = await doFetch("/comments/page", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -64,8 +64,8 @@ describe("Express Server Routes", () => {
     expect(result.ok).toBe(false);
   });
 
-  test("PATCH /api/comments/[id]", async () => {
-    const result = await doFetch("/api/comments/test", {
+  test("Update Comment", async () => {
+    const result = await doFetch("/comments/page/test", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -78,8 +78,8 @@ describe("Express Server Routes", () => {
     expect(result.ok).toBe(true);
   });
 
-  test("PATCH /api/comments/[id] - Invalid", async () => {
-    const result = await doFetch("/api/comments/test", {
+  test("Update Comment - Invalid", async () => {
+    const result = await doFetch("/comments/page/test", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -92,16 +92,16 @@ describe("Express Server Routes", () => {
     expect(result.ok).toBe(false);
   });
 
-  test("DELETE /api/comments/[id]", async () => {
-    const result = await doFetch("/api/comments/test", {
+  test("Delete Comment", async () => {
+    const result = await doFetch("/comments/page/test", {
       method: "DELETE",
     });
 
     expect(result.ok).toBe(true);
   });
 
-  test("POST /api/comments/[id]/rate", async () => {
-    const result = await doFetch("/api/comments/test/rate", {
+  test("Set Rate", async () => {
+    const result = await doFetch("/comments/page/test/rate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -114,8 +114,8 @@ describe("Express Server Routes", () => {
     expect(result.ok).toBe(true);
   });
 
-  test("POST /api/comments/[id]/rate - Invalid", async () => {
-    const result = await doFetch("/api/comments/test/rate", {
+  test("Set Rate - Invalid", async () => {
+    const result = await doFetch("/comments/page/test/rate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -128,8 +128,8 @@ describe("Express Server Routes", () => {
     expect(result.ok).toBe(false);
   });
 
-  test("DELETE /api/comments/[id]/rate", async () => {
-    const result = await doFetch("/api/comments/test/rate", {
+  test("Delete Rate", async () => {
+    const result = await doFetch("/comments/page/test/rate", {
       method: "DELETE",
     });
 

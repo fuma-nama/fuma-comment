@@ -5,11 +5,11 @@ import { updateCommentList } from "./comment-list";
 
 type Item = SerializedComment;
 
-const map = new Map<number, Item>();
+const map = new Map<string, Item>();
 
 const { useListener, trigger } = createListener<[Item]>();
 
-export function useCommentManager(id: number): Item | undefined {
+export function useCommentManager(id: string): Item | undefined {
   const [value, setValue] = useState(() => map.get(id));
   useListener(id, setValue);
 
@@ -22,13 +22,13 @@ export function syncComments(comments: SerializedComment[]): void {
   });
 }
 
-function setComment(id: number, c: Item): void {
+function setComment(id: string, c: Item): void {
   map.set(id, c);
   trigger(id, c);
 }
 
 export function updateComment(
-  commentId: number,
+  commentId: string,
   updateFn: (comment: Item) => Item,
 ): void {
   const comment = map.get(commentId);
@@ -63,15 +63,18 @@ export function onCommentDeleted(comment: SerializedComment): void {
 }
 
 export function onLikeUpdated(
-  commentId: number,
+  commentId: string,
   value: boolean | undefined,
 ): void {
   updateComment(commentId, (comment) => {
     let likes: number = comment.likes;
     let dislikes: number = comment.dislikes;
 
+    // reset
     if (comment.liked === true) likes--;
     if (comment.liked === false) dislikes--;
+
+    // add
     if (value === true) likes++;
     if (value === false) dislikes++;
 

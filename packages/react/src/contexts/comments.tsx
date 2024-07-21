@@ -1,10 +1,12 @@
 import { createContext, useContext } from "react";
 
 interface CommentsContext {
-  page?: string;
+  page: string;
 }
 
-const CommentsContext = createContext<CommentsContext>({});
+const CommentsContext = createContext<CommentsContext>({
+  page: "",
+});
 
 export function useCommentsContext(): CommentsContext {
   return useContext(CommentsContext);

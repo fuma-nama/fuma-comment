@@ -37,8 +37,9 @@ export function getCommentsKey(
 }
 
 export interface CommentOptions {
-  thread?: number;
-  page?: string;
+  page: string;
+  thread?: string;
+
   limit?: number;
 
   /**
@@ -62,14 +63,13 @@ export function fetchComments({
   limit,
 }: CommentOptions): Promise<SerializedComment[]> {
   const params = new URLSearchParams();
-  if (page) params.append("page", page);
   if (thread) params.append("thread", thread.toString());
   if (sort) params.append("sort", sort);
   if (before) params.append("before", before.getTime().toString());
   if (limit) params.append("limit", limit.toString());
   if (after) params.append("after", after.getTime().toString());
 
-  return fetcher(`/api/comments?${params.toString()}`);
+  return fetcher(`/api/comments/${page}/?${params.toString()}`);
 }
 
 export async function postComment({
@@ -78,14 +78,13 @@ export async function postComment({
   thread,
 }: {
   content: object;
-  thread?: number;
-  page?: string;
+  thread?: string;
+  page: string;
 }): Promise<SerializedComment> {
-  return await fetcher("/api/comments", {
+  return await fetcher(`/api/comments/${page}`, {
     method: "POST",
     body: JSON.stringify({
       thread,
-      page,
       content,
     }),
   });
@@ -93,15 +92,46 @@ export async function postComment({
 
 export async function editComment({
   id,
+  page,
   content,
 }: {
-  id: number;
+  id: string;
+  page: string;
   content: object;
 }): Promise<void> {
-  await fetcher(`/api/comments/${id}`, {
+  await fetcher(`/api/comments/${page}/${id}`, {
     method: "PATCH",
     body: JSON.stringify({
       content,
     }),
+  });
+}
+
+export async function deleteComment(options: {
+  id: string;
+  page: string;
+}): Promise<void> {
+  await fetcher(`/api/comments/${options.page}/${options.id}`, {
+    method: "DELETE",
+  });
+}
+
+export async function setRate(options: {
+  id: string;
+  page: string;
+  like: boolean;
+}): Promise<void> {
+  await fetcher(`/api/comments/${options.page}/${options.id}/rate`, {
+    method: "POST",
+    body: JSON.stringify({ like: options.like }),
+  });
+}
+
+export async function deleteRate(options: {
+  id: string;
+  page: string;
+}): Promise<void> {
+  await fetcher(`/api/comments/${options.page}/${options.id}/rate`, {
+    method: "DELETE",
   });
 }

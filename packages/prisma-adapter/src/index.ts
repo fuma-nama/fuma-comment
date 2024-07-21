@@ -26,7 +26,7 @@ export function createAdapter({ db, getUsers }: Options): StorageAdapter {
         orderBy: [{ timestamp: sort === "newest" ? "desc" : "asc" }],
         where: {
           page,
-          thread: thread ? Number(thread) : null,
+          thread: Number(thread),
           timestamp: {
             lt: before,
             gt: after,
@@ -51,7 +51,9 @@ export function createAdapter({ db, getUsers }: Options): StorageAdapter {
       return await Promise.all(
         result.map(async (row) => {
           const selfRate = row.rates.length > 0 ? row.rates[0] : null;
-          const replies = await db.comment.count({ where: { thread: row.id } });
+          const replies = await db.comment.count({
+            where: { thread: row.id },
+          });
           const likes = await db.rate.count({
             where: { commentId: row.id, like: true },
           });
@@ -60,7 +62,7 @@ export function createAdapter({ db, getUsers }: Options): StorageAdapter {
           });
 
           return {
-            id: row.id,
+            id: String(row.id),
             author: userInfos.find((c) => c.id === row.author) ?? {
               id: "unknown",
               name: "Deleted User",
@@ -71,37 +73,43 @@ export function createAdapter({ db, getUsers }: Options): StorageAdapter {
             replies,
             timestamp: row.timestamp,
             liked: selfRate?.like ?? undefined,
-            page: row.page ?? undefined,
-            threadId: row.thread ?? undefined,
+            page: row.page,
+            threadId: row.thread ? String(row.thread) : undefined,
           } satisfies Comment;
         }),
       );
     },
-    async deleteComment({ auth, id }) {
-      await db.comment.delete({ where: { id: Number(id), author: auth.id } });
+    async deleteComment({ auth, id, page }) {
+      await db.comment.delete({
+        where: { id: Number(id), author: auth.id, page },
+      });
     },
-    async deleteRate({ auth, id }) {
-      await db.rate.delete({
+    async deleteRate({ auth, id, page }) {
+      await db.rate.deleteMany({
         where: {
-          userId_commentId: { commentId: Number(id), userId: auth.id },
+          commentId: Number(id),
+          userId: auth.id,
+          comment: {
+            page,
+          },
         },
       });
     },
-    async postComment({ auth, body }) {
+    async postComment({ auth, body, page }) {
       const v = await db.comment.create({
         data: {
           author: auth.id,
           content: body.content as object,
-          page: body.page,
-          thread: body.thread,
+          page,
+          thread: Number(body.thread),
         },
       });
 
       return {
-        id: v.id,
+        id: String(v.id),
         timestamp: v.timestamp,
-        threadId: v.thread ?? undefined,
-        page: v.page ?? undefined,
+        threadId: v.thread ? String(v.thread) : undefined,
+        page,
         author: (await getUsers([v.author]))[0],
         content: v.content as object,
         likes: 0,
@@ -109,7 +117,7 @@ export function createAdapter({ db, getUsers }: Options): StorageAdapter {
         replies: 0,
       } satisfies Comment;
     },
-    async setRate({ id, auth, body }) {
+    async setRate({ id, auth, body, page }) {
       await db.rate.upsert({
         create: {
           like: body.like,
@@ -124,13 +132,32 @@ export function createAdapter({ db, getUsers }: Options): StorageAdapter {
             commentId: Number(id),
             userId: auth.id,
           },
+          comment: {
+            page,
+          },
         },
       });
     },
-    async updateComment({ id, auth, body }) {
+    async updateComment({ id, auth, body, page }) {
       await db.comment.updateMany({
         data: { content: body.content as object },
-        where: { author: auth.id, id: Number(id) },
+        where: { author: auth.id, id: Number(id), page },
+      });
+    },
+    async getCommentAuthor({ id }) {
+      return db.comment
+        .findFirst({
+          where: {
+            id: Number(id),
+          },
+        })
+        .then((res) => res?.author ?? null);
+    },
+    async getRole({ auth }) {
+      return db.role.findFirst({
+        where: {
+          userId: auth.id,
+        },
       });
     },
   };

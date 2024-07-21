@@ -33,6 +33,7 @@ export default function Page(): React.ReactNode {
         </a>
       </div>
       <CommentsWithAuth
+        page="default"
         title={
           <>
             <h2 className="mb-2 text-sm font-semibold">

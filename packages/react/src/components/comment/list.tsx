@@ -14,7 +14,7 @@ import { Comment } from "./index";
 const count = 40;
 
 export interface CommentListProps extends HTMLAttributes<HTMLDivElement> {
-  threadId?: number;
+  threadId?: string;
   isSubThread?: boolean;
 }
 

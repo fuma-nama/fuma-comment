@@ -1,14 +1,22 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import type { AuthInfo, Awaitable, StorageAdapter } from "@fuma-comment/server";
-import type { CustomResponse } from "@fuma-comment/server/custom";
+import {
+  type AuthInfo,
+  type AuthInfoWithRole,
+  type Awaitable,
+} from "@fuma-comment/server";
+import type {
+  CustomCommentOptions,
+  CustomRequest,
+  CustomResponse,
+} from "@fuma-comment/server/custom";
 import { CustomComment } from "@fuma-comment/server/custom";
 
 type RouteHandler = (
   req: NextRequest,
   context: {
     params: {
-      comment?: string[];
+      comment: string[];
     };
   },
 ) => Promise<NextResponse>;
@@ -20,9 +28,12 @@ interface NextCommentRouter {
   DELETE: RouteHandler;
 }
 
-interface NextCommentOptions {
-  adapter: StorageAdapter;
+interface NextCommentOptions extends CustomCommentOptions {
   getSession: (req: NextRequest) => Awaitable<AuthInfo | null>;
+  getSessionWithRole?: (
+    req: NextRequest,
+    options: { page: string },
+  ) => Awaitable<AuthInfoWithRole | null>;
 }
 
 const NOT_FOUND = NextResponse.json({ message: "Not Found" }, { status: 404 });
@@ -35,29 +46,44 @@ function createResponse(result: CustomResponse): NextResponse {
   return NextResponse.json(result.data, { status: result.status });
 }
 
-export function NextComment({
-  adapter,
-  getSession,
-}: NextCommentOptions): NextCommentRouter {
+function createRequest(
+  req: NextRequest,
+  params: Record<string, string>,
+  options: NextCommentOptions,
+): CustomRequest {
+  const { getSessionWithRole, getSession } = options;
+  return {
+    body() {
+      return req.json();
+    },
+    getSession: () => getSession(req),
+    getSessionWithRole: getSessionWithRole
+      ? (arg) => getSessionWithRole(req, arg)
+      : undefined,
+    params: new Map(Object.entries(params)),
+    queryParams: req.nextUrl.searchParams,
+  };
+}
+
+export function NextComment(options: NextCommentOptions): NextCommentRouter {
+  const { adapter } = options;
   const internal = CustomComment({ adapter });
 
   return {
     GET: async (req, context) => {
       const params = context.params.comment;
 
-      // GET /api/comments
-      if (!params) {
-        const auth = await getSession(req);
-        const result = await internal["GET /api/comments"]({
-          body() {
-            return req.json();
-          },
-          getSession() {
-            return auth;
-          },
-          params: new Map(),
-          queryParams: new Map(req.nextUrl.searchParams),
-        });
+      // GET /[page]
+      if (params.length === 1) {
+        const result = await internal["GET /comments/[page]"](
+          createRequest(
+            req,
+            {
+              page: params[0],
+            },
+            options,
+          ),
+        );
 
         return createResponse(result);
       }
@@ -67,36 +93,27 @@ export function NextComment({
     POST: async (req, context) => {
       const params = context.params.comment;
 
-      // POST /api/comments
-      if (!params) {
-        const auth = await getSession(req);
-        const result = await internal["POST /api/comments"]({
-          body() {
-            return req.json();
-          },
-          getSession() {
-            return auth;
-          },
-          params: new Map(),
-          queryParams: new Map(req.nextUrl.searchParams),
-        });
+      // POST /[page]
+      if (params.length === 1) {
+        const result = await internal["POST /comments/[page]"](
+          createRequest(req, { page: params[0] }, options),
+        );
 
         return createResponse(result);
       }
 
-      // POST /api/comments/[id]/rate
-      if (params.length === 2 && params[1] === "rate") {
-        const auth = await getSession(req);
-        const result = await internal["POST /api/comments/[id]/rate"]({
-          body() {
-            return req.json();
-          },
-          getSession() {
-            return auth;
-          },
-          params: new Map([["id", params[0]]]),
-          queryParams: new Map(req.nextUrl.searchParams),
-        });
+      // POST /[page]/[id]/rate
+      if (params.length === 3 && params[2] === "rate") {
+        const result = await internal["POST /comments/[page]/[id]/rate"](
+          createRequest(
+            req,
+            {
+              page: params[0],
+              id: params[1],
+            },
+            options,
+          ),
+        );
 
         return createResponse(result);
       }
@@ -106,19 +123,18 @@ export function NextComment({
     PATCH: async (req, context) => {
       const params = context.params.comment;
 
-      // PATCH /api/comments/[id]
-      if (params?.length === 1) {
-        const auth = await getSession(req);
-        const result = await internal["PATCH /api/comments/[id]"]({
-          body() {
-            return req.json();
-          },
-          getSession() {
-            return auth;
-          },
-          params: new Map([["id", params[0]]]),
-          queryParams: new Map(req.nextUrl.searchParams),
-        });
+      // PATCH /[page]/[id]
+      if (params.length === 2) {
+        const result = await internal["PATCH /comments/[page]/[id]"](
+          createRequest(
+            req,
+            {
+              page: params[0],
+              id: params[1],
+            },
+            options,
+          ),
+        );
 
         return createResponse(result);
       }
@@ -128,36 +144,20 @@ export function NextComment({
     DELETE: async (req, context) => {
       const params = context.params.comment;
 
-      // DELETE /api/comments/[id]
-      if (params?.length === 1) {
-        const auth = await getSession(req);
-        const result = await internal["DELETE /api/comments/[id]"]({
-          body() {
-            return req.json();
-          },
-          getSession() {
-            return auth;
-          },
-          params: new Map([["id", params[0]]]),
-          queryParams: new Map(req.nextUrl.searchParams),
-        });
+      // DELETE /[page]/[id]
+      if (params.length === 2) {
+        const result = await internal["DELETE /comments/[page]/[id]"](
+          createRequest(req, { page: params[0], id: params[1] }, options),
+        );
 
         return createResponse(result);
       }
 
-      // DELETE /api/comments/[id]/rate
-      if (params?.length === 2 && params[1] === "rate") {
-        const auth = await getSession(req);
-        const result = await internal["DELETE /api/comments/[id]/rate"]({
-          body() {
-            return req.json();
-          },
-          getSession() {
-            return auth;
-          },
-          params: new Map([["id", params[0]]]),
-          queryParams: new Map(req.nextUrl.searchParams),
-        });
+      // DELETE /[page]/[id]/rate
+      if (params.length === 3 && params[2] === "rate") {
+        const result = await internal["DELETE /comments/[page]/[id]/rate"](
+          createRequest(req, { page: params[0], id: params[1] }, options),
+        );
 
         return createResponse(result);
       }

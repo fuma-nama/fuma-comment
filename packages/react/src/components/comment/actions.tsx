@@ -1,9 +1,10 @@
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { cva } from "class-variance-authority";
+import { useCallback } from "react";
 import { useCommentContext } from "../../contexts/comment";
 import { useAuthContext } from "../../contexts/auth";
 import { useLatestCallback } from "../../utils/hooks";
-import { fetcher } from "../../utils/fetcher";
+import { deleteRate, setRate } from "../../utils/fetcher";
 import { onLikeUpdated } from "../../utils/comment-manager";
 import { cn } from "../../utils/cn";
 import { Dialog, DialogContent, DialogTrigger } from "../dialog";
@@ -36,19 +37,21 @@ export function Actions({
   const isAuthenticated = status === "authenticated";
 
   const onRate = useLatestCallback((v: boolean) => {
-    void fetcher(
-      `/api/comments/${comment.id}/rate`,
-      v === comment.liked
-        ? {
-            method: "DELETE",
-          }
-        : {
-            method: "POST",
-            body: JSON.stringify({ like: v }),
-          },
-    );
-
-    onLikeUpdated(comment.id, v === comment.liked ? undefined : v);
+    // double click
+    if (v === comment.liked) {
+      void deleteRate({
+        id: comment.id,
+        page: comment.page,
+      });
+      onLikeUpdated(comment.id, undefined);
+    } else {
+      void setRate({
+        id: comment.id,
+        page: comment.page,
+        like: v,
+      });
+      onLikeUpdated(comment.id, v);
+    }
   });
 
   return (
@@ -75,9 +78,9 @@ export function Actions({
           }),
         )}
         disabled={!isAuthenticated}
-        onClick={() => {
+        onClick={useCallback(() => {
           onRate(false);
-        }}
+        }, [onRate])}
         type="button"
       >
         <ThumbsDown aria-label="Dislike" className="size-4" />

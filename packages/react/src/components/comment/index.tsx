@@ -12,7 +12,7 @@ import { MoreVertical } from "lucide-react";
 import { type JSONContent } from "@tiptap/react";
 import { cn } from "../../utils/cn";
 import { toLocalString } from "../../utils/date";
-import { fetcher, getCommentsKey } from "../../utils/fetcher";
+import { deleteComment, getCommentsKey } from "../../utils/fetcher";
 import {
   type CommentContext,
   useCommentContext,
@@ -107,8 +107,9 @@ function CommentMenu(): React.ReactNode {
   const deleteMutation = useSWRMutation(
     getCommentsKey({
       thread: comment.threadId,
+      page: comment.page,
     }),
-    ([key]) => fetcher(`${key}/${comment.id}`, { method: "DELETE" }),
+    () => deleteComment(comment),
     {
       onSuccess() {
         onCommentDeleted(comment);

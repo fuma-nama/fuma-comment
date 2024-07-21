@@ -38,7 +38,7 @@ export function StorageProvider({
 }: {
   storage: StorageContext;
   children: ReactNode;
-}): JSX.Element {
+}): React.ReactNode {
   return (
     <StorageContext.Provider value={storage}>
       {children}

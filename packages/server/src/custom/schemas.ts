@@ -1,6 +1,13 @@
 import { z } from "zod";
 import { getTextFromContent } from "../utils";
 
+export const imageContentSchema = z.object({
+  type: z.literal("image"),
+  attrs: z.object({
+    src: z.string().startsWith("http"),
+  }),
+});
+
 export interface RichContentSchema
   extends z.infer<typeof richContentSchemaLeaf> {
   content?: RichContentSchema[];
@@ -18,13 +25,6 @@ const richContentSchema: z.ZodType<RichContentSchema> = z.lazy(() =>
     content: z.array(richContentSchema).optional(),
   }),
 );
-
-export const imageContentSchema = z.object({
-  type: z.literal("image"),
-  attrs: z.object({
-    src: z.string().startsWith("http"),
-  }),
-});
 
 export const contentSchema = richContentSchema.superRefine(
   (obj, { addIssue }) => {
@@ -67,3 +67,18 @@ export const contentSchema = richContentSchema.superRefine(
     }
   },
 );
+
+export const updateCommentSchema = z.strictObject({
+  content: contentSchema,
+});
+
+export const sortSchema = z.enum(["oldest", "newest"]).default("newest");
+
+export const postCommentSchema = z.strictObject({
+  content: contentSchema,
+  thread: z.string().optional(),
+});
+
+export const setRateSchema = z.strictObject({
+  like: z.boolean(),
+});

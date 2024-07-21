@@ -1,11 +1,12 @@
-import type { CommentRoute } from "./routes/comment";
-import type { CommentsRoute } from "./routes/comments";
-import type { RatesRoute } from "./routes/rates";
-import type { RichContentSchema } from "./routes/content";
+import { type RichContentSchema } from "./custom/schemas";
 
 export interface AuthInfo {
   /** User ID, must be unique */
   id: string;
+}
+
+export interface AuthInfoWithRole extends AuthInfo {
+  role: Role | null;
 }
 
 export type Awaitable<T> = T | Promise<T>;
@@ -48,17 +49,17 @@ export interface Comment {
   /**
    * Unique ID for comment
    */
-  id: number;
+  id: string;
 
   /**
    * the ID of comment it replies to
    */
-  threadId?: number;
+  threadId?: string;
 
   /**
    * Comment page, used for filtering
    */
-  page?: string;
+  page: string;
 
   author: UserProfile;
 
@@ -99,6 +100,9 @@ export interface UserProfile {
   image?: string;
 }
 
-export type StorageAdapter = CommentsRoute & CommentRoute & RatesRoute;
+export interface Role {
+  name: string;
+  canDelete: boolean;
+}
 
 export type Content = RichContentSchema;

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import type { StorageAdapter } from "../types";
+import type { StorageAdapter } from "../adapter";
 import { createContent } from "../../test/utils";
 import type { CustomRequest } from ".";
 import { CustomComment } from ".";
@@ -16,12 +16,31 @@ const mockAdapter: StorageAdapter = {
   },
   postComment() {
     // does nothing
+    return {
+      id: "xx",
+      timestamp: new Date(Date.now()),
+      author: {
+        id: "xxx",
+        name: "hello",
+      },
+      likes: 0,
+      dislikes: 0,
+      page: "default",
+      content: {},
+      replies: 0,
+    };
   },
   setRate() {
     // does nothing
   },
   updateComment() {
     // does nothing
+  },
+  getRole() {
+    return null;
+  },
+  getCommentAuthor() {
+    return null;
   },
 };
 
@@ -72,7 +91,7 @@ describe("Custom Comment Routes", () => {
       success: false,
     },
   ])("GET /api/comments $name", async ({ req, success }) => {
-    const result = await app["GET /api/comments"](req);
+    const result = await app["GET /comments/[page]"](req);
 
     expect(result.type).toBe(success ? "success" : "error");
   });
@@ -87,7 +106,7 @@ describe("Custom Comment Routes", () => {
         getSession() {
           return { id: "mock_user" };
         },
-        params: new Map(),
+        params: new Map([["page", "default"]]),
         queryParams: new Map(),
       },
       success: true,
@@ -115,13 +134,13 @@ describe("Custom Comment Routes", () => {
         getSession() {
           return null;
         },
-        params: new Map(),
+        params: new Map([["page", "default"]]),
         queryParams: new Map(),
       },
       success: false,
     },
   ])("POST /api/comments $name", async ({ req, success }) => {
-    const result = await app["POST /api/comments"](req);
+    const result = await app["POST /comments/[page]"](req);
 
     expect(result.type).toBe(success ? "success" : "error");
   });
@@ -150,7 +169,10 @@ describe("Custom Comment Routes", () => {
         getSession() {
           return { id: "mock_user" };
         },
-        params: new Map([["id", "test"]]),
+        params: new Map([
+          ["id", "test"],
+          ["page", "default"],
+        ]),
         queryParams: new Map(),
       },
       success: false,
@@ -164,13 +186,16 @@ describe("Custom Comment Routes", () => {
         getSession() {
           return null;
         },
-        params: new Map([["id", "test"]]),
+        params: new Map([
+          ["id", "test"],
+          ["page", "default"],
+        ]),
         queryParams: new Map(),
       },
       success: false,
     },
   ])("PATCH /api/comments/[id] $name", async ({ req, success }) => {
-    const result = await app["PATCH /api/comments/[id]"](req);
+    const result = await app["PATCH /comments/[page]/[id]"](req);
 
     expect(result.type).toBe(success ? "success" : "error");
   });
@@ -185,7 +210,10 @@ describe("Custom Comment Routes", () => {
         getSession() {
           return { id: "mock_user" };
         },
-        params: new Map([["id", "test"]]),
+        params: new Map([
+          ["id", "test"],
+          ["page", "default"],
+        ]),
         queryParams: new Map(),
       },
       success: true,
@@ -199,13 +227,16 @@ describe("Custom Comment Routes", () => {
         getSession() {
           return null;
         },
-        params: new Map([["id", "test"]]),
+        params: new Map([
+          ["id", "test"],
+          ["page", "default"],
+        ]),
         queryParams: new Map(),
       },
       success: false,
     },
   ])("DELETE /api/comments/[id] $name", async ({ req, success }) => {
-    const result = await app["DELETE /api/comments/[id]"](req);
+    const result = await app["DELETE /comments/[page]/[id]"](req);
 
     expect(result.type).toBe(success ? "success" : "error");
   });
@@ -220,7 +251,10 @@ describe("Custom Comment Routes", () => {
         getSession() {
           return { id: "mock_user" };
         },
-        params: new Map([["id", "test"]]),
+        params: new Map([
+          ["id", "test"],
+          ["page", "default"],
+        ]),
         queryParams: new Map(),
       },
       success: true,
@@ -248,13 +282,16 @@ describe("Custom Comment Routes", () => {
         getSession() {
           return null;
         },
-        params: new Map([["id", "test"]]),
+        params: new Map([
+          ["id", "test"],
+          ["page", "default"],
+        ]),
         queryParams: new Map(),
       },
       success: false,
     },
   ])("POST /api/comments/[id]/rate $name", async ({ req, success }) => {
-    const result = await app["POST /api/comments/[id]/rate"](req);
+    const result = await app["POST /comments/[page]/[id]/rate"](req);
 
     expect(result.type).toBe(success ? "success" : "error");
   });
@@ -269,7 +306,10 @@ describe("Custom Comment Routes", () => {
         getSession() {
           return { id: "mock_user" };
         },
-        params: new Map([["id", "test"]]),
+        params: new Map([
+          ["id", "test"],
+          ["page", "default"],
+        ]),
         queryParams: new Map(),
       },
       success: true,
@@ -283,13 +323,16 @@ describe("Custom Comment Routes", () => {
         getSession() {
           return null;
         },
-        params: new Map([["id", "test"]]),
+        params: new Map([
+          ["id", "test"],
+          ["page", "default"],
+        ]),
         queryParams: new Map(),
       },
       success: false,
     },
   ])("DELETE /api/comments/[id]/rate $name", async ({ req, success }) => {
-    const result = await app["DELETE /api/comments/[id]/rate"](req);
+    const result = await app["DELETE /comments/[page]/[id]/rate"](req);
 
     expect(result.type).toBe(success ? "success" : "error");
   });

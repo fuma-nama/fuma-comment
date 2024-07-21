@@ -16,9 +16,15 @@ export function EditForm(): React.ReactNode {
 
   const mutation = useSWRMutation(
     getCommentsKey({
+      page: comment.page,
       thread: comment.threadId,
     }),
-    (_, { arg }: { arg: { id: number; content: object } }) => editComment(arg),
+    (_, { arg }: { arg: { content: object } }) =>
+      editComment({
+        id: comment.id,
+        page: comment.page,
+        ...arg,
+      }),
     {
       revalidate: false,
       onSuccess() {
@@ -37,7 +43,7 @@ export function EditForm(): React.ReactNode {
 
     if (content.length === 0) return;
     void mutation.trigger(
-      { id: comment.id, content },
+      { content },
       {
         onSuccess() {
           updateComment(comment.id, (item) => ({ ...item, content }));

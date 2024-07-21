@@ -1,34 +1,40 @@
 datasource db {
-  provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  directUrl    = env("DIRECT_URL")
   relationMode = "prisma"
 }
 
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
+}
+
+model Role {
+  userId    String  @id @db.VarChar(256)
+  name      String  @db.VarChar(256)
+  canDelete Boolean
 }
 
 model Comment {
-    id Int @id @default(autoincrement())
-    page String? @db.VarChar(256)
-    thread Int?
-    author String @db.VarChar(256)
-    content Json @db.Json
-    timestamp DateTime @db.Timestamp() @default(now())
+  id        Int      @id @default(autoincrement())
+  page      String   @db.VarChar(256)
+  thread    Int?
+  author    String   @db.VarChar(256)
+  content   Json     @db.Json
+  timestamp DateTime @default(now()) @db.Timestamp()
 
-    rates Rate[]
+  rates Rate[]
 
-    @@index([page])
+  @@index([page])
 }
 
 model Rate {
-    userId String @db.VarChar(256)
-    commentId Int
-    like Boolean
+  userId    String  @db.VarChar(256)
+  commentId Int
+  like      Boolean
 
-    comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
-    @@id([userId, commentId])
-    @@index([commentId])
+  @@id([userId, commentId])
+  @@index([commentId])
 }

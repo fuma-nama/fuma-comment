@@ -8,6 +8,8 @@ export const mockAdapter: StorageAdapter = {
   postComment: vi.fn(),
   setRate: vi.fn(),
   updateComment: vi.fn(),
+  getRole: vi.fn(),
+  getCommentAuthor: vi.fn(),
 };
 
 export function createContent(raw: string): Content {
