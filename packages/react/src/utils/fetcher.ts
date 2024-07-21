@@ -1,4 +1,4 @@
-import type { SerializedComment } from "@fuma-comment/server";
+import type { AuthInfoWithRole, SerializedComment } from "@fuma-comment/server";
 
 export interface FetcherError {
   message: string;
@@ -133,5 +133,13 @@ export async function deleteRate(options: {
 }): Promise<void> {
   await fetcher(`/api/comments/${options.page}/${options.id}/rate`, {
     method: "DELETE",
+  });
+}
+
+export async function getAuthSession(options: {
+  page: string;
+}): Promise<AuthInfoWithRole> {
+  return await fetcher(`/api/comments/${options.page}/auth`, {
+    method: "GET",
   });
 }

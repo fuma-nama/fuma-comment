@@ -88,6 +88,21 @@ export function NextComment(options: NextCommentOptions): NextCommentRouter {
         return createResponse(result);
       }
 
+      // GET /[page]/auth
+      if (params.length === 2 && params[1] === "auth") {
+        const result = await internal["GET /comments/[page]/auth"](
+          createRequest(
+            req,
+            {
+              page: params[0],
+            },
+            options,
+          ),
+        );
+
+        return createResponse(result);
+      }
+
       return NOT_FOUND;
     },
     POST: async (req, context) => {

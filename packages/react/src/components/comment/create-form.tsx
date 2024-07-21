@@ -1,6 +1,6 @@
 import useSWRMutation from "swr/mutation";
 import { SendIcon } from "lucide-react";
-import { useRef, useState } from "react";
+import { type FormHTMLAttributes, forwardRef, useRef, useState } from "react";
 import { useAuthContext } from "../../contexts/auth";
 import { cn } from "../../utils/cn";
 import {
@@ -16,7 +16,10 @@ import { Spinner } from "../spinner";
 import { updateCommentList } from "../../utils/comment-list";
 import { syncComments } from "../../utils/comment-manager";
 
-export function CreateForm(): React.ReactElement {
+export const CreateForm = forwardRef<
+  HTMLFormElement,
+  FormHTMLAttributes<HTMLFormElement>
+>((props, ref) => {
   const auth = useAuthContext();
   const { page } = useCommentsContext();
   const [isEmpty, setIsEmpty] = useState(true);
@@ -41,7 +44,7 @@ export function CreateForm(): React.ReactElement {
       revalidate: false,
     },
   );
-  const disabled = mutation.isMutating || auth.status !== "authenticated";
+  const disabled = mutation.isMutating || auth.session === null;
 
   const submit = useLatestCallback(() => {
     if (!editorRef.current) return;
@@ -57,7 +60,7 @@ export function CreateForm(): React.ReactElement {
   });
 
   return (
-    <form onSubmit={onSubmit}>
+    <form ref={ref} onSubmit={onSubmit} {...props}>
       <div className="relative">
         <CommentEditor
           editorRef={editorRef}
@@ -89,4 +92,6 @@ export function CreateForm(): React.ReactElement {
       ) : null}
     </form>
   );
-}
+});
+
+CreateForm.displayName = "CreateForm";

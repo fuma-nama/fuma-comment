@@ -1,4 +1,11 @@
-import { type ReactNode, createContext, useContext, useMemo } from "react";
+import React, {
+  type ReactNode,
+  createContext,
+  useContext,
+  useMemo,
+} from "react";
+import useSWR from "swr";
+import { getAuthSession } from "../utils/fetcher";
 
 export interface Session {
   id: string;
@@ -10,7 +17,7 @@ export interface Session {
 
 export interface AuthContextType {
   session: Session | null;
-  status: "authenticated" | "loading" | "unauthenticated";
+  isLoading: boolean;
   signIn: ReactNode | (() => void);
 }
 
@@ -26,20 +33,39 @@ export function useAuthContext(): AuthContextType {
   return auth;
 }
 
-export interface AuthProviderProps extends AuthContextType {
-  children: ReactNode;
+export interface AuthProviderProps {
+  signIn: ReactNode | (() => void);
+  page: string;
 }
 
 export function AuthProvider({
-  session,
-  status,
+  page,
   signIn,
   children,
-}: AuthProviderProps): JSX.Element {
-  const value = useMemo(
-    () => ({ session, status, signIn }),
-    [session, status, signIn],
+}: AuthProviderProps & { children: ReactNode }): ReactNode {
+  const query = useSWR(
+    `/api/comment/${page}/auth`,
+    () => getAuthSession({ page }),
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+    },
   );
+
+  const value = useMemo(() => {
+    return {
+      session: query.data
+        ? {
+            id: query.data.id,
+            permissions: {
+              delete: query.data.role?.canDelete === true,
+            },
+          }
+        : null,
+      isLoading: query.isLoading,
+      signIn,
+    };
+  }, [query.isLoading, query.data, signIn]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

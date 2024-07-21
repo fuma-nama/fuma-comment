@@ -1,21 +1,37 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { forwardRef } from "react";
 import { cn } from "./utils/cn";
-import * as atom from "./atom";
+import {
+  CommentsProvider,
+  CommentsPost,
+  AuthButton,
+  CommentsList,
+  type CommentsProviderProps,
+} from "./atom";
+import { useAuthContext } from "./contexts/auth";
 
-export interface CommentsProps
-  extends Omit<
-      HTMLAttributes<HTMLDivElement>,
-      keyof atom.CommentsProviderProps | "title"
-    >,
-    atom.CommentsProviderProps {
+export type CommentsProps = Omit<
+  HTMLAttributes<HTMLDivElement>,
+  keyof CommentsProviderProps | keyof InnerProps
+> &
+  CommentsProviderProps &
+  InnerProps;
+
+interface InnerProps {
   title?: ReactNode;
+
+  /**
+   * title to show when the user has not logged in.
+   *
+   * Fallbacks to default `title` when not specified.
+   */
+  titleUnauthorized?: ReactNode;
 }
 
 export const Comments = forwardRef<HTMLDivElement, CommentsProps>(
-  ({ page, className, title, ...props }, ref) => {
+  ({ page, className, title, auth, ...props }, ref) => {
     return (
-      <atom.CommentsProvider page={page}>
+      <CommentsProvider page={page} auth={auth}>
         <div
           className={cn(
             "rounded-xl border border-fc-border bg-fc-background text-fc-foreground",
@@ -24,15 +40,29 @@ export const Comments = forwardRef<HTMLDivElement, CommentsProps>(
           ref={ref}
           {...props}
         >
-          <div className="border-b border-fc-border p-3">
-            {title ? <div className="mb-2">{title}</div> : null}
-            <atom.CommentsPost />
-          </div>
-          <atom.CommentsList />
+          <Inner title={title} />
+          <CommentsList />
         </div>
-      </atom.CommentsProvider>
+      </CommentsProvider>
     );
   },
 );
+
+function Inner(props: InnerProps): ReactNode {
+  const { session, isLoading } = useAuthContext();
+
+  return (
+    <div className="relative flex flex-col gap-2 border-b border-fc-border p-3">
+      {props.title}
+      <CommentsPost />
+      {!isLoading && !session ? (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-fc-background/50 text-center backdrop-blur-lg">
+          {props.titleUnauthorized ?? props.title}
+          <AuthButton />
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 Comments.displayName = "Comments";

@@ -36,9 +36,7 @@ export default function Page(): React.ReactNode {
         page="default"
         title={
           <>
-            <h2 className="mb-2 text-sm font-semibold">
-              Welcome to Fuma Comment
-            </h2>
+            <h2 className="text-sm font-semibold">Welcome to Fuma Comment</h2>
             <p className="mb-4 text-sm text-fc-muted-foreground">
               Fuma Comment is a library for building comment areas into your
               blog, docs, and everywhere!

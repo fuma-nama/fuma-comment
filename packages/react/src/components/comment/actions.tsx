@@ -33,8 +33,8 @@ export function Actions({
   canReply?: boolean;
 }): React.ReactNode {
   const { comment, isReplying, setReply } = useCommentContext();
-  const { status } = useAuthContext();
-  const isAuthenticated = status === "authenticated";
+  const { session } = useAuthContext();
+  const isAuthenticated = session !== null;
 
   const onRate = useLatestCallback((v: boolean) => {
     // double click
@@ -63,9 +63,9 @@ export function Actions({
           }),
         )}
         disabled={!isAuthenticated}
-        onClick={() => {
+        onClick={useCallback(() => {
           onRate(true);
-        }}
+        }, [onRate])}
         type="button"
       >
         <ThumbsUp aria-label="Like" className="size-4" />

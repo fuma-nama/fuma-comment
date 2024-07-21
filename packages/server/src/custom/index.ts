@@ -50,6 +50,7 @@ export type RouteHandler = (req: CustomRequest) => Promise<CustomResponse>;
 
 export interface CustomCommentRouter {
   "GET /comments/[page]": RouteHandler;
+  "GET /comments/[page]/auth": RouteHandler;
   "POST /comments/[page]": RouteHandler;
   "PATCH /comments/[page]/[id]": RouteHandler;
   "DELETE /comments/[page]/[id]": RouteHandler;
@@ -124,6 +125,15 @@ export function CustomComment({
   }
 
   return {
+    "GET /comments/[page]/auth": handleError(async (req) => {
+      const auth = await getSessionWithRole(req);
+
+      if (!auth) return NOT_AUTHORIZED;
+      return {
+        type: "success",
+        data: auth,
+      };
+    }),
     "GET /comments/[page]": handleError(
       async ({ getSession, queryParams, params }) => {
         const auth = (await getSession()) ?? undefined;

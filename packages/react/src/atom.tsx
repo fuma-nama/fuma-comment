@@ -7,7 +7,11 @@ import {
   forwardRef,
 } from "react";
 import { CommentsProvider as Provider } from "./contexts/comments";
-import { useAuthContext } from "./contexts/auth";
+import {
+  AuthProvider,
+  type AuthProviderProps,
+  useAuthContext,
+} from "./contexts/auth";
 import { buttonVariants } from "./components/button";
 import { cn } from "./utils/cn";
 import { CreateForm } from "./components/comment/create-form";
@@ -19,12 +23,15 @@ export interface CommentsProviderProps {
    */
   page: string;
 
+  auth: Omit<AuthProviderProps, "page">;
+
   children?: ReactNode;
 }
 
 export function CommentsProvider({
   page,
   children,
+  auth,
 }: CommentsProviderProps): React.ReactNode {
   const context = useMemo(
     () => ({
@@ -33,24 +40,14 @@ export function CommentsProvider({
     [page],
   );
 
-  return <Provider value={context}>{children}</Provider>;
+  return (
+    <AuthProvider page={page} {...auth}>
+      <Provider value={context}>{children}</Provider>
+    </AuthProvider>
+  );
 }
 
-export const CommentsPost = forwardRef<
-  HTMLDivElement,
-  HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
-  const auth = useAuthContext();
-
-  return (
-    <div className={cn("flex flex-col gap-2", className)} ref={ref} {...props}>
-      <CreateForm />
-      {auth.status === "unauthenticated" && <AuthButton />}
-    </div>
-  );
-});
-
-CommentsPost.displayName = "CommentsPost";
+export const CommentsPost = CreateForm;
 
 export const CommentsList = forwardRef<
   HTMLDivElement,
@@ -69,7 +66,7 @@ export const CommentsList = forwardRef<
 
 CommentsList.displayName = "CommentsList";
 
-function AuthButton(): React.ReactNode {
+export function AuthButton(): React.ReactNode {
   const { signIn } = useAuthContext();
 
   if (typeof signIn === "function")
