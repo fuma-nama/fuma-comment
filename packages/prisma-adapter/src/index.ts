@@ -79,9 +79,9 @@ export function createAdapter({ db, getUsers }: Options): StorageAdapter {
         }),
       );
     },
-    async deleteComment({ auth, id, page }) {
-      await db.comment.delete({
-        where: { id: Number(id), author: auth.id, page },
+    async deleteComment({ id, page }) {
+      await db.comment.deleteMany({
+        where: { id: Number(id), page },
       });
     },
     async deleteRate({ auth, id, page }) {
