@@ -2,7 +2,7 @@
 CREATE TABLE "Comment" (
     "id" SERIAL NOT NULL,
     "page" VARCHAR(256),
-    "thread" INTEGER,
+    "threadId" INTEGER,
     "author" VARCHAR(256) NOT NULL,
     "content" JSON NOT NULL,
     "timestamp" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
