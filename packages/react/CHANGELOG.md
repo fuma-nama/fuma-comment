@@ -1,5 +1,11 @@
 # @fuma-comment/react
 
+## 0.4.1
+
+### Patch Changes
+
+- f03423a: Lazy load editor component
+
 ## 0.4.0
 
 ### Minor Changes
