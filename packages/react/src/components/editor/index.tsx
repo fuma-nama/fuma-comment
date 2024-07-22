@@ -1,20 +1,4 @@
-import { Dropcursor } from "@tiptap/extension-dropcursor";
-import { Gapcursor } from "@tiptap/extension-gapcursor";
-import { Bold } from "@tiptap/extension-bold";
-import { Code } from "@tiptap/extension-code";
-import { Italic } from "@tiptap/extension-italic";
-import { Strike } from "@tiptap/extension-strike";
-import { Paragraph } from "@tiptap/extension-paragraph";
-import { Placeholder } from "@tiptap/extension-placeholder";
-import {
-  type JSONContent,
-  Editor,
-  Extension,
-  EditorContent,
-} from "@tiptap/react";
-import { Document } from "@tiptap/extension-document";
-import { History } from "@tiptap/extension-history";
-import { Text } from "@tiptap/extension-text";
+import { type JSONContent, type Editor, EditorContent } from "@tiptap/react";
 import {
   type HTMLAttributes,
   useLayoutEffect,
@@ -22,6 +6,7 @@ import {
   useState,
   useCallback,
   type MutableRefObject,
+  useRef,
 } from "react";
 import { cva } from "class-variance-authority";
 import {
@@ -32,27 +17,23 @@ import {
   LinkIcon,
   StrikethroughIcon,
 } from "lucide-react";
-import { Link } from "@tiptap/extension-link";
-import { Image } from "@tiptap/extension-image";
-import { cn } from "../utils/cn";
-import { useStorage } from "../contexts/storage";
-import { useLatestCallback } from "../utils/hooks";
+import { cn } from "../../utils/cn";
+import { useStorage } from "../../contexts/storage";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
   DialogTrigger,
-} from "./dialog";
-import { codeVariants } from "./comment/content-renderer";
-import { UploadImage } from "./functions/image-upload";
-import { HyperLink } from "./functions/hyper-link";
-import { Spinner } from "./spinner";
+} from "../dialog";
+import { UploadImage } from "../functions/image-upload";
+import { HyperLink } from "../functions/hyper-link";
+import { Spinner } from "../spinner";
+import { createEditorLazy } from "./lazy-load";
 
 export type UseCommentEditor = Editor;
 
 export interface EditorProps {
-  autofocus?: "start" | "end" | "all" | number | boolean;
   defaultValue?: JSONContent;
   placeholder?: string;
   disabled?: boolean;
@@ -88,101 +69,46 @@ const toggleVariants = cva(
   },
 );
 
-const ImageWithWidth = Image.extend({
-  addAttributes() {
-    return {
-      src: {
-        isRequired: true,
-        default: null,
-      },
-      width: {
-        default: null,
-      },
-      height: {
-        default: null,
-      },
-      alt: {
-        default: null,
-      },
-    };
-  },
-});
-
 export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
-  ({ editorRef, disabled = false, autofocus = false, ...props }, ref) => {
+  ({ editorRef, disabled = false, ...props }, ref) => {
     const [_, forceUpdate] = useState<unknown>();
-    const onSubmit = useLatestCallback(() => {
-      if (editor) props.onSubmit?.(editor);
-      return true;
-    });
-    const onEscape = useLatestCallback(() => {
-      if (editor) props.onEscape?.(editor);
-      return true;
-    });
+    const [editor, setEditor] = useState<Editor>();
 
-    const createEditor = useLatestCallback(() => {
-      return new Editor({
-        autofocus,
-        content: props.defaultValue,
+    // force editor props to be immutable
+    const initialProps = useRef(props);
+
+    useLayoutEffect(() => {
+      let instance: Editor | undefined;
+
+      void createEditorLazy({
+        content: initialProps.current.defaultValue,
         editorProps: {
           attributes: {
             class: cn(tiptapVariants()),
           },
         },
-        extensions: [
-          Document,
-          Dropcursor,
-          Gapcursor,
-          Bold,
-          Strike,
-          Code.configure({
-            HTMLAttributes: {
-              class: codeVariants(),
-            },
-          }),
-          Link.extend({ inclusive: false }).configure({
-            openOnClick: false,
-          }),
-          Italic,
-          History,
-          Paragraph,
-          ImageWithWidth,
-          Text,
-          Placeholder.configure({
-            placeholder: props.placeholder,
-            showOnlyWhenEditable: false,
-          }),
-          Extension.create({
-            addKeyboardShortcuts() {
-              return {
-                "Mod-Enter": onSubmit,
-                Escape: onEscape,
-              };
-            },
-          }),
-        ],
+        onEscape: () => {
+          if (instance) initialProps.current.onEscape?.(instance);
+          return true;
+        },
+        onSubmit: () => {
+          if (instance) initialProps.current.onSubmit?.(instance);
+          return true;
+        },
+        placeholder: initialProps.current.placeholder,
         onTransaction(v) {
           forceUpdate({});
-          props.onChange?.(v.editor as UseCommentEditor);
+          initialProps.current.onChange?.(v.editor as Editor);
         },
+      }).then((res) => {
+        instance = res;
+        setEditor(instance);
       });
-    });
-
-    const [editor, setEditor] = useState<Editor>();
-
-    useLayoutEffect(() => {
-      const instance = createEditor();
-      setEditor(instance);
-      if (editorRef) editorRef.current = instance;
 
       return () => {
-        instance.destroy();
+        instance?.destroy();
       };
-    }, [createEditor, editorRef]);
-
-    useLayoutEffect(() => {
-      editor?.setEditable(!disabled);
-    }, [disabled, editor]);
+    }, []);
 
     if (!editor) {
       return (
@@ -202,6 +128,11 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
       );
     }
 
+    if (editorRef) editorRef.current = editor;
+    if (editor.isEditable === disabled) {
+      editor.setEditable(!disabled);
+    }
+
     return (
       <div aria-disabled={disabled} className={cn(editorVariants())} ref={ref}>
         <EditorContent editor={editor} {...props.editorProps} />
@@ -211,29 +142,30 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
   },
 );
 
+const actions = [
+  {
+    name: "bold",
+    icon: <BoldIcon className="size-4" />,
+  },
+  {
+    name: "strike",
+    icon: <StrikethroughIcon className="size-4" />,
+  },
+  {
+    name: "italic",
+    icon: <ItalicIcon className="size-4" />,
+  },
+  {
+    name: "code",
+    icon: <CodeIcon className="size-4" />,
+  },
+];
 function ActionBar({ editor }: { editor: Editor }): React.ReactElement {
   const storage = useStorage();
 
   return (
     <div className="flex flex-row items-center gap-0.5 px-1.5">
-      {[
-        {
-          name: "bold",
-          icon: <BoldIcon className="size-4" />,
-        },
-        {
-          name: "strike",
-          icon: <StrikethroughIcon className="size-4" />,
-        },
-        {
-          name: "italic",
-          icon: <ItalicIcon className="size-4" />,
-        },
-        {
-          name: "code",
-          icon: <CodeIcon className="size-4" />,
-        },
-      ].map((mark) => (
+      {actions.map((mark) => (
         <button
           key={mark.name}
           type="button"

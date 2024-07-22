@@ -1,13 +1,13 @@
 import useSWRMutation from "swr/mutation";
 import { Pencil } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { cn } from "../../utils/cn";
 import { editComment, getCommentsKey } from "../../utils/fetcher";
 import { useCommentContext } from "../../contexts/comment";
 import { updateComment } from "../../utils/comment-manager";
 import { useLatestCallback } from "../../utils/hooks";
 import { buttonVariants } from "../button";
-import { CommentEditor } from "../editor";
+import { CommentEditor, type UseCommentEditor } from "../editor";
 import { Spinner } from "../spinner";
 
 export function EditForm(): React.ReactNode {
@@ -63,9 +63,9 @@ export function EditForm(): React.ReactNode {
         defaultValue={comment.content}
         disabled={mutation.isMutating}
         editorRef={editorRef}
-        onChange={(v) => {
+        onChange={useCallback((v: UseCommentEditor) => {
           setIsEmpty(v.isEmpty);
-        }}
+        }, [])}
         onEscape={onClose}
         onSubmit={submit}
         placeholder="Edit Message"

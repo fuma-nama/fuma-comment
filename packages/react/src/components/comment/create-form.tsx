@@ -1,6 +1,12 @@
 import useSWRMutation from "swr/mutation";
 import { SendIcon } from "lucide-react";
-import { type FormHTMLAttributes, forwardRef, useRef, useState } from "react";
+import {
+  type FormHTMLAttributes,
+  forwardRef,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { useAuthContext } from "../../contexts/auth";
 import { cn } from "../../utils/cn";
 import {
@@ -65,9 +71,9 @@ export const CreateForm = forwardRef<
         <CommentEditor
           editorRef={editorRef}
           disabled={disabled}
-          onChange={(v) => {
+          onChange={useCallback((v: UseCommentEditor) => {
             setIsEmpty(v.isEmpty);
-          }}
+          }, [])}
           onSubmit={submit}
           placeholder="Leave comment"
         />

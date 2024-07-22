@@ -1,5 +1,5 @@
 import useSWRMutation from "swr/mutation";
-import { type ReactNode, useRef, useState } from "react";
+import { type ReactNode, useCallback, useRef, useState } from "react";
 import { cn } from "../../utils/cn";
 import {
   type FetcherError,
@@ -86,12 +86,11 @@ export function ReplyForm(): ReactNode {
   return (
     <form onSubmit={onSubmit}>
       <CommentEditor
-        autofocus
         disabled={disabled}
         editorRef={editorRef}
-        onChange={(v) => {
+        onChange={useCallback((v: UseCommentEditor) => {
           setIsEmpty(v.isEmpty);
-        }}
+        }, [])}
         onEscape={onClose}
         onSubmit={submit}
         placeholder="Reply to comment"
