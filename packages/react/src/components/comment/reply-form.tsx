@@ -86,6 +86,7 @@ export function ReplyForm(): ReactNode {
   return (
     <form onSubmit={onSubmit}>
       <CommentEditor
+        autofocus
         disabled={disabled}
         editorRef={editorRef}
         onChange={useCallback((v: UseCommentEditor) => {

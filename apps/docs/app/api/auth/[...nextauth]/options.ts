@@ -1,6 +1,6 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { type AuthOptions } from "next-auth";
-import GithubProvider from "next-auth/providers/github";
+import GithubProvider, { type GithubProfile } from "next-auth/providers/github";
 import { z } from "zod";
 import { prisma } from "@/utils/database";
 
@@ -15,6 +15,7 @@ declare module "next-auth" {
       email?: string | null;
       image?: string | null;
       id?: string | null;
+      username?: string;
     };
   }
 }
@@ -44,6 +45,15 @@ export const authOptions: AuthOptions = {
     GithubProvider({
       clientId: env.GITHUB_ID,
       clientSecret: env.GITHUB_SECRET,
+      profile(profile: GithubProfile) {
+        return {
+          id: profile.id.toString(),
+          name: profile.name || profile.login,
+          email: profile.email,
+          image: profile.avatar_url,
+          username: profile.login,
+        };
+      },
     }),
   ],
 };
