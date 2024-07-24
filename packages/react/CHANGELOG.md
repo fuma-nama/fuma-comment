@@ -1,5 +1,11 @@
 # @fuma-comment/react
 
+## 0.4.2
+
+### Patch Changes
+
+- 811c1dc: Optimize performance
+
 ## 0.4.1
 
 ### Patch Changes
