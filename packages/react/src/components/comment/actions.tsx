@@ -1,14 +1,15 @@
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { cva } from "class-variance-authority";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
+import type { SerializedComment } from "@fuma-comment/server";
 import { useCommentContext } from "../../contexts/comment";
 import { useAuthContext } from "../../contexts/auth";
-import { useLatestCallback } from "../../utils/hooks";
 import { deleteRate, setRate } from "../../utils/fetcher";
 import { onLikeUpdated } from "../../utils/comment-manager";
 import { cn } from "../../utils/cn";
 import { Dialog, DialogContent, DialogTrigger } from "../dialog";
 import { buttonVariants } from "../button";
+import type { UseCommentEditor } from "../editor";
 import { ReplyForm, ReplyHeader } from "./reply-form";
 
 const rateVariants = cva(
@@ -33,26 +34,24 @@ export function Actions({
   canReply?: boolean;
 }): React.ReactNode {
   const { comment, isReplying, setReply } = useCommentContext();
+  const editorRef = useRef<UseCommentEditor>();
   const { session } = useAuthContext();
   const isAuthenticated = session !== null;
 
-  const onRate = useLatestCallback((v: boolean) => {
-    // double click
-    if (v === comment.liked) {
-      void deleteRate({
-        id: comment.id,
-        page: comment.page,
-      });
-      onLikeUpdated(comment.id, undefined);
-    } else {
-      void setRate({
-        id: comment.id,
-        page: comment.page,
-        like: v,
-      });
-      onLikeUpdated(comment.id, v);
-    }
-  });
+  const onLike = useCallback(() => {
+    setLike(comment, true);
+  }, [comment]);
+
+  const onDislike = useCallback(() => {
+    setLike(comment, false);
+  }, [comment]);
+
+  const onOpenAutoFocus = useCallback((e: Event) => {
+    setTimeout(() => {
+      editorRef.current?.commands.focus();
+    }, 10);
+    e.preventDefault();
+  }, []);
 
   return (
     <div className="mt-2 flex flex-row gap-1">
@@ -63,9 +62,7 @@ export function Actions({
           }),
         )}
         disabled={!isAuthenticated}
-        onClick={useCallback(() => {
-          onRate(true);
-        }, [onRate])}
+        onClick={onLike}
         type="button"
       >
         <ThumbsUp aria-label="Like" className="size-4" />
@@ -78,9 +75,7 @@ export function Actions({
           }),
         )}
         disabled={!isAuthenticated}
-        onClick={useCallback(() => {
-          onRate(false);
-        }, [onRate])}
+        onClick={onDislike}
         type="button"
       >
         <ThumbsDown aria-label="Dislike" className="size-4" />
@@ -91,12 +86,29 @@ export function Actions({
           <DialogTrigger className={cn(rateVariants({ active: false }))}>
             Reply
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent onOpenAutoFocus={onOpenAutoFocus}>
             <ReplyHeader />
-            <ReplyForm />
+            <ReplyForm editorRef={editorRef} />
           </DialogContent>
         </Dialog>
       ) : null}
     </div>
   );
+}
+
+function setLike(comment: SerializedComment, v: boolean): void {
+  if (v === comment.liked) {
+    void deleteRate({
+      id: comment.id,
+      page: comment.page,
+    });
+    onLikeUpdated(comment.id, undefined);
+  } else {
+    void setRate({
+      id: comment.id,
+      page: comment.page,
+      like: v,
+    });
+    onLikeUpdated(comment.id, v);
+  }
 }

@@ -1,5 +1,10 @@
 import useSWRMutation from "swr/mutation";
-import { type ReactNode, useCallback, useRef, useState } from "react";
+import {
+  type MutableRefObject,
+  type ReactNode,
+  useCallback,
+  useState,
+} from "react";
 import { cn } from "../../utils/cn";
 import {
   type FetcherError,
@@ -39,10 +44,13 @@ export function ReplyHeader(): ReactNode {
   );
 }
 
-export function ReplyForm(): ReactNode {
+export function ReplyForm({
+  editorRef,
+}: {
+  editorRef: MutableRefObject<UseCommentEditor | undefined>;
+}): ReactNode {
   const { page } = useCommentsContext();
   const [isEmpty, setIsEmpty] = useState(true);
-  const editorRef = useRef<UseCommentEditor>();
   const { comment, setReply } = useCommentContext();
 
   const mutation = useSWRMutation(
@@ -68,8 +76,6 @@ export function ReplyForm(): ReactNode {
     setReply(false);
   });
 
-  const disabled = mutation.isMutating;
-
   const submit = useLatestCallback(() => {
     if (!editorRef.current) return;
     const content = editorRef.current.getJSON();
@@ -86,8 +92,7 @@ export function ReplyForm(): ReactNode {
   return (
     <form onSubmit={onSubmit}>
       <CommentEditor
-        autofocus
-        disabled={disabled}
+        disabled={mutation.isMutating}
         editorRef={editorRef}
         onChange={useCallback((v: UseCommentEditor) => {
           setIsEmpty(v.isEmpty);
@@ -99,7 +104,7 @@ export function ReplyForm(): ReactNode {
       <div className="mt-2 flex flex-row gap-1">
         <button
           className={cn(buttonVariants({ className: "gap-2" }))}
-          disabled={disabled || isEmpty}
+          disabled={mutation.isMutating || isEmpty}
           type="submit"
         >
           {mutation.isMutating ? <Spinner /> : null}

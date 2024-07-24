@@ -34,7 +34,6 @@ import { createEditorLazy } from "./lazy-load";
 export type UseCommentEditor = Editor;
 
 export interface EditorProps {
-  autofocus?: boolean;
   defaultValue?: JSONContent;
   placeholder?: string;
   disabled?: boolean;
@@ -82,7 +81,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
       let instance: Editor | undefined;
 
       void createEditorLazy({
-        autofocus: initialProps.current.autofocus,
+        autofocus: false,
         content: initialProps.current.defaultValue,
         editorProps: {
           attributes: {
