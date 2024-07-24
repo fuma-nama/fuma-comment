@@ -1,5 +1,16 @@
 # @fuma-comment/react
 
+## 0.5.0
+
+### Minor Changes
+
+- 5787885: Require `width` and `height` on uploaded image
+
+### Patch Changes
+
+- 89ad865: Reduce re-renderings
+- 5787885: Support custom image renderers
+
 ## 0.4.2
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @fuma-comment/server
 
+## 0.5.0
+
+### Minor Changes
+
+- 5787885: Require `width` and `height` on uploaded image
+
 ## 0.4.0
 
 ### Minor Changes
