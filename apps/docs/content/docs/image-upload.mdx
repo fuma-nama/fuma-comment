@@ -53,3 +53,20 @@ export function CommentsWithAuth() {
   );
 }
 ```
+
+### Renderer
+
+Fuma Comment uses a `img` tag with max width (`600px`) and max height (`400px`) to render images.
+
+To customise it, or use the `next/image` component on Next.js, specify a renderer with:
+
+```tsx
+import type { StorageContext } from "@fuma-comment/react";
+
+const storage: StorageContext = {
+  enabled: true,
+  render: (props) => {
+    // component
+  },
+};
+```
