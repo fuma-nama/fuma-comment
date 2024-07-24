@@ -7,15 +7,16 @@ import {
   useCallback,
   type MutableRefObject,
   useRef,
+  useEffect,
 } from "react";
 import { cva } from "class-variance-authority";
 import {
-  BoldIcon,
-  CodeIcon,
+  Bold,
+  Code,
   ImageIcon,
-  ItalicIcon,
+  Italic,
   LinkIcon,
-  StrikethroughIcon,
+  Strikethrough,
 } from "lucide-react";
 import { cn } from "../../utils/cn";
 import { useStorage } from "../../contexts/storage";
@@ -71,7 +72,6 @@ const toggleVariants = cva(
 
 export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
   ({ editorRef, disabled = false, ...props }, ref) => {
-    const [_, forceUpdate] = useState<unknown>();
     const [editor, setEditor] = useState<Editor>();
 
     // force editor props to be immutable
@@ -98,7 +98,6 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
         },
         placeholder: initialProps.current.placeholder,
         onTransaction(v) {
-          forceUpdate({});
           initialProps.current.onChange?.(v.editor as Editor);
         },
       }).then((res) => {
@@ -146,23 +145,35 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 const actions = [
   {
     name: "bold",
-    icon: <BoldIcon className="size-4" />,
+    icon: <Bold className="size-4" />,
   },
   {
     name: "strike",
-    icon: <StrikethroughIcon className="size-4" />,
+    icon: <Strikethrough className="size-4" />,
   },
   {
     name: "italic",
-    icon: <ItalicIcon className="size-4" />,
+    icon: <Italic className="size-4" />,
   },
   {
     name: "code",
-    icon: <CodeIcon className="size-4" />,
+    icon: <Code className="size-4" />,
   },
 ];
 function ActionBar({ editor }: { editor: Editor }): React.ReactElement {
   const storage = useStorage();
+  const [, forceUpdate] = useState<unknown>();
+
+  useEffect(() => {
+    const onUpdate = (): void => {
+      forceUpdate({});
+    };
+
+    editor.on("transaction", onUpdate);
+    return () => {
+      editor.off("transaction", onUpdate);
+    };
+  }, [editor]);
 
   return (
     <div className="flex flex-row items-center gap-0.5 px-1.5">
@@ -206,17 +217,17 @@ function UploadImageDialog({ editor }: { editor: Editor }): React.ReactElement {
         aria-label="Upload Image"
         className={cn(toggleVariants())}
         disabled={!editor.can().setImage({ src: "" }) || !editor.isEditable}
-        onPointerDown={(e) => {
-          e.preventDefault();
-        }}
       >
         <ImageIcon className="size-4" />
       </DialogTrigger>
       <DialogContent
-        onCloseAutoFocus={(e) => {
-          editor.commands.focus();
-          e.preventDefault();
-        }}
+        onCloseAutoFocus={useCallback(
+          (e: Event) => {
+            editor.commands.focus();
+            e.preventDefault();
+          },
+          [editor],
+        )}
       >
         <DialogTitle>Add Image</DialogTitle>
         <DialogDescription className="mb-4 text-sm text-fc-muted-foreground">
@@ -243,17 +254,17 @@ function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
         aria-label="Toggle Link"
         className={cn(toggleVariants())}
         disabled={!editor.can().setLink({ href: "" }) || !editor.isEditable}
-        onPointerDown={(e) => {
-          e.preventDefault();
-        }}
       >
         <LinkIcon className="size-4" />
       </DialogTrigger>
       <DialogContent
-        onCloseAutoFocus={(e) => {
-          if (!editor.isFocused) editor.commands.focus();
-          e.preventDefault();
-        }}
+        onCloseAutoFocus={useCallback(
+          (e: Event) => {
+            editor.commands.focus();
+            e.preventDefault();
+          },
+          [editor],
+        )}
       >
         <DialogTitle>Add Link</DialogTitle>
         <DialogDescription className="mb-4 text-sm text-fc-muted-foreground">
