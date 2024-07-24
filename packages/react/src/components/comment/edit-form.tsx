@@ -27,9 +27,6 @@ export function EditForm(): React.ReactNode {
       }),
     {
       revalidate: false,
-      onSuccess() {
-        setEdit(false);
-      },
     },
   );
 
@@ -46,6 +43,7 @@ export function EditForm(): React.ReactNode {
       { content },
       {
         onSuccess() {
+          setEdit(false);
           updateComment(comment.id, (item) => ({ ...item, content }));
         },
       },
