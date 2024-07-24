@@ -5,6 +5,8 @@ export const imageContentSchema = z.object({
   type: z.literal("image"),
   attrs: z.object({
     src: z.string().startsWith("http"),
+    width: z.number(),
+    height: z.number(),
   }),
 });
 

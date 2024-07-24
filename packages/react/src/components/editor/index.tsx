@@ -54,7 +54,7 @@ export function useCommentEditor(): [
 }
 
 const editorVariants = cva(
-  "rounded-xl border border-fc-border bg-fc-card text-sm transition-colors focus-within:ring-2 focus-within:ring-fc-ring aria-disabled:cursor-not-allowed aria-disabled:opacity-80",
+  "rounded-xl border border-fc-border bg-fc-card text-base transition-colors focus-within:ring-2 focus-within:ring-fc-ring aria-disabled:cursor-not-allowed aria-disabled:opacity-80",
 );
 
 const tiptapVariants = cva("min-h-[40px] px-3 py-2 focus-visible:outline-none");

@@ -40,7 +40,7 @@ const converted = {
     float: "left",
     height: "0",
     "pointer-events": "none",
-    color: "hsl(var(--fc-muted-foreground))",
+    "@apply text-sm text-fc-muted-foreground": {},
   },
 
   ".tiptap img": {

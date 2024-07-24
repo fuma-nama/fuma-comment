@@ -1,7 +1,8 @@
 import type { JSONContent } from "@tiptap/react";
-import type { ReactNode } from "react";
+import { type ReactNode, useMemo } from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "../../utils/cn";
+import { type StorageContext, useStorage } from "../../contexts/storage";
 
 interface Mark {
   type: string;
@@ -76,11 +77,7 @@ function renderText(content: JSONContent): ReactNode {
   return getElement({ className: cn(className), children: content.text });
 }
 
-export function ContentRenderer({
-  content,
-}: {
-  content: JSONContent;
-}): ReactNode {
+function render(content: JSONContent, storage: StorageContext): ReactNode {
   if (content.type === "text") {
     return renderText(content);
   }
@@ -89,25 +86,46 @@ export function ContentRenderer({
     const attrs = content.attrs as {
       src: string;
       alt?: string;
-      height?: number;
-      width?: number;
+      height: number;
+      width: number;
     };
+
+    if (typeof storage.render === "function") {
+      return storage.render({
+        ...attrs,
+        alt: attrs.alt ?? "uploaded image",
+      });
+    }
+
+    const maxWidth = 600,
+      maxHeight = 400;
+    let w = attrs.width,
+      h = attrs.height;
+
+    if (w > maxWidth) {
+      h = (maxWidth * h) / w;
+      w = maxWidth;
+    }
+
+    if (h > maxHeight) {
+      w = (maxHeight * w) / h;
+      h = maxHeight;
+    }
 
     return (
       <img
-        alt={attrs.alt ?? "upload"}
-        className="max-h-60 w-auto max-w-full rounded-lg"
-        height={attrs.height}
+        alt={attrs.alt}
+        className="rounded-lg"
+        height={h}
+        width={w}
         src={content.attrs.src}
-        width={attrs.width}
       />
     );
   }
 
-  const joined: ReactNode[] = content.content?.map((child, i) => (
-    // eslint-disable-next-line react/no-array-index-key -- Won't re-render
-    <ContentRenderer content={child} key={i} />
-  )) ?? [" "];
+  const joined: ReactNode[] = content.content?.map((child) =>
+    render(child, storage),
+  ) ?? [" "];
 
   if (content.type === "paragraph") {
     return <span>{joined}</span>;
@@ -116,6 +134,14 @@ export function ContentRenderer({
   if (content.type === "doc") {
     return <div className="grid whitespace-pre-wrap break-words">{joined}</div>;
   }
+}
 
-  return <>{joined}</>;
+export function ContentRenderer({
+  content,
+}: {
+  content: JSONContent;
+}): ReactNode {
+  const ctx = useStorage();
+
+  return useMemo(() => render(content, ctx), [content, ctx]);
 }
