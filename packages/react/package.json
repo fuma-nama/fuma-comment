@@ -84,7 +84,7 @@
     "@tiptap/pm": "^2.5.4",
     "@tiptap/react": "^2.5.4",
     "class-variance-authority": "^0.7.0",
-    "lucide-react": "^0.414.0",
+    "lucide-react": "^0.416.0",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.4.0"
   },
