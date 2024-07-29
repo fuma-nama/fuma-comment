@@ -27,9 +27,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../dialog";
-import { UploadImage } from "../functions/image-upload";
-import { HyperLink } from "../functions/hyper-link";
 import { Spinner } from "../spinner";
+import { useMention } from "../../contexts/mention";
+import { UploadImage } from "./image-upload";
+import { HyperLink } from "./hyper-link";
 import { createEditorLazy } from "./lazy-load";
 
 export type UseCommentEditor = Editor;
@@ -77,6 +78,7 @@ const toggleVariants = cva(
 export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
   ({ editorRef, disabled = false, ...props }, ref) => {
     const [editor, setEditor] = useState<Editor>();
+    const mention = useMention();
 
     // force editor props to be immutable
     const initialProps = useRef(props);
@@ -100,6 +102,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
           if (instance) initialProps.current.onSubmit?.(instance);
           return true;
         },
+        mention,
         placeholder: initialProps.current.placeholder,
         onTransaction(v) {
           initialProps.current.onChange?.(v.editor as Editor);
@@ -112,7 +115,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
       return () => {
         instance?.destroy();
       };
-    }, []);
+    }, [mention]);
 
     if (!editor) {
       return (

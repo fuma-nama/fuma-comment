@@ -15,6 +15,10 @@ type BaseRenderer = (props: {
   children: ReactNode;
 }) => ReactNode;
 
+export const mentionVariants = cva(
+  "rounded-md bg-fc-primary p-0.5 font-medium text-fc-primary-foreground",
+);
+
 export const codeVariants = cva(
   "rounded-sm border border-fc-border bg-fc-muted p-0.5",
 );
@@ -42,6 +46,9 @@ const marks: Marks = {
   code: {
     className: codeVariants(),
     element: () => (props) => <code {...props} />,
+  },
+  mention: {
+    className: mentionVariants(),
   },
   link: {
     className: "font-medium underline",
@@ -120,6 +127,13 @@ function render(content: JSONContent, storage: StorageContext): ReactNode {
         width={w}
         src={content.attrs.src}
       />
+    );
+  }
+
+  if (content.type === "mention") {
+    const attrs = content.attrs as { id: string; label?: string };
+    return (
+      <span className={cn(mentionVariants())}>@{attrs.label ?? attrs.id}</span>
     );
   }
 
