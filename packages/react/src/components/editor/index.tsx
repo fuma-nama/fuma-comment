@@ -64,8 +64,12 @@ const toggleVariants = cva(
   {
     variants: {
       active: {
-        true: "bg-fc-accent text-fc-accent-foreground",
+        true: "bg-fc-primary text-fc-primary-foreground",
+        false: "hover:bg-fc-accent",
       },
+    },
+    defaultVariants: {
+      active: false,
     },
   },
 );
@@ -252,7 +256,7 @@ function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
       <DialogTrigger
         type="button"
         aria-label="Toggle Link"
-        className={cn(toggleVariants())}
+        className={cn(toggleVariants({ active: editor.isActive("link") }))}
         disabled={!editor.can().setLink({ href: "" }) || !editor.isEditable}
       >
         <LinkIcon className="size-4" />
