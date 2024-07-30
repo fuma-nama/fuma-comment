@@ -102,7 +102,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
           if (instance) initialProps.current.onSubmit?.(instance);
           return true;
         },
-        mention,
+        mentionEnabled: mention.enabled,
         placeholder: initialProps.current.placeholder,
         onTransaction(v) {
           initialProps.current.onChange?.(v.editor as Editor);
@@ -115,7 +115,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
       return () => {
         instance?.destroy();
       };
-    }, [mention]);
+    }, [mention.enabled]);
 
     if (!editor) {
       return (

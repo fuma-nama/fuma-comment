@@ -1,4 +1,5 @@
 import type { AuthInfoWithRole, SerializedComment } from "@fuma-comment/server";
+import { type UserProfile } from "@fuma-comment/server/src";
 
 export interface FetcherError {
   message: string;
@@ -125,6 +126,16 @@ export async function setRate(options: {
     method: "POST",
     body: JSON.stringify({ like: options.like }),
   });
+}
+
+export async function queryUsers(options: {
+  name: string;
+  page: string;
+}): Promise<UserProfile[]> {
+  const params = new URLSearchParams();
+  params.append("name", options.name);
+
+  return fetcher(`/api/comments/${options.page}/users?${params.toString()}`);
 }
 
 export async function deleteRate(options: {

@@ -1,5 +1,10 @@
 import { ZodError } from "zod";
-import type { AuthInfo, AuthInfoWithRole, Awaitable } from "../types";
+import type {
+  AuthInfo,
+  AuthInfoWithRole,
+  Awaitable,
+  UserProfile,
+} from "../types";
 import { RouteError } from "../errors";
 import { type StorageAdapter } from "../adapter";
 import {
@@ -14,14 +19,6 @@ interface MapLike<K, V> {
 }
 
 export interface CustomRequest {
-  /** Get user session */
-  getSession: () => Awaitable<AuthInfo | null>;
-
-  /** Get user session with role information */
-  getSessionWithRole?: (options: {
-    page: string;
-  }) => Awaitable<AuthInfoWithRole | null>;
-
   /** Get body (to JSON) */
   body: () => Awaitable<unknown>;
 
@@ -46,19 +43,25 @@ export type CustomResponse =
       };
     };
 
-export type RouteHandler = (req: CustomRequest) => Promise<CustomResponse>;
+export type RouteHandler<R extends CustomRequest> = (
+  req: R,
+) => Promise<CustomResponse>;
 
-export interface CustomCommentRouter {
-  "GET /comments/[page]": RouteHandler;
-  "GET /comments/[page]/auth": RouteHandler;
-  "POST /comments/[page]": RouteHandler;
-  "PATCH /comments/[page]/[id]": RouteHandler;
-  "DELETE /comments/[page]/[id]": RouteHandler;
-  "POST /comments/[page]/[id]/rate": RouteHandler;
-  "DELETE /comments/[page]/[id]/rate": RouteHandler;
-}
+type Keys =
+  | "GET /comments/[page]"
+  | "GET /comments/[page]/auth"
+  | "GET /comments/[page]/users"
+  | "POST /comments/[page]"
+  | "PATCH /comments/[page]/[id]"
+  | "DELETE /comments/[page]/[id]"
+  | "POST /comments/[page]/[id]/rate"
+  | "DELETE /comments/[page]/[id]/rate";
 
-export interface CustomCommentOptions {
+export type CustomCommentRouter<R extends CustomRequest> = {
+  [K in Keys]: RouteHandler<R>;
+};
+
+export interface CustomCommentOptions<R extends CustomRequest> {
   /**
    * Where to fetch role information
    *
@@ -67,6 +70,33 @@ export interface CustomCommentOptions {
    * - `none`: Role system disabled (default)
    */
   role?: "database" | "auth" | "none";
+
+  /** Get user session */
+  getSession: (request: R) => Awaitable<AuthInfo | null>;
+
+  /** Get user session with role information */
+  getSessionWithRole?: (
+    request: R,
+    options: {
+      page: string;
+    },
+  ) => Awaitable<AuthInfoWithRole | null>;
+
+  /**
+   * Query users by name
+   *
+   * For auto-complete feature of mentions
+   */
+  queryUsers?: (options: {
+    name: string;
+    page: string;
+
+    /**
+     * Max count of results
+     */
+    limit: number;
+  }) => Awaitable<UserProfile[]>;
+
   adapter: StorageAdapter;
 }
 
@@ -86,26 +116,29 @@ const NOT_AUTHORIZED: CustomResponse = {
   },
 };
 
-export function CustomComment({
+export function CustomComment<R extends CustomRequest>({
   adapter,
   role = "none",
-}: CustomCommentOptions): CustomCommentRouter {
-  async function getSessionWithRole(
-    req: CustomRequest,
+  queryUsers,
+  getSession,
+  getSessionWithRole,
+}: CustomCommentOptions<R>): CustomCommentRouter<R> {
+  async function getSessionWithRoleAuto(
+    req: R,
   ): Promise<AuthInfoWithRole | null> {
     const page = req.params.get("page");
     if (!page) throw new Error("Page parameter required");
 
     if (role === "auth") {
-      if (!req.getSessionWithRole)
+      if (!getSessionWithRole)
         throw new Error(
           "You must implement a `getSessionWithRole` function to use Auth Provider based role system.",
         );
 
-      return req.getSessionWithRole({ page });
+      return getSessionWithRole(req, { page });
     }
 
-    const auth = await req.getSession();
+    const auth = await getSession(req);
     if (!auth) return null;
 
     if (role === "none") {
@@ -126,7 +159,7 @@ export function CustomComment({
 
   return {
     "GET /comments/[page]/auth": handleError(async (req) => {
-      const auth = await getSessionWithRole(req);
+      const auth = await getSessionWithRoleAuto(req);
 
       if (!auth) return NOT_AUTHORIZED;
       return {
@@ -134,86 +167,96 @@ export function CustomComment({
         data: auth,
       };
     }),
-    "GET /comments/[page]": handleError(
-      async ({ getSession, queryParams, params }) => {
-        const auth = (await getSession()) ?? undefined;
-        const sort = sortSchema.parse(queryParams.get("sort") ?? undefined);
-        const before = queryParams.get("before");
-        const after = queryParams.get("after");
-        const limit = Number(queryParams.get("limit") ?? 40);
-        const thread = queryParams.get("thread") ?? undefined;
-        const page = params.get("page");
+    "GET /comments/[page]/users": handleError(async (req) => {
+      const name = req.queryParams.get("name"),
+        page = req.params.get("page");
+      if (name == null || !page) return INVALID_PARAM;
 
-        if (!page) return INVALID_PARAM;
-        if (limit > 50)
-          return {
-            type: "error",
-            status: 400,
-            data: {
-              message: "The `limit` param cannot exceed 50",
-            },
-          };
+      if (!queryUsers)
+        throw new Error(
+          "You must implement the `queryUsers` function to enable mention auto-completion",
+        );
 
+      return {
+        type: "success",
+        data: await queryUsers({ name, page, limit: 10 }),
+      };
+    }),
+    "GET /comments/[page]": handleError(async (req) => {
+      const auth = (await getSession(req)) ?? undefined;
+      const sort = sortSchema.parse(req.queryParams.get("sort") ?? undefined);
+      const before = req.queryParams.get("before");
+      const after = req.queryParams.get("after");
+      const limit = Number(req.queryParams.get("limit") ?? 40);
+      const thread = req.queryParams.get("thread") ?? undefined;
+      const page = req.params.get("page");
+
+      if (!page) return INVALID_PARAM;
+      if (limit > 50)
         return {
-          type: "success",
-          data: await adapter.getComments({
-            sort,
-            auth,
-            thread,
-            limit,
-            page,
-            after: after ? new Date(Number(after)) : undefined,
-            before: before ? new Date(Number(before)) : undefined,
-          }),
+          type: "error",
+          status: 400,
+          data: {
+            message: "The `limit` param cannot exceed 50",
+          },
         };
-      },
-    ),
-    "POST /comments/[page]": handleError(
-      async ({ body, getSession, params }) => {
-        const auth = await getSession();
-        const content = postCommentSchema.parse(await body());
-        const page = params.get("page");
 
-        if (!auth) return NOT_AUTHORIZED;
-        if (!page) return INVALID_PARAM;
+      return {
+        type: "success",
+        data: await adapter.getComments({
+          sort,
+          auth,
+          thread,
+          limit,
+          page,
+          after: after ? new Date(Number(after)) : undefined,
+          before: before ? new Date(Number(before)) : undefined,
+        }),
+      };
+    }),
+    "POST /comments/[page]": handleError(async (req) => {
+      const auth = await getSession(req);
+      const content = postCommentSchema.parse(await req.body());
+      const page = req.params.get("page");
 
-        return {
-          type: "success",
-          data: await adapter.postComment({ auth, body: content, page }),
-        };
-      },
-    ),
-    "POST /comments/[page]/[id]/rate": handleError(
-      async ({ body, getSession, params }) => {
-        const auth = await getSession();
-        const id = params.get("id");
-        const page = params.get("page");
-        if (!id || !page) return INVALID_PARAM;
-        if (!auth) return NOT_AUTHORIZED;
+      if (!auth) return NOT_AUTHORIZED;
+      if (!page) return INVALID_PARAM;
 
-        const content = setRateSchema.parse(await body());
-        await adapter.setRate({ id, auth, body: content, page });
-        return { type: "success", data: { message: "Successful" } };
-      },
-    ),
-    "PATCH /comments/[page]/[id]": handleError(
-      async ({ getSession, body, params }) => {
-        const auth = await getSession();
-        const id = params.get("id");
-        const page = params.get("page");
-        if (!id || !page) return INVALID_PARAM;
-        if (!auth) return NOT_AUTHORIZED;
-
-        const content = updateCommentSchema.parse(await body());
-        await adapter.updateComment({ id, auth, body: content, page });
-        return { type: "success", data: { message: "Successful" } };
-      },
-    ),
-    "DELETE /comments/[page]/[id]": handleError(async (req) => {
-      const auth = await getSessionWithRole(req);
+      return {
+        type: "success",
+        data: await adapter.postComment({ auth, body: content, page }),
+      };
+    }),
+    "POST /comments/[page]/[id]/rate": handleError(async (req) => {
       const id = req.params.get("id");
       const page = req.params.get("page");
       if (!id || !page) return INVALID_PARAM;
+
+      const auth = await getSession(req);
+      if (!auth) return NOT_AUTHORIZED;
+
+      const content = setRateSchema.parse(await req.body());
+      await adapter.setRate({ id, auth, body: content, page });
+      return { type: "success", data: { message: "Successful" } };
+    }),
+    "PATCH /comments/[page]/[id]": handleError(async (req) => {
+      const id = req.params.get("id");
+      const page = req.params.get("page");
+      if (!id || !page) return INVALID_PARAM;
+
+      const auth = await getSession(req);
+      if (!auth) return NOT_AUTHORIZED;
+
+      const content = updateCommentSchema.parse(await req.body());
+      await adapter.updateComment({ id, auth, body: content, page });
+      return { type: "success", data: { message: "Successful" } };
+    }),
+    "DELETE /comments/[page]/[id]": handleError(async (req) => {
+      const id = req.params.get("id");
+      const page = req.params.get("page");
+      if (!id || !page) return INVALID_PARAM;
+
+      const auth = await getSessionWithRoleAuto(req);
       if (!auth) return NOT_AUTHORIZED;
 
       const author = await adapter.getCommentAuthor({ id });
@@ -222,21 +265,20 @@ export function CustomComment({
       await adapter.deleteComment({ id, auth, page });
       return { type: "success", data: { message: "Successful" } };
     }),
-    "DELETE /comments/[page]/[id]/rate": handleError(
-      async ({ getSession, params }) => {
-        const auth = await getSession();
-        const id = params.get("id");
-        const page = params.get("page");
-        if (!id || !page) return INVALID_PARAM;
-        if (!auth) return NOT_AUTHORIZED;
+    "DELETE /comments/[page]/[id]/rate": handleError(async (req) => {
+      const id = req.params.get("id");
+      const page = req.params.get("page");
+      if (!id || !page) return INVALID_PARAM;
 
-        await adapter.deleteRate({ id, auth, page });
-        return { type: "success", data: { message: "Successful" } };
-      },
-    ),
+      const auth = await getSession(req);
+      if (!auth) return NOT_AUTHORIZED;
+
+      await adapter.deleteRate({ id, auth, page });
+      return { type: "success", data: { message: "Successful" } };
+    }),
   };
 
-  function handleError(handler: RouteHandler): RouteHandler {
+  function handleError(handler: RouteHandler<R>): RouteHandler<R> {
     return async (...args) => {
       try {
         return await handler(...args);

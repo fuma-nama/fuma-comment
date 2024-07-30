@@ -27,22 +27,23 @@ export function useAuthContext(): AuthContextType {
   const auth = useContext(AuthContext);
 
   if (!auth)
-    throw new Error(
-      "<Comments /> component must be wrapped under <AuthProvider />",
-    );
+    throw new Error("Components must be wrapped under <CommentsProvider />");
   return auth;
 }
 
-export interface AuthProviderProps {
+export interface AuthOptions {
   signIn: ReactNode | (() => void);
-  page: string;
 }
 
 export function AuthProvider({
   page,
-  signIn,
+  auth,
   children,
-}: AuthProviderProps & { children: ReactNode }): ReactNode {
+}: {
+  page: string;
+  auth: AuthOptions;
+  children: ReactNode;
+}): ReactNode {
   const query = useSWR(
     `/api/comment/${page}/auth`,
     () => getAuthSession({ page }),
@@ -63,9 +64,9 @@ export function AuthProvider({
           }
         : null,
       isLoading: query.isLoading,
-      signIn,
+      signIn: auth.signIn,
     };
-  }, [query.isLoading, query.data, signIn]);
+  }, [query.isLoading, query.data, auth.signIn]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

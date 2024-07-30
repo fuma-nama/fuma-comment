@@ -7,7 +7,15 @@ import type {
 } from "../custom";
 import { CustomComment } from "../custom";
 
-interface ExpressOptions extends CustomCommentOptions {
+type RequestType = CustomRequest & {
+  req: Request;
+};
+
+interface ExpressOptions
+  extends Omit<
+    CustomCommentOptions<RequestType>,
+    "getSession" | "getSessionWithRole"
+  > {
   app: Express;
   /**
    * Base URL of API endpoints
@@ -15,11 +23,11 @@ interface ExpressOptions extends CustomCommentOptions {
   baseUrl?: string;
 
   /** Get user session */
-  getSession: (req: Request) => Awaitable<AuthInfo | null>;
+  getSession: (request: Request) => Awaitable<AuthInfo | null>;
 
   /** Get user session with role information */
   getSessionWithRole?: (
-    req: Request,
+    request: Request,
     options: {
       page: string;
     },
@@ -32,8 +40,14 @@ interface ExpressOptions extends CustomCommentOptions {
  * Should have `express.json()` body parser enabled
  */
 export function ExpressComment(options: ExpressOptions): void {
-  const { app } = options;
-  const custom = CustomComment(options);
+  const { app, getSession, getSessionWithRole } = options;
+  const custom = CustomComment<RequestType>({
+    ...options,
+    getSessionWithRole: getSessionWithRole
+      ? (req, v) => getSessionWithRole(req.req, v)
+      : undefined,
+    getSession: (req) => getSession(req.req),
+  });
 
   Object.keys(custom).forEach((key) => {
     const fn = custom[key as keyof typeof custom];
@@ -52,7 +66,7 @@ export function ExpressComment(options: ExpressOptions): void {
     app[method.toLowerCase() as "get" | "post" | "patch" | "delete"](
       `/${pathWithBase}`,
       (req, res) => {
-        void fn(readRequest(req, options))
+        void fn(readRequest(req))
           .then((result) => {
             sendResponse(res, result);
           })
@@ -64,12 +78,10 @@ export function ExpressComment(options: ExpressOptions): void {
   });
 }
 
-function readRequest(req: Request, options: ExpressOptions): CustomRequest {
-  const getSessionWithRole = options.getSessionWithRole;
-
+function readRequest(req: Request): RequestType {
   return {
+    req,
     body: () => req.body as unknown,
-    getSession: () => options.getSession(req),
     params: {
       get(key) {
         return req.params[key];
@@ -80,9 +92,6 @@ function readRequest(req: Request, options: ExpressOptions): CustomRequest {
         return req.query[key] as string;
       },
     },
-    getSessionWithRole: getSessionWithRole
-      ? (v) => getSessionWithRole(req, v)
-      : undefined,
   };
 }
 

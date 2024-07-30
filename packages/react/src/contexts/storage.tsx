@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
 import { createContext, useContext } from "react";
 
 interface UploadResponse {
@@ -49,7 +49,7 @@ export function StorageProvider({
 }: {
   storage: StorageContext;
   children: ReactNode;
-}): React.ReactNode {
+}): ReactNode {
   return (
     <StorageContext.Provider value={storage}>
       {children}

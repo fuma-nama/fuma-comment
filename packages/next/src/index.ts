@@ -28,7 +28,15 @@ interface NextCommentRouter {
   DELETE: RouteHandler;
 }
 
-interface NextCommentOptions extends CustomCommentOptions {
+interface RequestType extends CustomRequest {
+  req: NextRequest;
+}
+
+export interface NextCommentOptions
+  extends Omit<
+    CustomCommentOptions<RequestType>,
+    "getSession" | "getSessionWithRole"
+  > {
   getSession: (req: NextRequest) => Awaitable<AuthInfo | null>;
   getSessionWithRole?: (
     req: NextRequest,
@@ -49,24 +57,30 @@ function createResponse(result: CustomResponse): NextResponse {
 function createRequest(
   req: NextRequest,
   params: Record<string, string>,
-  options: NextCommentOptions,
-): CustomRequest {
-  const { getSessionWithRole, getSession } = options;
+): RequestType {
   return {
+    req,
     body() {
       return req.json();
     },
-    getSession: () => getSession(req),
-    getSessionWithRole: getSessionWithRole
-      ? (arg) => getSessionWithRole(req, arg)
-      : undefined,
-    params: new Map(Object.entries(params)),
+    params: {
+      get(key) {
+        return params[key];
+      },
+    },
     queryParams: req.nextUrl.searchParams,
   };
 }
 
 export function NextComment(options: NextCommentOptions): NextCommentRouter {
-  const internal = CustomComment(options);
+  const { getSession, getSessionWithRole } = options;
+  const internal = CustomComment<RequestType>({
+    ...options,
+    getSession: (req) => getSession(req.req),
+    getSessionWithRole: getSessionWithRole
+      ? (req, v) => getSessionWithRole(req.req, v)
+      : undefined,
+  });
 
   return {
     GET: async (req, context) => {
@@ -75,13 +89,9 @@ export function NextComment(options: NextCommentOptions): NextCommentRouter {
       // GET /[page]
       if (params.length === 1) {
         const result = await internal["GET /comments/[page]"](
-          createRequest(
-            req,
-            {
-              page: params[0],
-            },
-            options,
-          ),
+          createRequest(req, {
+            page: params[0],
+          }),
         );
 
         return createResponse(result);
@@ -90,13 +100,20 @@ export function NextComment(options: NextCommentOptions): NextCommentRouter {
       // GET /[page]/auth
       if (params.length === 2 && params[1] === "auth") {
         const result = await internal["GET /comments/[page]/auth"](
-          createRequest(
-            req,
-            {
-              page: params[0],
-            },
-            options,
-          ),
+          createRequest(req, {
+            page: params[0],
+          }),
+        );
+
+        return createResponse(result);
+      }
+
+      // GET /[page]/users
+      if (params.length === 2 && params[1] === "users") {
+        const result = await internal["GET /comments/[page]/users"](
+          createRequest(req, {
+            page: params[0],
+          }),
         );
 
         return createResponse(result);
@@ -110,7 +127,7 @@ export function NextComment(options: NextCommentOptions): NextCommentRouter {
       // POST /[page]
       if (params.length === 1) {
         const result = await internal["POST /comments/[page]"](
-          createRequest(req, { page: params[0] }, options),
+          createRequest(req, { page: params[0] }),
         );
 
         return createResponse(result);
@@ -119,14 +136,10 @@ export function NextComment(options: NextCommentOptions): NextCommentRouter {
       // POST /[page]/[id]/rate
       if (params.length === 3 && params[2] === "rate") {
         const result = await internal["POST /comments/[page]/[id]/rate"](
-          createRequest(
-            req,
-            {
-              page: params[0],
-              id: params[1],
-            },
-            options,
-          ),
+          createRequest(req, {
+            page: params[0],
+            id: params[1],
+          }),
         );
 
         return createResponse(result);
@@ -140,14 +153,10 @@ export function NextComment(options: NextCommentOptions): NextCommentRouter {
       // PATCH /[page]/[id]
       if (params.length === 2) {
         const result = await internal["PATCH /comments/[page]/[id]"](
-          createRequest(
-            req,
-            {
-              page: params[0],
-              id: params[1],
-            },
-            options,
-          ),
+          createRequest(req, {
+            page: params[0],
+            id: params[1],
+          }),
         );
 
         return createResponse(result);
@@ -161,7 +170,7 @@ export function NextComment(options: NextCommentOptions): NextCommentRouter {
       // DELETE /[page]/[id]
       if (params.length === 2) {
         const result = await internal["DELETE /comments/[page]/[id]"](
-          createRequest(req, { page: params[0], id: params[1] }, options),
+          createRequest(req, { page: params[0], id: params[1] }),
         );
 
         return createResponse(result);
@@ -170,7 +179,7 @@ export function NextComment(options: NextCommentOptions): NextCommentRouter {
       // DELETE /[page]/[id]/rate
       if (params.length === 3 && params[2] === "rate") {
         const result = await internal["DELETE /comments/[page]/[id]/rate"](
-          createRequest(req, { page: params[0], id: params[1] }, options),
+          createRequest(req, { page: params[0], id: params[1] }),
         );
 
         return createResponse(result);

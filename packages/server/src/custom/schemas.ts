@@ -1,12 +1,20 @@
 import { z } from "zod";
 import { getTextFromContent } from "../utils";
 
-export const imageContentSchema = z.object({
+const imageContentSchema = z.object({
   type: z.literal("image"),
   attrs: z.object({
     src: z.string().startsWith("http"),
     width: z.number(),
     height: z.number(),
+  }),
+});
+
+const mentionContentSchema = z.object({
+  type: z.literal("mention"),
+  attrs: z.object({
+    id: z.string(),
+    label: z.string().optional(),
   }),
 });
 
@@ -32,12 +40,28 @@ export const contentSchema = richContentSchema.superRefine(
   (obj, { addIssue }) => {
     const objString = JSON.stringify(obj);
     let imageCount = 0;
+    // TODO: Re-fetch labels in mentions on database adapter
     const text = getTextFromContent(obj, {
       image: (content) => {
         imageCount++;
         const result = imageContentSchema.safeParse(content);
 
         if (result.success) return `[Image](${result.data.attrs.src})`;
+        addIssue({
+          code: "custom",
+          message: "invalid image element in content",
+        });
+        return "";
+      },
+      mention: (content) => {
+        const result = mentionContentSchema.safeParse(content);
+        if (result.success)
+          return `@${result.data.attrs.label ?? result.data.attrs.id}`;
+
+        addIssue({
+          code: "custom",
+          message: "invalid mention element in content",
+        });
         return "";
       },
     }).trim();

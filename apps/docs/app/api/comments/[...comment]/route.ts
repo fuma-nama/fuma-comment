@@ -29,6 +29,27 @@ export const { GET, DELETE, PATCH, POST } = NextComment({
     },
   }),
   role: "database",
+  async queryUsers({ name }) {
+    const res = await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        image: true,
+      },
+      where: {
+        name: {
+          startsWith: name,
+          mode: "insensitive",
+        },
+      },
+    });
+
+    return res.map((user) => ({
+      ...user,
+      image: user.image ?? undefined,
+      name: user.name ?? "Unknown User",
+    }));
+  },
   async getSession() {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) return null;

@@ -21,7 +21,6 @@ import { Image } from "@tiptap/extension-image";
 import { Mention } from "@tiptap/extension-mention";
 import tippy, { type Instance } from "tippy.js";
 import { codeVariants, mentionVariants } from "../comment/content-renderer";
-import type { MentionContextType } from "../../contexts/mention";
 import { MentionList, type MentionListRef } from "./mention";
 
 const ImageWithWidth = Image.extend({
@@ -48,23 +47,19 @@ const ImageWithWidth = Image.extend({
 
 export type CreateEditorOptions = Partial<EditorOptions> & {
   placeholder?: string;
-  mention: MentionContextType;
+  mentionEnabled: boolean;
 
   onSubmit: () => boolean;
   onEscape: () => boolean;
 };
 
-function createMention(ctx: MentionContextType): Node {
-  const query = ctx.query;
+function createMention(): Node {
   return Mention.configure({
     HTMLAttributes: {
       class: mentionVariants(),
     },
     deleteTriggerWithBackspace: true,
     suggestion: {
-      items(props) {
-        return query(props.query);
-      },
       render() {
         let component: ReactRenderer;
         let popup: Instance[];
@@ -117,7 +112,7 @@ function createMention(ctx: MentionContextType): Node {
 export function createEditor({
   onSubmit,
   onEscape,
-  mention,
+  mentionEnabled,
   ...options
 }: CreateEditorOptions): Editor {
   return new Editor({
@@ -145,7 +140,7 @@ export function createEditor({
         placeholder: options.placeholder,
         showOnlyWhenEditable: false,
       }),
-      ...(mention.enabled ? [createMention(mention)] : []),
+      ...(mentionEnabled ? [createMention()] : []),
       Extension.create({
         addKeyboardShortcuts() {
           return {

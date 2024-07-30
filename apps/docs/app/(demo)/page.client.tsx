@@ -1,7 +1,7 @@
 "use client";
 import { signIn } from "next-auth/react";
 import type { StorageContext, CommentsProps } from "@fuma-comment/react";
-import { Comments, StorageProvider } from "@fuma-comment/react";
+import { Comments } from "@fuma-comment/react";
 
 const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME;
 
@@ -42,13 +42,15 @@ export function CommentsWithAuth(
   props: Omit<CommentsProps, "auth">,
 ): JSX.Element {
   return (
-    <StorageProvider storage={storage}>
-      <Comments
-        auth={{
-          signIn: () => void signIn("github"),
-        }}
-        {...props}
-      />
-    </StorageProvider>
+    <Comments
+      storage={storage}
+      mention={{
+        enabled: true,
+      }}
+      auth={{
+        signIn: () => void signIn("github"),
+      }}
+      {...props}
+    />
   );
 }

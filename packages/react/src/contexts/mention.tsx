@@ -1,22 +1,26 @@
-import {
-  createContext,
-  type ReactNode,
-  useContext,
-  useMemo,
-  useRef,
-} from "react";
+import { createContext, type ReactNode, useContext, useMemo } from "react";
 import { type MentionItem } from "../components/editor/mention";
+import { queryUsers } from "../utils/fetcher";
+import { useLatestCallback } from "../utils/hooks";
+
+export type MentionOptions = Partial<Pick<MentionContextType, "query">> &
+  Omit<MentionContextType, "query">;
 
 export interface MentionContextType {
   enabled: boolean;
 
   /**
-   * Auto-complete
+   * Auto-complete queries.
+   *
+   * When not specified, fetch from API endpoints.
    */
-  query: (text: string) => MentionItem[];
+  query: (
+    text: string,
+    options: { page: string },
+  ) => MentionItem[] | Promise<MentionItem[]>;
 }
 
-export const MentionContext = createContext<MentionContextType>({
+const MentionContext = createContext<MentionContextType>({
   enabled: false,
   query: () => [],
 });
@@ -25,18 +29,22 @@ export function MentionProvider({
   mention,
   children,
 }: {
-  mention: MentionContextType;
+  mention: MentionOptions;
   children: ReactNode;
-}): React.ReactNode {
-  const latestMention = useRef(mention);
-  latestMention.current = mention;
+}): ReactNode {
+  const query = useLatestCallback<MentionContextType["query"]>(
+    async (name, options) => {
+      if (mention.query) mention.query(name, options);
+
+      const res = await queryUsers({ name, page: options.page });
+      return res.map((user) => ({ label: user.name, id: user.id }));
+    },
+  );
 
   const value = useMemo<MentionContextType>(
     () => ({
       enabled: mention.enabled,
-      query: (...args) => {
-        return latestMention.current.query(...args);
-      },
+      query,
     }),
     [mention.enabled],
   );

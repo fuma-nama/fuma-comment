@@ -16,7 +16,7 @@ type BaseRenderer = (props: {
 }) => ReactNode;
 
 export const mentionVariants = cva(
-  "rounded-md bg-fc-primary p-0.5 font-medium text-fc-primary-foreground",
+  "rounded-md bg-fc-primary/10 p-0.5 font-medium text-fc-primary",
 );
 
 export const codeVariants = cva(

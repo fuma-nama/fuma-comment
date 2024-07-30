@@ -9,13 +9,15 @@ import {
 import { CommentsProvider as Provider } from "./contexts/comments";
 import {
   AuthProvider,
-  type AuthProviderProps,
+  type AuthOptions,
   useAuthContext,
 } from "./contexts/auth";
 import { buttonVariants } from "./components/button";
 import { cn } from "./utils/cn";
 import { CreateForm } from "./components/comment/create-form";
 import { CommentList } from "./components/comment/list";
+import { type MentionOptions, MentionProvider } from "./contexts/mention";
+import { type StorageContext, StorageProvider } from "./contexts/storage";
 
 export interface CommentsProviderProps {
   /**
@@ -23,7 +25,11 @@ export interface CommentsProviderProps {
    */
   page: string;
 
-  auth: Omit<AuthProviderProps, "page">;
+  auth: AuthOptions;
+
+  mention?: MentionOptions;
+
+  storage?: StorageContext;
 
   children?: ReactNode;
 }
@@ -31,8 +37,11 @@ export interface CommentsProviderProps {
 export function CommentsProvider({
   page,
   children,
+  mention,
+  storage,
   auth,
 }: CommentsProviderProps): React.ReactNode {
+  let child = children;
   const context = useMemo(
     () => ({
       page,
@@ -40,9 +49,15 @@ export function CommentsProvider({
     [page],
   );
 
+  if (mention)
+    child = <MentionProvider mention={mention}>{child}</MentionProvider>;
+
+  if (storage)
+    child = <StorageProvider storage={storage}>{child}</StorageProvider>;
+
   return (
-    <AuthProvider page={page} {...auth}>
-      <Provider value={context}>{children}</Provider>
+    <AuthProvider page={page} auth={auth}>
+      <Provider value={context}>{child}</Provider>
     </AuthProvider>
   );
 }
