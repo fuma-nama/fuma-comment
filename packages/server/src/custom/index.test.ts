@@ -4,6 +4,10 @@ import { createContent } from "../../test/utils";
 import type { CustomRequest } from ".";
 import { CustomComment } from ".";
 
+type MockRequest = CustomRequest & {
+  auth?: boolean;
+};
+
 const mockAdapter: StorageAdapter = {
   deleteComment() {
     // does nothing
@@ -44,16 +48,20 @@ const mockAdapter: StorageAdapter = {
   },
 };
 
-const app = CustomComment({ adapter: mockAdapter });
+const app = CustomComment<MockRequest>({
+  adapter: mockAdapter,
+  getSession(req) {
+    if (req.auth) return { id: "mock_user" };
+    return null;
+  },
+});
 
 describe("Custom Comment Routes", () => {
-  test.each<{ name: string; req: CustomRequest; success: boolean }>([
+  test.each<{ name: string; req: MockRequest; success: boolean }>([
     {
       name: "Normal",
       req: {
-        getSession() {
-          return null;
-        },
+        auth: false,
         body() {
           return null;
         },
@@ -65,9 +73,7 @@ describe("Custom Comment Routes", () => {
     {
       name: "With Auth",
       req: {
-        getSession() {
-          return { id: "mock_user" };
-        },
+        auth: true,
         body() {
           return null;
         },
@@ -79,9 +85,7 @@ describe("Custom Comment Routes", () => {
     {
       name: "Invalid",
       req: {
-        getSession() {
-          return null;
-        },
+        auth: false,
         body() {
           return null;
         },
@@ -96,15 +100,13 @@ describe("Custom Comment Routes", () => {
     expect(result.type).toBe(success ? "success" : "error");
   });
 
-  test.each<{ name: string; req: CustomRequest; success: boolean }>([
+  test.each<{ name: string; req: MockRequest; success: boolean }>([
     {
       name: "Normal",
       req: {
+        auth: true,
         body() {
           return { content: createContent("Hello World") };
-        },
-        getSession() {
-          return { id: "mock_user" };
         },
         params: new Map([["page", "default"]]),
         queryParams: new Map(),
@@ -114,11 +116,9 @@ describe("Custom Comment Routes", () => {
     {
       name: "Invalid",
       req: {
+        auth: true,
         body() {
           return { content: createContent(" ") };
-        },
-        getSession() {
-          return { id: "mock_user" };
         },
         params: new Map(),
         queryParams: new Map(),
@@ -128,11 +128,9 @@ describe("Custom Comment Routes", () => {
     {
       name: "Unauthorized",
       req: {
+        auth: false,
         body() {
           return { content: createContent("Hello World") };
-        },
-        getSession() {
-          return null;
         },
         params: new Map([["page", "default"]]),
         queryParams: new Map(),
@@ -145,15 +143,13 @@ describe("Custom Comment Routes", () => {
     expect(result.type).toBe(success ? "success" : "error");
   });
 
-  test.each<{ name: string; req: CustomRequest; success: boolean }>([
+  test.each<{ name: string; req: MockRequest; success: boolean }>([
     {
       name: "Normal",
       req: {
+        auth: true,
         body() {
           return { content: createContent("Hello World") };
-        },
-        getSession() {
-          return { id: "mock_user" };
         },
         params: new Map([
           ["id", "test"],
@@ -166,11 +162,9 @@ describe("Custom Comment Routes", () => {
     {
       name: "Invalid",
       req: {
+        auth: true,
         body() {
           return { content: createContent(" ") };
-        },
-        getSession() {
-          return { id: "mock_user" };
         },
         params: new Map([
           ["id", "test"],
@@ -183,11 +177,9 @@ describe("Custom Comment Routes", () => {
     {
       name: "Unauthorized",
       req: {
+        auth: false,
         body() {
           return { content: createContent("Hello World") };
-        },
-        getSession() {
-          return null;
         },
         params: new Map([
           ["id", "test"],
@@ -203,15 +195,13 @@ describe("Custom Comment Routes", () => {
     expect(result.type).toBe(success ? "success" : "error");
   });
 
-  test.each<{ name: string; req: CustomRequest; success: boolean }>([
+  test.each<{ name: string; req: MockRequest; success: boolean }>([
     {
       name: "Normal",
       req: {
+        auth: true,
         body() {
           return null;
-        },
-        getSession() {
-          return { id: "mock_user" };
         },
         params: new Map([
           ["id", "test"],
@@ -224,10 +214,8 @@ describe("Custom Comment Routes", () => {
     {
       name: "Unauthorized",
       req: {
+        auth: false,
         body() {
-          return null;
-        },
-        getSession() {
           return null;
         },
         params: new Map([
@@ -244,15 +232,13 @@ describe("Custom Comment Routes", () => {
     expect(result.type).toBe(success ? "success" : "error");
   });
 
-  test.each<{ name: string; req: CustomRequest; success: boolean }>([
+  test.each<{ name: string; req: MockRequest; success: boolean }>([
     {
       name: "Normal",
       req: {
+        auth: true,
         body() {
           return { like: true };
-        },
-        getSession() {
-          return { id: "mock_user" };
         },
         params: new Map([
           ["id", "test"],
@@ -268,9 +254,7 @@ describe("Custom Comment Routes", () => {
         body() {
           return { like: "invalid" };
         },
-        getSession() {
-          return { id: "mock_user" };
-        },
+        auth: true,
         params: new Map([["id", "test"]]),
         queryParams: new Map(),
       },
@@ -279,10 +263,8 @@ describe("Custom Comment Routes", () => {
     {
       name: "Unauthorized",
       req: {
+        auth: false,
         body() {
-          return null;
-        },
-        getSession() {
           return null;
         },
         params: new Map([
@@ -299,15 +281,13 @@ describe("Custom Comment Routes", () => {
     expect(result.type).toBe(success ? "success" : "error");
   });
 
-  test.each<{ name: string; req: CustomRequest; success: boolean }>([
+  test.each<{ name: string; req: MockRequest; success: boolean }>([
     {
       name: "Normal",
       req: {
+        auth: true,
         body() {
           return null;
-        },
-        getSession() {
-          return { id: "mock_user" };
         },
         params: new Map([
           ["id", "test"],
@@ -321,9 +301,6 @@ describe("Custom Comment Routes", () => {
       name: "Unauthorized",
       req: {
         body() {
-          return null;
-        },
-        getSession() {
           return null;
         },
         params: new Map([
