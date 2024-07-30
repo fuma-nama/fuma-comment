@@ -29,13 +29,14 @@ export const { GET, DELETE, PATCH, POST } = NextComment({
     },
   }),
   role: "database",
-  async queryUsers({ name }) {
+  async queryUsers({ name, limit }) {
     const res = await prisma.user.findMany({
       select: {
         id: true,
         name: true,
         image: true,
       },
+      take: limit,
       where: {
         name: {
           startsWith: name,
