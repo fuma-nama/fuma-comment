@@ -1,7 +1,7 @@
 # Fuma Comment
 
-In development ;P
+Fuma Comment is a library for building comment areas into your blog, docs, and everywhere!
 
-## Integration Tests
+You can use it with your own database, auth system.
 
-To test Database/ORM adapters, we use Docker Compose to set up the test environment. Ensure you have Docker installed before running integration tests with `pnpm run test:integrate`.
+See [Documentation](https://fuma-comment.vercel.app/docs).
