@@ -39,7 +39,7 @@ export const Comments = forwardRef<HTMLDivElement, CommentsProps>(
       >
         <div
           className={cn(
-            "rounded-xl border border-fc-border bg-fc-background text-fc-foreground",
+            "overflow-hidden rounded-xl border border-fc-border bg-fc-background text-fc-foreground",
             className,
           )}
           ref={ref}
