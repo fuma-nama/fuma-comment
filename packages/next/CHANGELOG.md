@@ -1,5 +1,18 @@
 # @fuma-comment/next
 
+## 0.6.0
+
+### Minor Changes
+
+- 878ca15: Support comment mentions
+- 878ca15: Change usage of `CustomComment`
+
+### Patch Changes
+
+- Updated dependencies [878ca15]
+- Updated dependencies [878ca15]
+  - @fuma-comment/server@0.6.0
+
 ## 0.5.0
 
 ### Patch Changes
