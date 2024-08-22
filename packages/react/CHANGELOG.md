@@ -1,5 +1,13 @@
 # @fuma-comment/react
 
+## 0.6.0
+
+### Minor Changes
+
+- 878ca15: Combine `StorageProvider` into `CommentsProvider`
+- 878ca15: Support comment mentions
+- 878ca15: Change usage of `CustomComment`
+
 ## 0.5.0
 
 ### Minor Changes
