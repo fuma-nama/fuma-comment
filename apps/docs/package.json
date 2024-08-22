@@ -7,6 +7,7 @@
     "build": "prisma migrate deploy && next build",
     "postinstall": "prisma generate",
     "migrate:deploy": "dotenv -e .env.production -- prisma migrate deploy",
+    "db:push": "dotenv -e .env.local -- prisma db push",
     "start": "next start",
     "lint": "next lint"
   },

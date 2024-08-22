@@ -51,7 +51,6 @@ export const authOptions: AuthOptions = {
           name: profile.name || profile.login,
           email: profile.email,
           image: profile.avatar_url,
-          username: profile.login,
         };
       },
     }),

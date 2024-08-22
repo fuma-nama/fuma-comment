@@ -4,7 +4,14 @@ import { createPreset as createDocsPreset } from "fumadocs-ui/tailwind-plugin";
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: "class",
-  presets: [createDocsPreset({ addGlobalColors: true }), createCommentPreset()],
+  presets: [
+    createDocsPreset({
+      addGlobalColors: true,
+      preset: "neutral",
+      layoutWidth: "1600px",
+    }),
+    createCommentPreset(),
+  ],
   content: [
     "./node_modules/fumadocs-ui/dist/**/*.js",
     "./node_modules/@fuma-comment/react/dist/**/*.js",

@@ -17,7 +17,11 @@ export default function RootDocsLayout({
   children: ReactNode;
 }): JSX.Element {
   return (
-    <DocsLayout nav={{ title: "Fuma Comment" }} tree={pageTree}>
+    <DocsLayout
+      nav={{ title: "Fuma Comment" }}
+      githubUrl="https://github.com/fuma-nama/fuma-comment"
+      tree={pageTree}
+    >
       {children}
     </DocsLayout>
   );

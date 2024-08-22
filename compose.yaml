@@ -1,28 +1,12 @@
 services:
-  tests:
-    build: .
-    environment:
-      DATABASE_URL: postgresql://postgres:test@db:5432/fuma_comment_test
-      DIRECT_URL: postgresql://postgres:test@db:5432/fuma_comment_test
-      NODE_ENV: test
-    ports:
-      - 4000:4000
-    depends_on:
-      db:
-        condition: service_healthy
   db:
     image: postgres:16.4
     user: postgres
     restart: always
     environment:
-      - POSTGRES_DB=fuma_comment_test
-      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=fuma_comment
+      - POSTGRES_PASSWORD=secret
     volumes:
       - /var/lib/postgresql/data
     ports:
       - 5432:5432
-    healthcheck:
-      test: ["CMD", "pg_isready"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
