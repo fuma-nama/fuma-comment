@@ -86,7 +86,7 @@
     "@tiptap/react": "^2.5.8",
     "@tiptap/suggestion": "^2.5.8",
     "class-variance-authority": "^0.7.0",
-    "lucide-react": "^0.427.0",
+    "lucide-react": "^0.429.0",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.4.0",
     "tippy.js": "^6.3.7"
