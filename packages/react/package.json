@@ -22,19 +22,9 @@
       "types": "./dist/atom.d.ts"
     },
     "./theme": {
+      "types": "./dist/theme/index.d.ts",
       "import": "./dist/theme/index.js",
-      "require": "./dist/theme/index.js",
-      "types": "./dist/theme/index.d.ts"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "atom": [
-        "./dist/atom.d.ts"
-      ],
-      "theme": [
-        "./dist/theme/index.d.ts"
-      ]
+      "require": "./dist/theme/index.js"
     }
   },
   "scripts": {

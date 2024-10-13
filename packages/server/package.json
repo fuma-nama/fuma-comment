@@ -9,24 +9,12 @@
   "exports": {
     ".": "./dist/index.js",
     "./express": {
-      "import": "./dist/express/index.js",
-      "require": "./dist/express/index.js",
-      "types": "./dist/express/index.d.ts"
+      "types": "./dist/express/index.d.ts",
+      "require": "./dist/express/index.js"
     },
     "./custom": {
-      "import": "./dist/custom/index.js",
-      "require": "./dist/custom/index.js",
-      "types": "./dist/custom/index.d.ts"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "express": [
-        "./dist/express/index.d.ts"
-      ],
-      "custom": [
-        "./dist/custom/index.d.ts"
-      ]
+      "types": "./dist/custom/index.d.ts",
+      "require": "./dist/custom/index.js"
     }
   },
   "files": [

@@ -21,7 +21,6 @@ declare module "next-auth" {
 }
 
 export const authOptions: AuthOptions = {
-  // @ts-expect-error -- Some problems of Next Auth and adapter type versions
   adapter: PrismaAdapter(prisma),
   callbacks: {
     session: ({ session, token }) => {

@@ -19,7 +19,7 @@
     "@fuma-comment/server": "workspace:*"
   },
   "peerDependencies": {
-    "next": ">= 13.4"
+    "next": "^13.4 || ^14.0.0 || ^15.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.11",
