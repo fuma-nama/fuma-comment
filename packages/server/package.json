@@ -28,7 +28,7 @@
     "dev": "tsup --watch"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
+    "@types/express": "^5.0.0",
     "@types/node": "^20.14.11",
     "eslint-config-custom": "workspace:*",
     "express": "^4.19.2",
