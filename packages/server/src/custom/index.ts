@@ -31,17 +31,17 @@ export interface CustomRequest {
 
 export type CustomResponse =
   | {
-      type: "success";
-      data: object;
-    }
+    type: "success";
+    data: object;
+  }
   | {
-      type: "error";
-      status: number;
-      data: {
-        message: string;
-        info?: object;
-      };
+    type: "error";
+    status: number;
+    data: {
+      message: string;
+      info?: object;
     };
+  };
 
 export type RouteHandler<R extends CustomRequest> = (
   req: R,
@@ -170,7 +170,7 @@ export function CustomComment<R extends CustomRequest>({
     "GET /comments/[page]/users": handleError(async (req) => {
       const name = req.queryParams.get("name"),
         page = req.params.get("page");
-      if (name == null || !page) return INVALID_PARAM;
+      if (!name || !page) return INVALID_PARAM;
 
       if (!queryUsers)
         throw new Error(

@@ -46,7 +46,7 @@ export function CommentsProvider({
     () => ({
       page,
     }),
-    [page],
+    [page]
   );
 
   if (mention)
@@ -93,3 +93,6 @@ export function AuthButton(): React.ReactNode {
 
   return signIn;
 }
+
+export { Comment } from "./components/comment/index";
+export { ContentRenderer } from "./components/comment/content-renderer";

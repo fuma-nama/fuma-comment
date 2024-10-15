@@ -16,7 +16,7 @@ export function Chart({ data }: { data: any[] }): ReactNode {
         width={400}
         height={400}
         data={data}
-        margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+        margin={{ top: 0, right: 4, left: 0, bottom: 0 }}
       >
         <Bar
           type="monotone"
@@ -26,7 +26,7 @@ export function Chart({ data }: { data: any[] }): ReactNode {
         />
         <XAxis
           dataKey="time"
-          fontSize={14}
+          fontSize={13}
           stroke="hsl(var(--fc-muted-foreground))"
         />
         <YAxis

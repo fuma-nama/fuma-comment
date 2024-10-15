@@ -62,7 +62,7 @@ interface GetCommentsOptions {
   limit: number;
 
   sort: z.infer<typeof sortSchema>;
-  page: string;
+  page?: string;
 
   auth?: AuthInfo;
   thread?: string;

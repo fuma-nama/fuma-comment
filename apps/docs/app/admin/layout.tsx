@@ -16,11 +16,11 @@ export default function Layout({
         >
           Fuma Comment
           <span className="rounded-md bg-fc-primary px-1 py-0.5 text-xs text-fc-primary-foreground ">
-            Admin
+            Dashboard
           </span>
         </Link>
       </nav>
-      <main className="mt-8">{children}</main>
+      <main className="mx-auto mt-8 w-full max-w-[1200px]">{children}</main>
     </>
   );
 }

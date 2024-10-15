@@ -4,30 +4,32 @@ import { createAdapter } from "@fuma-comment/prisma-adapter";
 import { prisma } from "@/utils/database";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
-export const { GET, DELETE, PATCH, POST } = NextComment({
-  adapter: createAdapter({
-    db: prisma,
-    async getUsers(userIds) {
-      const res = await prisma.user.findMany({
-        select: {
-          id: true,
-          name: true,
-          image: true,
+export const adapter = createAdapter({
+  db: prisma,
+  async getUsers(userIds) {
+    const res = await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        image: true,
+      },
+      where: {
+        id: {
+          in: userIds,
         },
-        where: {
-          id: {
-            in: userIds,
-          },
-        },
-      });
+      },
+    });
 
-      return res.map((user) => ({
-        ...user,
-        image: user.image ?? undefined,
-        name: user.name ?? "Unknown User",
-      }));
-    },
-  }),
+    return res.map((user) => ({
+      ...user,
+      image: user.image ?? undefined,
+      name: user.name ?? "Unknown User",
+    }));
+  },
+})
+
+export const { GET, DELETE, PATCH, POST } = NextComment({
+  adapter,
   role: "database",
   async queryUsers({ name, limit }) {
     const res = await prisma.user.findMany({
