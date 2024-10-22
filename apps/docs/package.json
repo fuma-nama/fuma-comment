@@ -24,7 +24,7 @@
     "date-fns": "^4.1.0",
     "fumadocs-core": "^13.0.1",
     "fumadocs-mdx": "^9.0.0",
-    "fumadocs-ui": "^13.0.1",
+    "fumadocs-ui": "^14.0.0",
     "lucide-react": "^0.452.0",
     "next": "^14.2.5",
     "next-auth": "^4.24.7",
