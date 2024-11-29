@@ -21,14 +21,14 @@
     "@types/node": "^22.0.0",
     "dotenv-cli": "^7.4.2",
     "eslint-config-custom": "workspace:*",
-    "prisma": "^5.17.0",
+    "prisma": "^6.0.0",
     "tsconfig": "workspace:*",
     "tsup": "^8.2.3",
     "typescript": "^5.5.3",
     "vitest": "^2.0.3"
   },
   "dependencies": {
-    "@prisma/client": "^5.17.0"
+    "@prisma/client": "^6.0.0"
   },
   "publishConfig": {
     "access": "public"
