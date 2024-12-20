@@ -12,8 +12,8 @@ importers:
         specifier: ^2.27.7
         version: 2.27.10
       dotenv-cli:
-        specifier: ^7.4.2
-        version: 7.4.4
+        specifier: ^8.0.0
+        version: 8.0.0
       eslint:
         specifier: ^8.56.0
         version: 8.57.1
@@ -226,8 +226,8 @@ importers:
         specifier: ^22.0.0
         version: 22.10.1
       dotenv-cli:
-        specifier: ^7.4.2
-        version: 7.4.4
+        specifier: ^8.0.0
+        version: 8.0.0
       eslint-config-custom:
         specifier: workspace:*
         version: link:../eslint-config-custom
@@ -3005,8 +3005,8 @@ packages:
   dom-helpers@5.2.1:
     resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
 
-  dotenv-cli@7.4.4:
-    resolution: {integrity: sha512-XkBYCG0tPIes+YZr4SpfFv76SQrV/LeCE8CI7JSEMi3VR9MvTihCGTOtbIexD6i2mXF+6px7trb1imVCXSNMDw==}
+  dotenv-cli@8.0.0:
+    resolution: {integrity: sha512-aLqYbK7xKOiTMIRf1lDPbI+Y+Ip/wo5k3eyp6ePysVaSqbyxjyK3dK35BTxG+rmd7djf5q2UPs4noPNH+cj0Qw==}
     hasBin: true
 
   dotenv-expand@10.0.0:
@@ -8543,7 +8543,7 @@ snapshots:
       '@babel/runtime': 7.26.0
       csstype: 3.1.3
 
-  dotenv-cli@7.4.4:
+  dotenv-cli@8.0.0:
     dependencies:
       cross-spawn: 7.0.6
       dotenv: 16.4.5

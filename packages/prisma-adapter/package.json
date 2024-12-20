@@ -19,7 +19,7 @@
   "devDependencies": {
     "@fuma-comment/server": "workspace:*",
     "@types/node": "^22.0.0",
-    "dotenv-cli": "^7.4.2",
+    "dotenv-cli": "^8.0.0",
     "eslint-config-custom": "workspace:*",
     "prisma": "^6.0.0",
     "tsconfig": "workspace:*",
