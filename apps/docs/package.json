@@ -22,7 +22,7 @@
     "@vercel/postgres": "^0.10.0",
     "cva": "1.0.0-beta.2",
     "date-fns": "^4.1.0",
-    "fumadocs-core": "^13.0.1",
+    "fumadocs-core": "^15.0.0",
     "fumadocs-mdx": "^9.0.0",
     "fumadocs-ui": "^13.0.1",
     "lucide-react": "^0.468.0",
