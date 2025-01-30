@@ -96,8 +96,8 @@ importers:
         specifier: ^2.13.0
         version: 2.14.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       tailwind-merge:
-        specifier: ^2.4.0
-        version: 2.5.5
+        specifier: ^3.0.0
+        version: 3.0.1
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -322,8 +322,8 @@ importers:
         specifier: ^2.2.5
         version: 2.2.5(react@18.3.1)
       tailwind-merge:
-        specifier: ^2.4.0
-        version: 2.5.5
+        specifier: ^3.0.0
+        version: 3.0.1
       tippy.js:
         specifier: ^6.3.7
         version: 6.3.7
@@ -5467,6 +5467,9 @@ packages:
 
   tailwind-merge@2.5.5:
     resolution: {integrity: sha512-0LXunzzAZzo0tEPxV3I297ffKZPlKDrjj7NXphC8V5ak9yHC5zRmxnOe2m/Rd/7ivsOMJe3JZ2JVocoDdQTRBA==}
+
+  tailwind-merge@3.0.1:
+    resolution: {integrity: sha512-AvzE8FmSoXC7nC+oU5GlQJbip2UO7tmOhOfQyOmPhrStOGXHU08j8mZEHZ4BmCqY5dWTCo4ClWkNyRNx1wpT0g==}
 
   tailwindcss@3.4.16:
     resolution: {integrity: sha512-TI4Cyx7gDiZ6r44ewaJmt0o6BrMCT5aK5e0rmJ/G9Xq3w7CX/5VXl/zIPEJZFUK5VEqwByyhqNPycPlvcK4ZNw==}
@@ -11662,6 +11665,8 @@ snapshots:
       tslib: 2.7.0
 
   tailwind-merge@2.5.5: {}
+
+  tailwind-merge@3.0.1: {}
 
   tailwindcss@3.4.16:
     dependencies:
