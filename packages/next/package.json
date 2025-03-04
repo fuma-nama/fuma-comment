@@ -22,7 +22,7 @@
     "next": "^13.4 || ^14.0.0 || ^15.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.14.11",
+    "@types/node": "^22.0.0",
     "eslint-config-custom": "workspace:*",
     "next": "^14.2.5",
     "tsconfig": "workspace:*",

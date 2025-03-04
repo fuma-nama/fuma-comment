@@ -16,11 +16,11 @@
   "dependencies": {
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.15"
+    "next": "14.2.21"
   },
   "devDependencies": {
     "typescript": "^5",
-    "@types/node": "^20",
+    "@types/node": "^22.0.0",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "postcss": "^8",
