@@ -26,9 +26,9 @@ export type SummaryType = z.infer<typeof types>;
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { summary_type?: "year" | "month" };
+  searchParams: Promise<{ summary_type?: "year" | "month" }>;
 }): Promise<ReactElement> {
-  const type = types.parse(searchParams.summary_type ?? "month");
+  const type = types.parse((await searchParams).summary_type ?? "month");
   const session = await getServerSession(authOptions);
 
   return (

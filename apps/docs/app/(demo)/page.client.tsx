@@ -40,7 +40,7 @@ const storage: StorageContext = {
 
 export function CommentsWithAuth(
   props: Omit<CommentsProps, "auth">,
-): JSX.Element {
+) {
   return (
     <Comments
       storage={storage}

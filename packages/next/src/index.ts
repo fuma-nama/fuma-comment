@@ -15,9 +15,9 @@ import { CustomComment } from "@fuma-comment/server/custom";
 type RouteHandler = (
   req: NextRequest,
   context: {
-    params: {
+    params: Promise<{
       comment: string[];
-    };
+    }>;
   },
 ) => Promise<NextResponse>;
 
@@ -84,7 +84,7 @@ export function NextComment(options: NextCommentOptions): NextCommentRouter {
 
   return {
     GET: async (req, context) => {
-      const params = context.params.comment;
+      const params = (await context.params).comment;
 
       // GET /[page]
       if (params.length === 1) {
@@ -122,7 +122,7 @@ export function NextComment(options: NextCommentOptions): NextCommentRouter {
       return NOT_FOUND;
     },
     POST: async (req, context) => {
-      const params = context.params.comment;
+      const params = (await context.params).comment;
 
       // POST /[page]
       if (params.length === 1) {
@@ -148,7 +148,7 @@ export function NextComment(options: NextCommentOptions): NextCommentRouter {
       return NOT_FOUND;
     },
     PATCH: async (req, context) => {
-      const params = context.params.comment;
+      const params = (await context.params).comment;
 
       // PATCH /[page]/[id]
       if (params.length === 2) {
@@ -165,7 +165,7 @@ export function NextComment(options: NextCommentOptions): NextCommentRouter {
       return NOT_FOUND;
     },
     DELETE: async (req, context) => {
-      const params = context.params.comment;
+      const params = (await context.params).comment;
 
       // DELETE /[page]/[id]
       if (params.length === 2) {
