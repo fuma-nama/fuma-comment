@@ -11,83 +11,83 @@ import { CommentEditor, type UseCommentEditor } from "../editor";
 import { Spinner } from "../spinner";
 
 export function EditForm(): React.ReactNode {
-  const [isEmpty, setIsEmpty] = useState(false);
-  const { comment, editorRef, setEdit } = useCommentContext();
+	const [isEmpty, setIsEmpty] = useState(false);
+	const { comment, editorRef, setEdit } = useCommentContext();
 
-  const mutation = useSWRMutation(
-    getCommentsKey({
-      page: comment.page,
-      thread: comment.threadId,
-    }),
-    (_, { arg }: { arg: { content: object } }) =>
-      editComment({
-        id: comment.id,
-        page: comment.page,
-        ...arg,
-      }),
-    {
-      revalidate: false,
-    },
-  );
+	const mutation = useSWRMutation(
+		getCommentsKey({
+			page: comment.page,
+			thread: comment.threadId,
+		}),
+		(_, { arg }: { arg: { content: object } }) =>
+			editComment({
+				id: comment.id,
+				page: comment.page,
+				...arg,
+			}),
+		{
+			revalidate: false,
+		},
+	);
 
-  const onClose = useLatestCallback(() => {
-    setEdit(false);
-  });
+	const onClose = useLatestCallback(() => {
+		setEdit(false);
+	});
 
-  const submit = useLatestCallback(() => {
-    if (!editorRef.current) return;
-    const content = editorRef.current.getJSON();
+	const submit = useLatestCallback(() => {
+		if (!editorRef.current) return;
+		const content = editorRef.current.getJSON();
 
-    if (content.length === 0) return;
-    void mutation.trigger(
-      { content },
-      {
-        onSuccess() {
-          setEdit(false);
-          updateComment(comment.id, (item) => ({ ...item, content }));
-        },
-      },
-    );
-  });
+		if (content.length === 0) return;
+		void mutation.trigger(
+			{ content },
+			{
+				onSuccess() {
+					setEdit(false);
+					updateComment(comment.id, (item) => ({ ...item, content }));
+				},
+			},
+		);
+	});
 
-  const onSubmit = useLatestCallback((e: React.FormEvent<HTMLFormElement>) => {
-    submit();
-    e.preventDefault();
-  });
+	const onSubmit = useLatestCallback((e: React.FormEvent<HTMLFormElement>) => {
+		submit();
+		e.preventDefault();
+	});
 
-  return (
-    <form onSubmit={onSubmit}>
-      <CommentEditor
-        defaultValue={comment.content}
-        disabled={mutation.isMutating}
-        editorRef={editorRef}
-        onChange={useCallback((v: UseCommentEditor) => {
-          setIsEmpty(v.isEmpty);
-        }, [])}
-        onEscape={onClose}
-        onSubmit={submit}
-        placeholder="Edit Message"
-      />
-      <div className="mt-2 flex flex-row gap-1">
-        <button
-          aria-label="Edit"
-          className={cn(
-            buttonVariants({ variant: "primary", className: "gap-2" }),
-          )}
-          disabled={mutation.isMutating || isEmpty}
-          type="submit"
-        >
-          {mutation.isMutating ? <Spinner /> : <Pencil className="size-4" />}
-          Edit
-        </button>
-        <button
-          className={cn(buttonVariants({ variant: "secondary" }))}
-          onClick={onClose}
-          type="button"
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
-  );
+	return (
+		<form onSubmit={onSubmit}>
+			<CommentEditor
+				defaultValue={comment.content}
+				disabled={mutation.isMutating}
+				editorRef={editorRef}
+				onChange={useCallback((v: UseCommentEditor) => {
+					setIsEmpty(v.isEmpty);
+				}, [])}
+				onEscape={onClose}
+				onSubmit={submit}
+				placeholder="Edit Message"
+			/>
+			<div className="mt-2 flex flex-row gap-1">
+				<button
+					aria-label="Edit"
+					className={cn(
+						buttonVariants({ variant: "primary", className: "gap-2" }),
+					)}
+					disabled={mutation.isMutating || isEmpty}
+					type="submit"
+				>
+					{mutation.isMutating ? <Spinner /> : <Pencil className="size-4" />}
+					Edit
+				</button>
+				<button
+					className={cn(buttonVariants({ variant: "secondary" }))}
+					onClick={onClose}
+					type="button"
+				>
+					Cancel
+				</button>
+			</div>
+		</form>
+	);
 }

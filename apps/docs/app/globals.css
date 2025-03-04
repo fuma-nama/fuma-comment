@@ -8,25 +8,25 @@
 @source '../node_modules/@fuma-comment/react/dist/**/*.js';
 
 @theme {
-  --color-app-foreground: 0, 0, 0;
-  --color-app-background: 235, 205, 235;
+	--color-app-foreground: 0, 0, 0;
+	--color-app-background: 235, 205, 235;
 
-  --color-foreground: var(--color-fd-foreground);
-  --color-background: var(--color-fd-background);
-  --color-muted: var(--color-fd-muted);
-  --color-muted-foreground: var(--color-fd-muted-foreground);
-  --color-border: var(--color-fd-border);
-  --color-input: var(--color-fd-input);
-  --color-ring: var(--color-fd-ring);
-  --color-primary: var(--color-fd-primary);
-  --color-primary-foreground: var(--color-fd-primary-foreground);
-  --color-secondary: var(--color-fd-secondary);
-  --color-secondary-foreground: var(--color-fd-secondary-foreground);
-  --color-accent: var(--color-fd-accent);
-  --color-accent-foreground: var(--color-fd-accent-foreground);
+	--color-foreground: var(--color-fd-foreground);
+	--color-background: var(--color-fd-background);
+	--color-muted: var(--color-fd-muted);
+	--color-muted-foreground: var(--color-fd-muted-foreground);
+	--color-border: var(--color-fd-border);
+	--color-input: var(--color-fd-input);
+	--color-ring: var(--color-fd-ring);
+	--color-primary: var(--color-fd-primary);
+	--color-primary-foreground: var(--color-fd-primary-foreground);
+	--color-secondary: var(--color-fd-secondary);
+	--color-secondary-foreground: var(--color-fd-secondary-foreground);
+	--color-accent: var(--color-fd-accent);
+	--color-accent-foreground: var(--color-fd-accent-foreground);
 }
 
 .dark {
-  --color-app-foreground: 255, 255, 255;
-  --color-app-background: 0, 0, 0;
+	--color-app-foreground: 255, 255, 255;
+	--color-app-background: 0, 0, 0;
 }

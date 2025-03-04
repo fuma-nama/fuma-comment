@@ -1,45 +1,43 @@
 {
-  "name": "@fuma-comment/server",
-  "version": "0.6.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "author": "Fuma Nama",
-  "homepage": "https://fuma-comment.vercel.app",
-  "repository": "https://github.com/fuma-nama/fuma-comment",
-  "exports": {
-    ".": "./dist/index.js",
-    "./express": {
-      "types": "./dist/express/index.d.ts",
-      "require": "./dist/express/index.js"
-    },
-    "./custom": {
-      "types": "./dist/custom/index.d.ts",
-      "require": "./dist/custom/index.js"
-    }
-  },
-  "files": [
-    "./dist"
-  ],
-  "license": "MIT",
-  "scripts": {
-    "lint": "biome lint .",
-    "build": "tsup",
-    "test": "vitest run",
-    "dev": "tsup --watch"
-  },
-  "devDependencies": {
-    "@types/express": "^5.0.0",
-    "@types/node": "^22.13.9",
-    "express": "^4.21.2",
-    "tsconfig": "workspace:*",
-    "tsup": "^8.4.0",
-    "typescript": "^5.8.2",
-    "vitest": "^3.0.7"
-  },
-  "dependencies": {
-    "zod": "^3.24.2"
-  },
-  "publishConfig": {
-    "access": "public"
-  }
+	"name": "@fuma-comment/server",
+	"version": "0.6.0",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"author": "Fuma Nama",
+	"homepage": "https://fuma-comment.vercel.app",
+	"repository": "https://github.com/fuma-nama/fuma-comment",
+	"exports": {
+		".": "./dist/index.js",
+		"./express": {
+			"types": "./dist/express/index.d.ts",
+			"require": "./dist/express/index.js"
+		},
+		"./custom": {
+			"types": "./dist/custom/index.d.ts",
+			"require": "./dist/custom/index.js"
+		}
+	},
+	"files": ["./dist"],
+	"license": "MIT",
+	"scripts": {
+		"lint": "biome lint .",
+		"build": "tsup",
+		"test": "vitest run",
+		"dev": "tsup --watch"
+	},
+	"devDependencies": {
+		"@types/express": "^5.0.0",
+		"@types/node": "^22.13.9",
+		"express": "^4.21.2",
+		"tsconfig": "workspace:*",
+		"tsup": "^8.4.0",
+		"typescript": "^5.8.2",
+		"vitest": "^3.0.7"
+	},
+	"dependencies": {
+		"zod": "^3.24.2"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
 }

@@ -1,14 +1,14 @@
 export class RouteError extends Error {
-  statusCode: number;
+	statusCode: number;
 
-  constructor({
-    statusCode,
-    message,
-  }: {
-    statusCode: number;
-    message?: string;
-  }) {
-    super(message);
-    this.statusCode = statusCode;
-  }
+	constructor({
+		statusCode,
+		message,
+	}: {
+		statusCode: number;
+		message?: string;
+	}) {
+		super(message);
+		this.statusCode = statusCode;
+	}
 }

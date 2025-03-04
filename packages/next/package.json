@@ -1,34 +1,32 @@
 {
-  "name": "@fuma-comment/next",
-  "version": "0.6.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "author": "Fuma Nama",
-  "homepage": "https://fuma-comment.vercel.app",
-  "repository": "https://github.com/fuma-nama/fuma-comment",
-  "files": [
-    "./dist"
-  ],
-  "license": "MIT",
-  "scripts": {
-    "lint": "biome lint .",
-    "build": "tsup",
-    "dev": "tsup --watch"
-  },
-  "dependencies": {
-    "@fuma-comment/server": "workspace:*"
-  },
-  "peerDependencies": {
-    "next": "^14.0.0 || ^15.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "^22.13.9",
-    "next": "^15.2.1",
-    "tsconfig": "workspace:*",
-    "tsup": "^8.4.0",
-    "typescript": "^5.8.2"
-  },
-  "publishConfig": {
-    "access": "public"
-  }
+	"name": "@fuma-comment/next",
+	"version": "0.6.0",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"author": "Fuma Nama",
+	"homepage": "https://fuma-comment.vercel.app",
+	"repository": "https://github.com/fuma-nama/fuma-comment",
+	"files": ["./dist"],
+	"license": "MIT",
+	"scripts": {
+		"lint": "biome lint .",
+		"build": "tsup",
+		"dev": "tsup --watch"
+	},
+	"dependencies": {
+		"@fuma-comment/server": "workspace:*"
+	},
+	"peerDependencies": {
+		"next": "^14.0.0 || ^15.0.0"
+	},
+	"devDependencies": {
+		"@types/node": "^22.13.9",
+		"next": "^15.2.1",
+		"tsconfig": "workspace:*",
+		"tsup": "^8.4.0",
+		"typescript": "^5.8.2"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
 }

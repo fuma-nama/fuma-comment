@@ -1,3 +1,3 @@
 module.exports = {
-  extends: ["custom/library"],
+	extends: ["custom/library"],
 };

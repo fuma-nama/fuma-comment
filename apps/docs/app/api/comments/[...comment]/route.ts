@@ -5,36 +5,36 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { adapter } from "@/utils/comment";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
-  adapter,
-  role: "database",
-  async queryUsers({ name, limit }) {
-    const res = await prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        image: true,
-      },
-      take: limit,
-      where: {
-        name: {
-          startsWith: name,
-          mode: "insensitive",
-        },
-      },
-    });
+	adapter,
+	role: "database",
+	async queryUsers({ name, limit }) {
+		const res = await prisma.user.findMany({
+			select: {
+				id: true,
+				name: true,
+				image: true,
+			},
+			take: limit,
+			where: {
+				name: {
+					startsWith: name,
+					mode: "insensitive",
+				},
+			},
+		});
 
-    return res.map((user) => ({
-      ...user,
-      image: user.image ?? undefined,
-      name: user.name ?? "Unknown User",
-    }));
-  },
-  async getSession() {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) return null;
+		return res.map((user) => ({
+			...user,
+			image: user.image ?? undefined,
+			name: user.name ?? "Unknown User",
+		}));
+	},
+	async getSession() {
+		const session = await getServerSession(authOptions);
+		if (!session?.user?.id) return null;
 
-    return {
-      id: session.user.id,
-    };
-  },
+		return {
+			id: session.user.id,
+		};
+	},
 });

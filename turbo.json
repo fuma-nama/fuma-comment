@@ -1,26 +1,26 @@
 {
-  "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local"],
-  "globalEnv": [
-    "NEXT_PUBLIC_CLOUDINARY_CLOUDNAME",
-    "DATABASE_URL",
-    "GITHUB_ID",
-    "GITHUB_SECRET",
-    "NEXTAUTH_SECRET",
-    "NEXTAUTH_URL",
-    "VERCEL_URL"
-  ],
-  "tasks": {
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
-    },
-    "lint": {},
-    "test": {},
-    "test:integrate": {},
-    "dev": {
-      "cache": false,
-      "persistent": true
-    }
-  }
+	"$schema": "https://turbo.build/schema.json",
+	"globalDependencies": ["**/.env.*local"],
+	"globalEnv": [
+		"NEXT_PUBLIC_CLOUDINARY_CLOUDNAME",
+		"DATABASE_URL",
+		"GITHUB_ID",
+		"GITHUB_SECRET",
+		"NEXTAUTH_SECRET",
+		"NEXTAUTH_URL",
+		"VERCEL_URL"
+	],
+	"tasks": {
+		"build": {
+			"dependsOn": ["^build"],
+			"outputs": [".next/**", "!.next/cache/**", "dist/**"]
+		},
+		"lint": {},
+		"test": {},
+		"test:integrate": {},
+		"dev": {
+			"cache": false,
+			"persistent": true
+		}
+	}
 }

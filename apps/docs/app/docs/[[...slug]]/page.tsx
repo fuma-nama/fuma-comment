@@ -5,45 +5,45 @@ import { source } from "@/app/source";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 
 export default async function Page({
-  params,
+	params,
 }: {
-  params: Promise<{ slug?: string[] }>;
+	params: Promise<{ slug?: string[] }>;
 }) {
-  const page = source.getPage((await params).slug);
+	const page = source.getPage((await params).slug);
 
-  if (!page) {
-    notFound();
-  }
+	if (!page) {
+		notFound();
+	}
 
-  const Content = page.data.body;
+	const Content = page.data.body;
 
-  return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
-      <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsBody>
-        <Content components={defaultMdxComponents} />
-      </DocsBody>
-    </DocsPage>
-  );
+	return (
+		<DocsPage toc={page.data.toc} full={page.data.full}>
+			<DocsTitle>{page.data.title}</DocsTitle>
+			<DocsBody>
+				<Content components={defaultMdxComponents} />
+			</DocsBody>
+		</DocsPage>
+	);
 }
 
 export function generateStaticParams(): { slug?: string[] }[] {
-  return source.getPages().map((page) => ({
-    slug: page.slugs,
-  }));
+	return source.getPages().map((page) => ({
+		slug: page.slugs,
+	}));
 }
 
 export async function generateMetadata({
-  params,
+	params,
 }: {
-  params: Promise<{ slug?: string[] }>;
+	params: Promise<{ slug?: string[] }>;
 }): Promise<Metadata> {
-  const page = source.getPage((await params).slug);
+	const page = source.getPage((await params).slug);
 
-  if (!page) notFound();
+	if (!page) notFound();
 
-  return {
-    title: page.data.title,
-    description: page.data.description,
-  };
+	return {
+		title: page.data.title,
+		description: page.data.description,
+	};
 }

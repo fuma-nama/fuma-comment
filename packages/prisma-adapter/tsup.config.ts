@@ -1,7 +1,7 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["./src/index.ts"],
-  dts: true,
-  external: ["@fuma-comment/server"],
+	entry: ["./src/index.ts"],
+	dts: true,
+	external: ["@fuma-comment/server"],
 });
