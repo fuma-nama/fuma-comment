@@ -22,7 +22,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "lint": "eslint .",
+    "lint": "biome lint .",
     "build": "tsup",
     "test": "vitest run",
     "dev": "tsup --watch"
@@ -30,7 +30,6 @@
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.9",
-    "eslint-config-custom": "workspace:*",
     "express": "^4.21.2",
     "tsconfig": "workspace:*",
     "tsup": "^8.4.0",

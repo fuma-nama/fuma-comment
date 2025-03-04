@@ -31,7 +31,6 @@ export const authOptions: AuthOptions = {
       return session;
     },
     jwt: ({ user, token }) => {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- this can be null
       if (user) token.uid = user.id;
 
       return token;

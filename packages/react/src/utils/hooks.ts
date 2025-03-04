@@ -11,7 +11,6 @@ export function useLatestCallback<T extends (...args: never[]) => unknown>(
   const ref = useRef<T>(latest);
   ref.current = latest;
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- Wrapped with refs
   return useCallback(((...args) => ref.current(...args)) as T, []);
 }
 

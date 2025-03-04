@@ -11,7 +11,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "lint": "eslint .",
+    "lint": "biome lint .",
     "test:integrate": "vitest run",
     "build": "tsup",
     "dev": "tsup --watch"
@@ -21,7 +21,6 @@
     "@prisma/client": "^6.4.1",
     "@types/node": "^22.13.9",
     "dotenv-cli": "^8.0.0",
-    "eslint-config-custom": "workspace:*",
     "prisma": "^6.4.1",
     "tsconfig": "workspace:*",
     "tsup": "^8.4.0",
