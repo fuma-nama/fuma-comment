@@ -1,4 +1,3 @@
-import type { PrismaClient } from "@prisma/client";
 import type {
   Comment,
   StorageAdapter,
@@ -6,7 +5,22 @@ import type {
 } from "@fuma-comment/server";
 
 interface Options {
-  db: PrismaClient;
+  db: unknown;
+
+  /**
+   * Model name for comment
+   */
+  CommentModel?: string;
+
+  /**
+   * Model name for rate
+   */
+  RateModel?: string;
+
+  /**
+   * Model name for role
+   */
+  RoleModel?: string;
 
   /**
    * Manually join User table after selecting comments
@@ -14,15 +28,45 @@ interface Options {
   getUsers: (userIds: string[]) => UserProfile[] | Promise<UserProfile[]>;
 }
 
+type PrismaClientInternal = Record<string, {
+  create: <T>(data: unknown) => Promise<T>;
+  findFirst: <T>(data: unknown) => Promise<T | null>;
+  findMany: <T>(data: unknown) => Promise<T[]>;
+  update: <T>(data: unknown) => Promise<T>;
+  updateMany: (data: unknown) => Promise<void>;
+  delete: <T>(data: unknown) => Promise<T>;
+  deleteMany: (data: unknown) => Promise<void>;
+  count: (data: unknown) => Promise<number>;
+  upsert: <T>(data: unknown) => Promise<T>;
+}>;
+
 /**
  * Create adapter for Prisma
  *
  * Example Schema: {@link https://github.com/fuma-nama/fuma-comment/blob/main/packages/prisma-adapter/prisma/schema.prisma}
  */
-export function createAdapter({ db, getUsers }: Options): StorageAdapter {
+export function createAdapter({
+  getUsers,
+  CommentModel = 'comment',
+  RateModel = 'rate',
+  RoleModel = 'role',
+  ...options
+}: Options): StorageAdapter {
+  const db = options.db as PrismaClientInternal
+
   return {
     async getComments({ auth, sort, page, after, thread, before, limit }) {
-      const result = await db.comment.findMany({
+      const result = await db[CommentModel].findMany<{
+        author: string
+        id: number
+        timestamp: Date
+        content: object
+        thread: number | null
+        page: string
+        rates: {
+          like: boolean
+        }[]
+      }>({
         orderBy: [{ timestamp: sort === "newest" ? "desc" : "asc" }],
         where: {
           page,
@@ -36,28 +80,29 @@ export function createAdapter({ db, getUsers }: Options): StorageAdapter {
         include: {
           rates: auth
             ? {
-                take: 1,
-                where: {
-                  userId: auth.id,
-                },
-              }
-            : {
-                take: 0,
+              take: 1,
+              where: {
+                userId: auth.id,
               },
+            }
+            : {
+              take: 0,
+            },
         },
       });
+
       const userInfos = await getUsers(result.map((c) => c.author));
 
       return await Promise.all(
         result.map(async (row) => {
           const selfRate = row.rates.length > 0 ? row.rates[0] : null;
-          const replies = await db.comment.count({
+          const replies = await db[CommentModel].count({
             where: { thread: row.id },
           });
-          const likes = await db.rate.count({
+          const likes = await db[RateModel].count({
             where: { commentId: row.id, like: true },
           });
-          const dislikes = await db.rate.count({
+          const dislikes = await db[RateModel].count({
             where: { commentId: row.id, like: false },
           });
 
@@ -67,7 +112,7 @@ export function createAdapter({ db, getUsers }: Options): StorageAdapter {
               id: "unknown",
               name: "Deleted User",
             },
-            content: row.content as object,
+            content: row.content,
             likes,
             dislikes,
             replies,
@@ -80,12 +125,12 @@ export function createAdapter({ db, getUsers }: Options): StorageAdapter {
       );
     },
     async deleteComment({ id, page }) {
-      await db.comment.deleteMany({
+      await db[CommentModel].deleteMany({
         where: { id: Number(id), page },
       });
     },
     async deleteRate({ auth, id, page }) {
-      await db.rate.deleteMany({
+      await db[RateModel].deleteMany({
         where: {
           commentId: Number(id),
           userId: auth.id,
@@ -96,13 +141,18 @@ export function createAdapter({ db, getUsers }: Options): StorageAdapter {
       });
     },
     async postComment({ auth, body, page }) {
-      const v = await db.comment.create({
-        data: {
-          author: auth.id,
-          content: body.content as object,
-          page,
-          thread: Number(body.thread),
-        },
+      const data = {
+        author: auth.id,
+        content: body.content as object,
+        page,
+        thread: Number(body.thread),
+      }
+
+      const v = await db[CommentModel].create<typeof data & {
+        id: number
+        timestamp: Date
+      }>({
+        data,
       });
 
       return {
@@ -111,14 +161,14 @@ export function createAdapter({ db, getUsers }: Options): StorageAdapter {
         threadId: v.thread ? String(v.thread) : undefined,
         page,
         author: (await getUsers([v.author]))[0],
-        content: v.content as object,
+        content: v.content,
         likes: 0,
         dislikes: 0,
         replies: 0,
       } satisfies Comment;
     },
     async setRate({ id, auth, body, page }) {
-      await db.rate.upsert({
+      await db[RateModel].upsert({
         create: {
           like: body.like,
           userId: auth.id,
@@ -139,22 +189,24 @@ export function createAdapter({ db, getUsers }: Options): StorageAdapter {
       });
     },
     async updateComment({ id, auth, body, page }) {
-      await db.comment.updateMany({
+      await db[CommentModel].updateMany({
         data: { content: body.content as object },
         where: { author: auth.id, id: Number(id), page },
       });
     },
     async getCommentAuthor({ id }) {
-      return db.comment
-        .findFirst({
-          where: {
-            id: Number(id),
-          },
-        })
-        .then((res) => res?.author ?? null);
+      const res = await db[CommentModel].findFirst<{
+        author: string
+      }>({
+        where: {
+          id: Number(id),
+        },
+      })
+
+      return res?.author ?? null
     },
     async getRole({ auth }) {
-      return db.role.findFirst({
+      return db[RoleModel].findFirst({
         where: {
           userId: auth.id,
         },

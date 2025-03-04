@@ -17,7 +17,7 @@ const storage: StorageContext = {
       {
         method: "POST",
         body,
-      },
+      }
     );
 
     if (res.ok) {
@@ -39,7 +39,7 @@ const storage: StorageContext = {
 };
 
 export function CommentsWithAuth(
-  props: Omit<CommentsProps, "auth">,
+  props: Omit<CommentsProps, "auth">
 ): JSX.Element {
   return (
     <Comments
@@ -48,6 +48,7 @@ export function CommentsWithAuth(
         enabled: true,
       }}
       auth={{
+        type: "api",
         signIn: () => void signIn("github"),
       }}
       {...props}

@@ -13,7 +13,6 @@ import {
 } from "../../utils/fetcher";
 import { useCommentContext } from "../../contexts/comment";
 import { onCommentReplied } from "../../utils/comment-manager";
-import { useCommentsContext } from "../../contexts/comments";
 import { useLatestCallback } from "../../utils/hooks";
 import { buttonVariants } from "../button";
 import { CommentEditor, type UseCommentEditor } from "../editor";
@@ -49,14 +48,13 @@ export function ReplyForm({
 }: {
   editorRef: MutableRefObject<UseCommentEditor | undefined>;
 }): ReactNode {
-  const { page } = useCommentsContext();
   const [isEmpty, setIsEmpty] = useState(true);
   const { comment, setReply } = useCommentContext();
 
   const mutation = useSWRMutation(
     getCommentsKey({
       thread: comment.id,
-      page,
+      page: comment.page,
     }),
     (key, { arg }: { arg: { content: object } }) =>
       postComment({
@@ -69,7 +67,7 @@ export function ReplyForm({
         onCommentReplied(data);
         setReply(false);
       },
-    },
+    }
   );
 
   const onClose = useLatestCallback(() => {
@@ -114,7 +112,7 @@ export function ReplyForm({
           className={cn(
             buttonVariants({
               variant: "secondary",
-            }),
+            })
           )}
           onClick={onClose}
           type="button"

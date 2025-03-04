@@ -214,14 +214,13 @@ importers:
         version: 5.6.3
 
   packages/prisma-adapter:
-    dependencies:
-      '@prisma/client':
-        specifier: ^5.17.0
-        version: 5.20.0(prisma@5.20.0)
     devDependencies:
       '@fuma-comment/server':
         specifier: workspace:*
         version: link:../server
+      '@prisma/client':
+        specifier: ^5.17.0
+        version: 5.20.0(prisma@5.20.0)
       '@types/node':
         specifier: ^20.14.11
         version: 20.16.11

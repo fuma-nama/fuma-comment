@@ -1,13 +1,13 @@
 import { eachDayOfInterval, eachMonthOfInterval, formatDate } from "date-fns";
 import type { ReactElement, ReactNode } from "react";
 import { z } from "zod";
-import { ContentRenderer } from "@fuma-comment/react/atom";
+import { CommentsList, CommentsProvider } from "@fuma-comment/react/atom";
+import { getServerSession } from "next-auth";
 import { prisma } from "@/utils/database";
 import { cva } from "@/utils/cva";
-import { adapter } from "../api/comments/[...comment]/route";
+import { authOptions } from "../api/auth/[...nextauth]/options";
 import { Chart } from "./chart";
 import { ModeSelect } from "./page.client";
-import { SmartDate } from "./smart-date";
 
 const cardVariants = cva({
   base: "rounded-lg border bg-card p-4 text-card-foreground shadow-md",
@@ -23,50 +23,47 @@ const types = z.enum(["year", "month", "week"]);
 type Per = "month" | "day";
 export type SummaryType = z.infer<typeof types>;
 
-export default function Page({
+export default async function Page({
   searchParams,
 }: {
   searchParams: { summary_type?: "year" | "month" };
-}): ReactNode {
+}): Promise<ReactElement> {
   const type = types.parse(searchParams.summary_type ?? "month");
+  const session = await getServerSession(authOptions);
 
   return (
-    <>
+    <CommentsProvider
+      page="default"
+      auth={{
+        type: "ssr",
+        session: session?.user?.id
+          ? {
+              id: session.user.id,
+              permissions: {
+                delete: true,
+              },
+            }
+          : null,
+        signIn: null,
+      }}
+    >
       <Summary type={type} />
-      <div className="mt-4 grid grid-cols-2 gap-4">
+      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div className={cardVariants()}>
           <h2 className="mb-2 font-medium">Latest Comments</h2>
           <LatestComments />
         </div>
         <div className={cardVariants()}>
-          <h2 className="mb-2 font-medium">Members</h2>
+          <h2 className="mb-2 font-medium">Moderation</h2>
         </div>
       </div>
-    </>
+    </CommentsProvider>
   );
 }
 
-async function LatestComments(): Promise<ReactElement> {
-  const result = await adapter.getComments({
-    limit: 15,
-    sort: "newest",
-  });
-
+function LatestComments(): ReactNode {
   return (
-    <ul className="-mx-2 flex max-h-[400px] flex-col gap-2 overflow-auto">
-      {result.map((item) => (
-        <li key={item.id} className="bg-fc-muted p-2 text-sm">
-          <p className="mb-1 text-xs font-medium">{item.author.name}</p>
-          <div className="text-fc-foreground/80">
-            <ContentRenderer content={item.content} />
-          </div>
-          <SmartDate
-            className="group pt-4 text-xs text-fc-muted-foreground transition-colors data-[relative=true]:text-fc-primary"
-            date={item.timestamp}
-          />
-        </li>
-      ))}
-    </ul>
+    <CommentsList className="-mx-2 flex max-h-[400px] flex-col gap-2 overflow-auto" />
   );
 }
 

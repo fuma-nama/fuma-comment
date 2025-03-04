@@ -4,7 +4,7 @@ import React, {
   useContext,
   useMemo,
 } from "react";
-import useSWR from "swr";
+import useSWRImmutable from "swr/immutable";
 import { getAuthSession } from "../utils/fetcher";
 
 export interface Session {
@@ -31,9 +31,16 @@ export function useAuthContext(): AuthContextType {
   return auth;
 }
 
-export interface AuthOptions {
-  signIn: ReactNode | (() => void);
-}
+export type AuthOptions =
+  | {
+      type: "api";
+      signIn: ReactNode | (() => void);
+    }
+  | {
+      type: "ssr";
+      session: Session | null;
+      signIn: ReactNode | (() => void);
+    };
 
 export function AuthProvider({
   page,
@@ -44,16 +51,23 @@ export function AuthProvider({
   auth: AuthOptions;
   children: ReactNode;
 }): ReactNode {
-  const query = useSWR(
-    `/api/comment/${page}/auth`,
+  const query = useSWRImmutable(
+    auth.type === "api" ? `/api/comment/${page}/auth` : null,
     () => getAuthSession({ page }),
     {
       revalidateIfStale: false,
       revalidateOnFocus: false,
-    },
+    }
   );
 
-  const value = useMemo(() => {
+  const value = useMemo<AuthContextType>(() => {
+    if (auth.type === "ssr")
+      return {
+        isLoading: false,
+        session: auth.session,
+        signIn: auth.signIn,
+      };
+
     return {
       session: query.data
         ? {
@@ -66,7 +80,7 @@ export function AuthProvider({
       isLoading: query.isLoading,
       signIn: auth.signIn,
     };
-  }, [query.isLoading, query.data, auth.signIn]);
+  }, [auth, query.data, query.isLoading]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
