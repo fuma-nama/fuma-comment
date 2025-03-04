@@ -68,8 +68,10 @@ const marks: Marks = {
   },
 };
 
+let id = 0;
+
 function renderText(content: JSONContent): ReactNode {
-  let getElement = defaultRenderer;
+  let Element = defaultRenderer;
   const className: string[] = [];
 
   for (const mark of content.marks ?? []) {
@@ -77,11 +79,15 @@ function renderText(content: JSONContent): ReactNode {
       const m = marks[mark.type];
 
       if (m.className) className.push(m.className);
-      if (m.element) getElement = m.element(mark);
+      if (m.element) Element = m.element(mark);
     }
   }
 
-  return getElement({ className: cn(className), children: content.text });
+  return (
+    <Element key={id++} className={cn(className)}>
+      {content.text}
+    </Element>
+  );
 }
 
 function render(content: JSONContent, storage: StorageContext): ReactNode {
@@ -121,6 +127,7 @@ function render(content: JSONContent, storage: StorageContext): ReactNode {
 
     return (
       <img
+        key={id++}
         alt={attrs.alt}
         className="rounded-lg"
         height={h}
@@ -133,7 +140,9 @@ function render(content: JSONContent, storage: StorageContext): ReactNode {
   if (content.type === "mention") {
     const attrs = content.attrs as { id: string; label?: string };
     return (
-      <span className={cn(mentionVariants())}>@{attrs.label ?? attrs.id}</span>
+      <span key={id++} className={cn(mentionVariants())}>
+        @{attrs.label ?? attrs.id}
+      </span>
     );
   }
 
@@ -142,11 +151,15 @@ function render(content: JSONContent, storage: StorageContext): ReactNode {
   ) ?? [" "];
 
   if (content.type === "paragraph") {
-    return <span>{joined}</span>;
+    return <span key={id++}>{joined}</span>;
   }
 
   if (content.type === "doc") {
-    return <div className="grid whitespace-pre-wrap break-words">{joined}</div>;
+    return (
+      <div key={id++} className="grid whitespace-pre-wrap break-words">
+        {joined}
+      </div>
+    );
   }
 }
 

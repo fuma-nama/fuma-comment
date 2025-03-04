@@ -34,7 +34,7 @@ export function MentionProvider({
 }): ReactNode {
   const query = useLatestCallback<MentionContextType["query"]>(
     async (name, options) => {
-      if (mention.query) mention.query(name, options);
+      if (mention.query) void mention.query(name, options);
 
       const res = await queryUsers({ name, page: options.page });
       return res.map((user) => ({ label: user.name, id: user.id }));

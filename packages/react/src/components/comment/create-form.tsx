@@ -29,7 +29,7 @@ export const CreateForm = forwardRef<
   const auth = useAuthContext();
   const { page } = useCommentsContext();
   const [isEmpty, setIsEmpty] = useState(true);
-  const editorRef = useRef<UseCommentEditor>();
+  const editorRef = useRef<UseCommentEditor | undefined>(undefined);
   const mutation = useSWRMutation(
     getCommentsKey({
       page,

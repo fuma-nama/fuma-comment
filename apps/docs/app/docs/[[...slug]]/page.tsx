@@ -1,43 +1,44 @@
 import type { Metadata } from "next";
 import { DocsPage, DocsBody, DocsTitle } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
-import { getPage, getPages } from "@/app/source";
+import { source } from "@/app/source";
+import defaultMdxComponents from "fumadocs-ui/mdx";
 
-export default function Page({
+export default async function Page({
   params,
 }: {
-  params: { slug?: string[] };
-}): React.ReactElement {
-  const page = getPage(params.slug);
+  params: Promise<{ slug?: string[] }>;
+}) {
+  const page = source.getPage((await params).slug);
 
   if (!page) {
     notFound();
   }
 
-  const Content = page.data.exports.default;
+  const Content = page.data.body;
 
   return (
-    <DocsPage toc={page.data.exports.toc} full={page.data.full}>
+    <DocsPage toc={page.data.toc} full={page.data.full}>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsBody>
-        <Content />
+        <Content components={defaultMdxComponents} />
       </DocsBody>
     </DocsPage>
   );
 }
 
 export function generateStaticParams(): { slug?: string[] }[] {
-  return getPages().map((page) => ({
+  return source.getPages().map((page) => ({
     slug: page.slugs,
   }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { slug?: string[] };
-}): Metadata {
-  const page = getPage(params.slug);
+  params: Promise<{ slug?: string[] }>;
+}): Promise<Metadata> {
+  const page = source.getPage((await params).slug);
 
   if (!page) notFound();
 

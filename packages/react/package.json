@@ -7,7 +7,8 @@
   "homepage": "https://fuma-comment.vercel.app",
   "repository": "https://github.com/fuma-nama/fuma-comment",
   "files": [
-    "./dist"
+    "./dist",
+    "./css"
   ],
   "license": "MIT",
   "type": "module",
@@ -17,68 +18,64 @@
       "types": "./dist/index.d.ts"
     },
     "./style.css": "./dist/style.css",
+    "./preset.css": "./css/preset.css",
     "./atom": {
       "import": "./dist/atom.js",
       "types": "./dist/atom.d.ts"
-    },
-    "./theme": {
-      "types": "./dist/theme/index.d.ts",
-      "import": "./dist/theme/index.js",
-      "require": "./dist/theme/index.js"
     }
   },
   "scripts": {
     "lint": "eslint .",
-    "build": "tsup && postcss css/styles.css -o ./dist/style.css",
+    "build": "tsup && tailwindcss -i css/styles.css -o ./dist/style.css",
     "dev": "concurrently \"pnpm dev:layout\" \"pnpm dev:tailwind\"",
     "dev:layout": "tsup --watch",
-    "dev:tailwind": "postcss css/styles.css -o ./dist/style.css --watch"
+    "dev:tailwind": "tailwindcss -i css/styles.css -o ./dist/style.css --watch"
   },
   "peerDependencies": {
-    "react": "^18.x",
-    "react-dom": "^18.x"
+    "react": "^19.x",
+    "react-dom": "^19.x"
   },
   "devDependencies": {
     "@fuma-comment/server": "workspace:^",
-    "@types/node": "^22.0.0",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "concurrently": "^9.0.0",
+    "@tailwindcss/cli": "^4.0.9",
+    "@types/node": "^22.13.9",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "concurrently": "^9.1.2",
     "eslint-config-custom": "workspace:*",
-    "postcss": "^8.4.40",
+    "postcss": "^8.5.3",
     "postcss-cli": "^11.0.0",
-    "postcss-lightningcss": "^1.0.0",
-    "react": "^18.3.1",
-    "tailwindcss": "^3.4.7",
+    "react": "^19.0.0",
+    "tailwindcss": "^4.0.9",
     "tsconfig": "workspace:*",
-    "tsup": "^8.2.3",
-    "typescript": "^5.5.3"
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.2"
   },
   "dependencies": {
-    "@radix-ui/react-collapsible": "^1.1.0",
-    "@radix-ui/react-dialog": "^1.1.1",
-    "@radix-ui/react-dropdown-menu": "^2.1.1",
-    "@tiptap/extension-bold": "^2.5.8",
-    "@tiptap/extension-code": "^2.5.8",
-    "@tiptap/extension-document": "^2.5.8",
-    "@tiptap/extension-dropcursor": "^2.5.8",
-    "@tiptap/extension-gapcursor": "^2.5.8",
-    "@tiptap/extension-history": "^2.5.8",
-    "@tiptap/extension-image": "^2.5.8",
-    "@tiptap/extension-italic": "^2.5.8",
-    "@tiptap/extension-link": "^2.5.8",
-    "@tiptap/extension-mention": "^2.5.8",
-    "@tiptap/extension-paragraph": "^2.5.8",
-    "@tiptap/extension-placeholder": "^2.5.8",
-    "@tiptap/extension-strike": "^2.5.8",
-    "@tiptap/extension-text": "^2.5.8",
-    "@tiptap/pm": "^2.5.8",
-    "@tiptap/react": "^2.5.8",
-    "@tiptap/suggestion": "^2.5.8",
+    "@radix-ui/react-collapsible": "^1.1.3",
+    "@radix-ui/react-dialog": "^1.1.6",
+    "@radix-ui/react-dropdown-menu": "^2.1.6",
+    "@tiptap/extension-bold": "^2.11.5",
+    "@tiptap/extension-code": "^2.11.5",
+    "@tiptap/extension-document": "^2.11.5",
+    "@tiptap/extension-dropcursor": "^2.11.5",
+    "@tiptap/extension-gapcursor": "^2.11.5",
+    "@tiptap/extension-history": "^2.11.5",
+    "@tiptap/extension-image": "^2.11.5",
+    "@tiptap/extension-italic": "^2.11.5",
+    "@tiptap/extension-link": "^2.11.5",
+    "@tiptap/extension-mention": "^2.11.5",
+    "@tiptap/extension-paragraph": "^2.11.5",
+    "@tiptap/extension-placeholder": "^2.11.5",
+    "@tiptap/extension-strike": "^2.11.5",
+    "@tiptap/extension-text": "^2.11.5",
+    "@tiptap/pm": "^2.11.5",
+    "@tiptap/react": "^2.11.5",
+    "@tiptap/suggestion": "^2.11.5",
     "class-variance-authority": "^0.7.0",
-    "lucide-react": "^0.468.0",
-    "swr": "^2.2.5",
-    "tailwind-merge": "^2.4.0",
+    "lucide-react": "^0.477.0",
+    "swr": "^2.3.2",
+    "tailwind-merge": "^3.0.2",
     "tippy.js": "^6.3.7"
   },
   "publishConfig": {

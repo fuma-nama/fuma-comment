@@ -46,7 +46,7 @@ export function CommentsProvider({
     () => ({
       page,
     }),
-    [page]
+    [page],
   );
 
   if (mention)

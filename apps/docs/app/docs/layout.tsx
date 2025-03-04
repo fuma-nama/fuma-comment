@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
-import { DocsLayout } from "fumadocs-ui/layout";
-import { pageTree } from "@/app/source";
+import { DocsLayout } from "fumadocs-ui/layouts/docs";
+import { source } from "@/app/source";
 
 export const metadata: Metadata = {
   title: {
@@ -11,16 +11,12 @@ export const metadata: Metadata = {
   description: "Next.js comments",
 };
 
-export default function RootDocsLayout({
-  children,
-}: {
-  children: ReactNode;
-}): JSX.Element {
+export default function RootDocsLayout({ children }: { children: ReactNode }) {
   return (
     <DocsLayout
       nav={{ title: "Fuma Comment" }}
       githubUrl="https://github.com/fuma-nama/fuma-comment"
-      tree={pageTree}
+      tree={source.getPageTree()}
     >
       {children}
     </DocsLayout>

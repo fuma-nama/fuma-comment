@@ -104,7 +104,7 @@ async function Summary({ type }: { type: SummaryType }): Promise<ReactElement> {
 
   for (const item of result) {
     const i = Math.floor(
-      (item.timestamp.getTime() - start.getTime()) / unit + 0.5
+      (item.timestamp.getTime() - start.getTime()) / unit + 0.5,
     );
 
     data[i].count++;

@@ -57,7 +57,7 @@ export function AuthProvider({
     {
       revalidateIfStale: false,
       revalidateOnFocus: false,
-    }
+    },
   );
 
   const value = useMemo<AuthContextType>(() => {

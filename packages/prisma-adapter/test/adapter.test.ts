@@ -93,7 +93,7 @@ describe("Adapter", () => {
     await adapter.postComment({
       auth: { id: "mock_user" },
       body: { content: createContent("Hello World 3") },
-      page: 'page'
+      page: "page",
     });
     const comments = await adapter.getComments({ sort: "oldest", limit: 10 });
 
@@ -106,10 +106,10 @@ describe("Adapter", () => {
       id: "3",
       auth: { id: "mock_user" },
       body: { content: newContent },
-      page: 'page'
+      page: "page",
     });
     const row = (await adapter.getComments({ sort: "oldest", limit: 10 })).find(
-      (comment) => comment.id === '3',
+      (comment) => comment.id === "3",
     );
 
     expect(row?.content, "Content has updated").toStrictEqual(newContent);
@@ -119,22 +119,22 @@ describe("Adapter", () => {
     await adapter.deleteComment({
       id: "3",
       auth: { id: "mock_user" },
-      page: 'page'
+      page: "page",
     });
-    const hasRemoved = (await adapter.getComments({ sort: "oldest", limit: 10 })).every(
-      (comment) => comment.id !== '3',
-    );
+    const hasRemoved = (
+      await adapter.getComments({ sort: "oldest", limit: 10 })
+    ).every((comment) => comment.id !== "3");
 
     expect(hasRemoved, "Comment should be removed").toBe(true);
   });
 
   test("Add Rate", async () => {
-    const id = '2';
+    const id = "2";
     await adapter.setRate({
       auth: { id: "mock_user" },
       body: { like: true },
       id,
-      page: 'page'
+      page: "page",
     });
 
     const comments = await adapter.getComments({
@@ -149,11 +149,11 @@ describe("Adapter", () => {
   });
 
   test("Remove Rate", async () => {
-    const id = '2';
+    const id = "2";
     await adapter.deleteRate({
       auth: { id: "mock_user" },
       id,
-      page: 'page'
+      page: "page",
     });
 
     const comments = await adapter.getComments({

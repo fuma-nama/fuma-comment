@@ -28,17 +28,20 @@ interface Options {
   getUsers: (userIds: string[]) => UserProfile[] | Promise<UserProfile[]>;
 }
 
-type PrismaClientInternal = Record<string, {
-  create: <T>(data: unknown) => Promise<T>;
-  findFirst: <T>(data: unknown) => Promise<T | null>;
-  findMany: <T>(data: unknown) => Promise<T[]>;
-  update: <T>(data: unknown) => Promise<T>;
-  updateMany: (data: unknown) => Promise<void>;
-  delete: <T>(data: unknown) => Promise<T>;
-  deleteMany: (data: unknown) => Promise<void>;
-  count: (data: unknown) => Promise<number>;
-  upsert: <T>(data: unknown) => Promise<T>;
-}>;
+type PrismaClientInternal = Record<
+  string,
+  {
+    create: <T>(data: unknown) => Promise<T>;
+    findFirst: <T>(data: unknown) => Promise<T | null>;
+    findMany: <T>(data: unknown) => Promise<T[]>;
+    update: <T>(data: unknown) => Promise<T>;
+    updateMany: (data: unknown) => Promise<void>;
+    delete: <T>(data: unknown) => Promise<T>;
+    deleteMany: (data: unknown) => Promise<void>;
+    count: (data: unknown) => Promise<number>;
+    upsert: <T>(data: unknown) => Promise<T>;
+  }
+>;
 
 /**
  * Create adapter for Prisma
@@ -47,25 +50,25 @@ type PrismaClientInternal = Record<string, {
  */
 export function createAdapter({
   getUsers,
-  CommentModel = 'comment',
-  RateModel = 'rate',
-  RoleModel = 'role',
+  CommentModel = "comment",
+  RateModel = "rate",
+  RoleModel = "role",
   ...options
 }: Options): StorageAdapter {
-  const db = options.db as PrismaClientInternal
+  const db = options.db as PrismaClientInternal;
 
   return {
     async getComments({ auth, sort, page, after, thread, before, limit }) {
       const result = await db[CommentModel].findMany<{
-        author: string
-        id: number
-        timestamp: Date
-        content: object
-        thread: number | null
-        page: string
+        author: string;
+        id: number;
+        timestamp: Date;
+        content: object;
+        thread: number | null;
+        page: string;
         rates: {
-          like: boolean
-        }[]
+          like: boolean;
+        }[];
       }>({
         orderBy: [{ timestamp: sort === "newest" ? "desc" : "asc" }],
         where: {
@@ -80,14 +83,14 @@ export function createAdapter({
         include: {
           rates: auth
             ? {
-              take: 1,
-              where: {
-                userId: auth.id,
-              },
-            }
+                take: 1,
+                where: {
+                  userId: auth.id,
+                },
+              }
             : {
-              take: 0,
-            },
+                take: 0,
+              },
         },
       });
 
@@ -146,12 +149,14 @@ export function createAdapter({
         content: body.content as object,
         page,
         thread: Number(body.thread),
-      }
+      };
 
-      const v = await db[CommentModel].create<typeof data & {
-        id: number
-        timestamp: Date
-      }>({
+      const v = await db[CommentModel].create<
+        typeof data & {
+          id: number;
+          timestamp: Date;
+        }
+      >({
         data,
       });
 
@@ -196,14 +201,14 @@ export function createAdapter({
     },
     async getCommentAuthor({ id }) {
       const res = await db[CommentModel].findFirst<{
-        author: string
+        author: string;
       }>({
         where: {
           id: Number(id),
         },
-      })
+      });
 
-      return res?.author ?? null
+      return res?.author ?? null;
     },
     async getRole({ auth }) {
       return db[RoleModel].findFirst({

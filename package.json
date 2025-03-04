@@ -10,15 +10,15 @@
     "test": "turbo run test",
     "test:integrate": "docker compose run --rm --build tests pnpm turbo run test:integrate --concurrency=1",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md,css}\""
   },
   "devDependencies": {
-    "@changesets/cli": "^2.27.7",
-    "dotenv-cli": "^7.4.2",
+    "@changesets/cli": "^2.28.1",
+    "dotenv-cli": "^8.0.0",
     "eslint": "^8.56.0",
-    "prettier": "^3.3.3",
+    "prettier": "^3.5.3",
     "tsconfig": "workspace:*",
-    "tsup": "^8.2.3",
-    "turbo": "^2.0.9"
+    "tsup": "^8.4.0",
+    "turbo": "^2.4.4"
   }
 }

@@ -31,17 +31,17 @@ export interface CustomRequest {
 
 export type CustomResponse =
   | {
-    type: "success";
-    data: object;
-  }
+      type: "success";
+      data: object;
+    }
   | {
-    type: "error";
-    status: number;
-    data: {
-      message: string;
-      info?: object;
+      type: "error";
+      status: number;
+      data: {
+        message: string;
+        info?: object;
+      };
     };
-  };
 
 export type RouteHandler<R extends CustomRequest> = (
   req: R,

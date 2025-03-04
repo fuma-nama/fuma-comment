@@ -1,0 +1,156 @@
+@theme {
+  /* Light theme colors */
+  --color-fc-background: hsl(0 0% 100%);
+  --color-fc-foreground: hsl(0 0% 3.9%);
+  --color-fc-muted: hsl(0 0% 96.1%);
+  --color-fc-muted-foreground: hsl(0 0% 45.1%);
+  --color-fc-popover: hsl(0 0% 100%);
+  --color-fc-popover-foreground: hsl(0 0% 15.1%);
+  --color-fc-card: hsl(0 0% 96.7%);
+  --color-fc-card-foreground: hsl(0 0% 3.9%);
+  --color-fc-border: hsl(0 0% 89.8%);
+  --color-fc-primary: hsl(0 0% 9%);
+  --color-fc-primary-foreground: hsl(0 0% 98%);
+  --color-fc-accent: hsl(0 0% 94.1%);
+  --color-fc-accent-foreground: hsl(0 0% 9%);
+  --color-fc-danger: hsl(3 99% 55%);
+  --color-fc-ring: hsl(0 0% 63.9%);
+}
+
+/* Dark theme colors */
+.dark {
+  --color-fc-background: hsl(0 0% 3.9%);
+  --color-fc-foreground: hsl(0 0% 98%);
+  --color-fc-muted: hsl(0 0% 14.9%);
+  --color-fc-muted-foreground: hsl(0 0% 60.9%);
+  --color-fc-popover: hsl(0 0% 7%);
+  --color-fc-popover-foreground: hsl(0 0% 88%);
+  --color-fc-card: hsl(0 0% 8%);
+  --color-fc-card-foreground: hsl(0 0% 98%);
+  --color-fc-border: hsl(0 0% 18%);
+  --color-fc-primary: hsl(0 0% 98%);
+  --color-fc-primary-foreground: hsl(0 0% 9%);
+  --color-fc-accent: hsl(0 0% 14.9%);
+  --color-fc-accent-foreground: hsl(0 0% 98%);
+  --color-fc-ring: hsl(0 0% 14.9%);
+  --color-fc-danger: hsl(3 95% 64%);
+}
+
+/* TipTap editor styles */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: var(--color-fc-muted-foreground);
+  font-size: 0.875rem;
+}
+
+.tiptap img {
+  border-radius: 0.5rem;
+  max-width: 100%;
+  width: auto;
+  max-height: 15rem;
+}
+
+.tiptap img.ProseMirror-selectednode {
+  outline: 2px solid var(--color-fc-primary);
+}
+
+.tiptap a {
+  font-weight: 500;
+  text-decoration-line: underline;
+}
+
+@theme {
+  --animate-fc-accordion-down: fc-accordion-down 200ms ease-out;
+  --animate-fc-accordion-up: fc-accordion-up 200ms ease-out;
+  --animate-fadeIn: fadeIn 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fadeOut: fadeOut 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-overlayShow: overlayShow 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-overlayHide: overlayHide 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-dialogShow: dialogShow 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-dialogHide: dialogHide 400ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  }
+
+  @keyframes dialogShow {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes dialogHide {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+  }
+
+  @keyframes overlayShow {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes overlayHide {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes fc-accordion-down {
+    from {
+      height: 0;
+      opacity: 0.5;
+    }
+    to {
+      height: var(--radix-collapsible-content-height);
+    }
+  }
+
+  @keyframes fc-accordion-up {
+    from {
+      height: var(--radix-collapsible-content-height);
+    }
+    to {
+      height: 0;
+      opacity: 0.5;
+    }
+  }
+}

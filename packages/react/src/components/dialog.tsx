@@ -42,7 +42,7 @@ export function DialogContent({
 export function DialogTitle({
   className,
   ...props
-}: Primitive.DialogTitleProps): JSX.Element {
+}: Primitive.DialogTitleProps): React.ReactElement {
   return (
     <Primitive.Title className={cn("mb-2 font-semibold", className)} {...props}>
       {props.children}

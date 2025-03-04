@@ -67,7 +67,7 @@ export function ReplyForm({
         onCommentReplied(data);
         setReply(false);
       },
-    }
+    },
   );
 
   const onClose = useLatestCallback(() => {
@@ -112,7 +112,7 @@ export function ReplyForm({
           className={cn(
             buttonVariants({
               variant: "secondary",
-            })
+            }),
           )}
           onClick={onClose}
           type="button"

@@ -34,7 +34,7 @@ export function Actions({
   canReply?: boolean;
 }): React.ReactNode {
   const { comment, isReplying, setReply } = useCommentContext();
-  const editorRef = useRef<UseCommentEditor>();
+  const editorRef = useRef<UseCommentEditor | undefined>(undefined);
   const { session } = useAuthContext();
   const isAuthenticated = session !== null;
 

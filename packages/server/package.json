@@ -29,16 +29,16 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
-    "@types/node": "^22.0.0",
+    "@types/node": "^22.13.9",
     "eslint-config-custom": "workspace:*",
-    "express": "^4.19.2",
+    "express": "^4.21.2",
     "tsconfig": "workspace:*",
-    "tsup": "^8.2.3",
-    "typescript": "^5.5.3",
-    "vitest": "^2.0.3"
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.7"
   },
   "dependencies": {
-    "zod": "^3.23.8"
+    "zod": "^3.24.2"
   },
   "publishConfig": {
     "access": "public"

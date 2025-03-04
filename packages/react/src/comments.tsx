@@ -40,7 +40,7 @@ export const Comments = forwardRef<HTMLDivElement, CommentsProps>(
         <div
           className={cn(
             "overflow-hidden rounded-xl border border-fc-border bg-fc-background text-fc-foreground",
-            className
+            className,
           )}
           ref={ref}
           {...props}
@@ -50,7 +50,7 @@ export const Comments = forwardRef<HTMLDivElement, CommentsProps>(
         </div>
       </CommentsProvider>
     );
-  }
+  },
 );
 
 function Inner(props: InnerProps): ReactNode {

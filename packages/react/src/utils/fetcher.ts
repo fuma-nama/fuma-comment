@@ -1,5 +1,8 @@
-import type { AuthInfoWithRole, SerializedComment } from "@fuma-comment/server";
-import { type UserProfile } from "@fuma-comment/server/src";
+import type {
+  AuthInfoWithRole,
+  SerializedComment,
+  UserProfile,
+} from "@fuma-comment/server";
 
 export interface FetcherError {
   message: string;

@@ -26,7 +26,7 @@ export const adapter = createAdapter({
       name: user.name ?? "Unknown User",
     }));
   },
-})
+});
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
   adapter,

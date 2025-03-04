@@ -18,15 +18,15 @@
   },
   "devDependencies": {
     "@fuma-comment/server": "workspace:*",
-    "@types/node": "^22.0.0",
-    "dotenv-cli": "^7.4.2",
+    "@prisma/client": "^6.4.1",
+    "@types/node": "^22.13.9",
+    "dotenv-cli": "^8.0.0",
     "eslint-config-custom": "workspace:*",
-    "prisma": "^6.0.0",
+    "prisma": "^6.4.1",
     "tsconfig": "workspace:*",
-    "tsup": "^8.2.3",
-    "typescript": "^5.5.3",
-    "vitest": "^2.0.3",
-    "@prisma/client": "^5.17.0"
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.7"
   },
   "peerDependencies": {
     "@prisma/client": "*"

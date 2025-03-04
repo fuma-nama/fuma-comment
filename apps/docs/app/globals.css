@@ -1,13 +1,32 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+@import "@fuma-comment/react/preset.css";
 
-:root {
-  --app-foreground: 0, 0, 0;
-  --app-background: 235, 205, 235;
+/* path of `fumadocs-ui` relative to the CSS file */
+@source '../node_modules/fumadocs-ui/dist/**/*.js';
+@source '../node_modules/@fuma-comment/react/dist/**/*.js';
+
+@theme {
+  --color-app-foreground: 0, 0, 0;
+  --color-app-background: 235, 205, 235;
+
+  --color-foreground: var(--color-fd-foreground);
+  --color-background: var(--color-fd-background);
+  --color-muted: var(--color-fd-muted);
+  --color-muted-foreground: var(--color-fd-muted-foreground);
+  --color-border: var(--color-fd-border);
+  --color-input: var(--color-fd-input);
+  --color-ring: var(--color-fd-ring);
+  --color-primary: var(--color-fd-primary);
+  --color-primary-foreground: var(--color-fd-primary-foreground);
+  --color-secondary: var(--color-fd-secondary);
+  --color-secondary-foreground: var(--color-fd-secondary-foreground);
+  --color-accent: var(--color-fd-accent);
+  --color-accent-foreground: var(--color-fd-accent-foreground);
 }
 
 .dark {
-  --app-foreground: 255, 255, 255;
-  --app-background: 0, 0, 0;
+  --color-app-foreground: 255, 255, 255;
+  --color-app-background: 0, 0, 0;
 }

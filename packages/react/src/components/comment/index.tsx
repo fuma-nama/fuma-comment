@@ -42,7 +42,7 @@ export function Comment({
   const [timestamp, setTimestamp] = useState("");
   const [edit, setEdit] = useState(false);
   const [isReply, setIsReply] = useState(false);
-  const editorRef = useRef<UseCommentEditor>();
+  const editorRef = useRef<UseCommentEditor | undefined>(undefined);
   const comment = useCommentManager(cached.id) ?? cached;
 
   const context = useMemo<CommentContext>(() => {
