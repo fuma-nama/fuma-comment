@@ -20,7 +20,7 @@
 		"@prisma/client": "^6.4.1",
 		"@radix-ui/react-select": "^2.1.6",
 		"@vercel/postgres": "^0.10.0",
-		"cva": "1.0.0-beta.2",
+		"cva": "1.0.0-beta.3",
 		"date-fns": "^4.1.0",
 		"fumadocs-core": "^15.0.15",
 		"fumadocs-mdx": "^11.5.6",
