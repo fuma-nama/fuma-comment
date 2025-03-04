@@ -6,7 +6,7 @@ import type {
 	UserProfile,
 } from "../types";
 import { RouteError } from "../errors";
-import { type StorageAdapter } from "../adapter";
+import type { StorageAdapter } from "../adapter";
 import {
 	postCommentSchema,
 	setRateSchema,
@@ -168,8 +168,8 @@ export function CustomComment<R extends CustomRequest>({
 			};
 		}),
 		"GET /comments/[page]/users": handleError(async (req) => {
-			const name = req.queryParams.get("name"),
-				page = req.params.get("page");
+			const name = req.queryParams.get("name");
+			const page = req.params.get("page");
 			if (!name || !page) return INVALID_PARAM;
 
 			if (!queryUsers)

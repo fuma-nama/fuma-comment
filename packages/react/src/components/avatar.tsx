@@ -1,4 +1,4 @@
-import { type HTMLAttributes, type ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "../utils/cn";
 
 interface AvatarProps extends HTMLAttributes<HTMLElement> {
@@ -21,6 +21,7 @@ export function Avatar({
 					"size-8 select-none rounded-full bg-fc-muted",
 					props.className,
 				)}
+				aria-label="avatar"
 			/>
 		);
 	}

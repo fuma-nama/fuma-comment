@@ -206,7 +206,7 @@ function ActionBar({ editor }: { editor: Editor }): React.ReactElement {
 			<UpdateLink editor={editor} />
 			{storage.enabled ? (
 				<>
-					<div className="mx-1 h-4 w-px bg-fc-border" role="none" />
+					<div className="mx-1 h-4 w-px bg-fc-border" />
 					<UploadImageDialog editor={editor} />
 				</>
 			) : null}

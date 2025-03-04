@@ -17,9 +17,9 @@ export function useCommentManager(id: string): Item | undefined {
 }
 
 export function syncComments(comments: SerializedComment[]): void {
-	comments.forEach((comment) => {
+	for (const comment of comments) {
 		setComment(comment.id, comment);
-	});
+	}
 }
 
 function setComment(id: string, c: Item): void {

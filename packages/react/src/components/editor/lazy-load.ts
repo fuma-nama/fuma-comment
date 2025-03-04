@@ -1,5 +1,5 @@
-import { type Editor } from "@tiptap/react";
-import { type CreateEditorOptions } from "./create-editor";
+import type { Editor } from "@tiptap/react";
+import type { CreateEditorOptions } from "./create-editor";
 
 export async function createEditorLazy(
 	options: CreateEditorOptions,

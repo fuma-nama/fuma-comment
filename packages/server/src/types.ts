@@ -1,4 +1,4 @@
-import { type RichContentSchema } from "./custom/schemas";
+import type { RichContentSchema } from "./custom/schemas";
 
 export interface AuthInfo {
 	/** User ID, must be unique */
@@ -15,7 +15,7 @@ export type SerializedComment = Serialize<Comment>;
 
 type JsonPrimitive = boolean | number | string | null;
 
-// eslint-disable-next-line @typescript-eslint/ban-types -- For internal use only
+// biome-ignore lint: For internal use only
 type NonJsonPrimitive = Function | symbol | undefined;
 
 type SerializeTupleOrObject<T extends [unknown, ...unknown[]] | object> = {

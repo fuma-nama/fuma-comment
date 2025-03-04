@@ -1,6 +1,6 @@
 import { createContext, type MutableRefObject, useContext } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
-import { type UseCommentEditor } from "../components/editor";
+import type { UseCommentEditor } from "../components/editor";
 
 export interface CommentContext {
 	isEditing: boolean;

@@ -1,9 +1,9 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import {
-	type AuthInfo,
-	type AuthInfoWithRole,
-	type Awaitable,
+import type {
+	AuthInfo,
+	AuthInfoWithRole,
+	Awaitable,
 } from "@fuma-comment/server";
 import type {
 	CustomCommentOptions,

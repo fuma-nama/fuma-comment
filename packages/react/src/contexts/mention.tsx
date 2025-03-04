@@ -1,5 +1,5 @@
 import { createContext, type ReactNode, useContext, useMemo } from "react";
-import { type MentionItem } from "../components/editor/mention";
+import type { MentionItem } from "../components/editor/mention";
 import { queryUsers } from "../utils/fetcher";
 import { useLatestCallback } from "../utils/hooks";
 
@@ -46,7 +46,7 @@ export function MentionProvider({
 			enabled: mention.enabled,
 			query,
 		}),
-		[mention.enabled],
+		[mention.enabled, query],
 	);
 
 	return (

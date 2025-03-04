@@ -9,7 +9,7 @@ import {
 	YAxis,
 } from "recharts";
 
-export function Chart({ data }: { data: any[] }): ReactNode {
+export function Chart({ data }: { data: unknown[] }): ReactNode {
 	return (
 		<ResponsiveContainer className="min-h-[400px] w-full">
 			<BarChart
@@ -21,28 +21,30 @@ export function Chart({ data }: { data: any[] }): ReactNode {
 				<Bar
 					type="monotone"
 					dataKey="count"
-					fill="hsl(var(--fc-primary))"
+					fill="var(--color-fc-primary)"
 					radius={[8, 8, 0, 0]}
 				/>
 				<XAxis
 					dataKey="time"
 					fontSize={13}
-					stroke="hsl(var(--fc-muted-foreground))"
+					stroke="var(--color-fc-muted-foreground)"
 				/>
 				<YAxis
 					allowDecimals={false}
-					stroke="hsl(var(--fc-muted-foreground))"
+					stroke="var(--color-fc-muted-foreground)"
 					width={24}
 					fontSize={13}
 				/>
 				<Tooltip
-					cursor={{ fill: "hsl(var(--fc-primary)/0.1)" }}
+					cursor={{
+						fill: "color-mix(in oklab, var(--color-fc-primary) 10%, transparent)",
+					}}
 					contentStyle={{
-						backgroundColor: "hsl(var(--fc-popover))",
-						border: "1px solid hsl(var(--fc-border))",
+						backgroundColor: "var(--color-fc-popover)",
+						border: "1px solid var(--color-fc-border)",
 						borderRadius: "8px",
 						fontSize: "14px",
-						color: "hsl(var(--fc-popover-foreground))",
+						color: "var(--color-fc-popover-foreground)",
 					}}
 				/>
 			</BarChart>

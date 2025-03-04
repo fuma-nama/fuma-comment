@@ -49,7 +49,7 @@ export function ExpressComment(options: ExpressOptions): void {
 		getSession: (req) => getSession(req.req),
 	});
 
-	Object.keys(custom).forEach((key) => {
+	for (const key of Object.keys(custom)) {
 		const fn = custom[key as keyof typeof custom];
 		const [method, path] = key.split(" ");
 
@@ -75,7 +75,7 @@ export function ExpressComment(options: ExpressOptions): void {
 					});
 			},
 		);
-	});
+	}
 }
 
 function readRequest(req: Request): RequestType {

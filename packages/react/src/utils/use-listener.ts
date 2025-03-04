@@ -8,9 +8,9 @@ export function createListener<Args extends unknown[]>(): {
 
 	return {
 		trigger(id, ...args): void {
-			listeners.get(id)?.forEach((listener) => {
+			for (const listener of listeners.get(id) ?? []) {
 				listener(...args);
-			});
+			}
 		},
 		useListener(id, listener) {
 			useEffect(() => {
@@ -24,7 +24,7 @@ export function createListener<Args extends unknown[]>(): {
 						listeners.get(id)?.filter((item) => item !== listener) ?? [],
 					);
 				};
-			}, [id, listener]);
+			}, [id, listener, listeners]);
 		},
 	};
 }

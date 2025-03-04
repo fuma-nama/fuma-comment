@@ -110,10 +110,10 @@ function render(content: JSONContent, storage: StorageContext): ReactNode {
 			});
 		}
 
-		const maxWidth = 600,
-			maxHeight = 400;
-		let w = attrs.width,
-			h = attrs.height;
+		const maxWidth = 600;
+		const maxHeight = 400;
+		let w = attrs.width;
+		let h = attrs.height;
 
 		if (w > maxWidth) {
 			h = (maxWidth * h) / w;

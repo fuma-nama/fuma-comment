@@ -9,7 +9,7 @@ import {
 import type { SerializedComment } from "@fuma-comment/server";
 import useSWRMutation from "swr/mutation";
 import { MoreVertical } from "lucide-react";
-import { type JSONContent } from "@tiptap/react";
+import type { JSONContent } from "@tiptap/react";
 import { cn } from "../../utils/cn";
 import { toLocalString } from "../../utils/date";
 import { deleteComment, getCommentsKey } from "../../utils/fetcher";

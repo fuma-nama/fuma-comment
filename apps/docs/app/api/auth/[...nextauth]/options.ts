@@ -1,5 +1,5 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { type AuthOptions } from "next-auth";
+import type { AuthOptions } from "next-auth";
 import GithubProvider, { type GithubProfile } from "next-auth/providers/github";
 import { z } from "zod";
 import { prisma } from "@/utils/database";

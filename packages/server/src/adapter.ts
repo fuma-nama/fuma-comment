@@ -1,10 +1,10 @@
-import { type z } from "zod";
+import type { z } from "zod";
 import type { AuthInfo, Awaitable, Comment, Role } from "./types";
-import {
-	type updateCommentSchema,
-	type postCommentSchema,
-	type setRateSchema,
-	type sortSchema,
+import type {
+	updateCommentSchema,
+	postCommentSchema,
+	setRateSchema,
+	sortSchema,
 } from "./custom/schemas";
 
 interface SetRateOptions {
