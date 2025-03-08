@@ -1,5 +1,14 @@
 # @fuma-comment/next
 
+## 1.0.0
+
+### Patch Changes
+
+- 29025f4: Support Next.js 15
+- Updated dependencies [d82f23d]
+- Updated dependencies [29025f4]
+  - @fuma-comment/server@1.0.0
+
 ## 0.6.0
 
 ### Minor Changes
