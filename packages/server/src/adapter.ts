@@ -1,11 +1,19 @@
 import type { z } from "zod";
-import type { AuthInfo, Awaitable, Comment, Role } from "./types";
+import type {
+	AuthInfo,
+	AuthInfoWithRole,
+	Awaitable,
+	Comment,
+	Role,
+	UserProfile,
+} from "./types";
 import type {
 	updateCommentSchema,
 	postCommentSchema,
 	setRateSchema,
 	sortSchema,
 } from "./custom/schemas";
+import type { CustomRequest } from "./custom";
 
 interface SetRateOptions {
 	/** Comment ID */
@@ -98,4 +106,27 @@ export interface StorageAdapter {
 	deleteRate: (options: DeleteRateOptions) => Awaitable<void>;
 
 	getRole: (options: GetRoleOptions) => Awaitable<Role | null>;
+
+	queryUsers?: (options: {
+		name: string;
+		page: string;
+
+		/**
+		 * Max count of results
+		 */
+		limit: number;
+	}) => Awaitable<UserProfile[]>;
+}
+
+export interface AuthAdapter<R extends CustomRequest> {
+	/** Get user session */
+	getSession: (request: R) => Awaitable<AuthInfo | null>;
+
+	/** Get user session with role information */
+	getSessionWithRole?: (
+		request: R,
+		options: {
+			page: string;
+		},
+	) => Awaitable<AuthInfoWithRole | null>;
 }

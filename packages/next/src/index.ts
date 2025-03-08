@@ -1,11 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import type {
-	AuthInfo,
-	AuthInfoWithRole,
-	Awaitable,
-} from "@fuma-comment/server";
-import type {
 	CustomCommentOptions,
 	CustomRequest,
 	CustomResponse,
@@ -32,17 +27,7 @@ interface RequestType extends CustomRequest {
 	req: NextRequest;
 }
 
-export interface NextCommentOptions
-	extends Omit<
-		CustomCommentOptions<RequestType>,
-		"getSession" | "getSessionWithRole"
-	> {
-	getSession: (req: NextRequest) => Awaitable<AuthInfo | null>;
-	getSessionWithRole?: (
-		req: NextRequest,
-		options: { page: string },
-	) => Awaitable<AuthInfoWithRole | null>;
-}
+export type NextCommentOptions = CustomCommentOptions<RequestType>;
 
 const NOT_FOUND = NextResponse.json({ message: "Not Found" }, { status: 404 });
 
@@ -58,8 +43,14 @@ function createRequest(
 	req: NextRequest,
 	params: Record<string, string>,
 ): RequestType {
+	const headers = new Map<string, readonly string[] | string>();
+	req.headers.forEach((value, key) => {
+		headers.set(key, value);
+	});
+
 	return {
 		req,
+		headers,
 		body() {
 			return req.json();
 		},
@@ -73,14 +64,7 @@ function createRequest(
 }
 
 export function NextComment(options: NextCommentOptions): NextCommentRouter {
-	const { getSession, getSessionWithRole } = options;
-	const internal = CustomComment<RequestType>({
-		...options,
-		getSession: (req) => getSession(req.req),
-		getSessionWithRole: getSessionWithRole
-			? (req, v) => getSessionWithRole(req.req, v)
-			: undefined,
-	});
+	const internal = CustomComment<RequestType>(options);
 
 	return {
 		GET: async (req, context) => {

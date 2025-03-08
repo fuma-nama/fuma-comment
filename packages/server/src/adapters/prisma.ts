@@ -1,10 +1,7 @@
-import type {
-	Comment,
-	StorageAdapter,
-	UserProfile,
-} from "@fuma-comment/server";
+import type { StorageAdapter } from "../adapter";
+import type { Comment, UserProfile } from "../types";
 
-interface Options {
+export interface Options {
 	db: unknown;
 
 	/**
@@ -22,13 +19,13 @@ interface Options {
 	 */
 	RoleModel?: string;
 
-	/**
-	 * Manually join User table after selecting comments
-	 */
-	getUsers: (userIds: string[]) => UserProfile[] | Promise<UserProfile[]>;
+	auth: StorageAuthProvider | "next-auth";
+
+	UserModel?: string;
+	UserIdField?: string;
 }
 
-type PrismaClientInternal = Record<
+export type PrismaClientInternal = Record<
 	string,
 	{
 		create: <T>(data: unknown) => Promise<T>;
@@ -43,21 +40,39 @@ type PrismaClientInternal = Record<
 	}
 >;
 
+export interface StorageAuthProvider
+	extends Pick<StorageAdapter, "queryUsers"> {
+	/**
+	 * Manually join User table after selecting comments
+	 */
+	getUsers: (userIds: string[]) => UserProfile[] | Promise<UserProfile[]>;
+}
+
 /**
  * Create adapter for Prisma
  *
  * Example Schema: {@link https://github.com/fuma-nama/fuma-comment/blob/main/packages/prisma-adapter/prisma/schema.prisma}
  */
-export function createAdapter({
-	getUsers,
-	CommentModel = "comment",
-	RateModel = "rate",
-	RoleModel = "role",
-	...options
-}: Options): StorageAdapter {
+export function createPrismaAdapter(options: Options): StorageAdapter {
+	const {
+		auth: defaultAuth,
+		CommentModel = "comment",
+		RateModel = "rate",
+		RoleModel = "role",
+	} = options;
 	const db = options.db as PrismaClientInternal;
+	let auth: StorageAuthProvider;
+
+	if (defaultAuth === "next-auth") {
+		auth = createNextAuthAdapter(db, options);
+	} else {
+		auth = defaultAuth;
+	}
+
+	const getUsers = auth.getUsers;
 
 	return {
+		queryUsers: auth.queryUsers,
 		async getComments({ auth, sort, page, after, thread, before, limit }) {
 			const result = await db[CommentModel].findMany<{
 				author: string;
@@ -216,6 +231,59 @@ export function createAdapter({
 					userId: auth.id,
 				},
 			});
+		},
+	};
+}
+
+function createNextAuthAdapter(
+	prisma: PrismaClientInternal,
+	options: Options,
+): StorageAuthProvider {
+	const UserModel = options.UserModel ?? "user";
+	const UserIdField = options.UserIdField ?? "email";
+
+	return {
+		getUsers: async (userIds) => {
+			const res = await prisma[UserModel].findMany<Record<string, string>>({
+				select: {
+					[UserIdField]: true,
+					name: true,
+					image: true,
+				},
+				where: {
+					[UserIdField]: {
+						in: userIds,
+					},
+				},
+			});
+
+			return res.map((user) => ({
+				id: user[UserIdField],
+				image: user.image ?? undefined,
+				name: user.name ?? "Unknown User",
+			}));
+		},
+		queryUsers: async ({ name, limit }) => {
+			const res = await prisma[UserModel].findMany<Record<string, string>>({
+				select: {
+					[UserIdField]: true,
+					name: true,
+					image: true,
+				},
+				where: {
+					name: {
+						contains: name,
+						mode: "insensitive",
+					},
+				},
+				take: limit,
+			});
+
+			return res.map((user) => ({
+				id: user[UserIdField],
+				image: user.image ?? undefined,
+				name: user.name ?? "Unknown User",
+			}));
 		},
 	};
 }

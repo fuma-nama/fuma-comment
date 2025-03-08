@@ -50,7 +50,8 @@ export const CreateForm = forwardRef<
 			revalidate: false,
 		},
 	);
-	const disabled = mutation.isMutating || auth.session === null;
+	const disabled =
+		mutation.isMutating || (!auth.isLoading && auth.session === null);
 
 	const submit = useLatestCallback(() => {
 		if (!editorRef.current) return;

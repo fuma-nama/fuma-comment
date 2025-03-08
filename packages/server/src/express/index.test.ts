@@ -10,8 +10,10 @@ app.use(json());
 
 ExpressComment({
 	app,
-	adapter: mockAdapter,
-	getSession: () => ({ id: "mock_user" }),
+	storage: mockAdapter,
+	auth: {
+		getSession: () => ({ id: "mock_user" }),
+	},
 });
 
 app.listen(port);

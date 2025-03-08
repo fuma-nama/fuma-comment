@@ -69,11 +69,7 @@ export const CommentsList = forwardRef<
 	HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
 	return (
-		<div
-			className={cn("flex flex-col", className)}
-			ref={ref}
-			{...props}
-		>
+		<div className={cn("flex flex-col", className)} ref={ref} {...props}>
 			<CommentList />
 		</div>
 	);

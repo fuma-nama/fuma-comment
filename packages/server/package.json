@@ -1,20 +1,33 @@
 {
 	"name": "@fuma-comment/server",
 	"version": "0.6.0",
-	"main": "./dist/index.js",
-	"types": "./dist/index.d.ts",
 	"author": "Fuma Nama",
 	"homepage": "https://fuma-comment.vercel.app",
 	"repository": "https://github.com/fuma-nama/fuma-comment",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./express": {
 			"types": "./dist/express/index.d.ts",
-			"require": "./dist/express/index.js"
+			"import": "./dist/express/index.js"
 		},
 		"./custom": {
 			"types": "./dist/custom/index.d.ts",
-			"require": "./dist/custom/index.js"
+			"import": "./dist/custom/index.js"
+		},
+		"./adapters/prisma": {
+			"types": "./dist/adapters/prisma.d.ts",
+			"import": "./dist/adapters/prisma.js"
+		},
+		"./adapters/next-auth": {
+			"types": "./dist/adapters/next-auth.d.ts",
+			"import": "./dist/adapters/next-auth.js"
+		},
+		"./adapters/better-auth": {
+			"types": "./dist/adapters/better-auth.d.ts",
+			"import": "./dist/adapters/better-auth.js"
 		}
 	},
 	"files": ["./dist"],
@@ -28,11 +41,25 @@
 	"devDependencies": {
 		"@types/express": "^5.0.0",
 		"@types/node": "^22.13.9",
+		"better-auth": "^1.2.3",
 		"express": "^4.21.2",
+		"next-auth": "^4.24.11",
 		"tsconfig": "workspace:*",
 		"tsup": "^8.4.0",
 		"typescript": "^5.8.2",
 		"vitest": "^3.0.7"
+	},
+	"peerDependencies": {
+		"next-auth": "4.x.x",
+		"better-auth": "1.x.x"
+	},
+	"peerDependenciesMeta": {
+		"next-auth": {
+			"optional": true
+		},
+		"better-auth": {
+			"optional": true
+		}
 	},
 	"dependencies": {
 		"zod": "^3.24.2"

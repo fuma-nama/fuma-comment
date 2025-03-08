@@ -1,8 +1,9 @@
 {
 	"name": "@fuma-comment/next",
 	"version": "0.6.0",
-	"main": "./dist/index.js",
+	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
+	"type": "module",
 	"author": "Fuma Nama",
 	"homepage": "https://fuma-comment.vercel.app",
 	"repository": "https://github.com/fuma-nama/fuma-comment",

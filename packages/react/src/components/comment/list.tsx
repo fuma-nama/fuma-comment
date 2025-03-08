@@ -17,7 +17,7 @@ import { Actions } from "./actions";
 import { Comment } from "./index";
 import { Spinner } from "../spinner";
 
-const count = 20;
+const count = 50;
 
 export interface CommentListProps extends HTMLAttributes<HTMLDivElement> {
 	threadId?: string;
@@ -54,13 +54,11 @@ export const CommentList = forwardRef<HTMLDivElement, CommentListProps>(
 				{...props}
 				className={cn("flex flex-col pb-2", props.className)}
 			>
-				{!query.isLoading &&
-					cursor === undefined &&
-					list.length === 0 && (
-						<p className="mx-auto my-4 text-center text-sm text-fc-muted-foreground">
-							No comments
-						</p>
-					)}
+				{!query.isLoading && cursor === undefined && list.length === 0 && (
+					<p className="mx-auto my-4 text-center text-sm text-fc-muted-foreground">
+						No comments
+					</p>
+				)}
 				{list.map((reply) => (
 					<Comment
 						comment={reply}
@@ -71,7 +69,7 @@ export const CommentList = forwardRef<HTMLDivElement, CommentListProps>(
 					</Comment>
 				))}
 				{query.data && query.data.length >= count ? (
-					<button	
+					<button
 						type="button"
 						className={cn(
 							buttonVariants({

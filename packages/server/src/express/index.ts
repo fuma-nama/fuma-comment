@@ -1,5 +1,4 @@
 import type { Express, Request, Response } from "express";
-import type { AuthInfo, AuthInfoWithRole, Awaitable } from "../types";
 import type {
 	CustomCommentOptions,
 	CustomRequest,
@@ -11,27 +10,12 @@ type RequestType = CustomRequest & {
 	req: Request;
 };
 
-interface ExpressOptions
-	extends Omit<
-		CustomCommentOptions<RequestType>,
-		"getSession" | "getSessionWithRole"
-	> {
+interface ExpressOptions extends CustomCommentOptions<RequestType> {
 	app: Express;
 	/**
 	 * Base URL of API endpoints
 	 */
 	baseUrl?: string;
-
-	/** Get user session */
-	getSession: (request: Request) => Awaitable<AuthInfo | null>;
-
-	/** Get user session with role information */
-	getSessionWithRole?: (
-		request: Request,
-		options: {
-			page: string;
-		},
-	) => Awaitable<AuthInfoWithRole | null>;
 }
 
 /**
@@ -40,14 +24,8 @@ interface ExpressOptions
  * Should have `express.json()` body parser enabled
  */
 export function ExpressComment(options: ExpressOptions): void {
-	const { app, getSession, getSessionWithRole } = options;
-	const custom = CustomComment<RequestType>({
-		...options,
-		getSessionWithRole: getSessionWithRole
-			? (req, v) => getSessionWithRole(req.req, v)
-			: undefined,
-		getSession: (req) => getSession(req.req),
-	});
+	const { app } = options;
+	const custom = CustomComment<RequestType>(options);
 
 	for (const key of Object.keys(custom)) {
 		const fn = custom[key as keyof typeof custom];
@@ -82,6 +60,7 @@ function readRequest(req: Request): RequestType {
 	return {
 		req,
 		body: () => req.body as unknown,
+		headers: new Map(Object.entries(req.headers)) as RequestType["headers"],
 		params: {
 			get(key) {
 				return req.params[key];

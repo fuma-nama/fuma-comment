@@ -92,7 +92,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 				content: initialProps.current.defaultValue,
 				editorProps: {
 					attributes: {
-						class: 'flex-1 px-3 pt-2.5 focus-visible:outline-none'
+						class: "flex-1 px-3 pt-2.5 focus-visible:outline-none",
 					},
 				},
 				onEscape: () => {
@@ -120,14 +120,10 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 
 		if (!editor) {
 			return (
-				<div
-					ref={ref}
-					className={cn(
-						editorVariants(),
-						'min-h-[72px]'
-					)}
-				>
-					<p className="px-3 py-2.5 text-sm text-fc-muted-foreground">{props.placeholder}</p>
+				<div ref={ref} className={cn(editorVariants(), "min-h-[72px]")}>
+					<p className="px-3 py-2.5 text-sm text-fc-muted-foreground">
+						{props.placeholder}
+					</p>
 				</div>
 			);
 		}
@@ -138,7 +134,12 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 		}
 
 		return (
-			<div {...containerProps} aria-disabled={disabled} className={cn(editorVariants(), containerProps?.className)} ref={ref}>
+			<div
+				{...containerProps}
+				aria-disabled={disabled}
+				className={cn(editorVariants(), containerProps?.className)}
+				ref={ref}
+			>
 				<EditorContent editor={editor} {...props.editorProps} />
 				<ActionBar editor={editor} />
 			</div>

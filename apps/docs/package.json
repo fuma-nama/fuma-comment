@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
-		"dev": "next dev",
+		"dev": "next dev --turbo",
 		"build": "prisma migrate deploy && next build",
 		"postinstall": "prisma generate",
 		"migrate:deploy": "dotenv -e .env.production -- prisma migrate deploy",
@@ -14,12 +14,12 @@
 	"dependencies": {
 		"@auth/prisma-adapter": "^2.8.0",
 		"@fuma-comment/next": "workspace:*",
-		"@fuma-comment/prisma-adapter": "workspace:*",
 		"@fuma-comment/react": "workspace:*",
 		"@fuma-comment/server": "workspace:*",
 		"@prisma/client": "^6.4.1",
 		"@radix-ui/react-select": "^2.1.6",
 		"@vercel/postgres": "^0.10.0",
+		"better-auth": "^1.2.3",
 		"cva": "1.0.0-beta.2",
 		"date-fns": "^4.1.0",
 		"fumadocs-core": "^15.0.15",

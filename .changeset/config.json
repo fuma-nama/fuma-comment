@@ -4,12 +4,7 @@
 	"commit": false,
 	"fixed": [],
 	"linked": [
-		[
-			"@fuma-comment/prisma-adapter",
-			"@fuma-comment/server",
-			"@fuma-comment/react",
-			"@fuma-comment/next"
-		]
+		["@fuma-comment/server", "@fuma-comment/react", "@fuma-comment/next"]
 	],
 	"access": "restricted",
 	"baseBranch": "main",

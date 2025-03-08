@@ -6,7 +6,7 @@ import type {
 	UserProfile,
 } from "../types";
 import { RouteError } from "../errors";
-import type { StorageAdapter } from "../adapter";
+import type { AuthAdapter, StorageAdapter } from "../adapter";
 import {
 	postCommentSchema,
 	setRateSchema,
@@ -27,6 +27,9 @@ export interface CustomRequest {
 
 	/** Path parameters */
 	params: MapLike<string, string>;
+
+	/** Headers */
+	headers: Map<string, readonly string[] | string>;
 }
 
 export type CustomResponse =
@@ -71,33 +74,27 @@ export interface CustomCommentOptions<R extends CustomRequest> {
 	 */
 	role?: "database" | "auth" | "none";
 
-	/** Get user session */
-	getSession: (request: R) => Awaitable<AuthInfo | null>;
-
-	/** Get user session with role information */
-	getSessionWithRole?: (
-		request: R,
-		options: {
-			page: string;
-		},
-	) => Awaitable<AuthInfoWithRole | null>;
-
-	/**
-	 * Query users by name
-	 *
-	 * For auto-complete feature of mentions
-	 */
-	queryUsers?: (options: {
-		name: string;
-		page: string;
+	mention?: {
+		enabled: boolean;
 
 		/**
-		 * Max count of results
+		 * Query users by name, for the auto-complete feature of mentions.
+		 *
+		 * If not specified, use the `queryUsers` function from the `storage` adapter.
 		 */
-		limit: number;
-	}) => Awaitable<UserProfile[]>;
+		queryUsers?: (options: {
+			name: string;
+			page: string;
 
-	adapter: StorageAdapter;
+			/**
+			 * Max count of results
+			 */
+			limit: number;
+		}) => Awaitable<UserProfile[]>;
+	};
+
+	auth: AuthAdapter<R>;
+	storage: StorageAdapter;
 }
 
 const INVALID_PARAM: CustomResponse = {
@@ -117,11 +114,10 @@ const NOT_AUTHORIZED: CustomResponse = {
 };
 
 export function CustomComment<R extends CustomRequest>({
-	adapter,
+	storage,
 	role = "none",
-	queryUsers,
-	getSession,
-	getSessionWithRole,
+	mention = { enabled: false },
+	auth: { getSession, getSessionWithRole },
 }: CustomCommentOptions<R>): CustomCommentRouter<R> {
 	async function getSessionWithRoleAuto(
 		req: R,
@@ -150,7 +146,7 @@ export function CustomComment<R extends CustomRequest>({
 
 		return {
 			...auth,
-			role: await adapter.getRole({
+			role: await storage.getRole({
 				page,
 				auth,
 			}),
@@ -168,13 +164,16 @@ export function CustomComment<R extends CustomRequest>({
 			};
 		}),
 		"GET /comments/[page]/users": handleError(async (req) => {
+			if (!mention.enabled) throw new Error("Mention is disabled");
+
 			const name = req.queryParams.get("name");
 			const page = req.params.get("page");
 			if (!name || !page) return INVALID_PARAM;
 
+			const queryUsers = storage.queryUsers ?? mention.queryUsers;
 			if (!queryUsers)
 				throw new Error(
-					"You must implement the `queryUsers` function to enable mention auto-completion",
+					"`queryUsers` is not supported by the storage adapter. You must implement the `queryUsers` function to enable mention auto-completion",
 				);
 
 			return {
@@ -203,7 +202,7 @@ export function CustomComment<R extends CustomRequest>({
 
 			return {
 				type: "success",
-				data: await adapter.getComments({
+				data: await storage.getComments({
 					sort,
 					auth,
 					thread,
@@ -224,7 +223,7 @@ export function CustomComment<R extends CustomRequest>({
 
 			return {
 				type: "success",
-				data: await adapter.postComment({ auth, body: content, page }),
+				data: await storage.postComment({ auth, body: content, page }),
 			};
 		}),
 		"POST /comments/[page]/[id]/rate": handleError(async (req) => {
@@ -236,7 +235,7 @@ export function CustomComment<R extends CustomRequest>({
 			if (!auth) return NOT_AUTHORIZED;
 
 			const content = setRateSchema.parse(await req.body());
-			await adapter.setRate({ id, auth, body: content, page });
+			await storage.setRate({ id, auth, body: content, page });
 			return { type: "success", data: { message: "Successful" } };
 		}),
 		"PATCH /comments/[page]/[id]": handleError(async (req) => {
@@ -248,7 +247,7 @@ export function CustomComment<R extends CustomRequest>({
 			if (!auth) return NOT_AUTHORIZED;
 
 			const content = updateCommentSchema.parse(await req.body());
-			await adapter.updateComment({ id, auth, body: content, page });
+			await storage.updateComment({ id, auth, body: content, page });
 			return { type: "success", data: { message: "Successful" } };
 		}),
 		"DELETE /comments/[page]/[id]": handleError(async (req) => {
@@ -259,10 +258,10 @@ export function CustomComment<R extends CustomRequest>({
 			const auth = await getSessionWithRoleAuto(req);
 			if (!auth) return NOT_AUTHORIZED;
 
-			const author = await adapter.getCommentAuthor({ id });
+			const author = await storage.getCommentAuthor({ id });
 			if (author !== auth.id && !auth.role?.canDelete) return NOT_AUTHORIZED;
 
-			await adapter.deleteComment({ id, auth, page });
+			await storage.deleteComment({ id, auth, page });
 			return { type: "success", data: { message: "Successful" } };
 		}),
 		"DELETE /comments/[page]/[id]/rate": handleError(async (req) => {
@@ -273,7 +272,7 @@ export function CustomComment<R extends CustomRequest>({
 			const auth = await getSession(req);
 			if (!auth) return NOT_AUTHORIZED;
 
-			await adapter.deleteRate({ id, auth, page });
+			await storage.deleteRate({ id, auth, page });
 			return { type: "success", data: { message: "Successful" } };
 		}),
 	};

@@ -91,22 +91,6 @@ model Rate {
 }
 ```
 
-Then, create the adapter.
-
-```ts
-import { createAdapter } from "@fuma-comment/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
-
-const adapter = createAdapter({
-  db: prisma,
-  getUsers(userIds) {
-    // Fetch user profile from the user id
-  },
-});
-```
-
 ## Server
 
 Fuma Comment supports several web/backend frameworks, including Next.js and Express.
@@ -116,19 +100,19 @@ Fuma Comment supports several web/backend frameworks, including Next.js and Expr
 Create `app/api/comments/[[...comment]]/route.ts`.
 
 ```ts title="app/api/comments/[[...comment]]/route.ts"
-import { getServerSession } from "next-auth";
 import { NextComment } from "@fuma-comment/next";
+import { prisma } from "@/utils/database";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { createPrismaAdapter } from "@fuma-comment/server/adapters/prisma";
+import { createNextAuthAdapter } from "@fuma-comment/server/adapters/next-auth";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
-  adapter, // storage adapter
-  async getSession() {
-    const session = await getServerSession();
-    if (!session?.user?.id) return null;
-
-    return {
-      id: session.user.id,
-    };
-  },
+	mention: { enabled: true },
+	auth: createNextAuthAdapter(authOptions),
+	storage: createPrismaAdapter({
+		db: prisma,
+		auth: 'next-auth', // Use tables created by NextAuth
+	}),
 });
 ```
 

@@ -37,8 +37,10 @@ import { NextComment } from "@fuma-comment/next";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
   role: "auth",
-  async getSessionWithRole(req, { page }) {
-    // ...
+  auth: {
+    async getSessionWithRole(req, { page }) {
+      // ...
+    },
   },
   // other options
 });

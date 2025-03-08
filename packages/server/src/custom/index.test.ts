@@ -49,49 +49,69 @@ const mockAdapter: StorageAdapter = {
 };
 
 const app = CustomComment<MockRequest>({
-	adapter: mockAdapter,
-	getSession(req) {
-		if (req.auth) return { id: "mock_user" };
-		return null;
+	storage: mockAdapter,
+	auth: {
+		getSession(req) {
+			if (req.auth) return { id: "mock_user" };
+			return null;
+		},
 	},
 });
+
+function createReq(options: {
+	auth?: boolean;
+	headers?: Record<string, string>;
+	params?: Record<string, string>;
+	queryParams?: Record<string, string>;
+	body?: MockRequest["body"];
+}): MockRequest {
+	return {
+		auth: options.auth ?? false,
+		body: options.body ?? (() => null),
+		params: new Map(Object.entries(options.params ?? {})),
+		queryParams: new Map(Object.entries(options.queryParams ?? {})),
+		headers: new Map(Object.entries(options.headers ?? {})),
+	};
+}
 
 describe("Custom Comment Routes", () => {
 	test.each<{ name: string; req: MockRequest; success: boolean }>([
 		{
 			name: "Normal",
-			req: {
-				auth: false,
+			req: createReq({
 				body() {
 					return null;
 				},
-				params: new Map([["page", "default"]]),
-				queryParams: new Map(),
-			},
+				params: {
+					page: "default",
+				},
+			}),
 			success: true,
 		},
 		{
 			name: "With Auth",
-			req: {
+			req: createReq({
 				auth: true,
 				body() {
 					return null;
 				},
-				params: new Map([["page", "default"]]),
-				queryParams: new Map(),
-			},
+				params: {
+					page: "default",
+				},
+			}),
 			success: true,
 		},
 		{
 			name: "Invalid",
-			req: {
+			req: createReq({
 				auth: false,
 				body() {
 					return null;
 				},
-				params: new Map(),
-				queryParams: new Map([["sort", "invalid_value"]]),
-			},
+				queryParams: {
+					sort: "invalid_value",
+				},
+			}),
 			success: false,
 		},
 	])("Get Comments $name", async ({ req, success }) => {
@@ -103,38 +123,41 @@ describe("Custom Comment Routes", () => {
 	test.each<{ name: string; req: MockRequest; success: boolean }>([
 		{
 			name: "Normal",
-			req: {
+			req: createReq({
 				auth: true,
 				body() {
 					return { content: createContent("Hello World") };
 				},
-				params: new Map([["page", "default"]]),
-				queryParams: new Map(),
-			},
+				params: {
+					page: "default",
+				},
+			}),
 			success: true,
 		},
 		{
 			name: "Invalid",
-			req: {
+			req: createReq({
 				auth: true,
 				body() {
 					return { content: createContent(" ") };
 				},
-				params: new Map(),
-				queryParams: new Map(),
-			},
+				params: {
+					page: "default",
+				},
+			}),
 			success: false,
 		},
 		{
 			name: "Unauthorized",
-			req: {
+			req: createReq({
 				auth: false,
 				body() {
 					return { content: createContent("Hello World") };
 				},
-				params: new Map([["page", "default"]]),
-				queryParams: new Map(),
-			},
+				params: {
+					page: "default",
+				},
+			}),
 			success: false,
 		},
 	])("Post Comments $name", async ({ req, success }) => {
@@ -146,47 +169,44 @@ describe("Custom Comment Routes", () => {
 	test.each<{ name: string; req: MockRequest; success: boolean }>([
 		{
 			name: "Normal",
-			req: {
+			req: createReq({
 				auth: true,
 				body() {
 					return { content: createContent("Hello World") };
 				},
-				params: new Map([
-					["id", "test"],
-					["page", "default"],
-				]),
-				queryParams: new Map(),
-			},
+				params: {
+					id: "test",
+					page: "default",
+				},
+			}),
 			success: true,
 		},
 		{
 			name: "Invalid",
-			req: {
+			req: createReq({
 				auth: true,
 				body() {
 					return { content: createContent(" ") };
 				},
-				params: new Map([
-					["id", "test"],
-					["page", "default"],
-				]),
-				queryParams: new Map(),
-			},
+				params: {
+					id: "test",
+					page: "default",
+				},
+			}),
 			success: false,
 		},
 		{
 			name: "Unauthorized",
-			req: {
+			req: createReq({
 				auth: false,
 				body() {
 					return { content: createContent("Hello World") };
 				},
-				params: new Map([
-					["id", "test"],
-					["page", "default"],
-				]),
-				queryParams: new Map(),
-			},
+				params: {
+					id: "test",
+					page: "default",
+				},
+			}),
 			success: false,
 		},
 	])("Update Comments $name", async ({ req, success }) => {
@@ -198,32 +218,30 @@ describe("Custom Comment Routes", () => {
 	test.each<{ name: string; req: MockRequest; success: boolean }>([
 		{
 			name: "Normal",
-			req: {
+			req: createReq({
 				auth: true,
 				body() {
 					return null;
 				},
-				params: new Map([
-					["id", "test"],
-					["page", "default"],
-				]),
-				queryParams: new Map(),
-			},
+				params: {
+					id: "test",
+					page: "default",
+				},
+			}),
 			success: true,
 		},
 		{
 			name: "Unauthorized",
-			req: {
+			req: createReq({
 				auth: false,
 				body() {
 					return null;
 				},
-				params: new Map([
-					["id", "test"],
-					["page", "default"],
-				]),
-				queryParams: new Map(),
-			},
+				params: {
+					id: "test",
+					page: "default",
+				},
+			}),
 			success: false,
 		},
 	])("Delete Comments $name", async ({ req, success }) => {
@@ -235,44 +253,44 @@ describe("Custom Comment Routes", () => {
 	test.each<{ name: string; req: MockRequest; success: boolean }>([
 		{
 			name: "Normal",
-			req: {
+			req: createReq({
 				auth: true,
 				body() {
 					return { like: true };
 				},
-				params: new Map([
-					["id", "test"],
-					["page", "default"],
-				]),
-				queryParams: new Map(),
-			},
+				params: {
+					id: "test",
+					page: "default",
+				},
+			}),
 			success: true,
 		},
 		{
 			name: "Invalid",
-			req: {
+			req: createReq({
 				body() {
 					return { like: "invalid" };
 				},
 				auth: true,
-				params: new Map([["id", "test"]]),
-				queryParams: new Map(),
-			},
+				params: {
+					id: "test",
+					page: "default",
+				},
+			}),
 			success: false,
 		},
 		{
 			name: "Unauthorized",
-			req: {
+			req: createReq({
 				auth: false,
 				body() {
 					return null;
 				},
-				params: new Map([
-					["id", "test"],
-					["page", "default"],
-				]),
-				queryParams: new Map(),
-			},
+				params: {
+					id: "test",
+					page: "default",
+				},
+			}),
 			success: false,
 		},
 	])("POST /api/comments/[id]/rate $name", async ({ req, success }) => {
@@ -284,31 +302,30 @@ describe("Custom Comment Routes", () => {
 	test.each<{ name: string; req: MockRequest; success: boolean }>([
 		{
 			name: "Normal",
-			req: {
+			req: createReq({
 				auth: true,
 				body() {
 					return null;
 				},
-				params: new Map([
-					["id", "test"],
-					["page", "default"],
-				]),
-				queryParams: new Map(),
-			},
+				params: {
+					id: "test",
+					page: "default",
+				},
+			}),
 			success: true,
 		},
 		{
 			name: "Unauthorized",
-			req: {
+			req: createReq({
+				auth: false,
 				body() {
 					return null;
 				},
-				params: new Map([
-					["id", "test"],
-					["page", "default"],
-				]),
-				queryParams: new Map(),
-			},
+				params: {
+					id: "test",
+					page: "default",
+				},
+			}),
 			success: false,
 		},
 	])("DELETE /api/comments/[id]/rate $name", async ({ req, success }) => {
