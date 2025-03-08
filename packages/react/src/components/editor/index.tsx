@@ -5,9 +5,9 @@ import {
 	forwardRef,
 	useState,
 	useCallback,
-	type MutableRefObject,
 	useRef,
 	useEffect,
+	type RefObject,
 } from "react";
 import { cva } from "class-variance-authority";
 import {
@@ -27,7 +27,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../dialog";
-import { Spinner } from "../spinner";
 import { useMention } from "../../contexts/mention";
 import { UploadImage } from "./image-upload";
 import { HyperLink } from "./hyper-link";
@@ -39,11 +38,12 @@ export interface EditorProps {
 	defaultValue?: JSONContent;
 	placeholder?: string;
 	disabled?: boolean;
-	editorRef?: MutableRefObject<UseCommentEditor | undefined>;
+	editorRef?: RefObject<UseCommentEditor | undefined>;
 
 	onChange?: (editor: UseCommentEditor) => void;
 	onSubmit?: (editor: UseCommentEditor) => void;
 	onEscape?: (editor: UseCommentEditor) => void;
+	containerProps?: HTMLAttributes<HTMLDivElement>;
 	editorProps?: HTMLAttributes<HTMLDivElement>;
 }
 
@@ -58,10 +58,8 @@ const editorVariants = cva(
 	"rounded-xl border border-fc-border bg-fc-card text-base transition-colors focus-within:ring-2 focus-within:ring-fc-ring aria-disabled:cursor-not-allowed aria-disabled:opacity-80",
 );
 
-const tiptapVariants = cva("min-h-[40px] px-3 py-2 focus-visible:outline-none");
-
 const toggleVariants = cva(
-	"inline-flex rounded-md p-1 disabled:cursor-not-allowed disabled:opacity-50",
+	"inline-flex rounded-md p-1.5 disabled:cursor-not-allowed disabled:opacity-50",
 	{
 		variants: {
 			active: {
@@ -76,12 +74,15 @@ const toggleVariants = cva(
 );
 
 export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
-	({ editorRef, disabled = false, ...props }, ref) => {
+	({ editorRef, disabled = false, containerProps, ...props }, ref) => {
 		const [editor, setEditor] = useState<Editor>();
 		const mention = useMention();
 
 		// force editor props to be immutable
-		const initialProps = useRef(props);
+		const initialProps = useRef({
+			...props,
+			mentionEnabled: mention.enabled,
+		});
 
 		useLayoutEffect(() => {
 			let instance: Editor | undefined;
@@ -91,7 +92,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 				content: initialProps.current.defaultValue,
 				editorProps: {
 					attributes: {
-						class: cn(tiptapVariants()),
+						class: 'flex-1 px-3 pt-2.5 focus-visible:outline-none'
 					},
 				},
 				onEscape: () => {
@@ -102,7 +103,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 					if (instance) initialProps.current.onSubmit?.(instance);
 					return true;
 				},
-				mentionEnabled: mention.enabled,
+				mentionEnabled: initialProps.current.mentionEnabled,
 				placeholder: initialProps.current.placeholder,
 				onTransaction(v) {
 					initialProps.current.onChange?.(v.editor as Editor);
@@ -115,22 +116,18 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 			return () => {
 				instance?.destroy();
 			};
-		}, [mention.enabled]);
+		}, []);
 
 		if (!editor) {
 			return (
 				<div
-					aria-disabled
+					ref={ref}
 					className={cn(
 						editorVariants(),
-						tiptapVariants({ className: "tiptap" }),
+						'min-h-[72px]'
 					)}
-					ref={ref}
 				>
-					<div className="inline-flex items-center gap-2 text-sm text-fc-muted-foreground">
-						<Spinner />
-						Loading
-					</div>
+					<p className="px-3 py-2.5 text-sm text-fc-muted-foreground">{props.placeholder}</p>
 				</div>
 			);
 		}
@@ -141,7 +138,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 		}
 
 		return (
-			<div aria-disabled={disabled} className={cn(editorVariants())} ref={ref}>
+			<div {...containerProps} aria-disabled={disabled} className={cn(editorVariants(), containerProps?.className)} ref={ref}>
 				<EditorContent editor={editor} {...props.editorProps} />
 				<ActionBar editor={editor} />
 			</div>
@@ -183,7 +180,7 @@ function ActionBar({ editor }: { editor: Editor }): React.ReactElement {
 	}, [editor]);
 
 	return (
-		<div className="flex flex-row items-center gap-0.5 px-1.5">
+		<div className="flex flex-row items-center p-1">
 			{actions.map((mark) => (
 				<button
 					key={mark.name}

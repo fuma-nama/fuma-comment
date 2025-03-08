@@ -60,13 +60,15 @@ export const CreateForm = forwardRef<
 		void mutation.trigger({ content });
 	});
 
-	const onSubmit = useLatestCallback((e: React.FormEvent<HTMLFormElement>) => {
-		submit();
-		e.preventDefault();
-	});
-
 	return (
-		<form ref={ref} onSubmit={onSubmit} {...props}>
+		<form
+			ref={ref}
+			onSubmit={(e) => {
+				submit();
+				e.preventDefault();
+			}}
+			{...props}
+		>
 			<div className="relative">
 				<CommentEditor
 					editorRef={editorRef}

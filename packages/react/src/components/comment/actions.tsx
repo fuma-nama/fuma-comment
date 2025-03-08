@@ -38,20 +38,20 @@ export function Actions({
 	const { session } = useAuthContext();
 	const isAuthenticated = session !== null;
 
-	const onLike = useCallback(() => {
+	const onLike = () => {
 		setLike(comment, true);
-	}, [comment]);
+	};
 
-	const onDislike = useCallback(() => {
+	const onDislike = () => {
 		setLike(comment, false);
-	}, [comment]);
+	};
 
-	const onOpenAutoFocus = useCallback((e: Event) => {
+	const onOpenAutoFocus = (e: Event) => {
 		setTimeout(() => {
 			editorRef.current?.commands.focus();
 		}, 10);
 		e.preventDefault();
-	}, []);
+	};
 
 	return (
 		<div className="mt-2 flex flex-row gap-1">

@@ -1,9 +1,4 @@
-import React, {
-	type ReactNode,
-	createContext,
-	useContext,
-	useMemo,
-} from "react";
+import { type ReactNode, createContext, useContext, useMemo } from "react";
 import useSWRImmutable from "swr/immutable";
 import { getAuthSession } from "../utils/fetcher";
 

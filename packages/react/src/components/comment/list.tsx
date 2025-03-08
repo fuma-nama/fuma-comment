@@ -9,15 +9,15 @@ import { ChevronDown } from "lucide-react";
 import { fetchComments, getCommentsKey } from "../../utils/fetcher";
 import { cn } from "../../utils/cn";
 import { buttonVariants } from "../button";
-import { Spinner } from "../spinner";
 import { syncComments } from "../../utils/comment-manager";
 import { updateCommentList, useCommentList } from "../../utils/comment-list";
 import { useCommentsContext } from "../../contexts/comments";
 import { useCommentContext } from "../../contexts/comment";
 import { Actions } from "./actions";
 import { Comment } from "./index";
+import { Spinner } from "../spinner";
 
-const count = 40;
+const count = 20;
 
 export interface CommentListProps extends HTMLAttributes<HTMLDivElement> {
 	threadId?: string;
@@ -55,7 +55,7 @@ export const CommentList = forwardRef<HTMLDivElement, CommentListProps>(
 				className={cn("flex flex-col pb-2", props.className)}
 			>
 				{!query.isLoading &&
-					typeof cursor === "undefined" &&
+					cursor === undefined &&
 					list.length === 0 && (
 						<p className="mx-auto my-4 text-center text-sm text-fc-muted-foreground">
 							No comments
@@ -71,7 +71,7 @@ export const CommentList = forwardRef<HTMLDivElement, CommentListProps>(
 					</Comment>
 				))}
 				{query.data && query.data.length >= count ? (
-					<button
+					<button	
 						type="button"
 						className={cn(
 							buttonVariants({
@@ -88,7 +88,7 @@ export const CommentList = forwardRef<HTMLDivElement, CommentListProps>(
 						Load More
 					</button>
 				) : null}
-				{query.isLoading ? <Spinner className="mx-auto my-4 size-8" /> : null}
+				{query.isLoading ? <Spinner className="mx-auto my-2" /> : null}
 			</div>
 		);
 	},

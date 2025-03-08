@@ -4,7 +4,7 @@ title: Introduction
 
 import { Callout } from "fumadocs-ui/components/callout";
 
-<Callout title="In development" type="warn">
+<Callout title="Early Review" type="warn">
   This package is not production ready yet.
 </Callout>
 
@@ -40,23 +40,14 @@ All components are pre-styled with Tailwind CSS, notice that it also normalizes 
 import "@fuma-comment/react/style.css";
 ```
 
-For Tailwind CSS projects, use the official Tailwind CSS plugin.
+For projects using Tailwind CSS v4, use the Tailwind CSS preset instead:
 
-```js
-import { createPreset } from "@fuma-comment/react/theme";
+```css
+@import "tailwindcss";
+@import "@fuma-comment/react/preset.css";
 
-/** @type {import('tailwindcss').Config} */
-export default {
-  darkMode: "class",
-  presets: [createPreset()],
-  content: [
-    "./node_modules/@fuma-comment/react/dist/**/*.js",
-
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./content/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-};
+/* path of the package relative to the CSS file */
+@source '../node_modules/@fuma-comment/react/dist/**/*.js';
 ```
 
 ## Database

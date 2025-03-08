@@ -70,7 +70,7 @@ export const CommentsList = forwardRef<
 >(({ className, ...props }, ref) => {
 	return (
 		<div
-			className={cn("flex min-h-[80px] flex-col", className)}
+			className={cn("flex flex-col", className)}
 			ref={ref}
 			{...props}
 		>

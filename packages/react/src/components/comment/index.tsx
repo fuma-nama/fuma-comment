@@ -2,13 +2,12 @@ import {
 	useState,
 	useMemo,
 	useLayoutEffect,
-	useCallback,
 	useRef,
 	type ReactNode,
 } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
 import useSWRMutation from "swr/mutation";
-import { MoreVertical } from "lucide-react";
+import { CopyIcon, MoreVertical, PencilIcon, Trash2Icon } from "lucide-react";
 import type { JSONContent } from "@tiptap/react";
 import { cn } from "../../utils/cn";
 import { toLocalString } from "../../utils/date";
@@ -123,19 +122,19 @@ function CommentMenu(): React.ReactNode {
 		session !== null &&
 		(session.permissions?.delete || session.id === comment.author.id);
 
-	const onCopy = useCallback(() => {
+	const onCopy = () => {
 		const text = getTextFromContent(comment.content as JSONContent);
 
 		void navigator.clipboard.writeText(text);
-	}, [comment.content]);
+	};
 
-	const onEdit = useCallback(() => {
+	const onEdit = () => {
 		setEdit(true);
-	}, [setEdit]);
+	};
 
-	const onDelete = useCallback((): void => {
+	const onDelete = () => {
 		void deleteMutation.trigger();
-	}, [deleteMutation]);
+	};
 
 	return (
 		<Menu>
@@ -159,11 +158,24 @@ function CommentMenu(): React.ReactNode {
 					e.preventDefault();
 				}}
 			>
-				<MenuItem onSelect={onCopy}>Copy</MenuItem>
-				{canEdit ? <MenuItem onSelect={onEdit}>Edit</MenuItem> : null}
+				<MenuItem onSelect={onCopy}>
+					Copy
+					<CopyIcon />
+				</MenuItem>
+				{canEdit ? (
+					<MenuItem onSelect={onEdit}>
+						Edit
+						<PencilIcon />
+					</MenuItem>
+				) : null}
 				{canDelete ? (
-					<MenuItem disabled={deleteMutation.isMutating} onSelect={onDelete}>
+					<MenuItem
+						disabled={deleteMutation.isMutating}
+						onSelect={onDelete}
+						variant="destructive"
+					>
 						Delete
+						<Trash2Icon />
 					</MenuItem>
 				) : null}
 			</MenuItems>

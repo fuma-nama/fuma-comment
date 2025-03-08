@@ -1,5 +1,1 @@
-import { createTailwindMerge, getDefaultConfig } from "tailwind-merge";
-
-export const cn = createTailwindMerge(() => ({
-	...getDefaultConfig(),
-}));
+export { twMerge as cn } from "tailwind-merge";

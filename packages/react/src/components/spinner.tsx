@@ -1,19 +1,18 @@
 import type { HTMLAttributes } from "react";
 import { forwardRef } from "react";
 import { cn } from "../utils/cn";
+import { Loader2 } from "lucide-react";
 
 export const Spinner = forwardRef<
-	HTMLDivElement,
-	HTMLAttributes<HTMLDivElement>
+	SVGSVGElement,
+	HTMLAttributes<SVGSVGElement>
 >(({ className, ...props }, ref) => {
 	return (
-		<div
-			className={cn("size-4 rounded-full border-2 border-fc-border", className)}
+		<Loader2
+			className={cn("size-4 animate-spin rounded-full", className)}
 			ref={ref}
 			{...props}
-		>
-			<div className="size-full animate-spin rounded-full border-l-2 border-fc-primary" />
-		</div>
+		/>
 	);
 });
 
