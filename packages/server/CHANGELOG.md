@@ -1,5 +1,15 @@
 # @fuma-comment/server
 
+## 1.0.0
+
+### Major Changes
+
+- d82f23d: change server usages
+
+### Patch Changes
+
+- 29025f4: Bump deps
+
 ## 0.6.0
 
 ### Minor Changes
