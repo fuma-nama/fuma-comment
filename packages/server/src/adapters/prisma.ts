@@ -19,7 +19,7 @@ export interface Options {
 	 */
 	RoleModel?: string;
 
-	auth: StorageAuthProvider | "next-auth";
+	auth: StorageAuthProvider | "next-auth" | "better-auth";
 
 	UserModel?: string;
 	UserIdField?: string;
@@ -63,8 +63,8 @@ export function createPrismaAdapter(options: Options): StorageAdapter {
 	const db = options.db as PrismaClientInternal;
 	let auth: StorageAuthProvider;
 
-	if (defaultAuth === "next-auth") {
-		auth = createNextAuthAdapter(db, options);
+	if (defaultAuth === "next-auth" || defaultAuth === "better-auth") {
+		auth = createGenericProvider(db, options);
 	} else {
 		auth = defaultAuth;
 	}
@@ -88,7 +88,7 @@ export function createPrismaAdapter(options: Options): StorageAdapter {
 				orderBy: [{ timestamp: sort === "newest" ? "desc" : "asc" }],
 				where: {
 					page,
-					thread: Number(thread),
+					thread: thread !== undefined ? Number(thread) : null,
 					timestamp: {
 						lt: before,
 						gt: after,
@@ -235,7 +235,13 @@ export function createPrismaAdapter(options: Options): StorageAdapter {
 	};
 }
 
-function createNextAuthAdapter(
+/**
+ * Create a generic provider for NextAuth or BetterAuth,
+ * which is used to get user information from the database
+ *
+ * Note: this is because both of them has a similar database structure.
+ */
+function createGenericProvider(
 	prisma: PrismaClientInternal,
 	options: Options,
 ): StorageAuthProvider {

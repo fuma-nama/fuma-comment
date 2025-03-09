@@ -1,0 +1,18 @@
+---
+title: NextAuth
+description: use NextAuth to authenticate users
+---
+
+
+## Setup
+
+Add to your Fuma Comment config:
+
+```ts title="lib/comment.config.ts"
+import { createNextAuthAdapter } from "@fuma-comment/server/adapters/next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+
+const auth = createNextAuthAdapter(authOptions)
+```
+
+

@@ -1,0 +1,31 @@
+{
+	"name": "example-better-auth",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev --turbopack",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint"
+	},
+	"dependencies": {
+		"better-auth": "^1.2.3",
+		"drizzle-orm": "^0.40.0",
+		"next": "15.2.1",
+		"pg": "^8.13.3",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"@fuma-comment/react": "workspace:*",
+		"@fuma-comment/next": "workspace:*",
+		"@fuma-comment/server": "workspace:*"
+	},
+	"devDependencies": {
+		"@tailwindcss/postcss": "^4.0.12",
+		"@types/node": "^22.13.10",
+		"@types/react": "^19",
+		"@types/react-dom": "^19",
+		"drizzle-kit": "^0.30.5",
+		"tailwindcss": "^4.0.12",
+		"typescript": "^5"
+	}
+}

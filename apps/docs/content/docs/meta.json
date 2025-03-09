@@ -1,0 +1,12 @@
+{
+	"pages": [
+		"index",
+		"...",
+		"---Storage---",
+		"drizzle",
+		"prisma",
+		"---Auth---",
+		"better-auth",
+		"next-auth"
+	]
+}

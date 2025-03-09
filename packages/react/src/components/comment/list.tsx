@@ -17,7 +17,7 @@ import { Actions } from "./actions";
 import { Comment } from "./index";
 import { Spinner } from "../spinner";
 
-const count = 50;
+const count = 40;
 
 export interface CommentListProps extends HTMLAttributes<HTMLDivElement> {
 	threadId?: string;
@@ -52,7 +52,7 @@ export const CommentList = forwardRef<HTMLDivElement, CommentListProps>(
 			<div
 				ref={ref}
 				{...props}
-				className={cn("flex flex-col pb-2", props.className)}
+				className={cn("flex flex-col", props.className)}
 			>
 				{!query.isLoading && cursor === undefined && list.length === 0 && (
 					<p className="mx-auto my-4 text-center text-sm text-fc-muted-foreground">
@@ -86,7 +86,7 @@ export const CommentList = forwardRef<HTMLDivElement, CommentListProps>(
 						Load More
 					</button>
 				) : null}
-				{query.isLoading ? <Spinner className="mx-auto my-2" /> : null}
+				{query.isLoading ? <Spinner className="mx-auto my-4" /> : null}
 			</div>
 		);
 	},

@@ -50,8 +50,7 @@ export function AuthProvider({
 		auth.type === "api" ? `/api/comment/${page}/auth` : null,
 		() => getAuthSession({ page }),
 		{
-			revalidateIfStale: false,
-			revalidateOnFocus: false,
+			shouldRetryOnError: false,
 		},
 	);
 

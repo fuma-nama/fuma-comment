@@ -1,0 +1,26 @@
+---
+title: Prisma ORM
+description: use Prisma ORM to store data
+---
+
+## Setup
+
+Add schemas:
+
+```json doc-gen:file
+{
+  "file": "../../packages/server/src/db/schema.prisma",
+  "codeblock": true
+}
+```
+
+Add to your Fuma Comment config:
+
+```ts
+import { createPrismaAdapter } from "@fuma-comment/server/adapters/prisma";
+
+const storage = createPrismaAdapter({
+  db: prisma,
+  auth: 'next-auth' | 'better-auth',
+})
+```

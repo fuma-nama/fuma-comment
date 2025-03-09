@@ -14,10 +14,10 @@ export function DialogContent({
 }: Primitive.DialogContentProps): React.ReactElement {
 	return (
 		<Primitive.Portal>
-			<Primitive.Overlay className="fixed inset-0 bg-fc-background/70 data-[state=closed]:animate-overlayHide data-[state=open]:animate-overlayShow" />
+			<Primitive.Overlay className="fixed inset-0 bg-black/50 z-10 data-[state=closed]:animate-overlayHide data-[state=open]:animate-overlayShow" />
 			<Primitive.Content
 				className={cn(
-					"fixed left-1/2 top-1/2 flex w-full max-w-md -translate-x-1/2 -translate-y-1/2 flex-col rounded-2xl border border-fc-border bg-fc-popover p-4 shadow-lg data-[state=closed]:animate-dialogHide data-[state=open]:animate-dialogShow",
+					"fixed left-1/2 top-1/2 flex w-full max-w-md -translate-x-1/2 -translate-y-1/2 flex-col rounded-2xl border border-fc-border bg-fc-popover text-fc-popover-foreground p-4 shadow-lg z-10 data-[state=closed]:animate-dialogHide data-[state=open]:animate-dialogShow",
 					className,
 				)}
 				{...props}

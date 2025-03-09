@@ -1,10 +1,14 @@
 import "./globals.css";
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Geist, JetBrains_Mono } from "next/font/google";
 import { RootProvider } from "fumadocs-ui/provider";
 
-const inter = Inter({ subsets: ["latin"] });
+const geist = Geist({ subsets: ["latin"] });
+const mono = JetBrains_Mono({
+	subsets: ["latin"],
+	variable: "--default-mono-font-family",
+});
 
 export const metadata: Metadata = {
 	title: "Fuma Comment",
@@ -14,7 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={inter.className}>
+			<body className={`${geist.className} ${mono.variable}`}>
 				<RootProvider>{children}</RootProvider>
 			</body>
 		</html>

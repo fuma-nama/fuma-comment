@@ -8,6 +8,7 @@
 @source '../node_modules/@fuma-comment/react/dist/**/*.js';
 
 @theme {
+	--fd-layout-width: 1400px;
 	--color-app-foreground: 0, 0, 0;
 	--color-app-background: 235, 205, 235;
 

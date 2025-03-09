@@ -61,7 +61,7 @@ function Inner(props: InnerProps): ReactNode {
 			{props.title}
 			<CommentsPost />
 			{!isLoading && !session ? (
-				<div className="absolute inset-0 flex flex-col items-center justify-center bg-fc-background/50 p-3 text-center backdrop-blur-lg">
+				<div className="absolute inset-0 flex flex-col items-center justify-center bg-fc-background/50 p-3 text-center backdrop-blur-lg animate-fadeIn">
 					{props.titleUnauthorized ?? props.title}
 					<AuthButton />
 				</div>

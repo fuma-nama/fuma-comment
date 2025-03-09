@@ -1,0 +1,12 @@
+services:
+  db:
+    image: postgres:16.6
+    user: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=fuma_comment
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - /var/lib/postgresql/data
+    ports:
+      - 5432:5432

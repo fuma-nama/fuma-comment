@@ -1,0 +1,33 @@
+---
+title: Drizzle ORM
+description: use Drizzle ORM to store data
+---
+
+## Setup
+
+Add schemas:
+
+```json doc-gen:file
+{
+  "file": "../../packages/server/src/db/schema.drizzle.ts",
+  "codeblock": true
+}
+```
+
+Add to your Fuma Comment config:
+
+```ts
+import { createDrizzleAdapter } from "@fuma-comment/server/adapters/drizzle";
+import { db } from "@/lib/database";
+import { comments, rates, roles, user } from "@/lib/schema";
+
+const storage = createDrizzleAdapter({
+  db,
+  auth: 'next-auth' | 'better-auth',
+  schemas: {
+    comments,
+    rates,
+    roles,
+    user,
+  },
+});

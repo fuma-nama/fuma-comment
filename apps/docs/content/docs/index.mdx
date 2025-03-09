@@ -8,15 +8,16 @@ import { Callout } from "fumadocs-ui/components/callout";
   This package is not production ready yet.
 </Callout>
 
-A less-configuration, flexible library that integrates a comment area into your blog. It doesn't handle Authentication, you can use your own Auth system with Fuma Comment (ex: integrates with Auth.js).
+A beautiful, yet simple library that brings a comment area into your blog.
 
-Note that it is not a SaaS, you will need a database (PostgreSQL & MySQL) to continue.
+Note that it is not a SaaS, you will need a database (SQLite, PostgreSQL, MySQL) to continue.
 
 ## Client
 
-Currently, we only provide React.js client API. You have to pass authentication data into the component, there's an example for NextAuth.
+Currently, we provide a React.js client API.
 
 ```tsx
+'use client'
 import { signIn } from "next-auth/react";
 import { Comments } from "@fuma-comment/react";
 
@@ -31,6 +32,10 @@ export function CommentsWithAuth() {
   );
 }
 ```
+
+Fuma Comment doesn't force an Auth system on your app, you can use your own Auth system, like integrating with BetterAuth.
+
+By default, it calls an API endpoint to get authentication data, you will need to provide a `signIn` function for user to sign in.
 
 ### Styling
 
@@ -52,43 +57,94 @@ For projects using Tailwind CSS v4, use the Tailwind CSS preset instead:
 
 ## Database
 
-You need a database to persist comments. Fuma Comment has built-in support for Prisma ORM, you may implement your own storage adapter following the instructions in TSDoc of `StorageAdapter`.
+You need a database to persist comments.
 
-### Prisma
+Fuma Comment has built-in support for multiple ORMs, you can copy the required schemas:
 
-First, update your schema to include following tables:
+<Tabs items={["Drizzle", "Prisma"]}>
 
-```prisma
-// optional for Role System based on database
-model Role {
-  userId    String  @id @db.VarChar(256)
-  name      String  @db.VarChar(256)
-  canDelete Boolean
+<Tab title="Drizzle">
+
+```json doc-gen:file
+{
+  "file": "../../packages/server/src/db/schema.drizzle.ts",
+  "codeblock": {
+    "lang": "ts",
+    "meta": "title=\"lib/schema.ts\""
+  }
 }
+```
 
-model Comment {
-  id        Int      @id @default(autoincrement())
-  page      String   @db.VarChar(256)
-  thread    Int?
-  author    String   @db.VarChar(256)
-  content   Json     @db.Json
-  timestamp DateTime @default(now()) @db.Timestamp()
+```ts title="lib/comment.config.ts"
+import { createDrizzleAdapter } from "@fuma-comment/server/adapters/drizzle";
+import { comments, rates, roles, user } from "@/lib/schema";
 
-  rates Rate[]
+const storage = createDrizzleAdapter({
+  db,
+  schemas: {
+    comments,
+    rates,
+    roles,
+    user,
+  },
+  // Use tables created by your auth provider
+  // auth: 'next-auth' | 'better-auth',
+})
+```
 
-  @@index([page])
+</Tab>
+
+<Tab title="Prisma">
+
+```json doc-gen:file
+{
+  "file": "../../packages/server/src/db/schema.prisma",
+  "codeblock": {
+    "lang": "prisma",
+    "meta": "title=\"schema.prisma\""
+  }
 }
+```
 
-model Rate {
-  userId    String  @db.VarChar(256)
-  commentId Int
-  like      Boolean
+```ts title="lib/comment.config.ts"
+import { createPrismaAdapter } from "@fuma-comment/server/adapters/prisma";
 
-  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+const storage = createPrismaAdapter({
+  db: prisma,
+  // Use tables created by your auth provider
+  // auth: 'next-auth' | 'better-auth',
+})
+```
 
-  @@id([userId, commentId])
-  @@index([commentId])
-}
+</Tab>
+
+</Tabs>
+
+### Other Adapters
+
+you may implement your own storage adapter following the instructions in TSDoc of `StorageAdapter`.
+
+## Auth Provider
+
+Fuma Comment supports multiple auth providers, you can choose one of them:
+
+### NextAuth
+
+```ts title="lib/comment.config.ts"
+import { createNextAuthAdapter } from "@fuma-comment/server/adapters/next-auth";
+// Next Auth options
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+
+const auth = createNextAuthAdapter(authOptions)
+```
+
+### BetterAuth
+
+```ts title="lib/comment.config.ts"
+import { createBetterAuthAdapter } from "@fuma-comment/server/adapters/better-auth";
+import { auth as betterAuth } from "@/lib/auth";
+
+const auth = createBetterAuthAdapter(betterAuth)
 ```
 
 ## Server
@@ -101,18 +157,11 @@ Create `app/api/comments/[[...comment]]/route.ts`.
 
 ```ts title="app/api/comments/[[...comment]]/route.ts"
 import { NextComment } from "@fuma-comment/next";
-import { prisma } from "@/utils/database";
-import { authOptions } from "@/app/api/auth/[...nextauth]/options";
-import { createPrismaAdapter } from "@fuma-comment/server/adapters/prisma";
-import { createNextAuthAdapter } from "@fuma-comment/server/adapters/next-auth";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
-	mention: { enabled: true },
-	auth: createNextAuthAdapter(authOptions),
-	storage: createPrismaAdapter({
-		db: prisma,
-		auth: 'next-auth', // Use tables created by NextAuth
-	}),
+  // import from comment.config.ts
+  auth,
+  storage,
 });
 ```
 
@@ -123,5 +172,15 @@ Pass your express app as a parameter, all the endpoints will be added under `/ap
 ```ts
 import { ExressComment } from "@fuma-comment/server/express";
 
-ExressComment({ app, adapter, getSession });
+ExressComment({
+  // your app
+  app,
+  // import from comment.config.ts
+  auth
+  storage
+});
 ```
+
+## Done!
+
+You can now have fun with Fuma Comment!

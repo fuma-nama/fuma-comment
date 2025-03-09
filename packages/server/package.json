@@ -17,17 +17,9 @@
 			"types": "./dist/custom/index.d.ts",
 			"import": "./dist/custom/index.js"
 		},
-		"./adapters/prisma": {
-			"types": "./dist/adapters/prisma.d.ts",
-			"import": "./dist/adapters/prisma.js"
-		},
-		"./adapters/next-auth": {
-			"types": "./dist/adapters/next-auth.d.ts",
-			"import": "./dist/adapters/next-auth.js"
-		},
-		"./adapters/better-auth": {
-			"types": "./dist/adapters/better-auth.d.ts",
-			"import": "./dist/adapters/better-auth.js"
+		"./adapters/*": {
+			"types": "./dist/adapters/*.d.ts",
+			"import": "./dist/adapters/*.js"
 		}
 	},
 	"files": ["./dist"],
@@ -40,18 +32,20 @@
 	},
 	"devDependencies": {
 		"@types/express": "^5.0.0",
-		"@types/node": "^22.13.9",
+		"@types/node": "^22.13.10",
 		"better-auth": "^1.2.3",
+		"drizzle-orm": "^0.40.0",
 		"express": "^4.21.2",
 		"next-auth": "^4.24.11",
 		"tsconfig": "workspace:*",
 		"tsup": "^8.4.0",
 		"typescript": "^5.8.2",
-		"vitest": "^3.0.7"
+		"vitest": "^3.0.8"
 	},
 	"peerDependencies": {
-		"next-auth": "4.x.x",
-		"better-auth": "1.x.x"
+		"better-auth": "1.x.x",
+		"drizzle-orm": "^0.40.0",
+		"next-auth": "4.x.x"
 	},
 	"peerDependenciesMeta": {
 		"next-auth": {

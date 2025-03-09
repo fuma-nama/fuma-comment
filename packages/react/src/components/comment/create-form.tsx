@@ -69,36 +69,35 @@ export const CreateForm = forwardRef<
 				e.preventDefault();
 			}}
 			{...props}
+			className="relative"
 		>
-			<div className="relative">
-				<CommentEditor
-					editorRef={editorRef}
-					disabled={disabled}
-					onChange={useCallback((v: UseCommentEditor) => {
-						setIsEmpty(v.isEmpty);
-					}, [])}
-					onSubmit={submit}
-					placeholder="Leave comment"
-				/>
-				<button
-					aria-label="Send Comment"
-					className={cn(
-						buttonVariants({
-							className: "absolute right-2 bottom-1.5",
-							size: "icon",
-						}),
-					)}
-					disabled={disabled || isEmpty}
-					type="submit"
-				>
-					{mutation.isMutating ? <Spinner /> : <SendIcon className="size-4" />}
-				</button>
-			</div>
 			{mutation.error ? (
-				<p className="mt-1 text-sm text-fc-error">
+				<p className="mb-1 text-sm text-fc-error">
 					{(mutation.error as FetcherError).message}
 				</p>
 			) : null}
+			<CommentEditor
+				editorRef={editorRef}
+				disabled={disabled}
+				onChange={useCallback((v: UseCommentEditor) => {
+					setIsEmpty(v.isEmpty);
+				}, [])}
+				onSubmit={submit}
+				placeholder="Leave comment"
+			/>
+			<button
+				aria-label="Send Comment"
+				className={cn(
+					buttonVariants({
+						className: "absolute right-2 bottom-1.5",
+						size: "icon",
+					}),
+				)}
+				disabled={disabled || isEmpty}
+				type="submit"
+			>
+				{mutation.isMutating ? <Spinner /> : <SendIcon className="size-4" />}
+			</button>
 		</form>
 	);
 });

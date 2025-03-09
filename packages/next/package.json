@@ -21,7 +21,7 @@
 		"next": "^14.0.0 || ^15.0.0"
 	},
 	"devDependencies": {
-		"@types/node": "^22.13.9",
+		"@types/node": "^22.13.10",
 		"next": "^15.2.1",
 		"tsconfig": "workspace:*",
 		"tsup": "^8.4.0",
