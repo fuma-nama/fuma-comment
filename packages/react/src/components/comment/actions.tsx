@@ -1,4 +1,4 @@
-import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { ReplyIcon, ThumbsDown, ThumbsUp } from "lucide-react";
 import { cva } from "class-variance-authority";
 import { useCallback, useRef } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
@@ -8,21 +8,16 @@ import { deleteRate, setRate } from "../../utils/fetcher";
 import { onLikeUpdated } from "../../utils/comment-manager";
 import { cn } from "../../utils/cn";
 import { Dialog, DialogContent, DialogTrigger } from "../dialog";
-import { buttonVariants } from "../button";
 import type { UseCommentEditor } from "../editor";
 import { ReplyForm, ReplyHeader } from "./reply-form";
 
 const rateVariants = cva(
-	buttonVariants({
-		variant: "secondary",
-		size: "small",
-		className: "gap-1.5",
-	}),
+	"inline-flex items-center gap-1.5 p-2 text-xs transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fc-ring",
 	{
 		variants: {
 			active: {
 				true: "bg-fc-accent text-fc-accent-foreground",
-				false: "text-fc-muted-foreground",
+				false: "text-fc-muted-foreground hover:text-fd-accent-foreground",
 			},
 		},
 	},
@@ -54,7 +49,7 @@ export function Actions({
 	};
 
 	return (
-		<div className="mt-2 flex flex-row gap-1">
+		<div className="mt-2 flex flex-row -mx-2">
 			<button
 				className={cn(
 					rateVariants({
@@ -66,7 +61,7 @@ export function Actions({
 				type="button"
 			>
 				<ThumbsUp aria-label="Like" className="size-4" />
-				{comment.likes}
+				{comment.likes > 0 ? comment.likes : null}
 			</button>
 			<button
 				className={cn(
@@ -79,11 +74,12 @@ export function Actions({
 				type="button"
 			>
 				<ThumbsDown aria-label="Dislike" className="size-4" />
-				{comment.dislikes}
+				{comment.dislikes > 0 ? comment.dislikes : null}
 			</button>
 			{canReply && isAuthenticated ? (
 				<Dialog open={isReplying} onOpenChange={setReply}>
 					<DialogTrigger className={cn(rateVariants({ active: false }))}>
+						<ReplyIcon className="size-4" />
 						Reply
 					</DialogTrigger>
 					<DialogContent onOpenAutoFocus={onOpenAutoFocus}>

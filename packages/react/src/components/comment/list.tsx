@@ -101,25 +101,19 @@ export function Replies(): React.ReactNode {
 	if (comment.replies === 0) return null;
 
 	return (
-		<Collapsible
-			className="border-y border-fc-border bg-fc-card pl-3"
-			open={open}
-			onOpenChange={setOpen}
-		>
+		<Collapsible className="bg-fc-card" open={open} onOpenChange={setOpen}>
 			<CollapsibleTrigger
 				className={cn(
 					buttonVariants({
 						variant: "ghost",
 						size: "medium",
-						className: "gap-3.5",
+						className:
+							"w-full text-start justify-start gap-4.5 px-5.5 rounded-none",
 					}),
 				)}
 			>
 				<ChevronDown
-					className={cn(
-						"-ml-0.5 size-4 transition-transform",
-						open && "rotate-180",
-					)}
+					className={cn("size-4 transition-transform", open && "rotate-180")}
 				/>
 				{comment.replies} Replies
 			</CollapsibleTrigger>

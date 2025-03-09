@@ -6,10 +6,7 @@
 	"author": "Fuma Nama",
 	"homepage": "https://fuma-comment.vercel.app",
 	"repository": "https://github.com/fuma-nama/fuma-comment",
-	"files": [
-		"./dist",
-		"./css"
-	],
+	"files": ["./dist", "./css"],
 	"license": "MIT",
 	"type": "module",
 	"exports": {

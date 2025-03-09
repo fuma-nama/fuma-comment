@@ -1,10 +1,5 @@
 import useSWRMutation from "swr/mutation";
-import {
-	type MutableRefObject,
-	type ReactNode,
-	useCallback,
-	useState,
-} from "react";
+import { type ReactNode, type RefObject, useCallback, useState } from "react";
 import { cn } from "../../utils/cn";
 import {
 	type FetcherError,
@@ -46,7 +41,7 @@ export function ReplyHeader(): ReactNode {
 export function ReplyForm({
 	editorRef,
 }: {
-	editorRef: MutableRefObject<UseCommentEditor | undefined>;
+	editorRef: RefObject<UseCommentEditor | undefined>;
 }): ReactNode {
 	const [isEmpty, setIsEmpty] = useState(true);
 	const { comment, setReply } = useCommentContext();
@@ -90,6 +85,7 @@ export function ReplyForm({
 	return (
 		<form onSubmit={onSubmit}>
 			<CommentEditor
+				persistentId={`reply-${comment.id}`}
 				disabled={mutation.isMutating}
 				editorRef={editorRef}
 				onChange={useCallback((v: UseCommentEditor) => {

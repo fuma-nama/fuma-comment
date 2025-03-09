@@ -4,7 +4,6 @@ import {
 	useLayoutEffect,
 	forwardRef,
 	useState,
-	useCallback,
 	useRef,
 	useEffect,
 	type RefObject,
@@ -45,6 +44,8 @@ export interface EditorProps {
 	onEscape?: (editor: UseCommentEditor) => void;
 	containerProps?: HTMLAttributes<HTMLDivElement>;
 	editorProps?: HTMLAttributes<HTMLDivElement>;
+
+	persistentId?: string;
 }
 
 export function useCommentEditor(): [
@@ -79,34 +80,49 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 		const mention = useMention();
 
 		// force editor props to be immutable
-		const initialProps = useRef({
+		const propsRef = useRef({
 			...props,
 			mentionEnabled: mention.enabled,
 		});
 
 		useLayoutEffect(() => {
 			let instance: Editor | undefined;
+			const storageKey = propsRef.current.persistentId
+				? `fc_textarea_${propsRef.current.persistentId}`
+				: null;
+			const cached = storageKey ? sessionStorage.getItem(storageKey) : null;
 
+			const save = (): void => {
+				if (!instance || !storageKey) return;
+				sessionStorage.setItem(storageKey, JSON.stringify(instance.getJSON()));
+			};
+
+			let timeout: number | undefined;
 			void createEditorLazy({
 				autofocus: false,
-				content: initialProps.current.defaultValue,
+				content: cached ? JSON.parse(cached) : propsRef.current.defaultValue,
 				editorProps: {
 					attributes: {
 						class: "flex-1 px-3 pt-2.5 focus-visible:outline-none",
 					},
 				},
 				onEscape: () => {
-					if (instance) initialProps.current.onEscape?.(instance);
+					if (instance) propsRef.current.onEscape?.(instance);
 					return true;
 				},
 				onSubmit: () => {
-					if (instance) initialProps.current.onSubmit?.(instance);
+					if (instance) propsRef.current.onSubmit?.(instance);
 					return true;
 				},
-				mentionEnabled: initialProps.current.mentionEnabled,
-				placeholder: initialProps.current.placeholder,
+				mentionEnabled: propsRef.current.mentionEnabled,
+				placeholder: propsRef.current.placeholder,
 				onTransaction(v) {
-					initialProps.current.onChange?.(v.editor as Editor);
+					propsRef.current.onChange?.(v.editor as Editor);
+
+					if (storageKey) {
+						clearTimeout(timeout);
+						timeout = window.setTimeout(save, 1000);
+					}
 				},
 			}).then((res) => {
 				instance = res;
@@ -114,13 +130,23 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 			});
 
 			return () => {
-				instance?.destroy();
+				if (!instance) return;
+				save();
+				instance.destroy();
 			};
 		}, []);
 
 		if (!editor) {
 			return (
-				<div ref={ref} className={cn(editorVariants(), "min-h-[72px]")}>
+				<div
+					{...containerProps}
+					ref={ref}
+					className={cn(
+						editorVariants(),
+						"min-h-[72px]",
+						containerProps?.className,
+					)}
+				>
 					<p className="px-3 py-2.5 text-sm text-fc-muted-foreground">
 						{props.placeholder}
 					</p>
@@ -226,13 +252,10 @@ function UploadImageDialog({ editor }: { editor: Editor }): React.ReactElement {
 				<ImageIcon className="size-4" />
 			</DialogTrigger>
 			<DialogContent
-				onCloseAutoFocus={useCallback(
-					(e: Event) => {
-						editor.commands.focus();
-						e.preventDefault();
-					},
-					[editor],
-				)}
+				onCloseAutoFocus={(e) => {
+					editor.commands.focus();
+					e.preventDefault();
+				}}
 			>
 				<DialogTitle>Add Image</DialogTitle>
 				<DialogDescription className="mb-4 text-sm text-fc-muted-foreground">
@@ -240,9 +263,9 @@ function UploadImageDialog({ editor }: { editor: Editor }): React.ReactElement {
 				</DialogDescription>
 				<UploadImage
 					editor={editor}
-					onClose={useCallback(() => {
+					onClose={() => {
 						setIsOpen(false);
-					}, [])}
+					}}
 				/>
 			</DialogContent>
 		</Dialog>
@@ -263,13 +286,10 @@ function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
 				<LinkIcon className="size-4" />
 			</DialogTrigger>
 			<DialogContent
-				onCloseAutoFocus={useCallback(
-					(e: Event) => {
-						editor.commands.focus();
-						e.preventDefault();
-					},
-					[editor],
-				)}
+				onCloseAutoFocus={(e) => {
+					editor.commands.focus();
+					e.preventDefault();
+				}}
 			>
 				<DialogTitle>Add Link</DialogTitle>
 				<DialogDescription className="mb-4 text-sm text-fc-muted-foreground">
@@ -277,9 +297,9 @@ function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
 				</DialogDescription>
 				<HyperLink
 					editor={editor}
-					onClose={useCallback(() => {
+					onClose={() => {
 						setIsOpen(false);
-					}, [])}
+					}}
 				/>
 			</DialogContent>
 		</Dialog>

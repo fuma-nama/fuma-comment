@@ -58,6 +58,7 @@ export function EditForm(): React.ReactNode {
 	return (
 		<form onSubmit={onSubmit}>
 			<CommentEditor
+				persistentId={`edit-${comment.id}`}
 				defaultValue={comment.content}
 				disabled={mutation.isMutating}
 				editorRef={editorRef}

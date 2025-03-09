@@ -1,9 +1,9 @@
 import {
 	useState,
 	useMemo,
-	useLayoutEffect,
 	useRef,
 	type ReactNode,
+	type ButtonHTMLAttributes,
 } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
 import useSWRMutation from "swr/mutation";
@@ -28,6 +28,7 @@ import type { UseCommentEditor } from "../editor";
 import { Avatar } from "../avatar";
 import { EditForm } from "./edit-form";
 import { ContentRenderer } from "./content-renderer";
+import { Timestamp } from "../timestamp";
 
 export function Comment({
 	comment: cached,
@@ -38,7 +39,6 @@ export function Comment({
 	actions?: ReactNode;
 	children?: ReactNode;
 }): React.ReactElement {
-	const [timestamp, setTimestamp] = useState("");
 	const [edit, setEdit] = useState(false);
 	const [isReply, setIsReply] = useState(false);
 	const editorRef = useRef<UseCommentEditor | undefined>(undefined);
@@ -55,15 +55,10 @@ export function Comment({
 		};
 	}, [comment, edit, isReply]);
 
-	useLayoutEffect(() => {
-		const parsed = new Date(comment.timestamp);
-		setTimestamp(toLocalString(parsed));
-	}, [comment.timestamp]);
-
 	return (
 		<CommentProvider value={context}>
 			<div
-				className="relative flex flex-row gap-2 px-3 py-4 text-sm"
+				className="relative flex flex-row gap-2 p-4 text-sm"
 				data-fc-comment={context.comment.id}
 				data-fc-edit={context.isEditing}
 				data-fc-reply={context.isReplying}
@@ -73,15 +68,13 @@ export function Comment({
 					image={comment.author.image}
 					className="shrink-0"
 				/>
-				<div className="min-w-0 flex-1 overflow-hidden">
-					<div className="mb-2 flex flex-row items-center gap-2">
-						<span className="truncate font-semibold">
-							{comment.author.name}
-						</span>
+				<div className="min-w-0 flex-1">
+					<div className="flex flex-row items-center gap-2">
+						<span className="truncate font-medium">{comment.author.name}</span>
 						<span className="text-xs text-fc-muted-foreground">
-							{timestamp}
+							<Timestamp timestamp={comment.timestamp} />
 						</span>
-						<CommentMenu />
+						<CommentMenu className="ms-auto -my-2" />
 					</div>
 					{edit ? (
 						<EditForm />
@@ -98,7 +91,10 @@ export function Comment({
 	);
 }
 
-function CommentMenu(): React.ReactNode {
+function CommentMenu({
+	className,
+	...props
+}: ButtonHTMLAttributes<HTMLButtonElement>): React.ReactNode {
 	const { session } = useAuthContext();
 	const { comment, editorRef, isEditing, isReplying, setEdit } =
 		useCommentContext();
@@ -145,10 +141,12 @@ function CommentMenu(): React.ReactNode {
 						size: "icon",
 						variant: "ghost",
 						className:
-							"ml-auto text-fc-muted-foreground data-[state=open]:bg-fc-accent data-[state=open]:text-fc-accent-foreground disabled:invisible",
+							"text-fc-muted-foreground data-[state=open]:bg-fc-accent data-[state=open]:text-fc-accent-foreground disabled:invisible",
 					}),
+					className,
 				)}
 				disabled={isEditing || isReplying}
+				{...props}
 			>
 				<MoreVertical className="size-4" />
 			</MenuTrigger>

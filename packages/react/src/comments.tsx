@@ -57,7 +57,7 @@ function Inner(props: InnerProps): ReactNode {
 	const { session, isLoading } = useAuthContext();
 
 	return (
-		<div className="relative flex flex-col gap-2 border-b border-fc-border p-3">
+		<div className="relative flex flex-col gap-2">
 			{props.title}
 			<CommentsPost />
 			{!isLoading && !session ? (

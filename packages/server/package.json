@@ -22,9 +22,7 @@
 			"import": "./dist/adapters/*.js"
 		}
 	},
-	"files": [
-		"./dist"
-	],
+	"files": ["./dist"],
 	"license": "MIT",
 	"scripts": {
 		"lint": "biome lint .",

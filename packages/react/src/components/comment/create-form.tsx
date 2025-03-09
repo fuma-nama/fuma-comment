@@ -69,7 +69,7 @@ export const CreateForm = forwardRef<
 				e.preventDefault();
 			}}
 			{...props}
-			className="relative"
+			className={cn("relative", props.className)}
 		>
 			{mutation.error ? (
 				<p className="mb-1 text-sm text-fc-error">
@@ -77,6 +77,10 @@ export const CreateForm = forwardRef<
 				</p>
 			) : null}
 			<CommentEditor
+				persistentId="create"
+				containerProps={{
+					className: "border-none p-1 rounded-b-none",
+				}}
 				editorRef={editorRef}
 				disabled={disabled}
 				onChange={useCallback((v: UseCommentEditor) => {
@@ -89,7 +93,7 @@ export const CreateForm = forwardRef<
 				aria-label="Send Comment"
 				className={cn(
 					buttonVariants({
-						className: "absolute right-2 bottom-1.5",
+						className: "absolute right-3.5 bottom-3",
 						size: "icon",
 					}),
 				)}
