@@ -32,7 +32,7 @@ export default function Page(): React.ReactNode {
 					</svg>
 				</a>
 			</div>
-			<div className="px-3 text-center pt-12">
+			<div className="relative px-3 text-center pt-12">
 				<h1 className="text-lg font-medium mb-2">Welcome to Fuma Comment</h1>
 				<p className="text-fc-muted-foreground">
 					Bring beautiful comment areas to your blog, docs, anywhere!
@@ -42,7 +42,7 @@ export default function Page(): React.ReactNode {
 					height="160"
 					viewBox="100 100 400 160"
 					fill="none"
-					className="z-10 max-w-full text-muted-foreground"
+					className="z-10 max-w-full text-foreground/80"
 				>
 					<title>Arrow</title>
 					<path
@@ -56,6 +56,7 @@ export default function Page(): React.ReactNode {
 				</svg>
 			</div>
 
+			<div className="mx-auto z-[-1] h-24 -mt-26 bg-radial-[ellipse_at_center_bottom] from-purple-400/20 to-60% md:h-50 md:-mt-50" />
 			<CommentsWithAuth page="default" />
 		</main>
 	);

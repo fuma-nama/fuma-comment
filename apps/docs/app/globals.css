@@ -11,6 +11,7 @@
 	--fd-layout-width: 1400px;
 	--color-app-foreground: 0, 0, 0;
 	--color-app-background: 235, 205, 235;
+	--color-fd-primary: hsl(270, 100%, 40%);
 
 	--color-foreground: var(--color-fd-foreground);
 	--color-background: var(--color-fd-background);
@@ -30,4 +31,5 @@
 .dark {
 	--color-app-foreground: 255, 255, 255;
 	--color-app-background: 0, 0, 0;
+	--color-fd-primary: hsl(270, 100%, 80%);
 }
