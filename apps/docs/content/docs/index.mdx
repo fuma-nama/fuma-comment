@@ -25,6 +25,7 @@ export function CommentsWithAuth() {
   return (
     <Comments
       auth={{
+        type: 'api',
         // function to sign in
         signIn: () => void signIn("github"),
       }}
@@ -88,7 +89,7 @@ const storage = createDrizzleAdapter({
     user,
   },
   // Use tables created by your auth provider
-  // auth: 'next-auth' | 'better-auth',
+  auth: 'next-auth' | 'better-auth',
 })
 ```
 
@@ -112,7 +113,7 @@ import { createPrismaAdapter } from "@fuma-comment/server/adapters/prisma";
 const storage = createPrismaAdapter({
   db: prisma,
   // Use tables created by your auth provider
-  // auth: 'next-auth' | 'better-auth',
+  auth: 'next-auth' | 'better-auth',
 })
 ```
 
