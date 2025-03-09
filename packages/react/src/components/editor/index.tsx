@@ -121,7 +121,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 
 					if (storageKey) {
 						clearTimeout(timeout);
-						timeout = window.setTimeout(save, 1000);
+						timeout = window.setTimeout(save, 800);
 					}
 				},
 			}).then((res) => {

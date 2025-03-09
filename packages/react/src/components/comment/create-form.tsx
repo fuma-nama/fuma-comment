@@ -21,6 +21,7 @@ import { CommentEditor, type UseCommentEditor } from "../editor";
 import { Spinner } from "../spinner";
 import { updateCommentList } from "../../utils/comment-list";
 import { syncComments } from "../../utils/comment-manager";
+import { AuthButton } from "../../atom";
 
 export const CreateForm = forwardRef<
 	HTMLFormElement,
@@ -50,10 +51,10 @@ export const CreateForm = forwardRef<
 			revalidate: false,
 		},
 	);
-	const disabled =
-		mutation.isMutating || (!auth.isLoading && auth.session === null);
+	const disabled = mutation.isMutating;
 
 	const submit = useLatestCallback(() => {
+		if (auth.isLoading || auth.session === null) return;
 		if (!editorRef.current) return;
 		const content = editorRef.current.getJSON();
 
@@ -89,19 +90,30 @@ export const CreateForm = forwardRef<
 				onSubmit={submit}
 				placeholder="Leave comment"
 			/>
-			<button
-				aria-label="Send Comment"
-				className={cn(
-					buttonVariants({
-						className: "absolute right-3.5 bottom-3",
-						size: "icon",
-					}),
-				)}
-				disabled={disabled || isEmpty}
-				type="submit"
-			>
-				{mutation.isMutating ? <Spinner /> : <SendIcon className="size-4" />}
-			</button>
+			{auth.isLoading || auth.session ? (
+				<button
+					aria-label="Send "
+					className={cn(
+						buttonVariants({
+							className: "absolute right-3.5 bottom-3",
+							size: "icon",
+						}),
+					)}
+					disabled={disabled || isEmpty}
+					type="submit"
+				>
+					{mutation.isMutating ? <Spinner /> : <SendIcon className="size-4" />}
+				</button>
+			) : (
+				<AuthButton
+					className={cn(
+						buttonVariants({
+							size: "small",
+							className: "absolute right-3.5 bottom-3",
+						}),
+					)}
+				/>
+			)}
 		</form>
 	);
 });

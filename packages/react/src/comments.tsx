@@ -4,11 +4,9 @@ import { cn } from "./utils/cn";
 import {
 	CommentsProvider,
 	CommentsPost,
-	AuthButton,
 	CommentsList,
 	type CommentsProviderProps,
 } from "./atom";
-import { useAuthContext } from "./contexts/auth";
 
 export type CommentsProps = Omit<
 	HTMLAttributes<HTMLDivElement>,
@@ -54,18 +52,10 @@ export const Comments = forwardRef<HTMLDivElement, CommentsProps>(
 );
 
 function Inner(props: InnerProps): ReactNode {
-	const { session, isLoading } = useAuthContext();
-
 	return (
 		<div className="relative flex flex-col gap-2">
 			{props.title}
 			<CommentsPost />
-			{!isLoading && !session ? (
-				<div className="absolute inset-0 flex flex-col items-center justify-center bg-fc-background/50 p-3 text-center backdrop-blur-lg animate-fadeIn">
-					{props.titleUnauthorized ?? props.title}
-					<AuthButton />
-				</div>
-			) : null}
 		</div>
 	);
 }

@@ -5,6 +5,7 @@ import {
 	type ReactNode,
 	type HTMLAttributes,
 	forwardRef,
+	type ButtonHTMLAttributes,
 } from "react";
 import { CommentsProvider as Provider } from "./contexts/comments";
 import {
@@ -77,13 +78,15 @@ export const CommentsList = forwardRef<
 
 CommentsList.displayName = "CommentsList";
 
-export function AuthButton(): React.ReactNode {
+export function AuthButton(
+	props: ButtonHTMLAttributes<HTMLButtonElement>,
+): React.ReactNode {
 	const { signIn } = useAuthContext();
 
 	if (typeof signIn === "function")
 		return (
-			<button className={cn(buttonVariants())} onClick={signIn} type="button">
-				Sign In
+			<button {...props} onClick={signIn} type="button">
+				{props.children ?? "Sign In"}
 			</button>
 		);
 
