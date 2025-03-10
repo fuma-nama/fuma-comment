@@ -130,3 +130,11 @@ export interface AuthAdapter<R extends CustomRequest> {
 		},
 	) => Awaitable<AuthInfoWithRole | null>;
 }
+
+export interface StorageAuthProvider
+	extends Pick<StorageAdapter, "queryUsers"> {
+	/**
+	 * Manually join User table after selecting comments
+	 */
+	getUsers: (userIds: string[]) => UserProfile[] | Promise<UserProfile[]>;
+}

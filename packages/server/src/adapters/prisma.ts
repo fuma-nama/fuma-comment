@@ -1,5 +1,5 @@
-import type { StorageAdapter } from "../adapter";
-import type { Comment, UserProfile } from "../types";
+import type { StorageAdapter, StorageAuthProvider } from "../adapter";
+import type { Comment } from "../types";
 
 export interface Options {
 	db: unknown;
@@ -39,14 +39,6 @@ export type PrismaClientInternal = Record<
 		upsert: <T>(data: unknown) => Promise<T>;
 	}
 >;
-
-export interface StorageAuthProvider
-	extends Pick<StorageAdapter, "queryUsers"> {
-	/**
-	 * Manually join User table after selecting comments
-	 */
-	getUsers: (userIds: string[]) => UserProfile[] | Promise<UserProfile[]>;
-}
 
 /**
  * Create adapter for Prisma

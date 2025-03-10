@@ -14,8 +14,8 @@ import {
 	isNull,
 } from "drizzle-orm";
 import type { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
-import type { StorageAdapter } from "../adapter";
-import type { UserProfile, Comment } from "../types";
+import type { StorageAdapter, StorageAuthProvider } from "../adapter";
+import type { Comment } from "../types";
 
 export interface Options {
 	db: unknown;
@@ -27,14 +27,6 @@ export interface Options {
 	};
 
 	auth: StorageAuthProvider | "next-auth" | "better-auth";
-}
-
-export interface StorageAuthProvider
-	extends Pick<StorageAdapter, "queryUsers"> {
-	/**
-	 * Manually join User table after selecting comments
-	 */
-	getUsers: (userIds: string[]) => UserProfile[] | Promise<UserProfile[]>;
 }
 
 /**
@@ -60,6 +52,7 @@ export function createDrizzleAdapter(options: Options): StorageAdapter {
 
 	const getUsers = auth.getUsers;
 	return {
+		queryUsers: auth.queryUsers,
 		async getComments({ auth, sort, page, after, thread, before, limit }) {
 			const likes = aliasedTable(rates, "likes");
 			const dislikes = aliasedTable(rates, "dislikes");

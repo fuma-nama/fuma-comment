@@ -31,6 +31,7 @@
 		"dev": "tsup --watch"
 	},
 	"devDependencies": {
+		"@clerk/backend": "^1.25.1",
 		"@types/express": "^5.0.0",
 		"@types/node": "^22.13.10",
 		"better-auth": "^1.2.3",
@@ -45,9 +46,13 @@
 	"peerDependencies": {
 		"better-auth": "1.x.x",
 		"drizzle-orm": "^0.40.0",
-		"next-auth": "4.x.x"
+		"next-auth": "4.x.x",
+		"@clerk/backend": "1.x.x"
 	},
 	"peerDependenciesMeta": {
+		"@clerk/backend": {
+			"optional": true
+		},
 		"next-auth": {
 			"optional": true
 		},
