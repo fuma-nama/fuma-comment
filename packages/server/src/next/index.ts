@@ -4,8 +4,8 @@ import type {
     CustomCommentOptions,
     CustomRequest,
     CustomResponse,
-} from "@fuma-comment/server/custom";
-import { CustomComment } from "@fuma-comment/server/custom";
+} from "../custom";
+import { CustomComment } from "../custom";
 
 type RouteHandler = (
     req: NextRequest,
