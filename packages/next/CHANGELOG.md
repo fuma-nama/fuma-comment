@@ -1,5 +1,18 @@
 # @fuma-comment/next
 
+## 1.1.0
+
+### Minor Changes
+
+- 1d29642: Replace `@fuma-comment/next` with `@fuma-comment/server/next`, the original package will continue to be maintained until the next major release.
+
+### Patch Changes
+
+- Updated dependencies [00555cd]
+- Updated dependencies [00555cd]
+- Updated dependencies [1d29642]
+  - @fuma-comment/server@1.1.0
+
 ## 1.0.0
 
 ### Patch Changes

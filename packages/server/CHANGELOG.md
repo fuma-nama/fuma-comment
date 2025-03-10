@@ -1,5 +1,13 @@
 # @fuma-comment/server
 
+## 1.1.0
+
+### Minor Changes
+
+- 00555cd: Support Clerk
+- 00555cd: Support Elysia.js
+- 1d29642: Replace `@fuma-comment/next` with `@fuma-comment/server/next`, the original package will continue to be maintained until the next major release.
+
 ## 1.0.0
 
 ### Major Changes

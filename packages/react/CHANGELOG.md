@@ -1,5 +1,11 @@
 # @fuma-comment/react
 
+## 1.1.0
+
+### Patch Changes
+
+- c8e8cc0: Improve UI
+
 ## 1.0.0
 
 ### Major Changes
