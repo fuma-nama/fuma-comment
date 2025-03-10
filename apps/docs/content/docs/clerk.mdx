@@ -32,7 +32,7 @@ export const storage = createDrizzleAdapter({
 And update your route config:
 
 ```ts title="app/api/comments/[[...comment]]/route.ts"
-import { NextComment } from "@fuma-comment/next";
+import { NextComment } from "@fuma-comment/server/next";
 import { clerkAdapter, storage } from "@/lib/comment.config"
 
 export const { GET, DELETE, PATCH, POST } = NextComment({

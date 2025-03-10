@@ -21,6 +21,10 @@
 			"types": "./dist/custom/index.d.ts",
 			"import": "./dist/custom/index.js"
 		},
+		"./next": {
+			"types": "./dist/next/index.d.ts",
+			"import": "./dist/next/index.js"
+		},
 		"./adapters/*": {
 			"types": "./dist/adapters/*.d.ts",
 			"import": "./dist/adapters/*.js"
@@ -43,6 +47,7 @@
 		"drizzle-orm": "^0.40.0",
 		"elysia": "^1.2.25",
 		"express": "^4.21.2",
+		"next": "^15.2.1",
 		"next-auth": "^4.24.11",
 		"tsconfig": "workspace:*",
 		"tsup": "^8.4.0",
@@ -50,6 +55,7 @@
 		"vitest": "^3.0.8"
 	},
 	"peerDependencies": {
+		"next": "^14.0.0 || ^15.0.0",
 		"@clerk/backend": "1.x.x",
 		"better-auth": "1.x.x",
 		"drizzle-orm": "^0.40.0",
@@ -67,6 +73,9 @@
 			"optional": true
 		},
 		"better-auth": {
+			"optional": true
+		},
+		"next": {
 			"optional": true
 		}
 	},

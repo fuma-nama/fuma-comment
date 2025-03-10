@@ -1,4 +1,4 @@
-import { NextComment } from "@fuma-comment/next";
+import { NextComment } from "@fuma-comment/server/next";
 import { prisma } from "@/utils/database";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { createPrismaAdapter } from "@fuma-comment/server/adapters/prisma";

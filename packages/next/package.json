@@ -17,12 +17,8 @@
 	"dependencies": {
 		"@fuma-comment/server": "workspace:*"
 	},
-	"peerDependencies": {
-		"next": "^14.0.0 || ^15.0.0"
-	},
 	"devDependencies": {
 		"@types/node": "^22.13.10",
-		"next": "^15.2.1",
 		"tsconfig": "workspace:*",
 		"tsup": "^8.4.0",
 		"typescript": "^5.8.2"

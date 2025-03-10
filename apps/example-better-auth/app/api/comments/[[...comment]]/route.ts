@@ -1,4 +1,4 @@
-import { NextComment } from "@fuma-comment/next";
+import { NextComment } from "@fuma-comment/server/next";
 import { createBetterAuthAdapter } from "@fuma-comment/server/adapters/better-auth";
 import { createDrizzleAdapter } from "@fuma-comment/server/adapters/drizzle";
 import { auth } from "@/lib/auth";

@@ -16,7 +16,6 @@
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"@fuma-comment/react": "workspace:*",
-		"@fuma-comment/next": "workspace:*",
 		"@fuma-comment/server": "workspace:*"
 	},
 	"devDependencies": {

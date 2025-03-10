@@ -32,9 +32,6 @@ importers:
       '@auth/prisma-adapter':
         specifier: ^2.8.0
         version: 2.8.0(@prisma/client@6.4.1(prisma@6.4.1(typescript@5.8.2))(typescript@5.8.2))
-      '@fuma-comment/next':
-        specifier: workspace:*
-        version: link:../../packages/next
       '@fuma-comment/react':
         specifier: workspace:*
         version: link:../../packages/react
@@ -132,9 +129,6 @@ importers:
 
   apps/example-better-auth:
     dependencies:
-      '@fuma-comment/next':
-        specifier: workspace:*
-        version: link:../../packages/next
       '@fuma-comment/react':
         specifier: workspace:*
         version: link:../../packages/react
@@ -146,7 +140,7 @@ importers:
         version: 1.2.3(typescript@5.8.2)
       drizzle-orm:
         specifier: ^0.40.0
-        version: 0.40.0(@prisma/client@6.4.1(typescript@5.8.2))(@types/pg@8.11.11)(@vercel/postgres@0.10.0)(gel@2.0.1)(kysely@0.27.6)(pg@8.13.3)
+        version: 0.40.0(@prisma/client@6.4.1(typescript@5.8.2))(@types/pg@8.11.11)(@vercel/postgres@0.10.0(utf-8-validate@6.0.5))(gel@2.0.1)(kysely@0.27.6)(pg@8.13.3)
       next:
         specifier: 15.2.1
         version: 15.2.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -187,9 +181,6 @@ importers:
       '@clerk/nextjs':
         specifier: ^6.12.4
         version: 6.12.4(next@15.2.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@fuma-comment/next':
-        specifier: workspace:*
-        version: link:../../packages/next
       '@fuma-comment/react':
         specifier: workspace:*
         version: link:../../packages/react
@@ -198,7 +189,7 @@ importers:
         version: link:../../packages/server
       drizzle-orm:
         specifier: ^0.40.0
-        version: 0.40.0(@prisma/client@6.4.1(typescript@5.8.2))(@types/pg@8.11.11)(@vercel/postgres@0.10.0)(gel@2.0.1)(kysely@0.27.6)(pg@8.13.3)
+        version: 0.40.0(@prisma/client@6.4.1(typescript@5.8.2))(@types/pg@8.11.11)(@vercel/postgres@0.10.0(utf-8-validate@6.0.5))(gel@2.0.1)(kysely@0.27.6)(pg@8.13.3)
       next:
         specifier: 15.2.1
         version: 15.2.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -243,9 +234,6 @@ importers:
       '@types/node':
         specifier: ^22.13.10
         version: 22.13.10
-      next:
-        specifier: ^15.2.1
-        version: 15.2.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -400,13 +388,16 @@ importers:
         version: 1.2.3(typescript@5.8.2)
       drizzle-orm:
         specifier: ^0.40.0
-        version: 0.40.0(@prisma/client@6.4.1(typescript@5.8.2))(@types/pg@8.11.11)(@vercel/postgres@0.10.0)(gel@2.0.1)(kysely@0.27.6)(pg@8.13.3)
+        version: 0.40.0(@prisma/client@6.4.1(typescript@5.8.2))(@types/pg@8.11.11)(@vercel/postgres@0.10.0(utf-8-validate@6.0.5))(gel@2.0.1)(kysely@0.27.6)(pg@8.13.3)
       elysia:
         specifier: ^1.2.25
         version: 1.2.25(@sinclair/typebox@0.34.28)(typescript@5.8.2)
       express:
         specifier: ^4.21.2
         version: 4.21.2
+      next:
+        specifier: ^15.2.1
+        version: 15.2.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       next-auth:
         specifier: ^4.24.11
         version: 4.24.11(next@15.2.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -7213,7 +7204,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.40.0(@prisma/client@6.4.1(typescript@5.8.2))(@types/pg@8.11.11)(@vercel/postgres@0.10.0)(gel@2.0.1)(kysely@0.27.6)(pg@8.13.3):
+  drizzle-orm@0.40.0(@prisma/client@6.4.1(typescript@5.8.2))(@types/pg@8.11.11)(@vercel/postgres@0.10.0(utf-8-validate@6.0.5))(gel@2.0.1)(kysely@0.27.6)(pg@8.13.3):
     optionalDependencies:
       '@prisma/client': 6.4.1(prisma@6.4.1(typescript@5.8.2))(typescript@5.8.2)
       '@types/pg': 8.11.11
