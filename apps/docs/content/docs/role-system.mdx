@@ -15,7 +15,7 @@ In the Fuma Comment function, set the `role` option to `database`.
 For example, on Next.js:
 
 ```ts title="app/api/comments/[[...comment]]/route.ts"
-import { NextComment } from "@fuma-comment/next";
+import { NextComment } from "@fuma-comment/server/next";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
   role: "database",
@@ -33,7 +33,7 @@ Some Auth providers like Clerk has native support for Role system.
 You can define a custom function to fetch user info alone with their role information.
 
 ```ts title="app/api/comments/[[...comment]]/route.ts"
-import { NextComment } from "@fuma-comment/next";
+import { NextComment } from "@fuma-comment/server/next";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
   role: "auth",

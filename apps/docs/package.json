@@ -13,7 +13,6 @@
 	},
 	"dependencies": {
 		"@auth/prisma-adapter": "^2.8.0",
-		"@fuma-comment/next": "workspace:*",
 		"@fuma-comment/react": "workspace:*",
 		"@fuma-comment/server": "workspace:*",
 		"@prisma/client": "^6.4.1",

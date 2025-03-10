@@ -153,7 +153,7 @@ Fuma Comment supports several web/backend frameworks to host the backend server.
 Create `app/api/comments/[[...comment]]/route.ts`.
 
 ```ts title="app/api/comments/[[...comment]]/route.ts"
-import { NextComment } from "@fuma-comment/next";
+import { NextComment } from "@fuma-comment/server/next";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
   // import from comment.config.ts

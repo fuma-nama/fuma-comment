@@ -10,7 +10,6 @@
 	},
 	"dependencies": {
 		"@clerk/nextjs": "^6.12.4",
-		"@fuma-comment/next": "workspace:*",
 		"@fuma-comment/react": "workspace:*",
 		"@fuma-comment/server": "workspace:*",
 		"drizzle-orm": "^0.40.0",
