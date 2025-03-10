@@ -112,6 +112,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 				},
 				onSubmit: () => {
 					if (instance) propsRef.current.onSubmit?.(instance);
+					if (storageKey) sessionStorage.removeItem(storageKey)
 					return true;
 				},
 				mentionEnabled: propsRef.current.mentionEnabled,
@@ -121,7 +122,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 
 					if (storageKey) {
 						clearTimeout(timeout);
-						timeout = window.setTimeout(save, 800);
+						timeout = window.setTimeout(save, 500);
 					}
 				},
 			}).then((res) => {
@@ -143,11 +144,11 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 					ref={ref}
 					className={cn(
 						editorVariants(),
-						"min-h-[72px]",
+						'p-1',
 						containerProps?.className,
 					)}
 				>
-					<p className="px-3 py-2.5 text-sm text-fc-muted-foreground">
+					<p {...props.editorProps} className={cn("px-3 py-2.5 text-sm text-fc-muted-foreground mb-9", props.editorProps?.className)}>
 						{props.placeholder}
 					</p>
 				</div>
@@ -191,6 +192,7 @@ const actions = [
 		icon: <Code className="size-4" />,
 	},
 ];
+
 function ActionBar({ editor }: { editor: Editor }): React.ReactElement {
 	const storage = useStorage();
 	const [, forceUpdate] = useState<unknown>();

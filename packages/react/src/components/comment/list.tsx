@@ -63,7 +63,7 @@ export const CommentList = forwardRef<HTMLDivElement, CommentListProps>(
 					<Comment
 						comment={reply}
 						key={reply.id}
-						actions={<Actions canReply={!isSubThread} />}
+						actions={<Actions canReply />}
 					>
 						{!isSubThread ? <Replies /> : null}
 					</Comment>

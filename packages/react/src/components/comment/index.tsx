@@ -10,7 +10,6 @@ import useSWRMutation from "swr/mutation";
 import { CopyIcon, MoreVertical, PencilIcon, Trash2Icon } from "lucide-react";
 import type { JSONContent } from "@tiptap/react";
 import { cn } from "../../utils/cn";
-import { toLocalString } from "../../utils/date";
 import { deleteComment, getCommentsKey } from "../../utils/fetcher";
 import {
 	type CommentContext,
