@@ -146,7 +146,7 @@ const auth = createBetterAuthAdapter(betterAuth)
 
 ## Server
 
-Fuma Comment supports several web/backend frameworks, including Next.js and Express.
+Fuma Comment supports several web/backend frameworks to host the backend server.
 
 ### Next.js
 
@@ -176,6 +176,31 @@ ExpressComment({
   auth
   storage
 });
+```
+
+### Elysia
+
+```ts
+import Elysia from "elysia";
+import { commentPlugin } from "@fuma-comment/server/elysia";
+
+const app = new Elysia()
+  .use(
+    commentPlugin({
+      // pass your adapters
+      auth,
+      storage,
+      elysia: {
+        // or other prefix if you wanted
+        prefix: "/api/comments"
+      }
+    })
+  )
+  .listen(8080);
+
+const res = await fetch("http://localhost:8080/api/comments/page");
+
+console.log(await res.json());
 ```
 
 ## Done!

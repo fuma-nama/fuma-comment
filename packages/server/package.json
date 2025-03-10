@@ -13,6 +13,10 @@
 			"types": "./dist/express/index.d.ts",
 			"import": "./dist/express/index.js"
 		},
+		"./elysia": {
+			"types": "./dist/elysia/index.d.ts",
+			"import": "./dist/elysia/index.js"
+		},
 		"./custom": {
 			"types": "./dist/custom/index.d.ts",
 			"import": "./dist/custom/index.js"
@@ -32,10 +36,12 @@
 	},
 	"devDependencies": {
 		"@clerk/backend": "^1.25.1",
+		"@elysiajs/node": "^1.2.6",
 		"@types/express": "^5.0.0",
 		"@types/node": "^22.13.10",
 		"better-auth": "^1.2.3",
 		"drizzle-orm": "^0.40.0",
+		"elysia": "^1.2.25",
 		"express": "^4.21.2",
 		"next-auth": "^4.24.11",
 		"tsconfig": "workspace:*",
@@ -44,12 +50,16 @@
 		"vitest": "^3.0.8"
 	},
 	"peerDependencies": {
+		"@clerk/backend": "1.x.x",
 		"better-auth": "1.x.x",
 		"drizzle-orm": "^0.40.0",
-		"next-auth": "4.x.x",
-		"@clerk/backend": "1.x.x"
+		"elysia": "1.x.x",
+		"next-auth": "4.x.x"
 	},
 	"peerDependenciesMeta": {
+		"elysia": {
+			"optional": true
+		},
 		"@clerk/backend": {
 			"optional": true
 		},
