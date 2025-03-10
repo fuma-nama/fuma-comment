@@ -1,0 +1,43 @@
+---
+title: Clerk Auth
+description: Use Clerk as your auth provider
+---
+
+## Setup
+
+Create the adapter, and pass it to your storage's `auth` option, so that it can access the user profiles.
+
+```ts title="comment.config.ts"
+import { auth } from "@clerk/nextjs/server";
+import { ClerkAdapter } from "@fuma-comment/server/adapters/clerk";
+// ORM adapter:
+import { db } from "./database";
+import { createDrizzleAdapter } from "@fuma-comment/server/adapters/drizzle";
+import { comments, rates, roles } from "@/lib/schema";
+
+// pass a function that can obtain the auth object, e.g. `auth()` on Next.js
+export const clerkAdapter = ClerkAdapter(() => auth());
+
+export const storage = createDrizzleAdapter({
+	db,
+	schemas: {
+		comments,
+		rates,
+		roles,
+	},
+	auth: clerkAdapter,
+});
+```
+
+And update your route config:
+
+```ts title="app/api/comments/[[...comment]]/route.ts"
+import { NextComment } from "@fuma-comment/next";
+import { clerkAdapter, storage } from "@/lib/comment.config"
+
+export const { GET, DELETE, PATCH, POST } = NextComment({
+  // import from comment.config.ts
+  auth: clerkAdapter,
+  storage,
+});
+```
