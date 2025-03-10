@@ -4,7 +4,7 @@ import { forwardRef } from "react";
 import { cn } from "../utils/cn";
 
 const menuItemVariants = cva(
-	"inline-flex flex-row items-center justify-between cursor-pointer px-3 py-1.5 text-start focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-80 [&_svg]:size-3.5",
+	"inline-flex flex-row items-center justify-between cursor-pointer px-3 py-2 text-start focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-80 [&_svg]:size-3.5",
 	{
 		variants: {
 			variant: {

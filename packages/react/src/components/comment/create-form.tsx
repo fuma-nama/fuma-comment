@@ -82,6 +82,9 @@ export const CreateForm = forwardRef<
 				containerProps={{
 					className: "border-none p-1 rounded-b-none",
 				}}
+				editorProps={{
+					className: 'min-h-[48px]'
+				}}
 				editorRef={editorRef}
 				disabled={disabled}
 				onChange={useCallback((v: UseCommentEditor) => {

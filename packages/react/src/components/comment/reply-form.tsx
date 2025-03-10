@@ -48,7 +48,7 @@ export function ReplyForm({
 
 	const mutation = useSWRMutation(
 		getCommentsKey({
-			thread: comment.id,
+			thread: comment.threadId ?? comment.id,
 			page: comment.page,
 		}),
 		(key, { arg }: { arg: { content: object } }) =>
