@@ -83,7 +83,7 @@ export const CreateForm = forwardRef<
 					className: "border-none p-1 rounded-b-none",
 				}}
 				editorProps={{
-					className: 'min-h-[48px]'
+					className: "min-h-[48px]",
 				}}
 				editorRef={editorRef}
 				disabled={disabled}

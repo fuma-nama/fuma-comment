@@ -1,1 +1,1 @@
-export * from "@fuma-comment/server/next"
+export * from "@fuma-comment/server/next";

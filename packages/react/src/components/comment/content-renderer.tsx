@@ -3,6 +3,9 @@ import { type ReactNode, useMemo } from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "../../utils/cn";
 import { type StorageContext, useStorage } from "../../contexts/storage";
+import { toJsxRuntime } from "hast-util-to-jsx-runtime";
+import { Fragment, jsx, jsxs } from "react/jsx-runtime";
+import { common, createLowlight } from "lowlight";
 
 interface Mark {
 	type: string;
@@ -21,6 +24,10 @@ export const mentionVariants = cva(
 
 export const codeVariants = cva(
 	"rounded-sm border border-fc-border bg-fc-muted p-0.5",
+);
+
+export const codeBlockVariants = cva(
+	"block rounded-sm border border-fc-border bg-fc-muted p-2 text-sm my-1",
 );
 
 const defaultRenderer: BaseRenderer = (props) => <span {...props} />;
@@ -90,9 +97,23 @@ function renderText(content: JSONContent): ReactNode {
 	);
 }
 
+const lowlight = createLowlight(common);
 function render(content: JSONContent, storage: StorageContext): ReactNode {
 	if (content.type === "text") {
 		return renderText(content);
+	}
+
+	if (content.type === "codeBlock") {
+		const tree = lowlight.highlight(
+			content.attrs?.language as string,
+			content.content?.[0]?.text ?? "",
+		);
+
+		return (
+			<pre key={id++} className={cn(codeBlockVariants())}>
+				<code>{toJsxRuntime(tree, { Fragment, jsx, jsxs })}</code>
+			</pre>
+		);
 	}
 
 	if (content.type === "image" && typeof content.attrs?.src === "string") {

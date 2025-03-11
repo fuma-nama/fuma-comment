@@ -20,8 +20,16 @@ import { Placeholder } from "@tiptap/extension-placeholder";
 import { Image } from "@tiptap/extension-image";
 import { Mention } from "@tiptap/extension-mention";
 import tippy, { type Instance } from "tippy.js";
-import { codeVariants, mentionVariants } from "../comment/content-renderer";
+import {
+	codeBlockVariants,
+	codeVariants,
+	mentionVariants,
+} from "../comment/content-renderer";
 import { MentionList, type MentionListRef } from "./mention";
+import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
+import { createLowlight, common } from "lowlight";
+
+const lowlight = createLowlight(common);
 
 const ImageWithWidth = Image.extend({
 	addAttributes() {
@@ -135,6 +143,13 @@ export function createEditor({
 			History,
 			Paragraph,
 			ImageWithWidth,
+			CodeBlockLowlight.configure({
+				lowlight,
+				defaultLanguage: "plaintext",
+				HTMLAttributes: {
+					class: codeBlockVariants(),
+				},
+			}),
 			Text,
 			Placeholder.configure({
 				placeholder: options.placeholder,

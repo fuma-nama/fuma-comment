@@ -6,10 +6,7 @@
 	"author": "Fuma Nama",
 	"homepage": "https://fuma-comment.vercel.app",
 	"repository": "https://github.com/fuma-nama/fuma-comment",
-	"files": [
-		"./dist",
-		"./css"
-	],
+	"files": ["./dist", "./css"],
 	"license": "MIT",
 	"type": "module",
 	"exports": {
@@ -56,6 +53,7 @@
 		"@radix-ui/react-dropdown-menu": "^2.1.6",
 		"@tiptap/extension-bold": "^2.11.5",
 		"@tiptap/extension-code": "^2.11.5",
+		"@tiptap/extension-code-block-lowlight": "^2.11.5",
 		"@tiptap/extension-document": "^2.11.5",
 		"@tiptap/extension-dropcursor": "^2.11.5",
 		"@tiptap/extension-gapcursor": "^2.11.5",
@@ -71,7 +69,9 @@
 		"@tiptap/pm": "^2.11.5",
 		"@tiptap/react": "^2.11.5",
 		"@tiptap/suggestion": "^2.11.5",
-		"class-variance-authority": "^0.7.0",
+		"class-variance-authority": "^0.7.1",
+		"hast-util-to-jsx-runtime": "^2.3.6",
+		"lowlight": "^3.3.0",
 		"lucide-react": "^0.479.0",
 		"swr": "^2.3.3",
 		"tailwind-merge": "^3.0.2",

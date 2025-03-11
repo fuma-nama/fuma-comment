@@ -1,3 +1,4 @@
+@import "./tokyo-night.css";
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {

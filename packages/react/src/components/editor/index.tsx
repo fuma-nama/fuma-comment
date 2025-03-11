@@ -7,6 +7,7 @@ import {
 	useRef,
 	useEffect,
 	type RefObject,
+	type ReactNode,
 } from "react";
 import { cva } from "class-variance-authority";
 import {
@@ -15,6 +16,7 @@ import {
 	ImageIcon,
 	Italic,
 	LinkIcon,
+	SquareCode,
 	Strikethrough,
 } from "lucide-react";
 import { cn } from "../../utils/cn";
@@ -78,6 +80,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 	({ editorRef, disabled = false, containerProps, ...props }, ref) => {
 		const [editor, setEditor] = useState<Editor>();
 		const mention = useMention();
+		const storage = useStorage();
 
 		// force editor props to be immutable
 		const propsRef = useRef({
@@ -112,7 +115,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 				},
 				onSubmit: () => {
 					if (instance) propsRef.current.onSubmit?.(instance);
-					if (storageKey) sessionStorage.removeItem(storageKey)
+					if (storageKey) sessionStorage.removeItem(storageKey);
 					return true;
 				},
 				mentionEnabled: propsRef.current.mentionEnabled,
@@ -142,13 +145,15 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 				<div
 					{...containerProps}
 					ref={ref}
-					className={cn(
-						editorVariants(),
-						'p-1',
-						containerProps?.className,
-					)}
+					className={cn(editorVariants(), "p-1", containerProps?.className)}
 				>
-					<p {...props.editorProps} className={cn("px-3 py-2.5 text-sm text-fc-muted-foreground mb-9", props.editorProps?.className)}>
+					<p
+						{...props.editorProps}
+						className={cn(
+							"px-3 py-2.5 text-sm text-fc-muted-foreground mb-9",
+							props.editorProps?.className,
+						)}
+					>
 						{props.placeholder}
 					</p>
 				</div>
@@ -168,75 +173,78 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 				ref={ref}
 			>
 				<EditorContent editor={editor} {...props.editorProps} />
-				<ActionBar editor={editor} />
+				<div className="flex flex-row items-center p-1">
+					<MarkButton
+						editor={editor}
+						name="bold"
+						icon={<Bold className="size-4" />}
+					/>
+					<MarkButton
+						editor={editor}
+						name="italic"
+						icon={<Italic className="size-4" />}
+					/>
+					<MarkButton
+						editor={editor}
+						name="strike"
+						icon={<Strikethrough className="size-4" />}
+					/>
+					<MarkButton
+						editor={editor}
+						name="code"
+						icon={<Code className="size-4" />}
+					/>
+					<div className="w-px h-4 bg-fc-border mx-2 last:hidden" />
+					<UpdateLink editor={editor} />
+					<CodeBlockButton editor={editor} />
+
+					{storage.enabled ? <UploadImageDialog editor={editor} /> : null}
+				</div>
 			</div>
 		);
 	},
 );
 
-const actions = [
-	{
-		name: "bold",
-		icon: <Bold className="size-4" />,
-	},
-	{
-		name: "strike",
-		icon: <Strikethrough className="size-4" />,
-	},
-	{
-		name: "italic",
-		icon: <Italic className="size-4" />,
-	},
-	{
-		name: "code",
-		icon: <Code className="size-4" />,
-	},
-];
-
-function ActionBar({ editor }: { editor: Editor }): React.ReactElement {
-	const storage = useStorage();
-	const [, forceUpdate] = useState<unknown>();
-
-	useEffect(() => {
-		const onUpdate = (): void => {
-			forceUpdate({});
-		};
-
-		editor.on("transaction", onUpdate);
-		return () => {
-			editor.off("transaction", onUpdate);
-		};
-	}, [editor]);
+function CodeBlockButton({ editor }: { editor: Editor }): React.ReactNode {
+	useHookUpdate(editor);
 
 	return (
-		<div className="flex flex-row items-center p-1">
-			{actions.map((mark) => (
-				<button
-					key={mark.name}
-					type="button"
-					aria-label={`Toggle ${mark.name}`}
-					className={cn(
-						toggleVariants({
-							active: editor.isActive(mark.name),
-						}),
-					)}
-					disabled={!editor.can().toggleMark(mark.name) || !editor.isEditable}
-					onMouseDown={(e) => {
-						editor.commands.toggleMark(mark.name);
-						e.preventDefault();
-					}}
-				>
-					{mark.icon}
-				</button>
-			))}
-			<UpdateLink editor={editor} />
-			{storage.enabled ? (
-				<>
-					<div className="mx-1 h-4 w-px bg-fc-border" />
-					<UploadImageDialog editor={editor} />
-				</>
-			) : null}
-		</div>
+		<button
+			type="button"
+			aria-label="Toggle CodeBlock"
+			className={cn(toggleVariants({ active: editor.isActive("codeBlock") }))}
+			onClick={() => editor.commands.toggleCodeBlock()}
+		>
+			<SquareCode className="size-4" />
+		</button>
+	);
+}
+
+function MarkButton({
+	editor,
+	name,
+	icon,
+}: { editor: Editor; name: string; icon: ReactNode }): React.ReactNode {
+	useHookUpdate(editor);
+
+	return (
+		<button
+			key={name}
+			type="button"
+			aria-label={`Toggle ${name}`}
+			className={cn(
+				toggleVariants({
+					active: editor.isActive(name),
+				}),
+			)}
+			disabled={!editor.can().toggleMark(name) || !editor.isEditable}
+			onMouseDown={(e) => {
+				editor.commands.toggleMark(name);
+				e.preventDefault();
+			}}
+		>
+			{icon}
+		</button>
 	);
 }
 
@@ -309,3 +317,18 @@ function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
 }
 
 CommentEditor.displayName = "Editor";
+
+function useHookUpdate(editor: Editor): void {
+	const [, forceUpdate] = useState(0);
+
+	useEffect(() => {
+		const onUpdate = (): void => {
+			forceUpdate((prev) => prev + 1);
+		};
+
+		editor.on("transaction", onUpdate);
+		return () => {
+			editor.off("transaction", onUpdate);
+		};
+	}, [editor]);
+}

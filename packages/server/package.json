@@ -30,9 +30,7 @@
 			"import": "./dist/adapters/*.js"
 		}
 	},
-	"files": [
-		"./dist"
-	],
+	"files": ["./dist"],
 	"license": "MIT",
 	"scripts": {
 		"lint": "biome lint .",
@@ -49,7 +47,7 @@
 		"drizzle-orm": "^0.40.0",
 		"elysia": "^1.2.25",
 		"express": "^4.21.2",
-		"next": "^15.2.1",
+		"next": "^15.2.2",
 		"next-auth": "^4.24.11",
 		"tsconfig": "workspace:*",
 		"tsup": "^8.4.0",
@@ -57,11 +55,11 @@
 		"vitest": "^3.0.8"
 	},
 	"peerDependencies": {
-		"next": "^14.0.0 || ^15.0.0",
 		"@clerk/backend": "1.x.x",
 		"better-auth": "1.x.x",
 		"drizzle-orm": "^0.40.0",
 		"elysia": "1.x.x",
+		"next": "^14.0.0 || ^15.0.0",
 		"next-auth": "4.x.x"
 	},
 	"peerDependenciesMeta": {

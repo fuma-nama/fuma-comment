@@ -1,6 +1,5 @@
 import type { Editor } from "@tiptap/react";
 import { useLayoutEffect, useState } from "react";
-import { useLatestCallback } from "../../utils/hooks";
 import { cn } from "../../utils/cn";
 import { inputVariants } from "../input";
 import { buttonVariants } from "../button";
@@ -26,41 +25,37 @@ export function HyperLink({
 		setValue(href ?? "");
 	}, [editor]);
 
-	const unset = useLatestCallback(() => {
-		onClose();
-		editor.chain().focus().unsetMark("link").run();
-	});
-
-	const onSubmit = useLatestCallback((e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		e.stopPropagation();
-
-		if (value.trim().length === 0) return;
-		const content = name.length > 0 ? name : value;
-
-		onClose();
-		if (!editor.state.selection.empty) {
-			editor
-				.chain()
-				.deleteSelection()
-				.setLink({ href: value })
-				.insertContent(content)
-				.focus()
-				.run();
-		} else {
-			editor
-				.chain()
-				.setLink({ href: value })
-				.insertContent(content)
-				.unsetMark("link")
-				.insertContent(" ")
-				.focus()
-				.run();
-		}
-	});
-
 	return (
-		<form className="flex flex-col gap-1" onSubmit={onSubmit}>
+		<form
+			className="flex flex-col gap-1"
+			onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+				e.preventDefault();
+				e.stopPropagation();
+
+				if (value.trim().length === 0) return;
+				const content = name.length > 0 ? name : value;
+
+				onClose();
+				if (!editor.state.selection.empty) {
+					editor
+						.chain()
+						.deleteSelection()
+						.setLink({ href: value })
+						.insertContent(content)
+						.focus()
+						.run();
+				} else {
+					editor
+						.chain()
+						.setLink({ href: value })
+						.insertContent(content)
+						.unsetMark("link")
+						.insertContent(" ")
+						.focus()
+						.run();
+				}
+			}}
+		>
 			<input
 				className={cn(inputVariants())}
 				id="name"
@@ -88,7 +83,10 @@ export function HyperLink({
 				{editor.isActive("link") ? (
 					<button
 						className={cn(buttonVariants({ variant: "secondary" }))}
-						onClick={unset}
+						onClick={() => {
+							onClose();
+							editor.chain().focus().unsetMark("link").run();
+						}}
 						type="button"
 					>
 						Unset
