@@ -7,6 +7,7 @@
 		"prisma",
 		"---Auth---",
 		"better-auth",
-		"next-auth"
+		"next-auth",
+		"clerk"
 	]
 }
