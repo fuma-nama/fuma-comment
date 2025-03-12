@@ -1,0 +1,28 @@
+{
+	"name": "example-mongodb",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev --turbopack",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint"
+	},
+	"dependencies": {
+		"@fuma-comment/react": "workspace:*",
+		"@fuma-comment/server": "workspace:*",
+		"better-auth": "^1.2.3",
+		"mongodb": "^6.14.2",
+		"next": "15.2.2",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0"
+	},
+	"devDependencies": {
+		"@tailwindcss/postcss": "^4.0.12",
+		"@types/node": "^22.13.10",
+		"@types/react": "^19.0.10",
+		"@types/react-dom": "^19.0.4",
+		"tailwindcss": "^4.0.12",
+		"typescript": "^5.8.2"
+	}
+}
