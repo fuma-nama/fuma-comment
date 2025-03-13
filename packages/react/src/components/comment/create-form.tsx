@@ -17,7 +17,11 @@ import {
 import { useCommentsContext } from "../../contexts/comments";
 import { useLatestCallback } from "../../utils/hooks";
 import { buttonVariants } from "../button";
-import { CommentEditor, type UseCommentEditor } from "../editor";
+import {
+	clearPersistentId,
+	CommentEditor,
+	type UseCommentEditor,
+} from "../editor";
 import { Spinner } from "../spinner";
 import { updateCommentList } from "../../utils/comment-list";
 import { syncComments } from "../../utils/comment-manager";
@@ -54,11 +58,11 @@ export const CreateForm = forwardRef<
 	const disabled = mutation.isMutating;
 
 	const submit = useLatestCallback(() => {
-		if (auth.isLoading || auth.session === null) return;
-		if (!editorRef.current) return;
+		if (auth.isLoading || auth.session === null || !editorRef.current) return;
 		const content = editorRef.current.getJSON();
 
 		if (content.length === 0) return;
+		clearPersistentId("create");
 		void mutation.trigger({ content });
 	});
 

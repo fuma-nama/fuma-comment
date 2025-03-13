@@ -76,6 +76,25 @@ const toggleVariants = cva(
 	},
 );
 
+export function getPersistentId(id: string) {
+	const storageKey = `fc_textarea_${id}`;
+	const cached = sessionStorage.getItem(storageKey);
+
+	console.log('read', cached, storageKey)
+	return cached ? JSON.parse(cached) : null;
+}
+
+export function setPersistentId(id: string, value: object) {
+	const storageKey = `fc_textarea_${id}`;
+	sessionStorage.setItem(storageKey, JSON.stringify(value));
+}
+
+export function clearPersistentId(id: string) {
+	const storageKey = `fc_textarea_${id}`;
+	console.log('clear', storageKey)
+	sessionStorage.removeItem(storageKey);
+}
+
 export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 	({ editorRef, disabled = false, containerProps, ...props }, ref) => {
 		const [editor, setEditor] = useState<Editor>();
@@ -90,20 +109,19 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 
 		useLayoutEffect(() => {
 			let instance: Editor | undefined;
-			const storageKey = propsRef.current.persistentId
-				? `fc_textarea_${propsRef.current.persistentId}`
-				: null;
-			const cached = storageKey ? sessionStorage.getItem(storageKey) : null;
-
-			const save = (): void => {
-				if (!instance || !storageKey) return;
-				sessionStorage.setItem(storageKey, JSON.stringify(instance.getJSON()));
-			};
+			const { persistentId, defaultValue } = propsRef.current;
 
 			let timeout: number | undefined;
+			const save = () => {
+				if (instance && persistentId)
+					setPersistentId(persistentId, instance.getJSON());
+			};
+
 			void createEditorLazy({
 				autofocus: false,
-				content: cached ? JSON.parse(cached) : propsRef.current.defaultValue,
+				content: persistentId
+					? (getPersistentId(persistentId) ?? defaultValue)
+					: defaultValue,
 				editorProps: {
 					attributes: {
 						class: "flex-1 px-3 pt-2.5 focus-visible:outline-none",
@@ -115,7 +133,6 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 				},
 				onSubmit: () => {
 					if (instance) propsRef.current.onSubmit?.(instance);
-					if (storageKey) sessionStorage.removeItem(storageKey);
 					return true;
 				},
 				mentionEnabled: propsRef.current.mentionEnabled,
@@ -123,7 +140,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 				onTransaction(v) {
 					propsRef.current.onChange?.(v.editor as Editor);
 
-					if (storageKey) {
+					if (persistentId && v.transaction.docChanged) {
 						clearTimeout(timeout);
 						timeout = window.setTimeout(save, 500);
 					}
@@ -135,7 +152,6 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 
 			return () => {
 				if (!instance) return;
-				save();
 				instance.destroy();
 			};
 		}, []);
@@ -194,7 +210,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 						name="code"
 						icon={<Code className="size-4" />}
 					/>
-					<div className="w-px h-4 bg-fc-border mx-2 last:hidden" />
+					<div className="w-px h-4 bg-fc-border mx-0.5 last:hidden" />
 					<UpdateLink editor={editor} />
 					<CodeBlockButton editor={editor} />
 

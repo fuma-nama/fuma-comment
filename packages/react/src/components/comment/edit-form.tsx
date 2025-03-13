@@ -7,7 +7,11 @@ import { useCommentContext } from "../../contexts/comment";
 import { updateComment } from "../../utils/comment-manager";
 import { useLatestCallback } from "../../utils/hooks";
 import { buttonVariants } from "../button";
-import { CommentEditor, type UseCommentEditor } from "../editor";
+import {
+	clearPersistentId,
+	CommentEditor,
+	type UseCommentEditor,
+} from "../editor";
 import { Spinner } from "../spinner";
 
 export function EditForm(): React.ReactNode {
@@ -39,6 +43,7 @@ export function EditForm(): React.ReactNode {
 		const content = editorRef.current.getJSON();
 
 		if (content.length === 0) return;
+		clearPersistentId(`edit-${comment.id}`);
 		void mutation.trigger(
 			{ content },
 			{
@@ -50,13 +55,13 @@ export function EditForm(): React.ReactNode {
 		);
 	});
 
-	const onSubmit = useLatestCallback((e: React.FormEvent<HTMLFormElement>) => {
-		submit();
-		e.preventDefault();
-	});
-
 	return (
-		<form onSubmit={onSubmit}>
+		<form
+			onSubmit={(e) => {
+				submit();
+				e.preventDefault();
+			}}
+		>
 			<CommentEditor
 				persistentId={`edit-${comment.id}`}
 				defaultValue={comment.content}

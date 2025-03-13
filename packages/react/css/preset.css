@@ -46,7 +46,7 @@
 	height: 0;
 	pointer-events: none;
 	color: var(--color-fc-muted-foreground);
-	font-size: 0.875rem;
+	font-size: 15px;
 }
 
 .tiptap img {

@@ -9,6 +9,6 @@ export const { GET, DELETE, PATCH, POST } = NextComment({
 	auth: createBetterAuthAdapter(auth),
 	storage: createMongoDBAdapter({
 		db,
-		auth: 'better-auth'
+		auth: "better-auth",
 	}),
 });
