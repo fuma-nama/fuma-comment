@@ -475,6 +475,9 @@ importers:
       '@elysiajs/node':
         specifier: ^1.2.6
         version: 1.2.6(bufferutil@4.0.9)(elysia@1.2.25(@sinclair/typebox@0.34.30)(typescript@5.8.2))(formidable@3.5.2)(ws@8.18.1(bufferutil@4.0.9)(utf-8-validate@6.0.5))
+      '@hono/node-server':
+        specifier: ^1.13.8
+        version: 1.13.8(hono@4.7.4)
       '@types/express':
         specifier: ^5.0.0
         version: 5.0.0
@@ -493,6 +496,9 @@ importers:
       express:
         specifier: ^4.21.2
         version: 4.21.2
+      hono:
+        specifier: ^4.7.4
+        version: 4.7.4
       mongodb:
         specifier: ^6.14.2
         version: 6.14.2
@@ -1165,6 +1171,12 @@ packages:
 
   '@hexagon/base64@1.1.28':
     resolution: {integrity: sha512-lhqDEAvWixy3bZ+UOYbPwUbBkwBq5C1LAJ/xPC8Oi+lL54oyakv/npbA0aU2hgCsx/1NUd4IBvV03+aUBWxerw==}
+
+  '@hono/node-server@1.13.8':
+    resolution: {integrity: sha512-fsn8ucecsAXUoVxrUil0m13kOEq4mkX4/4QozCqmY+HpGfKl74OYSn8JcMA8GnG0ClfdRI4/ZSeG7zhFaVg+wg==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      hono: ^4
 
   '@img/sharp-darwin-arm64@0.33.5':
     resolution: {integrity: sha512-UT4p+iz/2H4twwAoLCqfA9UH5pI6DggwKEGuaPy7nCVQ8ZsiY5PIcrRvD1DzuY3qYL07NtIQcWnBSY/heikIFQ==}
@@ -3511,6 +3523,10 @@ packages:
   highlight.js@11.11.1:
     resolution: {integrity: sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==}
     engines: {node: '>=12.0.0'}
+
+  hono@4.7.4:
+    resolution: {integrity: sha512-Pst8FuGqz3L7tFF+u9Pu70eI0xa5S3LPUmrNd5Jm8nTHze9FxLTK9Kaj5g/k4UcwuJSXTP65SyHOPLrffpcAJg==}
+    engines: {node: '>=16.9.0'}
 
   html-void-elements@3.0.0:
     resolution: {integrity: sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg==}
@@ -5930,6 +5946,10 @@ snapshots:
       tslib: 2.8.1
 
   '@hexagon/base64@1.1.28': {}
+
+  '@hono/node-server@1.13.8(hono@4.7.4)':
+    dependencies:
+      hono: 4.7.4
 
   '@img/sharp-darwin-arm64@0.33.5':
     optionalDependencies:
@@ -8419,6 +8439,8 @@ snapshots:
   hexoid@2.0.0: {}
 
   highlight.js@11.11.1: {}
+
+  hono@4.7.4: {}
 
   html-void-elements@3.0.0: {}
 
