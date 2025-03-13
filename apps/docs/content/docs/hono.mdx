@@ -1,0 +1,21 @@
+---
+title: Hono.js
+description: Run Fuma Comment on Hono.js
+---
+
+## Setup
+
+It is as simple as adding the following code to your Hono app.
+
+```ts
+import { Hono } from "hono";
+import { HonoComment } from "@fuma-comment/server/hono";
+
+const app = new Hono();
+
+HonoComment({
+    app,
+    storage: // storage adapter
+    auth: // auth adapter
+});
+```

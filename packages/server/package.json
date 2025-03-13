@@ -25,14 +25,16 @@
 			"types": "./dist/next/index.d.ts",
 			"import": "./dist/next/index.js"
 		},
+		"./hono": {
+			"types": "./dist/hono/index.d.ts",
+			"import": "./dist/hono/index.js"
+		},
 		"./adapters/*": {
 			"types": "./dist/adapters/*.d.ts",
 			"import": "./dist/adapters/*.js"
 		}
 	},
-	"files": [
-		"./dist"
-	],
+	"files": ["./dist"],
 	"license": "MIT",
 	"scripts": {
 		"lint": "biome lint .",
