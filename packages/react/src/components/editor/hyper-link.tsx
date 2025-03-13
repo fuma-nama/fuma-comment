@@ -27,7 +27,7 @@ export function HyperLink({
 
 	return (
 		<form
-			className="flex flex-col gap-1"
+			className="flex flex-col gap-4"
 			onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
 				e.preventDefault();
 				e.stopPropagation();
@@ -56,27 +56,35 @@ export function HyperLink({
 				}
 			}}
 		>
-			<input
-				className={cn(inputVariants())}
-				id="name"
-				onChange={(e) => {
-					setName(e.target.value);
-				}}
-				placeholder="Name (optional)"
-				value={name}
-			/>
-			<input
-				className={cn(inputVariants())}
-				id="url"
-				onChange={(e) => {
-					setValue(e.target.value);
-				}}
-				placeholder="URL"
-				required
-				type="url"
-				value={value}
-			/>
-			<div className="mt-2 flex gap-1">
+			<div className="grid grid-cols-[auto_1fr] gap-4">
+				<label className="font-medium text-sm content-center" htmlFor="name">
+					Name
+				</label>
+				<input
+					id="name"
+					className={cn(inputVariants(), "flex-1")}
+					value={name}
+					onChange={(e) => {
+						setName(e.target.value);
+					}}
+					placeholder="My Link (optional)"
+				/>
+				<label className="font-medium text-sm content-center" htmlFor="url">
+					URL
+				</label>
+				<input
+					id="url"
+					className={cn(inputVariants(), "flex-1")}
+					onChange={(e) => {
+						setValue(e.target.value);
+					}}
+					placeholder="https://example.com"
+					required
+					type="url"
+					value={value}
+				/>
+			</div>
+			<div className="flex gap-1">
 				<button className={cn(buttonVariants())} type="submit">
 					Save
 				</button>

@@ -32,6 +32,8 @@ import { useMention } from "../../contexts/mention";
 import { UploadImage } from "./image-upload";
 import { HyperLink } from "./hyper-link";
 import { createEditorLazy } from "./lazy-load";
+import { buttonVariants } from "../button";
+import { inputVariants } from "../input";
 
 export type UseCommentEditor = Editor;
 
@@ -164,7 +166,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 					<p
 						{...props.editorProps}
 						className={cn(
-							"px-3 py-2.5 text-sm text-fc-muted-foreground mb-9",
+							"px-3 py-2.5 text-[15px] text-fc-muted-foreground mb-9",
 							props.editorProps?.className,
 						)}
 					>
@@ -220,17 +222,60 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 );
 
 function CodeBlockButton({ editor }: { editor: Editor }): React.ReactNode {
+	const [isOpen, setIsOpen] = useState(false);
 	useHookUpdate(editor);
 
 	return (
-		<button
-			type="button"
-			aria-label="Toggle CodeBlock"
-			className={cn(toggleVariants({ active: editor.isActive("codeBlock") }))}
-			onClick={() => editor.commands.toggleCodeBlock()}
+		<Dialog onOpenChange={setIsOpen} open={isOpen}>
+			<DialogTrigger
+				type="button"
+				aria-label="Toggle CodeBlock"
+				className={cn(toggleVariants({ active: editor.isActive("codeBlock") }))}
+			>
+				<SquareCode className="size-4" />
+			</DialogTrigger>
+			<DialogContent
+				onCloseAutoFocus={(e) => {
+					editor.commands.focus();
+					e.preventDefault();
+				}}
+			>
+				<DialogTitle>Code Block</DialogTitle>
+				<DialogDescription>Choose a language.</DialogDescription>
+				<CodeBlockForm editor={editor} onClose={() => setIsOpen(false)} />
+			</DialogContent>
+		</Dialog>
+	);
+}
+
+function CodeBlockForm({
+	editor,
+	onClose,
+}: { editor: Editor; onClose: () => void }) {
+	const [language, setLanguage] = useState(editor.getAttributes("codeBlock").language ?? 'plaintext');
+
+	return (
+		<form
+			className="flex flex-row gap-2"
+			onSubmit={(e) => {
+				editor.commands.setCodeBlock({
+					language,
+				});
+
+				onClose();
+				e.preventDefault();
+				e.stopPropagation();
+			}}
 		>
-			<SquareCode className="size-4" />
-		</button>
+			<input
+				className={cn(inputVariants(), "flex-1")}
+				value={language}
+				onChange={(e) => setLanguage(e.target.value)}
+			/>
+			<button type="submit" className={cn(buttonVariants())}>
+				{editor.isActive("codeBlock") ? "Update" : "Done"}
+			</button>
+		</form>
 	);
 }
 
@@ -282,9 +327,7 @@ function UploadImageDialog({ editor }: { editor: Editor }): React.ReactElement {
 				}}
 			>
 				<DialogTitle>Add Image</DialogTitle>
-				<DialogDescription className="mb-4 text-sm text-fc-muted-foreground">
-					Insert an image to your comment.
-				</DialogDescription>
+				<DialogDescription>Insert an image to your comment.</DialogDescription>
 				<UploadImage
 					editor={editor}
 					onClose={() => {
@@ -316,7 +359,7 @@ function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
 				}}
 			>
 				<DialogTitle>Add Link</DialogTitle>
-				<DialogDescription className="mb-4 text-sm text-fc-muted-foreground">
+				<DialogDescription>
 					Insert hype links to your comment.
 				</DialogDescription>
 				<HyperLink

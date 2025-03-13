@@ -1,11 +1,13 @@
 import type { JSONContent } from "@tiptap/react";
-import { type ReactNode, useMemo } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "../../utils/cn";
 import { type StorageContext, useStorage } from "../../contexts/storage";
 import { toJsxRuntime } from "hast-util-to-jsx-runtime";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { common, createLowlight } from "lowlight";
+import { CheckIcon, CopyIcon } from "lucide-react";
+import { buttonVariants } from "../button";
 
 interface Mark {
 	type: string;
@@ -27,7 +29,7 @@ export const codeVariants = cva(
 );
 
 export const codeBlockVariants = cva(
-	"block rounded-sm border border-fc-border bg-fc-muted p-2 text-sm my-1",
+	"relative block rounded-sm border border-fc-border bg-fc-muted p-2 text-sm my-1",
 );
 
 const defaultRenderer: BaseRenderer = (props) => <span {...props} />;
@@ -97,22 +99,18 @@ function renderText(content: JSONContent): ReactNode {
 	);
 }
 
-const lowlight = createLowlight(common);
 function render(content: JSONContent, storage: StorageContext): ReactNode {
 	if (content.type === "text") {
 		return renderText(content);
 	}
 
 	if (content.type === "codeBlock") {
-		const tree = lowlight.highlight(
-			content.attrs?.language as string,
-			content.content?.[0]?.text ?? "",
-		);
-
 		return (
-			<pre key={id++} className={cn(codeBlockVariants())}>
-				<code>{toJsxRuntime(tree, { Fragment, jsx, jsxs })}</code>
-			</pre>
+			<CodeBlock
+				key={id++}
+				language={content.attrs?.language as string}
+				content={content.content?.[0]?.text ?? ""}
+			/>
 		);
 	}
 
@@ -192,4 +190,40 @@ export function ContentRenderer({
 	const ctx = useStorage();
 
 	return useMemo(() => render(content, ctx), [content, ctx]);
+}
+
+const lowlight = createLowlight(common);
+function CodeBlock({
+	language,
+	content,
+}: { language: string; content: string }) {
+	const tree = lowlight.highlight(language, content);
+	const [copied, setCopied] = useState(false);
+
+	return (
+		<pre className={cn(codeBlockVariants())}>
+			<code>{toJsxRuntime(tree, { Fragment, jsx, jsxs })}</code>
+			<button
+				type="button"
+				className={cn(
+					buttonVariants({
+						size: "icon",
+						variant: "secondary",
+					}),
+					"absolute right-0.5 top-0.5",
+				)}
+				onClick={() => {
+					navigator.clipboard.writeText(content);
+					setCopied(true);
+					setTimeout(() => setCopied(false), 1000);
+				}}
+			>
+				{copied ? (
+					<CheckIcon className="size-3.5" />
+				) : (
+					<CopyIcon className="size-3.5" />
+				)}
+			</button>
+		</pre>
+	);
 }

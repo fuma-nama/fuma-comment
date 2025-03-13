@@ -16,7 +16,7 @@ const rateVariants = cva(
 		variants: {
 			active: {
 				true: "bg-fc-accent text-fc-accent-foreground",
-				false: "text-fc-muted-foreground hover:text-fd-accent-foreground",
+				false: "text-fc-muted-foreground hover:text-fc-accent-foreground",
 			},
 		},
 	},

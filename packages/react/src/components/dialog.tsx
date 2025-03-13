@@ -5,7 +5,17 @@ import { buttonVariants } from "./button";
 
 export const Dialog = Primitive.Root;
 export const DialogTrigger = Primitive.Trigger;
-export const DialogDescription = Primitive.Description;
+export function DialogDescription({
+	className,
+	...props
+}: Primitive.DialogDescriptionProps): React.ReactElement {
+	return (
+		<Primitive.Description
+			className={cn("text-fc-muted-foreground text-sm mb-4", className)}
+			{...props}
+		/>
+	);
+}
 
 export function DialogContent({
 	children,
@@ -23,7 +33,7 @@ export function DialogContent({
 				className={cn(
 					"fixed left-1/2 flex w-full max-w-md -translate-x-1/2 flex-col rounded-2xl border border-fc-border bg-fc-popover text-fc-popover-foreground p-4 shadow-lg z-10",
 					position === "bottom"
-						? "bottom-0 rounded-b-none border-b-0 data-[state=closed]:animate-dialogHideBottom data-[state=open]:animate-dialogShowBottom"
+						? "bottom-0 rounded-b-none border-b-0 pb-8 data-[state=closed]:animate-dialogHideBottom data-[state=open]:animate-dialogShowBottom"
 						: "top-1/2 -translate-y-1/2 data-[state=closed]:animate-dialogHide data-[state=open]:animate-dialogShow",
 					className,
 				)}

@@ -77,7 +77,7 @@ export const CreateForm = forwardRef<
 			className={cn("relative", props.className)}
 		>
 			{mutation.error ? (
-				<p className="mb-1 text-sm text-fc-error">
+				<p className="text-sm text-fc-danger p-4">
 					{(mutation.error as FetcherError).message}
 				</p>
 			) : null}

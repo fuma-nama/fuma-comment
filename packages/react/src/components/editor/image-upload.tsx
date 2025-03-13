@@ -2,7 +2,7 @@ import type { Editor } from "@tiptap/react";
 import { useState } from "react";
 import useSWRMutation from "swr/mutation";
 import { useStorage } from "../../contexts/storage";
-import { useLatestCallback, useObjectURL } from "../../utils/hooks";
+import { useObjectURL } from "../../utils/hooks";
 import { cn } from "../../utils/cn";
 import { Spinner } from "../spinner";
 import { buttonVariants } from "../button";
@@ -34,30 +34,27 @@ export function UploadImage({
 		},
 	);
 
-	const onSubmit = useLatestCallback((e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		e.stopPropagation();
-
-		if (file) {
-			void mutation.trigger({ file });
-		}
-	});
-
-	const onChange = useLatestCallback(
-		(e: React.ChangeEvent<HTMLInputElement>) => {
-			if (e.target.files && e.target.files.length > 0) {
-				setFile(e.target.files.item(0));
-			}
-		},
-	);
-
 	return (
-		<form className="flex flex-col" onSubmit={onSubmit}>
+		<form
+			className="flex flex-col"
+			onSubmit={(e) => {
+				e.preventDefault();
+				e.stopPropagation();
+
+				if (file) {
+					void mutation.trigger({ file });
+				}
+			}}
+		>
 			<input
 				accept="image/png, image/jpeg"
 				hidden
 				id="image"
-				onChange={onChange}
+				onChange={(e) => {
+					if (e.target.files && e.target.files.length > 0) {
+						setFile(e.target.files.item(0));
+					}
+				}}
 				type="file"
 				disabled={mutation.isMutating}
 			/>
