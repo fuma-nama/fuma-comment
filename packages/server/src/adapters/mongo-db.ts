@@ -1,5 +1,6 @@
 import { type Db, ObjectId } from "mongodb";
 import type { StorageAdapter, StorageAuthProvider } from "../adapter";
+import type { UserProfile } from "../types";
 
 interface CommentType {
     page: string;
@@ -16,24 +17,29 @@ interface RateType {
 }
 
 interface RoleType {
-    userId: string
-    name: string
-    canDelete: boolean
+    userId: string;
+    name: string;
+    canDelete: boolean;
 }
 
 export function createMongoDBAdapter({
     db,
-    auth,
     RateCollection = "rate",
     CommentCollection = "comment",
-    RoleCollection = "role"
+    RoleCollection = "role",
+    ...options
 }: {
     db: Db;
-    auth: StorageAuthProvider;
+    auth: "better-auth" | "next-auth" | StorageAuthProvider;
     RateCollection?: string;
     CommentCollection?: string;
-    RoleCollection?: string
+    RoleCollection?: string;
 }): StorageAdapter {
+    const auth =
+        typeof options.auth === "string"
+            ? createGenericProvider(db, options.auth)
+            : options.auth;
+
     return {
         async getComments({
             sort,
@@ -218,10 +224,54 @@ export function createMongoDBAdapter({
         },
         async getRole(options) {
             const result = await db.collection<RoleType>(RoleCollection).findOne({
-                userId: options.auth.id
-            })
+                userId: options.auth.id,
+            });
 
-            return result ?? null
+            return result ?? null;
+        },
+    };
+}
+
+function createGenericProvider(
+    db: Db,
+    auth: "better-auth" | "next-auth",
+): StorageAuthProvider {
+    const idField = auth === "better-auth" ? "_id" : "email";
+
+    return {
+        async getUsers(userIds) {
+            const result = await db
+                .collection("user")
+                .find({
+                    [idField]: {
+                        $in:
+                            idField === "_id" ? userIds.map((v) => new ObjectId(v)) : userIds,
+                    },
+                })
+                .toArray();
+
+            return result.map((res) => ({
+                id: res[idField].toString(),
+                image: res.image,
+                name: res.name ?? "Unknown User",
+            })) as UserProfile[];
+        },
+        async queryUsers(options) {
+            const result = await db
+                .collection("user")
+                .find({
+                    name: {
+                        $regex: options.name,
+                    },
+                })
+                .limit(options.limit)
+                .toArray();
+
+            return result.map((res) => ({
+                id: res[idField].toString(),
+                image: res.image,
+                name: res.name ?? "Unknown User",
+            })) as UserProfile[];
         },
     };
 }

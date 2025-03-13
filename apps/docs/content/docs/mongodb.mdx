@@ -1,0 +1,19 @@
+---
+title: MongoDB
+description: use MongoDB to store data
+---
+
+## Setup
+
+Add to your Fuma Comment config:
+
+```ts
+import { createMongoDBAdapter } from "@fuma-comment/server/adapters/mongo-db";
+import { db } from "@/lib/database";
+
+export const storage = createMongoDBAdapter({
+    db,
+    auth: "better-auth" | "next-auth",
+});
+```
+
