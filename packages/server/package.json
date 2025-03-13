@@ -1,6 +1,6 @@
 {
 	"name": "@fuma-comment/server",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"author": "Fuma Nama",
 	"homepage": "https://fuma-comment.vercel.app",
 	"repository": "https://github.com/fuma-nama/fuma-comment",
@@ -30,7 +30,9 @@
 			"import": "./dist/adapters/*.js"
 		}
 	},
-	"files": ["./dist"],
+	"files": [
+		"./dist"
+	],
 	"license": "MIT",
 	"scripts": {
 		"lint": "biome lint .",

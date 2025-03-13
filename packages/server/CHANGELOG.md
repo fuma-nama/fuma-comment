@@ -1,5 +1,11 @@
 # @fuma-comment/server
 
+## 1.2.0
+
+### Minor Changes
+
+- 92b5cdd: Support MongoDB
+
 ## 1.1.0
 
 ### Minor Changes
