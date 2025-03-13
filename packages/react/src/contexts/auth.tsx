@@ -1,6 +1,6 @@
 import { type ReactNode, createContext, useContext, useMemo } from "react";
 import useSWRImmutable from "swr/immutable";
-import { getAuthSession } from "../utils/fetcher";
+import { useCommentsContext } from "./comments";
 
 export interface Session {
 	id: string;
@@ -46,9 +46,10 @@ export function AuthProvider({
 	auth: AuthOptions;
 	children: ReactNode;
 }): ReactNode {
+	const { fetcher } = useCommentsContext();
 	const query = useSWRImmutable(
 		auth.type === "api" ? `/api/comment/${page}/auth` : null,
-		() => getAuthSession({ page }),
+		() => fetcher.getAuthSession({ page }),
 		{
 			shouldRetryOnError: false,
 		},

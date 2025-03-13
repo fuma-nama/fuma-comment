@@ -4,11 +4,11 @@ import { useRef } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
 import { useCommentContext } from "../../contexts/comment";
 import { useAuthContext } from "../../contexts/auth";
-import { deleteRate, setRate } from "../../utils/fetcher";
 import { onLikeUpdated } from "../../utils/comment-manager";
 import { cn } from "../../utils/cn";
 import type { UseCommentEditor } from "../editor";
 import { ReplyProvider } from "./reply-form";
+import { useCommentsContext } from "../../contexts/comments";
 
 const rateVariants = cva(
 	"inline-flex items-center gap-1.5 p-2 text-xs transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fc-ring",
@@ -27,10 +27,28 @@ export function Actions({
 }: {
 	canReply?: boolean;
 }): React.ReactNode {
+	const { fetcher } = useCommentsContext();
 	const { comment, isReplying, setReply } = useCommentContext();
 	const editorRef = useRef<UseCommentEditor | undefined>(undefined);
 	const { session } = useAuthContext();
 	const isAuthenticated = session !== null;
+
+	function setLike(comment: SerializedComment, v: boolean): void {
+		if (v === comment.liked) {
+			void fetcher.deleteRate({
+				id: comment.id,
+				page: comment.page,
+			});
+			onLikeUpdated(comment.id, undefined);
+		} else {
+			void fetcher.setRate({
+				id: comment.id,
+				page: comment.page,
+				like: v,
+			});
+			onLikeUpdated(comment.id, v);
+		}
+	}
 
 	const onLike = () => {
 		setLike(comment, true);
@@ -87,21 +105,4 @@ export function Actions({
 			</div>
 		</ReplyProvider>
 	);
-}
-
-function setLike(comment: SerializedComment, v: boolean): void {
-	if (v === comment.liked) {
-		void deleteRate({
-			id: comment.id,
-			page: comment.page,
-		});
-		onLikeUpdated(comment.id, undefined);
-	} else {
-		void setRate({
-			id: comment.id,
-			page: comment.page,
-			like: v,
-		});
-		onLikeUpdated(comment.id, v);
-	}
 }

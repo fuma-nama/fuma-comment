@@ -1,7 +1,7 @@
 import { createContext, type ReactNode, useContext, useMemo } from "react";
 import type { MentionItem } from "../components/editor/mention";
-import { queryUsers } from "../utils/fetcher";
 import { useLatestCallback } from "../utils/hooks";
+import { useCommentsContext } from "./comments";
 
 export type MentionOptions = Partial<Pick<MentionContextType, "query">> &
 	Omit<MentionContextType, "query">;
@@ -32,11 +32,12 @@ export function MentionProvider({
 	mention: MentionOptions;
 	children: ReactNode;
 }): ReactNode {
+	const { fetcher } = useCommentsContext();
 	const query = useLatestCallback<MentionContextType["query"]>(
 		async (name, options) => {
 			if (mention.query) void mention.query(name, options);
 
-			const res = await queryUsers({ name, page: options.page });
+			const res = await fetcher.queryUsers({ name, page: options.page });
 			return res.map((user) => ({ label: user.name, id: user.id }));
 		},
 	);

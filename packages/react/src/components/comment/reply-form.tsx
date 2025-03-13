@@ -8,11 +8,7 @@ import {
 	useState,
 } from "react";
 import { cn } from "../../utils/cn";
-import {
-	type FetcherError,
-	getCommentsKey,
-	postComment,
-} from "../../utils/fetcher";
+import { type FetcherError, getCommentsKey } from "../../utils/fetcher";
 import { useCommentContext } from "../../contexts/comment";
 import { onCommentReplied } from "../../utils/comment-manager";
 import { useLatestCallback } from "../../utils/hooks";
@@ -25,6 +21,7 @@ import {
 import { Spinner } from "../spinner";
 import { Dialog, DialogContent, DialogTitle } from "../dialog";
 import { useIsMobile } from "../../utils/use-media-query";
+import { useCommentsContext } from "../../contexts/comments";
 
 export function ReplyProvider({
 	title,
@@ -86,6 +83,7 @@ function ReplyForm({
 }): ReactNode {
 	const [isEmpty, setIsEmpty] = useState(true);
 	const { comment, setReply } = useCommentContext();
+	const { fetcher } = useCommentsContext();
 
 	const mutation = useSWRMutation(
 		getCommentsKey({
@@ -93,7 +91,7 @@ function ReplyForm({
 			page: comment.page,
 		}),
 		(key, { arg }: { arg: { content: object } }) =>
-			postComment({
+			fetcher.postComment({
 				...key[1],
 				...arg,
 			}),

@@ -13,12 +13,12 @@ import {
 	type AuthOptions,
 	useAuthContext,
 } from "./contexts/auth";
-import { buttonVariants } from "./components/button";
 import { cn } from "./utils/cn";
 import { CreateForm } from "./components/comment/create-form";
 import { CommentList } from "./components/comment/list";
 import { type MentionOptions, MentionProvider } from "./contexts/mention";
 import { type StorageContext, StorageProvider } from "./contexts/storage";
+import { createFetcher } from "./utils/fetcher";
 
 export interface CommentsProviderProps {
 	/**
@@ -32,6 +32,13 @@ export interface CommentsProviderProps {
 
 	storage?: StorageContext;
 
+	/**
+	 * The URL of the API endpoint.
+	 *
+	 * If not specified, the API will be fetched from `/api/comments`.
+	 */
+	apiUrl?: string;
+
 	children?: ReactNode;
 }
 
@@ -41,13 +48,15 @@ export function CommentsProvider({
 	mention,
 	storage,
 	auth,
+	apiUrl,
 }: CommentsProviderProps): React.ReactNode {
 	let child = children;
 	const context = useMemo(
 		() => ({
 			page,
+			fetcher: createFetcher(apiUrl),
 		}),
-		[page],
+		[page, apiUrl],
 	);
 
 	if (mention)
@@ -57,9 +66,11 @@ export function CommentsProvider({
 		child = <StorageProvider storage={storage}>{child}</StorageProvider>;
 
 	return (
-		<AuthProvider page={page} auth={auth}>
-			<Provider value={context}>{child}</Provider>
-		</AuthProvider>
+		<Provider value={context}>
+			<AuthProvider page={page} auth={auth}>
+				{child}
+			</AuthProvider>
+		</Provider>
 	);
 }
 

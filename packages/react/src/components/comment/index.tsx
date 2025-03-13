@@ -10,7 +10,7 @@ import useSWRMutation from "swr/mutation";
 import { CopyIcon, MoreVertical, PencilIcon, Trash2Icon } from "lucide-react";
 import type { JSONContent } from "@tiptap/react";
 import { cn } from "../../utils/cn";
-import { deleteComment, getCommentsKey } from "../../utils/fetcher";
+import { getCommentsKey } from "../../utils/fetcher";
 import {
 	type CommentContext,
 	useCommentContext,
@@ -28,6 +28,7 @@ import { Avatar } from "../avatar";
 import { EditForm } from "./edit-form";
 import { ContentRenderer } from "./content-renderer";
 import { Timestamp } from "../timestamp";
+import { useCommentsContext } from "../../contexts/comments";
 
 export function Comment({
 	comment: cached,
@@ -97,13 +98,14 @@ function CommentMenu({
 	const { session } = useAuthContext();
 	const { comment, editorRef, isEditing, isReplying, setEdit } =
 		useCommentContext();
+	const { fetcher } = useCommentsContext();
 
 	const deleteMutation = useSWRMutation(
 		getCommentsKey({
 			thread: comment.threadId,
 			page: comment.page,
 		}),
-		() => deleteComment(comment),
+		() => fetcher.deleteComment(comment),
 		{
 			onSuccess() {
 				onCommentDeleted(comment);

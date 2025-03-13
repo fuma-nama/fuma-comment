@@ -6,7 +6,7 @@ import {
 	CollapsibleTrigger,
 } from "@radix-ui/react-collapsible";
 import { ChevronDown } from "lucide-react";
-import { fetchComments, getCommentsKey } from "../../utils/fetcher";
+import { getCommentsKey } from "../../utils/fetcher";
 import { cn } from "../../utils/cn";
 import { buttonVariants } from "../button";
 import { syncComments } from "../../utils/comment-manager";
@@ -26,7 +26,7 @@ export interface CommentListProps extends HTMLAttributes<HTMLDivElement> {
 
 export const CommentList = forwardRef<HTMLDivElement, CommentListProps>(
 	({ threadId, isSubThread = false, ...props }, ref) => {
-		const { page } = useCommentsContext();
+		const { page, fetcher } = useCommentsContext();
 		const [cursor, setCursor] = useState<number>();
 		const list = useCommentList([page, threadId]);
 
@@ -39,7 +39,7 @@ export const CommentList = forwardRef<HTMLDivElement, CommentListProps>(
 					typeof cursor === "number" ? new Date(cursor) : undefined,
 				limit: count,
 			}),
-			([_, options]) => fetchComments(options),
+			([_, options]) => fetcher.fetchComments(options),
 			{
 				onSuccess(data) {
 					updateCommentList([page, threadId], (v = []) => [...v, ...data]);

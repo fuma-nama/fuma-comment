@@ -2,7 +2,7 @@ import useSWRMutation from "swr/mutation";
 import { Pencil } from "lucide-react";
 import { useCallback, useState } from "react";
 import { cn } from "../../utils/cn";
-import { editComment, getCommentsKey } from "../../utils/fetcher";
+import { getCommentsKey } from "../../utils/fetcher";
 import { useCommentContext } from "../../contexts/comment";
 import { updateComment } from "../../utils/comment-manager";
 import { useLatestCallback } from "../../utils/hooks";
@@ -13,10 +13,12 @@ import {
 	type UseCommentEditor,
 } from "../editor";
 import { Spinner } from "../spinner";
+import { useCommentsContext } from "../../contexts/comments";
 
 export function EditForm(): React.ReactNode {
 	const [isEmpty, setIsEmpty] = useState(false);
 	const { comment, editorRef, setEdit } = useCommentContext();
+	const { fetcher } = useCommentsContext();
 
 	const mutation = useSWRMutation(
 		getCommentsKey({
@@ -24,7 +26,7 @@ export function EditForm(): React.ReactNode {
 			thread: comment.threadId,
 		}),
 		(_, { arg }: { arg: { content: object } }) =>
-			editComment({
+			fetcher.editComment({
 				id: comment.id,
 				page: comment.page,
 				...arg,

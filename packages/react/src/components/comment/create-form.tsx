@@ -9,11 +9,7 @@ import {
 } from "react";
 import { useAuthContext } from "../../contexts/auth";
 import { cn } from "../../utils/cn";
-import {
-	type FetcherError,
-	getCommentsKey,
-	postComment,
-} from "../../utils/fetcher";
+import { type FetcherError, getCommentsKey } from "../../utils/fetcher";
 import { useCommentsContext } from "../../contexts/comments";
 import { useLatestCallback } from "../../utils/hooks";
 import { buttonVariants } from "../button";
@@ -32,15 +28,16 @@ export const CreateForm = forwardRef<
 	FormHTMLAttributes<HTMLFormElement>
 >((props, ref) => {
 	const auth = useAuthContext();
-	const { page } = useCommentsContext();
+	const { page, fetcher } = useCommentsContext();
 	const [isEmpty, setIsEmpty] = useState(true);
 	const editorRef = useRef<UseCommentEditor | undefined>(undefined);
+
 	const mutation = useSWRMutation(
 		getCommentsKey({
 			page,
 		}),
 		(_, { arg }: { arg: { content: object } }) =>
-			postComment({
+			fetcher.postComment({
 				page,
 				...arg,
 			}),
