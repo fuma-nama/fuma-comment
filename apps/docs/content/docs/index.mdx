@@ -13,7 +13,7 @@ Note that it is not a SaaS, you will need a database (SQLite, PostgreSQL, MySQL)
 Currently, we provide a React.js client API.
 
 ```tsx
-'use client'
+"use client";
 import { signIn } from "next-auth/react";
 import { Comments } from "@fuma-comment/react";
 
@@ -23,7 +23,7 @@ export function CommentsWithAuth() {
       // comments are grouped by page
       page="default"
       auth={{
-        type: 'api',
+        type: "api",
         // function to sign in
         signIn: () => void signIn("github"),
       }}
@@ -87,8 +87,8 @@ const storage = createDrizzleAdapter({
     user,
   },
   // Use tables created by your auth provider
-  auth: 'next-auth' | 'better-auth',
-})
+  auth: "next-auth" | "better-auth",
+});
 ```
 
 </Tab>
@@ -111,8 +111,8 @@ import { createPrismaAdapter } from "@fuma-comment/server/adapters/prisma";
 const storage = createPrismaAdapter({
   db: prisma,
   // Use tables created by your auth provider
-  auth: 'next-auth' | 'better-auth',
-})
+  auth: "next-auth" | "better-auth",
+});
 ```
 
 </Tab>
@@ -134,7 +134,7 @@ import { createNextAuthAdapter } from "@fuma-comment/server/adapters/next-auth";
 // Next Auth options
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
-const auth = createNextAuthAdapter(authOptions)
+const auth = createNextAuthAdapter(authOptions);
 ```
 
 ### BetterAuth
@@ -143,7 +143,7 @@ const auth = createNextAuthAdapter(authOptions)
 import { createBetterAuthAdapter } from "@fuma-comment/server/adapters/better-auth";
 import { auth as betterAuth } from "@/lib/auth";
 
-const auth = createBetterAuthAdapter(betterAuth)
+const auth = createBetterAuthAdapter(betterAuth);
 ```
 
 ## Server
@@ -194,8 +194,8 @@ const app = new Elysia()
       storage,
       elysia: {
         // or other prefix if you wanted
-        prefix: "/api/comments"
-      }
+        prefix: "/api/comments",
+      },
     })
   )
   .listen(8080);

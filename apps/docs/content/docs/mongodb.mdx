@@ -12,8 +12,7 @@ import { createMongoDBAdapter } from "@fuma-comment/server/adapters/mongo-db";
 import { db } from "@/lib/database";
 
 export const storage = createMongoDBAdapter({
-    db,
-    auth: "better-auth" | "next-auth",
+  db,
+  auth: "better-auth" | "next-auth",
 });
 ```
-

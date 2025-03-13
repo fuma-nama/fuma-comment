@@ -3,7 +3,6 @@ title: BetterAuth
 description: use BetterAuth to authenticate users
 ---
 
-
 ## Setup
 
 Add to your Fuma Comment config:
@@ -12,7 +11,5 @@ Add to your Fuma Comment config:
 import { createBetterAuthAdapter } from "@fuma-comment/server/adapters/better-auth";
 import { auth as betterAuth } from "@/lib/auth";
 
-const auth = createBetterAuthAdapter(betterAuth)
+const auth = createBetterAuthAdapter(betterAuth);
 ```
-
-

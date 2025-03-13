@@ -3,7 +3,6 @@ title: NextAuth
 description: use NextAuth to authenticate users
 ---
 
-
 ## Setup
 
 Add to your Fuma Comment config:
@@ -12,7 +11,5 @@ Add to your Fuma Comment config:
 import { createNextAuthAdapter } from "@fuma-comment/server/adapters/next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
-const auth = createNextAuthAdapter(authOptions)
+const auth = createNextAuthAdapter(authOptions);
 ```
-
-

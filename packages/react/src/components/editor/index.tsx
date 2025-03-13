@@ -252,7 +252,9 @@ function CodeBlockForm({
 	editor,
 	onClose,
 }: { editor: Editor; onClose: () => void }) {
-	const [language, setLanguage] = useState(editor.getAttributes("codeBlock").language ?? 'plaintext');
+	const [language, setLanguage] = useState(
+		editor.getAttributes("codeBlock").language ?? "plaintext",
+	);
 
 	return (
 		<form

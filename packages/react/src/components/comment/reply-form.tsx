@@ -1,5 +1,6 @@
 import useSWRMutation from "swr/mutation";
 import {
+	type HTMLAttributes,
 	type ReactNode,
 	type RefObject,
 	useCallback,
@@ -72,14 +73,15 @@ export function ReplyProvider({
 	return (
 		<>
 			{children}
-			{open ? <ReplyForm editorRef={editorRef} /> : null}
+			{open ? <ReplyForm editorRef={editorRef} className="mt-2" /> : null}
 		</>
 	);
 }
 
 function ReplyForm({
 	editorRef,
-}: {
+	...props
+}: HTMLAttributes<HTMLFormElement> & {
 	editorRef: RefObject<UseCommentEditor | undefined>;
 }): ReactNode {
 	const [isEmpty, setIsEmpty] = useState(true);
@@ -119,6 +121,7 @@ function ReplyForm({
 
 	return (
 		<form
+			{...props}
 			onSubmit={(e) => {
 				submit();
 				e.preventDefault();
