@@ -29,7 +29,7 @@ export const codeVariants = cva(
 );
 
 export const codeBlockVariants = cva(
-	"relative block rounded-sm border border-fc-border bg-fc-muted p-2 text-sm my-1",
+	"relative grid rounded-sm border border-fc-border bg-fc-muted p-2 text-sm my-1",
 );
 
 const defaultRenderer: BaseRenderer = (props) => <span {...props} />;
@@ -202,7 +202,9 @@ function CodeBlock({
 
 	return (
 		<pre className={cn(codeBlockVariants())}>
-			<code>{toJsxRuntime(tree, { Fragment, jsx, jsxs })}</code>
+			<code className="overflow-auto">
+				{toJsxRuntime(tree, { Fragment, jsx, jsxs })}
+			</code>
 			<button
 				type="button"
 				className={cn(
