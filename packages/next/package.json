@@ -1,13 +1,15 @@
 {
 	"name": "@fuma-comment/next",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"type": "module",
 	"author": "Fuma Nama",
 	"homepage": "https://fuma-comment.vercel.app",
 	"repository": "https://github.com/fuma-nama/fuma-comment",
-	"files": ["./dist"],
+	"files": [
+		"./dist"
+	],
 	"license": "MIT",
 	"scripts": {
 		"lint": "biome lint .",

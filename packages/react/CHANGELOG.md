@@ -1,5 +1,13 @@
 # @fuma-comment/react
 
+## 1.2.0
+
+### Minor Changes
+
+- e8809d5: Support codeblocks with syntax highlighting
+- 4c48448: Improve reply UI with dialog on mobile, and bottom section on desktop
+- c86c7b7: Support UploadThing image uploader
+
 ## 1.1.0
 
 ### Patch Changes
