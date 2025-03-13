@@ -1,5 +1,11 @@
 import useSWRMutation from "swr/mutation";
-import { type ReactNode, type RefObject, useCallback, useState } from "react";
+import {
+	type ReactNode,
+	type RefObject,
+	useCallback,
+	useEffect,
+	useState,
+} from "react";
 import { cn } from "../../utils/cn";
 import {
 	type FetcherError,
@@ -16,33 +22,62 @@ import {
 	type UseCommentEditor,
 } from "../editor";
 import { Spinner } from "../spinner";
-import { DialogTitle } from "../dialog";
-import { toLocalString } from "../../utils/date";
-import { Avatar } from "../avatar";
-import { ContentRenderer } from "./content-renderer";
+import { Dialog, DialogContent, DialogTitle } from "../dialog";
+import { useIsMobile } from "../../utils/use-media-query";
 
-export function ReplyHeader(): ReactNode {
-	const { comment } = useCommentContext();
+export function ReplyProvider({
+	title,
+	open,
+	setOpen,
+	editorRef,
+	children,
+}: {
+	title: string;
+	editorRef: RefObject<UseCommentEditor | undefined>;
+	open: boolean;
+	setOpen: (open: boolean) => void;
+	children: ReactNode;
+}) {
+	const isMobile = useIsMobile();
+
+	useEffect(() => {
+		if (open && !isMobile) {
+			setTimeout(() => {
+				editorRef.current?.commands.focus("end");
+			}, 10);
+		}
+	}, [open, editorRef, isMobile]);
+
+	if (isMobile) {
+		return (
+			<Dialog open={open} onOpenChange={setOpen}>
+				{children}
+				<DialogContent
+					position="bottom"
+					aria-describedby="reply-description"
+					onOpenAutoFocus={(e) => {
+						setTimeout(() => {
+							editorRef.current?.commands.focus("end");
+						}, 10);
+						e.preventDefault();
+					}}
+				>
+					<DialogTitle>{title}</DialogTitle>
+					<ReplyForm editorRef={editorRef} />
+				</DialogContent>
+			</Dialog>
+		);
+	}
 
 	return (
 		<>
-			<DialogTitle>Replying to {comment.author.name}</DialogTitle>
-			<div className="mb-2 flex flex-col gap-4 rounded-xl border border-fc-border p-3 text-sm">
-				<div className="flex flex-row items-center gap-2 text-xs text-fc-muted-foreground">
-					<Avatar
-						className="size-6"
-						placeholder={comment.author.name}
-						image={comment.author.image}
-					/>
-					<span>{toLocalString(new Date(comment.timestamp))}</span>
-				</div>
-				<ContentRenderer content={comment.content} />
-			</div>
+			{children}
+			{open ? <ReplyForm editorRef={editorRef} /> : null}
 		</>
 	);
 }
 
-export function ReplyForm({
+function ReplyForm({
 	editorRef,
 }: {
 	editorRef: RefObject<UseCommentEditor | undefined>;

@@ -80,7 +80,6 @@ export function getPersistentId(id: string) {
 	const storageKey = `fc_textarea_${id}`;
 	const cached = sessionStorage.getItem(storageKey);
 
-	console.log('read', cached, storageKey)
 	return cached ? JSON.parse(cached) : null;
 }
 
@@ -91,7 +90,6 @@ export function setPersistentId(id: string, value: object) {
 
 export function clearPersistentId(id: string) {
 	const storageKey = `fc_textarea_${id}`;
-	console.log('clear', storageKey)
 	sessionStorage.removeItem(storageKey);
 }
 

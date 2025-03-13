@@ -9,15 +9,22 @@ export const DialogDescription = Primitive.Description;
 
 export function DialogContent({
 	children,
+	position = "center",
 	className,
 	...props
-}: Primitive.DialogContentProps): React.ReactElement {
+}: Primitive.DialogContentProps & {
+	position?: "center" | "bottom";
+}): React.ReactElement {
 	return (
 		<Primitive.Portal>
 			<Primitive.Overlay className="fixed inset-0 bg-black/50 z-10 data-[state=closed]:animate-overlayHide data-[state=open]:animate-overlayShow" />
 			<Primitive.Content
+				data-position={position}
 				className={cn(
-					"fixed left-1/2 top-1/2 flex w-full max-w-md -translate-x-1/2 -translate-y-1/2 flex-col rounded-2xl border border-fc-border bg-fc-popover text-fc-popover-foreground p-4 shadow-lg z-10 data-[state=closed]:animate-dialogHide data-[state=open]:animate-dialogShow",
+					"fixed left-1/2 flex w-full max-w-md -translate-x-1/2 flex-col rounded-2xl border border-fc-border bg-fc-popover text-fc-popover-foreground p-4 shadow-lg z-10",
+					position === "bottom"
+						? "bottom-0 rounded-b-none border-b-0 data-[state=closed]:animate-dialogHideBottom data-[state=open]:animate-dialogShowBottom"
+						: "top-1/2 -translate-y-1/2 data-[state=closed]:animate-dialogHide data-[state=open]:animate-dialogShow",
 					className,
 				)}
 				{...props}
