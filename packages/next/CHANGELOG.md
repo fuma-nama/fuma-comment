@@ -1,5 +1,12 @@
 # @fuma-comment/next
 
+## 1.2.1
+
+### Patch Changes
+
+- Updated dependencies [a6d647f]
+  - @fuma-comment/server@1.2.1
+
 ## 1.2.0
 
 ### Patch Changes
