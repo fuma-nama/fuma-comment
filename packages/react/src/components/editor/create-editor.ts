@@ -27,9 +27,7 @@ import {
 } from "../comment/content-renderer";
 import { MentionList, type MentionListRef } from "./mention";
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
-import { createLowlight, common } from "lowlight";
-
-const lowlight = createLowlight(common);
+import { lowlight } from "../../utils/highlighter";
 
 const ImageWithWidth = Image.extend({
 	addAttributes() {

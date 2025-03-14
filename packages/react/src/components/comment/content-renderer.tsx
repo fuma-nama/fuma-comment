@@ -5,9 +5,9 @@ import { cn } from "../../utils/cn";
 import { type StorageContext, useStorage } from "../../contexts/storage";
 import { toJsxRuntime } from "hast-util-to-jsx-runtime";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
-import { common, createLowlight } from "lowlight";
 import { CheckIcon, CopyIcon } from "lucide-react";
 import { buttonVariants } from "../button";
+import { lowlight } from "../../utils/highlighter";
 
 interface Mark {
 	type: string;
@@ -29,7 +29,7 @@ export const codeVariants = cva(
 );
 
 export const codeBlockVariants = cva(
-	"relative grid rounded-sm border border-fc-border bg-fc-muted p-2 text-sm my-1",
+	"relative grid rounded-sm border border-fc-border bg-fc-muted p-2 text-sm my-1.5",
 );
 
 const defaultRenderer: BaseRenderer = (props) => <span {...props} />;
@@ -148,7 +148,7 @@ function render(content: JSONContent, storage: StorageContext): ReactNode {
 			<img
 				key={id++}
 				alt={attrs.alt}
-				className="rounded-lg"
+				className="rounded-lg my-1.5"
 				height={h}
 				width={w}
 				src={content.attrs.src}
@@ -192,17 +192,19 @@ export function ContentRenderer({
 	return useMemo(() => render(content, ctx), [content, ctx]);
 }
 
-const lowlight = createLowlight(common);
 function CodeBlock({
 	language,
 	content,
 }: { language: string; content: string }) {
-	const tree = lowlight.highlight(language, content);
+	const tree = lowlight.highlight(
+		lowlight.registered(language) ? language : "plaintext",
+		content,
+	);
 	const [copied, setCopied] = useState(false);
 
 	return (
-		<pre className={cn(codeBlockVariants())}>
-			<code className="overflow-auto">
+		<pre className={cn(codeBlockVariants(), "p-0")}>
+			<code className="overflow-auto p-2">
 				{toJsxRuntime(tree, { Fragment, jsx, jsxs })}
 			</code>
 			<button

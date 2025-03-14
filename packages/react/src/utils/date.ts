@@ -9,10 +9,10 @@ export function toLocalString(date: Date): string {
 	const day = isToday
 		? "Today"
 		: [
-			date.getDate().toString().padStart(2, "0"),
-			(date.getMonth() + 1).toString().padStart(2, "0"),
-			date.getFullYear(),
-		].join("/");
+				date.getDate().toString().padStart(2, "0"),
+				(date.getMonth() + 1).toString().padStart(2, "0"),
+				date.getFullYear(),
+			].join("/");
 
 	const time = [
 		date.getHours().toString().padStart(2, "0"),
