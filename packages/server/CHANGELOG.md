@@ -1,5 +1,11 @@
 # @fuma-comment/server
 
+## 1.2.1
+
+### Patch Changes
+
+- a6d647f: Support Hono.js
+
 ## 1.2.0
 
 ### Minor Changes
