@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16.6
+    image: postgres:16.8
     user: postgres
     restart: always
     environment:
