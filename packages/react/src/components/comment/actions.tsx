@@ -116,12 +116,21 @@ export function Actions({
 						onOpenAutoFocus={(e) => e.preventDefault()}
 					>
 						<DialogTitle>Replying to {comment.author.name}</DialogTitle>
-						<ReplyForm editorRef={editorRef} />
+						<ReplyForm
+							editorRef={editorRef}
+							comment={comment}
+							onCancel={() => setReply(false)}
+						/>
 					</DialogContent>
 				</Dialog>
 			) : null}
 			{!isMobile && isReplying ? (
-				<ReplyForm editorRef={editorRef} className="mt-2" />
+				<ReplyForm
+					className="mt-2"
+					editorRef={editorRef}
+					comment={comment}
+					onCancel={() => setReply(false)}
+				/>
 			) : null}
 		</>
 	);

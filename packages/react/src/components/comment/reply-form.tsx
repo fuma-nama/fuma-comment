@@ -8,7 +8,6 @@ import {
 } from "react";
 import { cn } from "../../utils/cn";
 import { type FetcherError, getCommentsKey } from "../../utils/fetcher";
-import { useCommentContext } from "../../contexts/comment";
 import { onCommentReplied } from "../../utils/comment-manager";
 import { useLatestCallback } from "../../utils/hooks";
 import { buttonVariants } from "../button";
@@ -19,15 +18,19 @@ import {
 } from "../editor";
 import { Spinner } from "../spinner";
 import { useCommentsContext } from "../../contexts/comments";
+import type { SerializedComment } from "@fuma-comment/server";
 
 export function ReplyForm({
 	editorRef,
+	onCancel,
+	comment,
 	...props
 }: HTMLAttributes<HTMLFormElement> & {
+	comment: SerializedComment;
+	onCancel?: () => void;
 	editorRef: RefObject<UseCommentEditor | undefined>;
 }): ReactNode {
 	const [isEmpty, setIsEmpty] = useState(true);
-	const { comment, setReply } = useCommentContext();
 	const { fetcher } = useCommentsContext();
 
 	const mutation = useSWRMutation(
@@ -44,15 +47,11 @@ export function ReplyForm({
 			revalidate: false,
 			onSuccess(data) {
 				onCommentReplied(data);
-				setReply(false);
+				onCancel?.();
 				editorRef.current?.commands.clearContent();
 			},
 		},
 	);
-
-	const onClose = useLatestCallback(() => {
-		setReply(false);
-	});
 
 	const submit = useLatestCallback(() => {
 		if (!editorRef.current) return;
@@ -78,7 +77,7 @@ export function ReplyForm({
 				onChange={useCallback((v: UseCommentEditor) => {
 					setIsEmpty(v.isEmpty);
 				}, [])}
-				onEscape={onClose}
+				onEscape={onCancel}
 				onSubmit={submit}
 				placeholder="Reply to comment"
 			/>
@@ -91,17 +90,19 @@ export function ReplyForm({
 					{mutation.isMutating ? <Spinner /> : null}
 					Reply
 				</button>
-				<button
-					className={cn(
-						buttonVariants({
-							variant: "secondary",
-						}),
-					)}
-					onClick={onClose}
-					type="button"
-				>
-					Cancel
-				</button>
+				{onCancel && (
+					<button
+						className={cn(
+							buttonVariants({
+								variant: "secondary",
+							}),
+						)}
+						onClick={onCancel}
+						type="button"
+					>
+						Cancel
+					</button>
+				)}
 			</div>
 			{mutation.error ? (
 				<p className="mt-1 text-sm text-fc-error">

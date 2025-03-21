@@ -150,6 +150,7 @@ export function Replies(): React.ReactNode {
 						}}
 					/>
 					<ReplyForm
+						comment={comment}
 						editorRef={editorRef}
 						className="mt-auto sticky bottom-0 bg-fc-popover pb-8"
 					/>
