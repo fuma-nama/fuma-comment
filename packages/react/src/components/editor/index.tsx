@@ -153,7 +153,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 					<p
 						{...props.editorProps}
 						className={cn(
-							"px-3 py-2.5 text-[15px] text-fc-muted-foreground mb-9",
+							"px-3 py-2.5 min-h-[38px] text-fc-muted-foreground mb-9",
 							props.editorProps?.className,
 						)}
 					>
@@ -175,7 +175,11 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 				className={cn(editorVariants(), containerProps?.className)}
 				ref={ref}
 			>
-				<EditorContent editor={editor} {...props.editorProps} />
+				<EditorContent
+					editor={editor}
+					{...props.editorProps}
+					className={cn("min-h-[38px]", props.editorProps?.className)}
+				/>
 				<div className="flex flex-row items-center p-1">
 					<MarkButton
 						editor={editor}

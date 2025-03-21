@@ -20,7 +20,7 @@ const menuItemVariants = cva(
 );
 
 const menuItemsVariants = cva(
-	"flex w-56 flex-col overflow-hidden rounded-lg border border-fc-border bg-fc-popover text-sm text-fc-popover-foreground shadow-lg focus-visible:outline-none data-[state=closed]:animate-fadeOut",
+	"flex w-56 flex-col overflow-hidden rounded-lg border border-fc-border bg-fc-popover text-sm text-fc-popover-foreground shadow-lg z-50 focus-visible:outline-none data-[state=closed]:animate-fadeOut",
 );
 
 const MenuItems = forwardRef<

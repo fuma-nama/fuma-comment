@@ -4,6 +4,7 @@ import {
 	useRef,
 	type ReactNode,
 	type ButtonHTMLAttributes,
+	type ComponentProps,
 } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
 import useSWRMutation from "swr/mutation";
@@ -34,10 +35,10 @@ export function Comment({
 	comment: cached,
 	actions,
 	children,
-}: {
+	...props
+}: ComponentProps<"div"> & {
 	comment: SerializedComment;
 	actions?: ReactNode;
-	children?: ReactNode;
 }): React.ReactElement {
 	const [edit, setEdit] = useState(false);
 	const [isReply, setIsReply] = useState(false);
@@ -58,7 +59,11 @@ export function Comment({
 	return (
 		<CommentProvider value={context}>
 			<div
-				className="relative flex flex-row gap-2 p-4 text-sm"
+				{...props}
+				className={cn(
+					"relative flex flex-row gap-2 p-4 text-sm",
+					props.className,
+				)}
 				data-fc-comment={context.comment.id}
 				data-fc-edit={context.isEditing}
 				data-fc-reply={context.isReplying}

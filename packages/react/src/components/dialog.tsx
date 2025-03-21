@@ -20,14 +20,11 @@ export function DialogDescription({
 
 export function DialogContent({
 	children,
-	position: defaultPosition,
 	className,
 	...props
-}: Primitive.DialogContentProps & {
-	position?: "center" | "bottom";
-}): React.ReactElement {
+}: Primitive.DialogContentProps): React.ReactElement {
 	const isMobile = useIsMobile();
-	const position = defaultPosition ?? (isMobile ? "bottom" : "center");
+	const position = isMobile ? "bottom" : "center";
 
 	return (
 		<Primitive.Portal>
