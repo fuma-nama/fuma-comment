@@ -11,18 +11,10 @@ import {
 	lazy,
 } from "react";
 import { cva } from "class-variance-authority";
-import {
-	Bold,
-	Code,
-	ImageIcon,
-	Italic,
-	LinkIcon,
-	Strikethrough,
-} from "lucide-react";
+import { Bold, Code, Italic, LinkIcon, Strikethrough } from "lucide-react";
 import { cn } from "../../utils/cn";
 import { useStorage } from "../../contexts/storage";
 import { useMention } from "../../contexts/mention";
-import { UploadImage } from "./image-upload";
 import { HyperLink } from "./hyper-link";
 import { createEditorLazy } from "./lazy-load";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
@@ -88,6 +80,7 @@ export function clearPersistentId(id: string) {
 
 const EmojiPickerButton = lazy(() => import("./emoji-picker"));
 const CodeBlockButton = lazy(() => import("./codeblock"));
+const ImageUploadButton = lazy(() => import("./image-upload"));
 
 export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 	({ editorRef, disabled = false, containerProps, ...props }, ref) => {
@@ -208,7 +201,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 					<UpdateLink editor={editor} />
 					<CodeBlockButton editor={editor} />
 					<EmojiPickerButton editor={editor} />
-					{storage.enabled ? <UploadImageDialog editor={editor} /> : null}
+					{storage.enabled ? <ImageUploadButton editor={editor} /> : null}
 				</div>
 			</div>
 		);
@@ -242,33 +235,6 @@ function MarkButton({
 		>
 			{icon}
 		</button>
-	);
-}
-
-function UploadImageDialog({ editor }: { editor: Editor }): React.ReactElement {
-	useHookUpdate(editor);
-	const [isOpen, setIsOpen] = useState(false);
-
-	return (
-		<Popover onOpenChange={setIsOpen} open={isOpen}>
-			<PopoverTrigger
-				type="button"
-				aria-label="Upload Image"
-				className={cn(toggleVariants())}
-				disabled={!editor.can().setImage({ src: "" }) || !editor.isEditable}
-			>
-				<ImageIcon className="size-4" />
-			</PopoverTrigger>
-			<PopoverContent onCloseAutoFocus={(e) => e.preventDefault()}>
-				<UploadImage
-					editor={editor}
-					onClose={() => {
-						setIsOpen(false);
-						editor.commands.focus();
-					}}
-				/>
-			</PopoverContent>
-		</Popover>
 	);
 }
 

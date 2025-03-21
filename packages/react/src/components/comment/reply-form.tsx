@@ -51,7 +51,6 @@ export function ReplyProvider({
 			<Dialog open={open} onOpenChange={setOpen}>
 				{children}
 				<DialogContent
-					position="bottom"
 					aria-describedby="reply-description"
 					onOpenAutoFocus={(e) => {
 						setTimeout(() => {

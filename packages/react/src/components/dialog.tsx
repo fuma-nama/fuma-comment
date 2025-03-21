@@ -2,6 +2,7 @@ import * as Primitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { cn } from "../utils/cn";
 import { buttonVariants } from "./button";
+import { useIsMobile } from "../utils/use-media-query";
 
 export const Dialog = Primitive.Root;
 export const DialogTrigger = Primitive.Trigger;
@@ -19,12 +20,15 @@ export function DialogDescription({
 
 export function DialogContent({
 	children,
-	position = "center",
+	position: defaultPosition,
 	className,
 	...props
 }: Primitive.DialogContentProps & {
 	position?: "center" | "bottom";
 }): React.ReactElement {
+	const isMobile = useIsMobile();
+	const position = defaultPosition ?? (isMobile ? "bottom" : "center");
+
 	return (
 		<Primitive.Portal>
 			<Primitive.Overlay className="fixed inset-0 bg-black/50 z-10 data-[state=closed]:animate-overlayHide data-[state=open]:animate-overlayShow" />

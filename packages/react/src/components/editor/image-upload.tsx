@@ -6,8 +6,48 @@ import { useObjectURL } from "../../utils/hooks";
 import { cn } from "../../utils/cn";
 import { Spinner } from "../spinner";
 import { buttonVariants } from "../button";
+import { toggleVariants, useHookUpdate } from ".";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+	DialogTrigger,
+} from "../dialog";
+import { ImageIcon } from "lucide-react";
 
-export function UploadImage({
+export default function UploadImageButton({
+	editor,
+}: { editor: Editor }): React.ReactElement {
+	useHookUpdate(editor);
+	const [isOpen, setIsOpen] = useState(false);
+
+	return (
+		<Dialog onOpenChange={setIsOpen} open={isOpen}>
+			<DialogTrigger
+				type="button"
+				aria-label="Upload Image"
+				className={cn(toggleVariants())}
+				disabled={!editor.can().setImage({ src: "" }) || !editor.isEditable}
+			>
+				<ImageIcon className="size-4" />
+			</DialogTrigger>
+			<DialogContent onCloseAutoFocus={(e) => e.preventDefault()}>
+				<DialogTitle>Upload Image</DialogTitle>
+				<DialogDescription>Attach your own image to comment.</DialogDescription>
+				<UploadImage
+					editor={editor}
+					onClose={() => {
+						setIsOpen(false);
+						editor.commands.focus();
+					}}
+				/>
+			</DialogContent>
+		</Dialog>
+	);
+}
+
+function UploadImage({
 	editor,
 	onClose,
 }: {
