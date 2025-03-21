@@ -1,5 +1,13 @@
 # @fuma-comment/react
 
+## 1.2.1
+
+### Patch Changes
+
+- 3400887: Support `apiUrl` option
+- b76d137: Fix codeblock overflow
+- 3f5f3e3: Fix UI display problems
+
 ## 1.2.0
 
 ### Minor Changes
