@@ -8,6 +8,7 @@ import {
 	useEffect,
 	type RefObject,
 	type ReactNode,
+	type ComponentProps,
 } from "react";
 import { cva } from "class-variance-authority";
 import {
@@ -17,23 +18,19 @@ import {
 	Italic,
 	LinkIcon,
 	SquareCode,
+	Smile,
 	Strikethrough,
 } from "lucide-react";
+import { EmojiPicker } from "frimousse";
 import { cn } from "../../utils/cn";
 import { useStorage } from "../../contexts/storage";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogTitle,
-	DialogTrigger,
-} from "../dialog";
 import { useMention } from "../../contexts/mention";
 import { UploadImage } from "./image-upload";
 import { HyperLink } from "./hyper-link";
 import { createEditorLazy } from "./lazy-load";
 import { buttonVariants } from "../button";
 import { inputVariants } from "../input";
+import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 
 export type UseCommentEditor = Editor;
 
@@ -213,7 +210,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 					<div className="w-px h-4 bg-fc-border mx-0.5 last:hidden" />
 					<UpdateLink editor={editor} />
 					<CodeBlockButton editor={editor} />
-
+					<EmojiPickerDialog editor={editor} />
 					{storage.enabled ? <UploadImageDialog editor={editor} /> : null}
 				</div>
 			</div>
@@ -226,39 +223,40 @@ function CodeBlockButton({ editor }: { editor: Editor }): React.ReactNode {
 	useHookUpdate(editor);
 
 	return (
-		<Dialog onOpenChange={setIsOpen} open={isOpen}>
-			<DialogTrigger
+		<Popover onOpenChange={setIsOpen} open={isOpen}>
+			<PopoverTrigger
 				type="button"
 				aria-label="Toggle CodeBlock"
 				className={cn(toggleVariants({ active: editor.isActive("codeBlock") }))}
 			>
 				<SquareCode className="size-4" />
-			</DialogTrigger>
-			<DialogContent
-				onCloseAutoFocus={(e) => {
-					editor.commands.focus();
-					e.preventDefault();
-				}}
-			>
-				<DialogTitle>Code Block</DialogTitle>
-				<DialogDescription>Choose a language.</DialogDescription>
-				<CodeBlockForm editor={editor} onClose={() => setIsOpen(false)} />
-			</DialogContent>
-		</Dialog>
+			</PopoverTrigger>
+			<PopoverContent onCloseAutoFocus={(e) => e.preventDefault()} asChild>
+				<CodeBlockForm
+					editor={editor}
+					onClose={() => {
+						editor.commands.focus();
+						setIsOpen(false);
+					}}
+				/>
+			</PopoverContent>
+		</Popover>
 	);
 }
 
 function CodeBlockForm({
 	editor,
 	onClose,
-}: { editor: Editor; onClose: () => void }) {
+	...props
+}: ComponentProps<"form"> & { editor: Editor; onClose: () => void }) {
 	const [language, setLanguage] = useState(
 		editor.getAttributes("codeBlock").language ?? "plaintext",
 	);
 
 	return (
 		<form
-			className="flex flex-row gap-2"
+			{...props}
+			className={cn("flex flex-row gap-2", props.className)}
 			onSubmit={(e) => {
 				editor.commands.setCodeBlock({
 					language,
@@ -310,68 +308,122 @@ function MarkButton({
 }
 
 function UploadImageDialog({ editor }: { editor: Editor }): React.ReactElement {
+	useHookUpdate(editor);
 	const [isOpen, setIsOpen] = useState(false);
 
 	return (
-		<Dialog onOpenChange={setIsOpen} open={isOpen}>
-			<DialogTrigger
+		<Popover onOpenChange={setIsOpen} open={isOpen}>
+			<PopoverTrigger
 				type="button"
 				aria-label="Upload Image"
 				className={cn(toggleVariants())}
 				disabled={!editor.can().setImage({ src: "" }) || !editor.isEditable}
 			>
 				<ImageIcon className="size-4" />
-			</DialogTrigger>
-			<DialogContent
-				onCloseAutoFocus={(e) => {
-					editor.commands.focus();
-					e.preventDefault();
-				}}
-			>
-				<DialogTitle>Add Image</DialogTitle>
-				<DialogDescription>Insert an image to your comment.</DialogDescription>
+			</PopoverTrigger>
+			<PopoverContent onCloseAutoFocus={(e) => e.preventDefault()}>
 				<UploadImage
 					editor={editor}
 					onClose={() => {
 						setIsOpen(false);
+						editor.commands.focus();
 					}}
 				/>
-			</DialogContent>
-		</Dialog>
+			</PopoverContent>
+		</Popover>
 	);
 }
 
 function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
+	useHookUpdate(editor);
 	const [isOpen, setIsOpen] = useState(false);
 
 	return (
-		<Dialog onOpenChange={setIsOpen} open={isOpen}>
-			<DialogTrigger
+		<Popover onOpenChange={setIsOpen} open={isOpen}>
+			<PopoverTrigger
 				type="button"
 				aria-label="Toggle Link"
 				className={cn(toggleVariants({ active: editor.isActive("link") }))}
 				disabled={!editor.can().setLink({ href: "" }) || !editor.isEditable}
 			>
 				<LinkIcon className="size-4" />
-			</DialogTrigger>
-			<DialogContent
-				onCloseAutoFocus={(e) => {
-					editor.commands.focus();
-					e.preventDefault();
-				}}
-			>
-				<DialogTitle>Add Link</DialogTitle>
-				<DialogDescription>
-					Insert hype links to your comment.
-				</DialogDescription>
+			</PopoverTrigger>
+			<PopoverContent onCloseAutoFocus={(e) => e.preventDefault()}>
 				<HyperLink
 					editor={editor}
 					onClose={() => {
 						setIsOpen(false);
+						editor.commands.focus();
 					}}
 				/>
-			</DialogContent>
-		</Dialog>
+			</PopoverContent>
+		</Popover>
+	);
+}
+
+function EmojiPickerDialog({ editor }: { editor: Editor }): React.ReactElement {
+	useHookUpdate(editor);
+	const [isOpen, setIsOpen] = useState(false);
+
+	return (
+		<Popover onOpenChange={setIsOpen} open={isOpen}>
+			<PopoverTrigger
+				type="button"
+				aria-label="Add Emoji"
+				className={cn(toggleVariants())}
+				disabled={!editor.isEditable}
+			>
+				<Smile className="size-4" />
+			</PopoverTrigger>
+			<PopoverContent
+				className="isolate flex h-[368px] w-full flex-col p-0"
+				onCloseAutoFocus={(e) => e.preventDefault()}
+				asChild
+			>
+				<EmojiPicker.Root
+					onEmojiSelect={(emoji) => {
+						editor.chain().insertContent(emoji.emoji).focus().run();
+						setIsOpen(false);
+					}}
+				>
+					<EmojiPicker.Search className="appearance-none px-3 py-2.5 outline-none border-b placeholder:text-fc-muted-foreground" />
+					<EmojiPicker.Viewport className="relative flex-1 outline-hidden">
+						<EmojiPicker.Loading className="absolute inset-0 flex items-center justify-center text-fc-muted-foreground text-sm">
+							Loading…
+						</EmojiPicker.Loading>
+						<EmojiPicker.Empty className="absolute inset-0 flex items-center justify-center text-fc-muted-foreground text-sm">
+							No emoji found.
+						</EmojiPicker.Empty>
+						<EmojiPicker.List
+							className="select-none pb-1.5"
+							components={{
+								CategoryHeader: ({ category, ...props }) => (
+									<div
+										className="px-3 pt-3 pb-1.5 font-medium text-fc-muted-foreground bg-fc-popover text-xs"
+										{...props}
+									>
+										{category.label}
+									</div>
+								),
+								Row: ({ children, ...props }) => (
+									<div className="scroll-my-1.5 px-1.5" {...props}>
+										{children}
+									</div>
+								),
+								Emoji: ({ emoji, ...props }) => (
+									<button
+										className="flex size-8 items-center justify-center rounded-md text-lg data-[active]:bg-fc-accent"
+										{...props}
+									>
+										{emoji.emoji}
+									</button>
+								),
+							}}
+						/>
+					</EmojiPicker.Viewport>
+				</EmojiPicker.Root>
+			</PopoverContent>
+		</Popover>
 	);
 }
 

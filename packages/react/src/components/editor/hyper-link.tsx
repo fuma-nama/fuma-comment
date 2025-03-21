@@ -13,6 +13,7 @@ export function HyperLink({
 }): React.ReactElement {
 	const [name, setName] = useState("");
 	const [value, setValue] = useState("");
+	const isInsert = editor.state.selection.empty;
 
 	useLayoutEffect(() => {
 		editor.commands.extendMarkRange("link");
@@ -27,7 +28,7 @@ export function HyperLink({
 
 	return (
 		<form
-			className="flex flex-col gap-4"
+			className="flex flex-col gap-1.5"
 			onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
 				e.preventDefault();
 				e.stopPropagation();
@@ -56,25 +57,12 @@ export function HyperLink({
 				}
 			}}
 		>
-			<div className="grid grid-cols-[auto_1fr] gap-4">
-				<label className="font-medium text-sm content-center" htmlFor="name">
-					Name
-				</label>
-				<input
-					id="name"
-					className={cn(inputVariants(), "flex-1")}
-					value={name}
-					onChange={(e) => {
-						setName(e.target.value);
-					}}
-					placeholder="My Link (optional)"
-				/>
 				<label className="font-medium text-sm content-center" htmlFor="url">
-					URL
+					Link
 				</label>
 				<input
 					id="url"
-					className={cn(inputVariants(), "flex-1")}
+					className={cn(inputVariants(), "mb-2")}
 					onChange={(e) => {
 						setValue(e.target.value);
 					}}
@@ -83,10 +71,21 @@ export function HyperLink({
 					type="url"
 					value={value}
 				/>
-			</div>
+				<label className="font-medium text-sm content-center" htmlFor="name">
+					Name
+				</label>
+				<input
+					id="name"
+					className={cn(inputVariants(), "mb-2")}
+					value={name}
+					onChange={(e) => {
+						setName(e.target.value);
+					}}
+					placeholder="My Link (optional)"
+				/>
 			<div className="flex gap-1">
 				<button className={cn(buttonVariants())} type="submit">
-					Save
+					{isInsert ? "Insert" : "Save"}
 				</button>
 				{editor.isActive("link") ? (
 					<button

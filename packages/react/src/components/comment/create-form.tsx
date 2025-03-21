@@ -81,7 +81,7 @@ export const CreateForm = forwardRef<
 			<CommentEditor
 				persistentId="create"
 				containerProps={{
-					className: "border-none p-1 rounded-b-none",
+					className: "border-none p-1 rounded-b-none focus-within:ring-0",
 				}}
 				editorProps={{
 					className: "min-h-[48px]",
