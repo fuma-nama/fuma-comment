@@ -6,10 +6,7 @@
 	"author": "Fuma Nama",
 	"homepage": "https://fuma-comment.vercel.app",
 	"repository": "https://github.com/fuma-nama/fuma-comment",
-	"files": [
-		"./dist",
-		"./css"
-	],
+	"files": ["./dist", "./css"],
 	"license": "MIT",
 	"type": "module",
 	"exports": {
@@ -79,6 +76,7 @@
 		"@tiptap/react": "^2.11.5",
 		"@tiptap/suggestion": "^2.11.5",
 		"class-variance-authority": "^0.7.1",
+		"cmdk": "^1.1.1",
 		"frimousse": "^0.1.0",
 		"hast-util-to-jsx-runtime": "^2.3.6",
 		"lowlight": "^3.3.0",

@@ -57,32 +57,32 @@ export function HyperLink({
 				}
 			}}
 		>
-				<label className="font-medium text-sm content-center" htmlFor="url">
-					Link
-				</label>
-				<input
-					id="url"
-					className={cn(inputVariants(), "mb-2")}
-					onChange={(e) => {
-						setValue(e.target.value);
-					}}
-					placeholder="https://example.com"
-					required
-					type="url"
-					value={value}
-				/>
-				<label className="font-medium text-sm content-center" htmlFor="name">
-					Name
-				</label>
-				<input
-					id="name"
-					className={cn(inputVariants(), "mb-2")}
-					value={name}
-					onChange={(e) => {
-						setName(e.target.value);
-					}}
-					placeholder="My Link (optional)"
-				/>
+			<label className="font-medium text-sm content-center" htmlFor="url">
+				Link
+			</label>
+			<input
+				id="url"
+				className={cn(inputVariants(), "mb-2")}
+				onChange={(e) => {
+					setValue(e.target.value);
+				}}
+				placeholder="https://example.com"
+				required
+				type="url"
+				value={value}
+			/>
+			<label className="font-medium text-sm content-center" htmlFor="name">
+				Name
+			</label>
+			<input
+				id="name"
+				className={cn(inputVariants(), "mb-2")}
+				value={name}
+				onChange={(e) => {
+					setName(e.target.value);
+				}}
+				placeholder="My Link (optional)"
+			/>
 			<div className="flex gap-1">
 				<button className={cn(buttonVariants())} type="submit">
 					{isInsert ? "Insert" : "Save"}

@@ -8,7 +8,7 @@ import {
 	useEffect,
 	type RefObject,
 	type ReactNode,
-	type ComponentProps,
+	lazy,
 } from "react";
 import { cva } from "class-variance-authority";
 import {
@@ -17,19 +17,14 @@ import {
 	ImageIcon,
 	Italic,
 	LinkIcon,
-	SquareCode,
-	Smile,
 	Strikethrough,
 } from "lucide-react";
-import { EmojiPicker } from "frimousse";
 import { cn } from "../../utils/cn";
 import { useStorage } from "../../contexts/storage";
 import { useMention } from "../../contexts/mention";
 import { UploadImage } from "./image-upload";
 import { HyperLink } from "./hyper-link";
 import { createEditorLazy } from "./lazy-load";
-import { buttonVariants } from "../button";
-import { inputVariants } from "../input";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 
 export type UseCommentEditor = Editor;
@@ -56,17 +51,16 @@ export function useCommentEditor(): [
 	return useState<UseCommentEditor | null>(null);
 }
 
-const editorVariants = cva(
+export const editorVariants = cva(
 	"rounded-xl border border-fc-border bg-fc-card text-base transition-colors focus-within:ring-2 focus-within:ring-fc-ring aria-disabled:cursor-not-allowed aria-disabled:opacity-80",
 );
 
-const toggleVariants = cva(
+export const toggleVariants = cva(
 	"inline-flex rounded-md p-1.5 disabled:cursor-not-allowed disabled:opacity-50",
 	{
 		variants: {
 			active: {
-				true: "bg-fc-primary text-fc-primary-foreground",
-				false: "hover:bg-fc-accent",
+				true: "bg-fc-accent text-fc-accent-foreground",
 			},
 		},
 		defaultVariants: {
@@ -91,6 +85,9 @@ export function clearPersistentId(id: string) {
 	const storageKey = `fc_textarea_${id}`;
 	sessionStorage.removeItem(storageKey);
 }
+
+const EmojiPickerButton = lazy(() => import("./emoji-picker"));
+const CodeBlockButton = lazy(() => import("./codeblock"));
 
 export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 	({ editorRef, disabled = false, containerProps, ...props }, ref) => {
@@ -210,7 +207,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 					<div className="w-px h-4 bg-fc-border mx-0.5 last:hidden" />
 					<UpdateLink editor={editor} />
 					<CodeBlockButton editor={editor} />
-					<EmojiPickerDialog editor={editor} />
+					<EmojiPickerButton editor={editor} />
 					{storage.enabled ? <UploadImageDialog editor={editor} /> : null}
 				</div>
 			</div>
@@ -218,66 +215,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 	},
 );
 
-function CodeBlockButton({ editor }: { editor: Editor }): React.ReactNode {
-	const [isOpen, setIsOpen] = useState(false);
-	useHookUpdate(editor);
-
-	return (
-		<Popover onOpenChange={setIsOpen} open={isOpen}>
-			<PopoverTrigger
-				type="button"
-				aria-label="Toggle CodeBlock"
-				className={cn(toggleVariants({ active: editor.isActive("codeBlock") }))}
-			>
-				<SquareCode className="size-4" />
-			</PopoverTrigger>
-			<PopoverContent onCloseAutoFocus={(e) => e.preventDefault()} asChild>
-				<CodeBlockForm
-					editor={editor}
-					onClose={() => {
-						editor.commands.focus();
-						setIsOpen(false);
-					}}
-				/>
-			</PopoverContent>
-		</Popover>
-	);
-}
-
-function CodeBlockForm({
-	editor,
-	onClose,
-	...props
-}: ComponentProps<"form"> & { editor: Editor; onClose: () => void }) {
-	const [language, setLanguage] = useState(
-		editor.getAttributes("codeBlock").language ?? "plaintext",
-	);
-
-	return (
-		<form
-			{...props}
-			className={cn("flex flex-row gap-2", props.className)}
-			onSubmit={(e) => {
-				editor.commands.setCodeBlock({
-					language,
-				});
-
-				onClose();
-				e.preventDefault();
-				e.stopPropagation();
-			}}
-		>
-			<input
-				className={cn(inputVariants(), "flex-1")}
-				value={language}
-				onChange={(e) => setLanguage(e.target.value)}
-			/>
-			<button type="submit" className={cn(buttonVariants())}>
-				{editor.isActive("codeBlock") ? "Update" : "Done"}
-			</button>
-		</form>
-	);
-}
+CommentEditor.displayName = "Editor";
 
 function MarkButton({
 	editor,
@@ -361,75 +299,7 @@ function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
 	);
 }
 
-function EmojiPickerDialog({ editor }: { editor: Editor }): React.ReactElement {
-	useHookUpdate(editor);
-	const [isOpen, setIsOpen] = useState(false);
-
-	return (
-		<Popover onOpenChange={setIsOpen} open={isOpen}>
-			<PopoverTrigger
-				type="button"
-				aria-label="Add Emoji"
-				className={cn(toggleVariants())}
-				disabled={!editor.isEditable}
-			>
-				<Smile className="size-4" />
-			</PopoverTrigger>
-			<PopoverContent
-				className="isolate flex h-[368px] w-full flex-col p-0"
-				onCloseAutoFocus={(e) => e.preventDefault()}
-				asChild
-			>
-				<EmojiPicker.Root
-					onEmojiSelect={(emoji) => {
-						editor.chain().insertContent(emoji.emoji).focus().run();
-						setIsOpen(false);
-					}}
-				>
-					<EmojiPicker.Search className="appearance-none px-3 py-2.5 outline-none border-b placeholder:text-fc-muted-foreground" />
-					<EmojiPicker.Viewport className="relative flex-1 outline-hidden">
-						<EmojiPicker.Loading className="absolute inset-0 flex items-center justify-center text-fc-muted-foreground text-sm">
-							Loading…
-						</EmojiPicker.Loading>
-						<EmojiPicker.Empty className="absolute inset-0 flex items-center justify-center text-fc-muted-foreground text-sm">
-							No emoji found.
-						</EmojiPicker.Empty>
-						<EmojiPicker.List
-							className="select-none pb-1.5"
-							components={{
-								CategoryHeader: ({ category, ...props }) => (
-									<div
-										className="px-3 pt-3 pb-1.5 font-medium text-fc-muted-foreground bg-fc-popover text-xs"
-										{...props}
-									>
-										{category.label}
-									</div>
-								),
-								Row: ({ children, ...props }) => (
-									<div className="scroll-my-1.5 px-1.5" {...props}>
-										{children}
-									</div>
-								),
-								Emoji: ({ emoji, ...props }) => (
-									<button
-										className="flex size-8 items-center justify-center rounded-md text-lg data-[active]:bg-fc-accent"
-										{...props}
-									>
-										{emoji.emoji}
-									</button>
-								),
-							}}
-						/>
-					</EmojiPicker.Viewport>
-				</EmojiPicker.Root>
-			</PopoverContent>
-		</Popover>
-	);
-}
-
-CommentEditor.displayName = "Editor";
-
-function useHookUpdate(editor: Editor): void {
+export function useHookUpdate(editor: Editor): void {
 	const [, forceUpdate] = useState(0);
 
 	useEffect(() => {
