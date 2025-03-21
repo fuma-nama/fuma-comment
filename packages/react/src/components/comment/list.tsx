@@ -19,6 +19,8 @@ import { Spinner } from "../spinner";
 import { useIsMobile } from "../../utils/use-media-query";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
 import type { SerializedComment } from "@fuma-comment/server";
+import { ReplyForm } from "./reply-form";
+import type { Editor } from "@tiptap/react";
 
 const count = 40;
 
@@ -105,6 +107,7 @@ export function Replies(): React.ReactNode {
 	const { comment } = useCommentContext();
 	const isMobile = useIsMobile();
 	const [open, setOpen] = useState(false);
+	const editorRef = useRef<Editor>(undefined);
 
 	if (comment.replies === 0) return null;
 
@@ -131,7 +134,7 @@ export function Replies(): React.ReactNode {
 		return (
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogTrigger asChild>{button}</DialogTrigger>
-				<DialogContent className="max-h-[80vh] overflow-auto">
+				<DialogContent className="flex flex-col overflow-auto h-[80vh] pb-0">
 					<DialogTitle>Comments</DialogTitle>
 					<CommentList
 						threadId={comment.id}
@@ -140,11 +143,15 @@ export function Replies(): React.ReactNode {
 							Comment: ({ comment }) => (
 								<Comment
 									comment={comment}
-									actions={<Actions canReply />}
+									actions={<Actions />}
 									className="-mx-4"
 								/>
 							),
 						}}
+					/>
+					<ReplyForm
+						editorRef={editorRef}
+						className="mt-auto sticky bottom-0 bg-fc-popover pb-8"
 					/>
 				</DialogContent>
 			</Dialog>

@@ -1,14 +1,16 @@
 import { ReplyIcon, ThumbsDown, ThumbsUp } from "lucide-react";
 import { cva } from "class-variance-authority";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
 import { useCommentContext } from "../../contexts/comment";
 import { useAuthContext } from "../../contexts/auth";
 import { onLikeUpdated } from "../../utils/comment-manager";
 import { cn } from "../../utils/cn";
 import type { UseCommentEditor } from "../editor";
-import { ReplyProvider } from "./reply-form";
+import { ReplyForm } from "./reply-form";
 import { useCommentsContext } from "../../contexts/comments";
+import { useIsMobile } from "../../utils/use-media-query";
+import { Dialog, DialogContent, DialogTitle } from "../dialog";
 
 const rateVariants = cva(
 	"inline-flex items-center gap-1.5 p-2 text-xs transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fc-ring",
@@ -32,6 +34,7 @@ export function Actions({
 	const editorRef = useRef<UseCommentEditor | undefined>(undefined);
 	const { session } = useAuthContext();
 	const isAuthenticated = session !== null;
+	const isMobile = useIsMobile();
 
 	function setLike(comment: SerializedComment, v: boolean): void {
 		if (v === comment.liked) {
@@ -58,13 +61,16 @@ export function Actions({
 		setLike(comment, false);
 	};
 
+	useEffect(() => {
+		if (!isReplying) return;
+
+		setTimeout(() => {
+			editorRef.current?.commands.focus("end");
+		}, 100);
+	}, [isReplying]);
+
 	return (
-		<ReplyProvider
-			open={isReplying}
-			setOpen={setReply}
-			editorRef={editorRef}
-			title={`Replying to ${comment.author.name}`}
-		>
+		<>
 			<div className="mt-2 flex flex-row -mx-2">
 				<button
 					className={cn(
@@ -103,6 +109,20 @@ export function Actions({
 					</button>
 				) : null}
 			</div>
-		</ReplyProvider>
+			{isMobile ? (
+				<Dialog open={isReplying} onOpenChange={setReply}>
+					<DialogContent
+						aria-describedby="reply-description"
+						onOpenAutoFocus={(e) => e.preventDefault()}
+					>
+						<DialogTitle>Replying to {comment.author.name}</DialogTitle>
+						<ReplyForm editorRef={editorRef} />
+					</DialogContent>
+				</Dialog>
+			) : null}
+			{!isMobile && isReplying ? (
+				<ReplyForm editorRef={editorRef} className="mt-2" />
+			) : null}
+		</>
 	);
 }

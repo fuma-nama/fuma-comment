@@ -4,7 +4,6 @@ import {
 	type ReactNode,
 	type RefObject,
 	useCallback,
-	useEffect,
 	useState,
 } from "react";
 import { cn } from "../../utils/cn";
@@ -19,62 +18,9 @@ import {
 	type UseCommentEditor,
 } from "../editor";
 import { Spinner } from "../spinner";
-import { Dialog, DialogContent, DialogTitle } from "../dialog";
-import { useIsMobile } from "../../utils/use-media-query";
 import { useCommentsContext } from "../../contexts/comments";
 
-export function ReplyProvider({
-	title,
-	open,
-	setOpen,
-	editorRef,
-	children,
-}: {
-	title: string;
-	editorRef: RefObject<UseCommentEditor | undefined>;
-	open: boolean;
-	setOpen: (open: boolean) => void;
-	children: ReactNode;
-}) {
-	const isMobile = useIsMobile();
-
-	useEffect(() => {
-		if (open && !isMobile) {
-			setTimeout(() => {
-				editorRef.current?.commands.focus("end");
-			}, 10);
-		}
-	}, [open, editorRef, isMobile]);
-
-	if (isMobile) {
-		return (
-			<Dialog open={open} onOpenChange={setOpen}>
-				{children}
-				<DialogContent
-					aria-describedby="reply-description"
-					onOpenAutoFocus={(e) => {
-						setTimeout(() => {
-							editorRef.current?.commands.focus("end");
-						}, 10);
-						e.preventDefault();
-					}}
-				>
-					<DialogTitle>{title}</DialogTitle>
-					<ReplyForm editorRef={editorRef} />
-				</DialogContent>
-			</Dialog>
-		);
-	}
-
-	return (
-		<>
-			{children}
-			{open ? <ReplyForm editorRef={editorRef} className="mt-2" /> : null}
-		</>
-	);
-}
-
-function ReplyForm({
+export function ReplyForm({
 	editorRef,
 	...props
 }: HTMLAttributes<HTMLFormElement> & {
