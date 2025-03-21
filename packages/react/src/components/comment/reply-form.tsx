@@ -45,6 +45,7 @@ export function ReplyForm({
 			onSuccess(data) {
 				onCommentReplied(data);
 				setReply(false);
+				editorRef.current?.commands.clearContent();
 			},
 		},
 	);
