@@ -1,5 +1,12 @@
 # @fuma-comment/react
 
+## 1.2.2
+
+### Patch Changes
+
+- ec35824: Add emoji picker
+- ec35824: Redesign replies UI
+
 ## 1.2.1
 
 ### Patch Changes
