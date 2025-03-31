@@ -51,7 +51,7 @@
 		"better-auth": "^1.2.3",
 		"drizzle-orm": "^0.40.0",
 		"elysia": "^1.2.25",
-		"express": "^4.21.2",
+		"express": "^5.0.0",
 		"hono": "^4.7.4",
 		"mongodb": "^6.14.2",
 		"next": "^15.2.2",
