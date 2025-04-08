@@ -21,6 +21,7 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
 import type { SerializedComment } from "@fuma-comment/server";
 import { ReplyForm } from "./reply-form";
 import type { Editor } from "@tiptap/react";
+import { useAuthContext } from "../../contexts/auth";
 
 const count = 40;
 
@@ -105,6 +106,7 @@ export function CommentList({
 
 export function Replies(): React.ReactNode {
 	const { comment } = useCommentContext();
+	const auth = useAuthContext();
 	const isMobile = useIsMobile();
 	const [open, setOpen] = useState(false);
 	const editorRef = useRef<Editor>(undefined);
@@ -146,11 +148,13 @@ export function Replies(): React.ReactNode {
 							),
 						}}
 					/>
-					<ReplyForm
-						comment={comment}
-						editorRef={editorRef}
-						className="sticky bottom-0 bg-fc-popover"
-					/>
+					{auth.isLoading || auth.session ? (
+						<ReplyForm
+							comment={comment}
+							editorRef={editorRef}
+							className="sticky bottom-0 bg-fc-popover"
+						/>
+					) : null}
 				</DialogContent>
 			</Dialog>
 		);

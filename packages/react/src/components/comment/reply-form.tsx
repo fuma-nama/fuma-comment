@@ -72,6 +72,11 @@ export function ReplyForm({
 				e.preventDefault();
 			}}
 		>
+			{mutation.error ? (
+				<p className="mb-1 text-sm text-fc-error">
+					{(mutation.error as FetcherError).message}
+				</p>
+			) : null}
 			<CommentEditor
 				persistentId={`reply-${comment.id}`}
 				disabled={mutation.isMutating}
@@ -100,11 +105,6 @@ export function ReplyForm({
 					<SendHorizonalIcon className="size-4" />
 				)}
 			</button>
-			{mutation.error ? (
-				<p className="mt-1 text-sm text-fc-error">
-					{(mutation.error as FetcherError).message}
-				</p>
-			) : null}
 		</form>
 	);
 }
