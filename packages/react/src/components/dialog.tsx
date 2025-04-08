@@ -5,8 +5,16 @@ import { buttonVariants } from "./button";
 import { useIsMobile } from "../utils/use-media-query";
 import { Drawer } from "vaul";
 import { cva } from "class-variance-authority";
+import type { ComponentProps } from "react";
 
-export const Dialog = Drawer.Root;
+export function Dialog(props: ComponentProps<typeof Drawer.Root>) {
+	return (
+		<Drawer.Root repositionInputs={false} disablePreventScroll {...props}>
+			{props.children}
+		</Drawer.Root>
+	);
+}
+
 export const DialogTrigger = Drawer.Trigger;
 export function DialogDescription({
 	className,
@@ -21,7 +29,7 @@ export function DialogDescription({
 }
 
 const sharedVariants = cva(
-	"fixed left-1/2 flex w-full max-w-md -translate-x-1/2 flex-col rounded-2xl bg-fc-popover text-fc-popover-foreground p-4 shadow-lg z-10",
+	"fixed left-1/2 flex w-full max-w-md -translate-x-1/2 flex-col rounded-2xl bg-fc-popover text-fc-popover-foreground p-4 shadow-lg",
 	{
 		variants: {
 			variant: {

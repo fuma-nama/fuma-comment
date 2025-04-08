@@ -9,5 +9,6 @@
 	"biome.enabled": true,
 	"[mdx]": {
 		"editor.defaultFormatter": "unifiedjs.vscode-mdx"
-	}
+	},
+	"prettier.enable": false
 }

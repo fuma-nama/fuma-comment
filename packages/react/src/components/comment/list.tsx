@@ -134,7 +134,7 @@ export function Replies(): React.ReactNode {
 		return (
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogTrigger asChild>{button}</DialogTrigger>
-				<DialogContent className="h-[60vh]">
+				<DialogContent className="h-[70vh]">
 					<DialogTitle>Comments</DialogTitle>
 					<CommentList
 						threadId={comment.id}

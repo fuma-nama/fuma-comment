@@ -18,10 +18,10 @@
 		"@fuma-comment/server": "workspace:*"
 	},
 	"devDependencies": {
-		"@types/node": "^22.13.10",
+		"@types/node": "^22.14.0",
 		"tsconfig": "workspace:*",
 		"tsup": "^8.4.0",
-		"typescript": "^5.8.2"
+		"typescript": "^5.8.3"
 	},
 	"publishConfig": {
 		"access": "public"
