@@ -13,7 +13,7 @@
 		"@fuma-comment/server": "workspace:*",
 		"better-auth": "^1.2.3",
 		"mongodb": "^6.14.2",
-		"next": "15.2.2",
+		"next": "15.2.3",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0"
 	},
