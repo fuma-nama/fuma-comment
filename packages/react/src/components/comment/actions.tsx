@@ -115,12 +115,14 @@ export function Actions({
 						aria-describedby="reply-description"
 						onOpenAutoFocus={(e) => e.preventDefault()}
 					>
-						<DialogTitle>Replying to {comment.author.name}</DialogTitle>
 						<ReplyForm
 							editorRef={editorRef}
 							comment={comment}
 							onCancel={() => setReply(false)}
 						/>
+						<DialogTitle className="text-xs text-fc-muted-foreground mt-4 mb-0">
+							Replying to {comment.author.name}
+						</DialogTitle>
 					</DialogContent>
 				</Dialog>
 			) : null}

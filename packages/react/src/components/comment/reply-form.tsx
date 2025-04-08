@@ -19,6 +19,7 @@ import {
 import { Spinner } from "../spinner";
 import { useCommentsContext } from "../../contexts/comments";
 import type { SerializedComment } from "@fuma-comment/server";
+import { SendHorizonalIcon } from "lucide-react";
 
 export function ReplyForm({
 	editorRef,
@@ -65,6 +66,7 @@ export function ReplyForm({
 	return (
 		<form
 			{...props}
+			className={cn("relative", props.className)}
 			onSubmit={(e) => {
 				submit();
 				e.preventDefault();
@@ -81,29 +83,23 @@ export function ReplyForm({
 				onSubmit={submit}
 				placeholder="Reply to comment"
 			/>
-			<div className="mt-2 flex flex-row gap-1">
-				<button
-					className={cn(buttonVariants({ className: "gap-2" }))}
-					disabled={mutation.isMutating || isEmpty}
-					type="submit"
-				>
-					{mutation.isMutating ? <Spinner /> : null}
-					Reply
-				</button>
-				{onCancel && (
-					<button
-						className={cn(
-							buttonVariants({
-								variant: "secondary",
-							}),
-						)}
-						onClick={onCancel}
-						type="button"
-					>
-						Cancel
-					</button>
+			<button
+				aria-label="Reply"
+				className={cn(
+					buttonVariants({
+						size: "icon",
+						className: "absolute right-1.5 bottom-2",
+					}),
 				)}
-			</div>
+				disabled={mutation.isMutating || isEmpty}
+				type="submit"
+			>
+				{mutation.isMutating ? (
+					<Spinner />
+				) : (
+					<SendHorizonalIcon className="size-4" />
+				)}
+			</button>
 			{mutation.error ? (
 				<p className="mt-1 text-sm text-fc-error">
 					{(mutation.error as FetcherError).message}

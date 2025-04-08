@@ -1,5 +1,5 @@
 import useSWRMutation from "swr/mutation";
-import { SendIcon } from "lucide-react";
+import { SendHorizonalIcon } from "lucide-react";
 import {
 	type FormHTMLAttributes,
 	forwardRef,
@@ -93,7 +93,7 @@ export const CreateForm = forwardRef<
 			/>
 			{auth.isLoading || auth.session ? (
 				<button
-					aria-label="Send "
+					aria-label="Send"
 					className={cn(
 						buttonVariants({
 							className: "absolute right-3.5 bottom-3",
@@ -103,7 +103,11 @@ export const CreateForm = forwardRef<
 					disabled={disabled || isEmpty}
 					type="submit"
 				>
-					{mutation.isMutating ? <Spinner /> : <SendIcon className="size-4" />}
+					{mutation.isMutating ? (
+						<Spinner />
+					) : (
+						<SendHorizonalIcon className="size-4" />
+					)}
 				</button>
 			) : (
 				<AuthButton

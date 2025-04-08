@@ -134,25 +134,22 @@ export function Replies(): React.ReactNode {
 		return (
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogTrigger asChild>{button}</DialogTrigger>
-				<DialogContent className="flex flex-col overflow-auto h-[80vh] pb-0">
+				<DialogContent className="h-[60vh]">
 					<DialogTitle>Comments</DialogTitle>
 					<CommentList
 						threadId={comment.id}
 						isSubThread
+						className="flex-1 -mx-4 overflow-y-auto"
 						components={{
 							Comment: ({ comment }) => (
-								<Comment
-									comment={comment}
-									actions={<Actions />}
-									className="-mx-4"
-								/>
+								<Comment comment={comment} actions={<Actions />} />
 							),
 						}}
 					/>
 					<ReplyForm
 						comment={comment}
 						editorRef={editorRef}
-						className="mt-auto sticky bottom-0 bg-fc-popover pb-8"
+						className="sticky bottom-0 bg-fc-popover"
 					/>
 				</DialogContent>
 			</Dialog>
