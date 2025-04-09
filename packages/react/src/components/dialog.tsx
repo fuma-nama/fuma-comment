@@ -33,7 +33,8 @@ const sharedVariants = cva(
 	{
 		variants: {
 			variant: {
-				drawer: "bottom-0 rounded-b-none outline-none",
+				drawer:
+					"border-t border-fc-border bottom-0 rounded-b-none outline-none pb-6",
 				modal:
 					"border border-fc-border top-1/2 -translate-y-1/2 data-[state=closed]:animate-dialogHide data-[state=open]:animate-dialogShow",
 			},

@@ -58,8 +58,10 @@ function CodeBlockForm({
 				value={value}
 				onValueChange={setValue}
 			/>
-			<CommandList className="max-h-[300px] overflow-auto">
-				<CommandEmpty>No language found.</CommandEmpty>
+			<CommandList className="h-[300px] overflow-auto">
+				<CommandEmpty className="absolute inset-0 flex items-center justify-center text-fc-muted-foreground text-sm">
+					No language found.
+				</CommandEmpty>
 				<CommandGroup>
 					{lowlight.listLanguages().map((item) => (
 						<CommandItem

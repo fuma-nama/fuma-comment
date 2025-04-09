@@ -1,13 +1,13 @@
 import { cva } from "class-variance-authority";
 
 export const inputVariants = cva(
-	"px-2 py-1.5 placeholder:text-fc-muted-foreground focus-visible:outline-none",
+	"appearance-none px-2 py-1.5 placeholder:text-fc-muted-foreground focus-visible:outline-none",
 	{
 		variants: {
 			variant: {
 				ghost: "px-4 py-3.5 border-b",
 				default:
-					"rounded-md text-sm border border-fc-border bg-fc-background focus-visible:ring-2 focus-visible:ring-fc-ring",
+					"rounded-md border border-fc-border bg-fc-background focus-visible:ring-2 focus-visible:ring-fc-ring",
 			},
 		},
 		defaultVariants: {

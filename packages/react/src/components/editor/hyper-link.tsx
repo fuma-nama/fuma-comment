@@ -28,7 +28,7 @@ export function HyperLink({
 
 	return (
 		<form
-			className="flex flex-col gap-1.5"
+			className="flex flex-col gap-2"
 			onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
 				e.preventDefault();
 				e.stopPropagation();
@@ -83,7 +83,7 @@ export function HyperLink({
 				}}
 				placeholder="My Link (optional)"
 			/>
-			<div className="flex gap-1">
+			<div className="flex gap-1 mt-2">
 				<button className={cn(buttonVariants())} type="submit">
 					{isInsert ? "Insert" : "Save"}
 				</button>

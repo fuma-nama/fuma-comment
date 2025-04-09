@@ -39,6 +39,7 @@ export default function EmojiPickerPopover({
 					}}
 				>
 					<EmojiPicker.Search
+						type="text"
 						className={cn(
 							inputVariants({
 								variant: "ghost",

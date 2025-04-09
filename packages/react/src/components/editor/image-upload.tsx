@@ -123,7 +123,7 @@ function UploadImage({
 				</label>
 			)}
 
-			<div className="mt-2 flex gap-1">
+			<div className="mt-4 flex gap-1">
 				<button
 					className={cn(buttonVariants())}
 					disabled={mutation.isMutating}
