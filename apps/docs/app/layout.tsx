@@ -12,7 +12,8 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
 	title: "Fuma Comment",
-	description: "A React.js library for adding comment area to anywhere, with your own backend & auth!",
+	description:
+		"A React.js library for adding comment area to anywhere, with your own backend & auth!",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

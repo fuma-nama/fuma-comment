@@ -5,7 +5,7 @@ export const inputVariants = cva(
 	{
 		variants: {
 			variant: {
-				ghost: "px-3 py-2.5 border-b",
+				ghost: "px-4 py-3.5 border-b",
 				default:
 					"rounded-md text-sm border border-fc-border bg-fc-background focus-visible:ring-2 focus-visible:ring-fc-ring",
 			},

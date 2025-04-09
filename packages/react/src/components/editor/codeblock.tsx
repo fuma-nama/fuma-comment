@@ -1,4 +1,3 @@
-import { Popover, PopoverTrigger, PopoverContent } from "../popover";
 import type { Editor } from "@tiptap/react";
 import {
 	Command,
@@ -14,6 +13,7 @@ import { useHookUpdate, toggleVariants } from ".";
 import { cn } from "../../utils/cn";
 import { lowlight } from "../../utils/highlighter";
 import { inputVariants } from "../input";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
 
 export default function CodeBlockButton({
 	editor,
@@ -22,22 +22,22 @@ export default function CodeBlockButton({
 	useHookUpdate(editor);
 
 	return (
-		<Popover onOpenChange={setIsOpen} open={isOpen}>
-			<PopoverTrigger
+		<Dialog onOpenChange={setIsOpen} open={isOpen}>
+			<DialogTrigger
 				type="button"
 				aria-label="Toggle CodeBlock"
 				className={cn(toggleVariants({ active: editor.isActive("codeBlock") }))}
 			>
 				<SquareCode className="size-4" />
-			</PopoverTrigger>
-			<PopoverContent
-				className="p-0"
+			</DialogTrigger>
+			<DialogContent
+				className="p-0 overflow-hidden"
 				onCloseAutoFocus={(e) => e.preventDefault()}
-				asChild
 			>
+				<DialogTitle className="sr-only">Insert CodeBlock</DialogTitle>
 				<CodeBlockForm editor={editor} onClose={() => setIsOpen(false)} />
-			</PopoverContent>
-		</Popover>
+			</DialogContent>
+		</Dialog>
 	);
 }
 
@@ -75,7 +75,7 @@ function CodeBlockForm({
 									.run();
 								onClose();
 							}}
-							className="px-3 py-1.5 text-sm aria-selected:bg-fc-accent aria-selected:text-fc-accent-foreground"
+							className="px-4 py-1.5 text-sm aria-selected:bg-fc-accent aria-selected:text-fc-accent-foreground"
 						>
 							{item}
 						</CommandItem>

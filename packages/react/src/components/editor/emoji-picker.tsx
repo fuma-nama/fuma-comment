@@ -3,8 +3,9 @@ import { EmojiPicker } from "frimousse";
 import { Smile } from "lucide-react";
 import { useState } from "react";
 import { cn } from "../../utils/cn";
-import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import { useHookUpdate, toggleVariants } from ".";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
+import { inputVariants } from "../input";
 
 export default function EmojiPickerPopover({
 	editor,
@@ -13,27 +14,37 @@ export default function EmojiPickerPopover({
 	const [isOpen, setIsOpen] = useState(false);
 
 	return (
-		<Popover onOpenChange={setIsOpen} open={isOpen}>
-			<PopoverTrigger
+		<Dialog onOpenChange={setIsOpen} open={isOpen}>
+			<DialogTrigger
 				type="button"
 				aria-label="Add Emoji"
 				className={cn(toggleVariants())}
 				disabled={!editor.isEditable}
 			>
 				<Smile className="size-4" />
-			</PopoverTrigger>
-			<PopoverContent
-				className="isolate flex h-[368px] w-full flex-col p-0"
-				onCloseAutoFocus={(e) => e.preventDefault()}
-				asChild
+			</DialogTrigger>
+			<DialogContent
+				className="p-0"
+				onCloseAutoFocus={(e) => {
+					editor.commands.focus();
+					e.preventDefault();
+				}}
 			>
+				<DialogTitle className="sr-only">Insert Emoji</DialogTitle>
 				<EmojiPicker.Root
+					className="flex w-full flex-col h-[368px] isolate"
 					onEmojiSelect={(emoji) => {
 						editor.chain().insertContent(emoji.emoji).focus().run();
 						setIsOpen(false);
 					}}
 				>
-					<EmojiPicker.Search className="appearance-none px-3 py-2.5 outline-none border-b placeholder:text-fc-muted-foreground" />
+					<EmojiPicker.Search
+						className={cn(
+							inputVariants({
+								variant: "ghost",
+							}),
+						)}
+					/>
 					<EmojiPicker.Viewport className="relative flex-1 outline-hidden">
 						<EmojiPicker.Loading className="absolute inset-0 flex items-center justify-center text-fc-muted-foreground text-sm">
 							Loading…
@@ -46,7 +57,7 @@ export default function EmojiPickerPopover({
 							components={{
 								CategoryHeader: ({ category, ...props }) => (
 									<div
-										className="px-3 pt-3 pb-1.5 font-medium text-fc-muted-foreground bg-fc-popover text-xs"
+										className="px-4 pt-3 pb-1.5 font-medium text-fc-muted-foreground bg-fc-popover text-xs"
 										{...props}
 									>
 										{category.label}
@@ -59,7 +70,7 @@ export default function EmojiPickerPopover({
 								),
 								Emoji: ({ emoji, ...props }) => (
 									<button
-										className="flex size-8 items-center justify-center rounded-md text-lg data-[active]:bg-fc-accent"
+										className="flex size-11 items-center justify-center rounded-md text-3xl data-[active]:bg-fc-accent"
 										{...props}
 									>
 										{emoji.emoji}
@@ -69,7 +80,7 @@ export default function EmojiPickerPopover({
 						/>
 					</EmojiPicker.Viewport>
 				</EmojiPicker.Root>
-			</PopoverContent>
-		</Popover>
+			</DialogContent>
+		</Dialog>
 	);
 }

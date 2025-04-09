@@ -17,7 +17,7 @@ import { useStorage } from "../../contexts/storage";
 import { useMention } from "../../contexts/mention";
 import { HyperLink } from "./hyper-link";
 import { createEditorLazy } from "./lazy-load";
-import { Popover, PopoverContent, PopoverTrigger } from "../popover";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
 
 export type UseCommentEditor = Editor;
 
@@ -247,16 +247,17 @@ function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
 	const [isOpen, setIsOpen] = useState(false);
 
 	return (
-		<Popover onOpenChange={setIsOpen} open={isOpen}>
-			<PopoverTrigger
+		<Dialog onOpenChange={setIsOpen} open={isOpen}>
+			<DialogTrigger
 				type="button"
 				aria-label="Toggle Link"
 				className={cn(toggleVariants({ active: editor.isActive("link") }))}
 				disabled={!editor.can().setLink({ href: "" }) || !editor.isEditable}
 			>
 				<LinkIcon className="size-4" />
-			</PopoverTrigger>
-			<PopoverContent onCloseAutoFocus={(e) => e.preventDefault()}>
+			</DialogTrigger>
+			<DialogContent onCloseAutoFocus={(e) => e.preventDefault()}>
+				<DialogTitle>Add Link</DialogTitle>
 				<HyperLink
 					editor={editor}
 					onClose={() => {
@@ -264,8 +265,8 @@ function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
 						editor.commands.focus();
 					}}
 				/>
-			</PopoverContent>
-		</Popover>
+			</DialogContent>
+		</Dialog>
 	);
 }
 
