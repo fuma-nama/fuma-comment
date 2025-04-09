@@ -1,3 +1,5 @@
+![Preview](./assets/fuma-comment.png)
+
 # Fuma Comment
 
 Fuma Comment is a library for building comment areas into your blog, docs, and everywhere!
