@@ -136,7 +136,7 @@ export function Replies(): React.ReactNode {
 		return (
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogTrigger asChild>{button}</DialogTrigger>
-				<DialogContent className="h-[70vh]">
+				<DialogContent className="pb-0 h-[70vh]">
 					<DialogTitle>Comments</DialogTitle>
 					<CommentList
 						threadId={comment.id}
@@ -152,7 +152,7 @@ export function Replies(): React.ReactNode {
 						<ReplyForm
 							comment={comment}
 							editorRef={editorRef}
-							className="sticky bottom-0 bg-fc-popover"
+							className="sticky bottom-4 bg-fc-popover"
 						/>
 					) : null}
 				</DialogContent>

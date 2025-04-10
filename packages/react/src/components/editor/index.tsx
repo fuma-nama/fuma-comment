@@ -153,7 +153,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 					<p
 						{...props.editorProps}
 						className={cn(
-							"px-3 py-2.5 min-h-[38px] text-fc-muted-foreground mb-9",
+							"px-3 py-2.5 h-[38px] text-fc-muted-foreground mb-9",
 							props.editorProps?.className,
 						)}
 					>

@@ -77,7 +77,7 @@ function CodeBlockForm({
 									.run();
 								onClose();
 							}}
-							className="px-4 py-1.5 text-sm aria-selected:bg-fc-accent aria-selected:text-fc-accent-foreground"
+							className="px-4 py-1.5 aria-selected:bg-fc-accent aria-selected:text-fc-accent-foreground"
 						>
 							{item}
 						</CommandItem>

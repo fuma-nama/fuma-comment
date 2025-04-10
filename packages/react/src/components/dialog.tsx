@@ -33,8 +33,7 @@ const sharedVariants = cva(
 	{
 		variants: {
 			variant: {
-				drawer:
-					"border-t border-fc-border bottom-0 rounded-b-none outline-none pb-6",
+				drawer: "bottom-0 rounded-b-none outline-none pb-6",
 				modal:
 					"border border-fc-border top-1/2 -translate-y-1/2 data-[state=closed]:animate-dialogHide data-[state=open]:animate-dialogShow",
 			},
@@ -53,7 +52,7 @@ export function DialogContent({
 	if (position === "bottom") {
 		return (
 			<Drawer.Portal>
-				<Drawer.Overlay className="fixed inset-0 bg-black/40" />
+				<Drawer.Overlay className="fixed inset-0 bg-black/50" />
 				<Drawer.Content
 					className={cn(sharedVariants({ variant: "drawer" }), className)}
 					{...props}
@@ -66,7 +65,7 @@ export function DialogContent({
 
 	return (
 		<Drawer.Portal>
-			<Drawer.Overlay className="fixed inset-0 bg-black/40" />
+			<Drawer.Overlay className="fixed inset-0 bg-black/50" />
 			<Primitive.Content
 				data-position={position}
 				className={cn(sharedVariants({ variant: "modal" }), className)}
