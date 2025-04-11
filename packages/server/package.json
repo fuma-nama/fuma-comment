@@ -64,7 +64,7 @@
 	"peerDependencies": {
 		"@clerk/backend": "1.x.x",
 		"better-auth": "1.x.x",
-		"drizzle-orm": "^0.40.0",
+		"drizzle-orm": "^0.40.0 || ^0.41.0",
 		"elysia": "1.x.x",
 		"hono": "*",
 		"mongodb": "6.x.x",
