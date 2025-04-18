@@ -2,7 +2,7 @@ import { cn } from "@/utils/cn";
 import Image from "next/image";
 import { getSponsors, receiver, tiers } from "./get-sponsors";
 
-export const revalidate = 60 * 30;
+export const revalidate = 3600;
 
 export default async function Page() {
 	const data = await getSponsors();
