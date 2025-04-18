@@ -22,7 +22,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 				},
 			]}
 		>
-			<div className="mx-auto w-full max-w-[1400px] py-8 px-4">{children}</div>
+			<div className="mx-auto w-full max-w-[1000px] py-12 px-4">{children}</div>
 		</HomeLayout>
 	);
 }

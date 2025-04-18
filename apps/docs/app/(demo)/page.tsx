@@ -4,7 +4,7 @@ export default function Page(): React.ReactNode {
 	return (
 		<>
 			<div className="relative px-3 text-center pt-12">
-				<h1 className="text-lg font-medium mb-2">Welcome to Fuma Comment</h1>
+				<h1 className="text-lg font-semibold mb-2">Welcome to Fuma Comment</h1>
 				<p className="text-fc-muted-foreground">
 					Bring beautiful comment areas to your blog, docs, anywhere!
 				</p>
