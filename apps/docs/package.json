@@ -15,6 +15,7 @@
 		"@auth/prisma-adapter": "^2.8.0",
 		"@fuma-comment/react": "workspace:*",
 		"@fuma-comment/server": "workspace:*",
+		"@octokit/rest": "^21.1.1",
 		"@prisma/client": "^6.5.0",
 		"@radix-ui/react-select": "^2.1.6",
 		"@vercel/postgres": "^0.10.0",

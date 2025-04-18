@@ -38,6 +38,9 @@ importers:
       '@fuma-comment/server':
         specifier: workspace:*
         version: link:../../packages/server
+      '@octokit/rest':
+        specifier: ^21.1.1
+        version: 21.1.1
       '@prisma/client':
         specifier: ^6.5.0
         version: 6.5.0(prisma@6.5.0(typescript@5.8.3))(typescript@5.8.3)
@@ -143,7 +146,7 @@ importers:
         version: 1.2.5(typescript@5.8.3)
       drizzle-orm:
         specifier: ^0.41.0
-        version: 0.41.0(@prisma/client@6.5.0(typescript@5.8.3))(@types/pg@8.11.11)(@vercel/postgres@0.10.0(utf-8-validate@6.0.5))(gel@2.0.2)(kysely@0.27.6)(pg@8.14.1)
+        version: 0.41.0(@prisma/client@6.5.0(typescript@5.8.3))(@types/pg@8.11.11)(@vercel/postgres@0.10.0)(gel@2.0.2)(kysely@0.27.6)(pg@8.14.1)
       next:
         specifier: 15.2.4
         version: 15.2.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -192,7 +195,7 @@ importers:
         version: link:../../packages/server
       drizzle-orm:
         specifier: ^0.41.0
-        version: 0.41.0(@prisma/client@6.5.0(typescript@5.8.3))(@types/pg@8.11.11)(@vercel/postgres@0.10.0(utf-8-validate@6.0.5))(gel@2.0.2)(kysely@0.27.6)(pg@8.14.1)
+        version: 0.41.0(@prisma/client@6.5.0(typescript@5.8.3))(@types/pg@8.11.11)(@vercel/postgres@0.10.0)(gel@2.0.2)(kysely@0.27.6)(pg@8.14.1)
       next:
         specifier: 15.2.4
         version: 15.2.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -501,7 +504,7 @@ importers:
         version: 1.2.5(typescript@5.8.3)
       drizzle-orm:
         specifier: ^0.41.0
-        version: 0.41.0(@prisma/client@6.5.0(typescript@5.8.3))(@types/pg@8.11.11)(@vercel/postgres@0.10.0(utf-8-validate@6.0.5))(gel@2.0.2)(kysely@0.27.6)(pg@8.14.1)
+        version: 0.41.0(@prisma/client@6.5.0(typescript@5.8.3))(@types/pg@8.11.11)(@vercel/postgres@0.10.0)(gel@2.0.2)(kysely@0.27.6)(pg@8.14.1)
       elysia:
         specifier: ^1.2.25
         version: 1.2.25(@sinclair/typebox@0.34.33)(typescript@5.8.3)
@@ -1483,6 +1486,12 @@ packages:
     peerDependencies:
       '@octokit/core': '>=6'
 
+  '@octokit/plugin-request-log@5.3.1':
+    resolution: {integrity: sha512-n/lNeCtq+9ofhC15xzmJCNKP2BWTv8Ih2TTy+jatNCCq/gQP/V7rK3fjIfuz0pDWDALO/o/4QY4hyOF6TQQFUw==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      '@octokit/core': '>=6'
+
   '@octokit/plugin-rest-endpoint-methods@13.5.0':
     resolution: {integrity: sha512-9Pas60Iv9ejO3WlAX3maE1+38c5nqbJXV5GrncEfkndIpZrJ/WPMRd2xYDcPPEt5yzpxcjw9fWNoPhsSGzqKqw==}
     engines: {node: '>= 18'}
@@ -1507,6 +1516,10 @@ packages:
 
   '@octokit/request@9.2.2':
     resolution: {integrity: sha512-dZl0ZHx6gOQGcffgm1/Sf6JfEpmh34v3Af2Uci02vzUYz6qEN6zepoRtmybWXIGXFIK8K9ylE3b+duCWqhArtg==}
+    engines: {node: '>= 18'}
+
+  '@octokit/rest@21.1.1':
+    resolution: {integrity: sha512-sTQV7va0IUVZcntzy1q3QqPm/r8rWtDCqpRAmb8eXXnKkjoQEtFe3Nt5GTVsHft+R6jJoHeSiVLcgcvhtue/rg==}
     engines: {node: '>= 18'}
 
   '@octokit/types@13.10.0':
@@ -6282,6 +6295,10 @@ snapshots:
       '@octokit/core': 6.1.4
       '@octokit/types': 13.10.0
 
+  '@octokit/plugin-request-log@5.3.1(@octokit/core@6.1.4)':
+    dependencies:
+      '@octokit/core': 6.1.4
+
   '@octokit/plugin-rest-endpoint-methods@13.5.0(@octokit/core@6.1.4)':
     dependencies:
       '@octokit/core': 6.1.4
@@ -6311,6 +6328,13 @@ snapshots:
       '@octokit/types': 13.10.0
       fast-content-type-parse: 2.0.1
       universal-user-agent: 7.0.2
+
+  '@octokit/rest@21.1.1':
+    dependencies:
+      '@octokit/core': 6.1.4
+      '@octokit/plugin-paginate-rest': 11.6.0(@octokit/core@6.1.4)
+      '@octokit/plugin-request-log': 5.3.1(@octokit/core@6.1.4)
+      '@octokit/plugin-rest-endpoint-methods': 13.5.0(@octokit/core@6.1.4)
 
   '@octokit/types@13.10.0':
     dependencies:
@@ -7829,7 +7853,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.41.0(@prisma/client@6.5.0(typescript@5.8.3))(@types/pg@8.11.11)(@vercel/postgres@0.10.0(utf-8-validate@6.0.5))(gel@2.0.2)(kysely@0.27.6)(pg@8.14.1):
+  drizzle-orm@0.41.0(@prisma/client@6.5.0(typescript@5.8.3))(@types/pg@8.11.11)(@vercel/postgres@0.10.0)(gel@2.0.2)(kysely@0.27.6)(pg@8.14.1):
     optionalDependencies:
       '@prisma/client': 6.5.0(prisma@6.5.0(typescript@5.8.3))(typescript@5.8.3)
       '@types/pg': 8.11.11
