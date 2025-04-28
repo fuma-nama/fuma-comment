@@ -146,7 +146,7 @@ importers:
         version: 1.2.5(typescript@5.8.3)
       drizzle-orm:
         specifier: ^0.41.0
-        version: 0.41.0(@prisma/client@6.5.0(typescript@5.8.3))(@types/pg@8.11.11)(@vercel/postgres@0.10.0)(gel@2.0.2)(kysely@0.27.6)(pg@8.14.1)
+        version: 0.41.0(@prisma/client@6.5.0(typescript@5.8.3))(@types/pg@8.11.11)(@vercel/postgres@0.10.0(utf-8-validate@6.0.5))(gel@2.0.2)(kysely@0.27.6)(pg@8.14.1)
       next:
         specifier: 15.2.4
         version: 15.2.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -195,7 +195,7 @@ importers:
         version: link:../../packages/server
       drizzle-orm:
         specifier: ^0.41.0
-        version: 0.41.0(@prisma/client@6.5.0(typescript@5.8.3))(@types/pg@8.11.11)(@vercel/postgres@0.10.0)(gel@2.0.2)(kysely@0.27.6)(pg@8.14.1)
+        version: 0.41.0(@prisma/client@6.5.0(typescript@5.8.3))(@types/pg@8.11.11)(@vercel/postgres@0.10.0(utf-8-validate@6.0.5))(gel@2.0.2)(kysely@0.27.6)(pg@8.14.1)
       next:
         specifier: 15.2.4
         version: 15.2.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -416,9 +416,6 @@ importers:
       lowlight:
         specifier: ^3.3.0
         version: 3.3.0
-      lucide-react:
-        specifier: ^0.487.0
-        version: 0.487.0(react@19.1.0)
       react-dom:
         specifier: ^19.x
         version: 19.1.0(react@19.1.0)
@@ -431,9 +428,6 @@ importers:
       tippy.js:
         specifier: ^6.3.7
         version: 6.3.7
-      vaul:
-        specifier: ^1.1.2
-        version: 1.1.2(@types/react-dom@19.1.1(@types/react@19.1.0))(@types/react@19.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
     devDependencies:
       '@fuma-comment/server':
         specifier: workspace:^
@@ -453,6 +447,9 @@ importers:
       concurrently:
         specifier: ^9.1.2
         version: 9.1.2
+      lucide-react:
+        specifier: ^0.487.0
+        version: 0.487.0(react@19.1.0)
       postcss:
         specifier: ^8.5.3
         version: 8.5.3
@@ -504,7 +501,7 @@ importers:
         version: 1.2.5(typescript@5.8.3)
       drizzle-orm:
         specifier: ^0.41.0
-        version: 0.41.0(@prisma/client@6.5.0(typescript@5.8.3))(@types/pg@8.11.11)(@vercel/postgres@0.10.0)(gel@2.0.2)(kysely@0.27.6)(pg@8.14.1)
+        version: 0.41.0(@prisma/client@6.5.0(typescript@5.8.3))(@types/pg@8.11.11)(@vercel/postgres@0.10.0(utf-8-validate@6.0.5))(gel@2.0.2)(kysely@0.27.6)(pg@8.14.1)
       elysia:
         specifier: ^1.2.25
         version: 1.2.25(@sinclair/typebox@0.34.33)(typescript@5.8.3)
@@ -5286,12 +5283,6 @@ packages:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
 
-  vaul@1.1.2:
-    resolution: {integrity: sha512-ZFkClGpWyI2WUQjdLJ/BaGuV6AVQiJ3uELGk3OYtP+B6yCO7Cmn9vPFXVJkRaGkOJu3m8bQMgtyzNHixULceQA==}
-    peerDependencies:
-      react: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
-      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
-
   vfile-message@4.0.2:
     resolution: {integrity: sha512-jRDZ1IMLttGj41KcZvlrYAaI3CfqpLpfpf+Mfig13viT6NKvRzWZ+lXz0Y5D60w6uJIBAOGq9mSHf0gktF0duw==}
 
@@ -7853,7 +7844,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.41.0(@prisma/client@6.5.0(typescript@5.8.3))(@types/pg@8.11.11)(@vercel/postgres@0.10.0)(gel@2.0.2)(kysely@0.27.6)(pg@8.14.1):
+  drizzle-orm@0.41.0(@prisma/client@6.5.0(typescript@5.8.3))(@types/pg@8.11.11)(@vercel/postgres@0.10.0(utf-8-validate@6.0.5))(gel@2.0.2)(kysely@0.27.6)(pg@8.14.1):
     optionalDependencies:
       '@prisma/client': 6.5.0(prisma@6.5.0(typescript@5.8.3))(typescript@5.8.3)
       '@types/pg': 8.11.11
@@ -10454,15 +10445,6 @@ snapshots:
       typescript: 5.8.3
 
   vary@1.1.2: {}
-
-  vaul@1.1.2(@types/react-dom@19.1.1(@types/react@19.1.0))(@types/react@19.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
-    dependencies:
-      '@radix-ui/react-dialog': 1.1.6(@types/react-dom@19.1.1(@types/react@19.1.0))(@types/react@19.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-    transitivePeerDependencies:
-      - '@types/react'
-      - '@types/react-dom'
 
   vfile-message@4.0.2:
     dependencies:

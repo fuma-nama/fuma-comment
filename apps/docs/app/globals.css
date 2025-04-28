@@ -4,7 +4,6 @@
 @import "@fuma-comment/react/preset.css";
 
 @source '../node_modules/fumadocs-ui/dist/**/*.js';
-@source '../node_modules/@fuma-comment/react/dist/**/*.js';
 
 @theme {
 	--fd-layout-width: 1400px;

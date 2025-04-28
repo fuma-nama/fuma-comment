@@ -1,4 +1,6 @@
 @import "./tokyo-night.css";
+@source '../dist/**/*.js';
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
@@ -73,6 +75,8 @@
 	--animate-overlayHide: overlayHide 400ms cubic-bezier(0.16, 1, 0.3, 1);
 	--animate-dialogShow: dialogShow 400ms cubic-bezier(0.16, 1, 0.3, 1);
 	--animate-dialogHide: dialogHide 500ms cubic-bezier(0.16, 1, 0.3, 1);
+	--animate-drawerShow: drawerShow 400ms cubic-bezier(0.16, 1, 0.3, 1);
+	--animate-drawerHide: drawerHide 500ms cubic-bezier(0.16, 1, 0.3, 1);
 
 	@keyframes fadeIn {
 		from {
@@ -113,6 +117,18 @@
 		to {
 			opacity: 0;
 			filter: blur(12px);
+		}
+	}
+
+	@keyframes drawerShow {
+		from {
+			transform: translateY(100%);
+		}
+	}
+
+	@keyframes drawerHide {
+		to {
+			transform: translateY(100%);
 		}
 	}
 
