@@ -1,5 +1,13 @@
 # @fuma-comment/next
 
+## 1.2.3
+
+### Patch Changes
+
+- 8de9833: bump deps
+- Updated dependencies [8de9833]
+  - @fuma-comment/server@1.2.3
+
 ## 1.2.1
 
 ### Patch Changes
