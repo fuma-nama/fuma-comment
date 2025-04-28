@@ -49,7 +49,7 @@
 		"@types/express": "^5.0.1",
 		"@types/node": "^22.14.0",
 		"better-auth": "^1.2.5",
-		"drizzle-orm": "^0.41.0",
+		"drizzle-orm": "^0.43.0",
 		"elysia": "^1.2.25",
 		"express": "^5.1.0",
 		"hono": "^4.7.6",
@@ -64,7 +64,7 @@
 	"peerDependencies": {
 		"@clerk/backend": "1.x.x",
 		"better-auth": "1.x.x",
-		"drizzle-orm": "^0.40.0",
+		"drizzle-orm": "^0.40.0 || ^0.43.0",
 		"elysia": "1.x.x",
 		"hono": "*",
 		"mongodb": "6.x.x",
