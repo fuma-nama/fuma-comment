@@ -109,6 +109,38 @@ export function DialogContent({
 	}
 
 	if (position === "bottom") {
+		// with reference of https://github.com/emilkowalski/vaul/blob/main/src/index.tsx
+		function shouldDrag(target: HTMLElement): boolean {
+			if (target.isContentEditable) return false;
+
+			const highlightedText = window.getSelection()?.toString();
+			if (highlightedText && highlightedText.length > 0) {
+				return false;
+			}
+
+			if (target.tagName === "SELECT" || target.tagName === "INPUT") {
+				return false;
+			}
+
+			let element = target;
+			while (element) {
+				if (element.getAttribute("role") === "dialog") break;
+
+				if (
+					element.scrollHeight > element.clientHeight &&
+					element.scrollTop > 0
+				) {
+					// The element is scrollable and not scrolled to the top, so don't drag
+					return false;
+				}
+
+				// Move up to the parent element
+				element = element.parentNode as HTMLElement;
+			}
+
+			return true;
+		}
+
 		const onStopDrag = () => {
 			if (!pressing) return;
 			setOffset(0);
@@ -125,29 +157,13 @@ export function DialogContent({
 						window.addEventListener("touchend", onStopDrag, { once: true });
 					}}
 					onPointerMove={(e) => {
-						if (!pressing || !(e.target instanceof HTMLElement)) return;
-						let element = e.target;
-						let shouldDrag = true;
+						if (
+							!pressing ||
+							!(e.target instanceof HTMLElement) ||
+							!shouldDrag(e.target)
+						)
+							return;
 
-						while (element) {
-							if (element.getAttribute("role") === "dialog") {
-								break;
-							}
-
-							if (
-								element.scrollHeight > element.clientHeight &&
-								element.scrollTop > 0
-							) {
-								// The element is scrollable and not scrolled to the top, so don't drag
-								shouldDrag = false;
-								break;
-							}
-
-							// Move up to the parent element
-							element = element.parentNode as HTMLElement;
-						}
-
-						if (!shouldDrag) return;
 						const newOffset = Math.max(0, offsetRef.current + e.movementY);
 						setOffset(newOffset);
 						if (
