@@ -1,5 +1,11 @@
 # @fuma-comment/server
 
+## 1.2.3
+
+### Patch Changes
+
+- 8de9833: bump deps
+
 ## 1.2.1
 
 ### Patch Changes
