@@ -257,7 +257,7 @@ function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
 				<LinkIcon className="size-4" />
 			</DialogTrigger>
 			<DialogContent onCloseAutoFocus={(e) => e.preventDefault()}>
-				<DialogTitle className="sr-only">Add Link</DialogTitle>
+				<DialogTitle>Add Link</DialogTitle>
 				<HyperLink
 					editor={editor}
 					onClose={() => {

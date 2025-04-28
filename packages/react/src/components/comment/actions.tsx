@@ -115,7 +115,7 @@ export function Actions({
 						aria-describedby="reply-description"
 						onOpenAutoFocus={(e) => e.preventDefault()}
 					>
-						<DialogTitle className="text-fc-muted-foreground">
+						<DialogTitle className="text-sm mb-4">
 							Replying to {comment.author.name}
 						</DialogTitle>
 						<ReplyForm

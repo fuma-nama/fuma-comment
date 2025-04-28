@@ -7,8 +7,8 @@ import { cva } from "class-variance-authority";
 import {
 	createContext,
 	use,
-	useEffect,
 	useMemo,
+	useRef,
 	useState,
 	type ComponentProps,
 } from "react";
@@ -80,6 +80,9 @@ export function DialogContent({
 	className,
 	...props
 }: Primitive.DialogContentProps): React.ReactElement {
+	const contentRef = useRef<HTMLDivElement>(null);
+	const [pressing, setPressing] = useState(false);
+	const offsetRef = useRef(0);
 	const { setOpen } = useContext();
 	const isMobile = useIsMobile();
 	const position = isMobile ? "bottom" : "center";
@@ -89,7 +92,7 @@ export function DialogContent({
 				buttonVariants({
 					variant: "ghost",
 					size: "icon",
-					className: "absolute text-fc-muted-foreground right-3 top-3",
+					className: "absolute text-fc-muted-foreground right-3.5 top-3.5",
 				}),
 			)}
 		>
@@ -97,15 +100,13 @@ export function DialogContent({
 		</Primitive.Close>
 	);
 
-	const [offset, setOffset] = useState(0);
-	const [pressing, setPressing] = useState(false);
-
-	useEffect(() => {
-		if (offset > 200) {
-			setOpen(false);
-			setPressing(false);
+	function setOffset(v: number) {
+		offsetRef.current = v;
+		const element = contentRef.current;
+		if (element) {
+			element.style.setProperty("--drawer-offset", `${offsetRef.current}px`);
 		}
-	}, [offset, setOpen]);
+	}
 
 	if (position === "bottom") {
 		const onStopDrag = () => {
@@ -118,6 +119,7 @@ export function DialogContent({
 			<Primitive.Portal>
 				<Primitive.Overlay className={overlayVariants()} />
 				<Primitive.Content
+					ref={contentRef}
 					onPointerDown={() => {
 						setPressing(true);
 						window.addEventListener("touchend", onStopDrag, { once: true });
@@ -125,7 +127,6 @@ export function DialogContent({
 					onPointerMove={(e) => {
 						if (!pressing || !(e.target instanceof HTMLElement)) return;
 						let element = e.target;
-
 						let shouldDrag = true;
 
 						while (element) {
@@ -135,7 +136,7 @@ export function DialogContent({
 
 							if (
 								element.scrollHeight > element.clientHeight &&
-								element.scrollTop !== 0
+								element.scrollTop > 0
 							) {
 								// The element is scrollable and not scrolled to the top, so don't drag
 								shouldDrag = false;
@@ -147,7 +148,16 @@ export function DialogContent({
 						}
 
 						if (!shouldDrag) return;
-						setOffset((prev) => Math.max(0, prev + e.movementY));
+						const newOffset = Math.max(0, offsetRef.current + e.movementY);
+						setOffset(newOffset);
+						if (
+							(contentRef.current &&
+								newOffset > contentRef.current.clientHeight / 2) ||
+							e.movementY > 18
+						) {
+							setOpen(false);
+							setPressing(false);
+						}
 						e.preventDefault();
 					}}
 					onAnimationEnd={() => {
@@ -160,7 +170,7 @@ export function DialogContent({
 					style={{
 						...props.style,
 						transition: pressing ? "none" : props.style?.transition,
-						transform: `translateY(${offset}px)`,
+						transform: "translateY(var(--drawer-offset))",
 					}}
 				>
 					{children}
@@ -191,7 +201,7 @@ export function DialogTitle({
 }: Primitive.DialogTitleProps): React.ReactElement {
 	return (
 		<Primitive.Title
-			className={cn("mb-2 font-medium max-sm:text-center", className)}
+			className={cn("mb-2 font-semibold max-sm:text-center", className)}
 			{...props}
 		>
 			{props.children}
