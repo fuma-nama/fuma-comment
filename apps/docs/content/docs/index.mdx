@@ -11,8 +11,9 @@ Note that it is not a SaaS, you will need a database (SQLite, PostgreSQL, MySQL)
 ## Client
 
 ### Installation
-```sh
-npm i @fuma-comment/react
+
+```package-install
+@fuma-comment/react
 ```
 
 Currently, we provide a React.js client API.
@@ -54,18 +55,21 @@ For projects using Tailwind CSS v4, use the Tailwind CSS preset instead:
 ```css
 @import "tailwindcss";
 @import "@fuma-comment/react/preset.css";
-
-/* path of the package relative to the CSS file */
-@source '../node_modules/@fuma-comment/react/dist/**/*.js';
 ```
 
-## Database
+## Backend
+
+```package-install
+@fuma-comment/server
+```
+
+### Database
 
 You need a database to persist comments.
 
 Fuma Comment has built-in support for multiple ORMs, you can copy the required schemas:
 
-<Tabs items={["Drizzle", "Prisma"]}>
+<Tabs items={["Drizzle", "Prisma", "Others"]}>
 
 <Tab title="Drizzle">
 
@@ -122,19 +126,19 @@ const storage = createPrismaAdapter({
 
 </Tab>
 
+<Tab title="Others">
+
+You may implement your own storage adapter following the instructions in TSDoc of `StorageAdapter`.
+
+</Tab>
+
 </Tabs>
 
-### Other Adapters
-
-you may implement your own storage adapter following the instructions in TSDoc of `StorageAdapter`.
-
-## Auth Provider
+### Auth Provider
 
 Fuma Comment supports multiple auth providers, you can choose one of them:
 
-### NextAuth
-
-```ts title="lib/comment.config.ts"
+```ts title="lib/comment.config.ts" tab="NextAuth"
 import { createNextAuthAdapter } from "@fuma-comment/server/adapters/next-auth";
 // Next Auth options
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
@@ -142,20 +146,18 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 const auth = createNextAuthAdapter(authOptions);
 ```
 
-### BetterAuth
-
-```ts title="lib/comment.config.ts"
+```ts title="lib/comment.config.ts" tab="BetterAuth"
 import { createBetterAuthAdapter } from "@fuma-comment/server/adapters/better-auth";
 import { auth as betterAuth } from "@/lib/auth";
 
 const auth = createBetterAuthAdapter(betterAuth);
 ```
 
-## Server
+### Server
 
 Fuma Comment supports several web/backend frameworks to host the backend server.
 
-### Next.js
+#### Next.js
 
 Create `app/api/comments/[[...comment]]/route.ts`.
 
@@ -169,7 +171,7 @@ export const { GET, DELETE, PATCH, POST } = NextComment({
 });
 ```
 
-### Express
+#### Express
 
 Pass your express app as a parameter, all the endpoints will be added under `/api/comments`.
 
@@ -185,7 +187,7 @@ ExpressComment({
 });
 ```
 
-### Elysia
+#### Elysia
 
 ```ts
 import Elysia from "elysia";
