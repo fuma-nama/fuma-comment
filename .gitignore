@@ -10,6 +10,7 @@ coverage
 .next/
 out/
 dist/
+!packages/react/dist
 
 # misc
 .DS_Store
