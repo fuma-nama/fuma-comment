@@ -137,15 +137,15 @@ function CommentMenu({
 	return (
 		<Dialog open={isEditing} onOpenChange={setIsEditing}>
 			<DialogContent>
-				<DialogTitle className="max-sm:sr-only">Edit Comment</DialogTitle>
+				<DialogTitle className="max-sm:sr-only">編輯評論</DialogTitle>
 				<DialogDescription className="max-sm:sr-only">
-					Edit the content of your comment.
+					編輯您的評論內容。
 				</DialogDescription>
 				<EditForm onClose={() => setIsEditing(false)} />
 			</DialogContent>
 			<Menu>
 				<MenuTrigger
-					aria-label="Open Menu"
+					aria-label="開啟選單"
 					className={cn(
 						buttonVariants({
 							size: "icon",
@@ -167,12 +167,12 @@ function CommentMenu({
 					}}
 				>
 					<MenuItem onSelect={onCopy}>
-						Copy
+						複製
 						<CopyIcon />
 					</MenuItem>
 					{canEdit ? (
 						<MenuItem onSelect={onEdit}>
-							Edit
+							編輯
 							<PencilIcon />
 						</MenuItem>
 					) : null}
@@ -182,7 +182,7 @@ function CommentMenu({
 							onSelect={onDelete}
 							variant="destructive"
 						>
-							Delete
+							刪除
 							<Trash2Icon />
 						</MenuItem>
 					) : null}

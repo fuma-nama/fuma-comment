@@ -58,7 +58,7 @@ export function HyperLink({
 			}}
 		>
 			<label className="font-medium text-sm content-center" htmlFor="url">
-				Link
+				連結
 			</label>
 			<input
 				id="url"
@@ -72,7 +72,7 @@ export function HyperLink({
 				value={value}
 			/>
 			<label className="font-medium text-sm content-center" htmlFor="name">
-				Name
+				名稱
 			</label>
 			<input
 				id="name"
@@ -81,11 +81,11 @@ export function HyperLink({
 				onChange={(e) => {
 					setName(e.target.value);
 				}}
-				placeholder="My Link (optional)"
+				placeholder="我的連結 (選填)"
 			/>
 			<div className="flex gap-1 mt-2">
 				<button className={cn(buttonVariants())} type="submit">
-					{isInsert ? "Insert" : "Save"}
+					{isInsert ? "插入" : "儲存"}
 				</button>
 				{editor.isActive("link") ? (
 					<button
@@ -96,7 +96,7 @@ export function HyperLink({
 						}}
 						type="button"
 					>
-						Unset
+						移除
 					</button>
 				) : null}
 			</div>

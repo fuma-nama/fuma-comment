@@ -82,7 +82,7 @@ export function Actions({
 					onClick={onLike}
 					type="button"
 				>
-					<ThumbsUp aria-label="Like" className="size-4" />
+					<ThumbsUp aria-label="讚" className="size-4" />
 					{comment.likes > 0 ? comment.likes : null}
 				</button>
 				<button
@@ -95,7 +95,7 @@ export function Actions({
 					onClick={onDislike}
 					type="button"
 				>
-					<ThumbsDown aria-label="Dislike" className="size-4" />
+					<ThumbsDown aria-label="倒讚" className="size-4" />
 					{comment.dislikes > 0 ? comment.dislikes : null}
 				</button>
 				{canReply && isAuthenticated ? (
@@ -105,7 +105,7 @@ export function Actions({
 						onClick={() => setReply(!isReplying)}
 					>
 						<ReplyIcon className="size-4" />
-						Reply
+						回覆
 					</button>
 				) : null}
 			</div>
@@ -116,7 +116,7 @@ export function Actions({
 						onOpenAutoFocus={(e) => e.preventDefault()}
 					>
 						<DialogTitle className="sr-only">
-							Replying to {comment.author.name}
+							回覆 {comment.author.name}
 						</DialogTitle>
 						<ReplyForm
 							editorRef={editorRef}

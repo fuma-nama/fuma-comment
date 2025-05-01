@@ -235,7 +235,7 @@ function MarkButton({
 		<button
 			key={name}
 			type="button"
-			aria-label={`Toggle ${name}`}
+			aria-label={`切換 ${name}`}
 			className={cn(
 				toggleVariants({
 					active: editor.isActive(name),
@@ -260,14 +260,14 @@ function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
 		<Dialog onOpenChange={setIsOpen} open={isOpen}>
 			<DialogTrigger
 				type="button"
-				aria-label="Toggle Link"
+				aria-label="切換連結"
 				className={cn(toggleVariants({ active: editor.isActive("link") }))}
 				disabled={!editor.can().setLink({ href: "" }) || !editor.isEditable}
 			>
 				<LinkIcon className="size-4" />
 			</DialogTrigger>
 			<DialogContent onCloseAutoFocus={(e) => e.preventDefault()}>
-				<DialogTitle>Add Link</DialogTitle>
+				<DialogTitle>新增連結</DialogTitle>
 				<HyperLink
 					editor={editor}
 					onClose={() => {

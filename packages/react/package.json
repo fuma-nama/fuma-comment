@@ -40,7 +40,7 @@
 		"react-dom": "^19.x"
 	},
 	"devDependencies": {
-		"@fuma-comment/server": "workspace:^",
+		"@fuma-comment/server": "^",
 		"@tailwindcss/cli": "^4.1.8",
 		"@types/node": "^22.15.29",
 		"@types/react": "^19.1.6",

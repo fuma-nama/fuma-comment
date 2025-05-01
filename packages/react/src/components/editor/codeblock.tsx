@@ -27,13 +27,13 @@ export default function CodeBlockButton({
 		<Dialog onOpenChange={setIsOpen} open={isOpen}>
 			<DialogTrigger
 				type="button"
-				aria-label="Toggle CodeBlock"
+				aria-label="切換程式碼區塊"
 				className={cn(toggleVariants({ active: editor.isActive("codeBlock") }))}
 			>
 				<SquareCode className="size-4" />
 			</DialogTrigger>
 			<DialogContent full onCloseAutoFocus={(e) => e.preventDefault()}>
-				<DialogTitle className="sr-only">Insert CodeBlock</DialogTitle>
+				<DialogTitle className="sr-only">插入程式碼區塊</DialogTitle>
 				<CodeBlockForm editor={editor} onClose={() => setIsOpen(false)} />
 			</DialogContent>
 		</Dialog>
@@ -53,13 +53,13 @@ function CodeBlockForm({
 		<Command {...props}>
 			<CommandInput
 				className={cn(inputVariants({ variant: "ghost" }), "w-full")}
-				placeholder="Search language..."
+				placeholder="搜尋語言..."
 				value={value}
 				onValueChange={setValue}
 			/>
 			<CommandList className="h-[300px] overflow-auto">
 				<CommandEmpty className="absolute inset-0 flex items-center justify-center text-fc-muted-foreground text-sm">
-					No language found.
+					找不到語言。
 				</CommandEmpty>
 				<CommandGroup>
 					{lowlight.listLanguages().map((item) => (

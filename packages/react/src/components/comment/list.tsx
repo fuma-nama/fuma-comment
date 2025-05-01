@@ -75,7 +75,7 @@ export function CommentList({
 		<div ref={ref} {...props} className={cn("flex flex-col", props.className)}>
 			{!query.isLoading && cursor === undefined && list.length === 0 && (
 				<p className="mx-auto my-4 text-center text-sm text-fc-muted-foreground">
-					No comments
+					尚無評論
 				</p>
 			)}
 			{list.map((reply) => (
@@ -96,7 +96,7 @@ export function CommentList({
 							setCursor(new Date(list[list.length - 1].timestamp).getTime());
 					}}
 				>
-					Load More
+					載入更多
 				</button>
 			) : null}
 			{query.isLoading ? <Spinner className="mx-auto my-4" /> : null}
@@ -128,7 +128,7 @@ export function Replies(): React.ReactNode {
 			<ChevronDown
 				className={cn("size-4 transition-transform", open && "rotate-180")}
 			/>
-			{comment.replies} Replies
+			{comment.replies} 個回覆
 		</button>
 	);
 
@@ -137,7 +137,7 @@ export function Replies(): React.ReactNode {
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogTrigger asChild>{button}</DialogTrigger>
 				<DialogContent className="h-[70vh]">
-					<DialogTitle>Comments</DialogTitle>
+					<DialogTitle>評論</DialogTitle>
 					<CommentList
 						threadId={comment.id}
 						isSubThread

@@ -86,10 +86,10 @@ export function ReplyForm({
 				}, [])}
 				onEscape={onCancel}
 				onSubmit={submit}
-				placeholder="Reply to comment"
+				placeholder="回覆評論"
 			>
 				<button
-					aria-label="Reply"
+					aria-label="回覆"
 					className={cn(
 						buttonVariants({
 							size: "icon",

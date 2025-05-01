@@ -28,7 +28,7 @@ export const CreateForm = forwardRef<
 	FormHTMLAttributes<HTMLFormElement> & {
 		placeholder?: string;
 	}
->(({ placeholder = "Leave comment", ...props }, ref) => {
+>(({ placeholder = "留下評論", ...props }, ref) => {
 	const auth = useAuthContext();
 	const { page, fetcher } = useCommentsContext();
 	const [isEmpty, setIsEmpty] = useState(true);
@@ -95,7 +95,7 @@ export const CreateForm = forwardRef<
 			>
 				{auth.isLoading || auth.session ? (
 					<button
-						aria-label="Send"
+						aria-label="發送"
 						className={cn(
 							buttonVariants({
 								size: "icon",

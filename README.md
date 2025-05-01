@@ -2,8 +2,8 @@
 
 # Fuma Comment
 
-Fuma Comment is a library for building comment areas into your blog, docs, and everywhere!
+Fuma Comment 是一個用於在您的部落格、文檔和任何地方建立評論區域的函式庫！
 
-You can use it with your own database, auth system.
+您可以與自己的資料庫和身份驗證系統一起使用。
 
-See [Documentation](https://fuma-comment.vercel.app/docs).
+查看 [文檔](https://fuma-comment.vercel.app/docs)。

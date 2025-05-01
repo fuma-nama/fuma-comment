@@ -125,7 +125,7 @@ function render(content: JSONContent, storage: StorageContext): ReactNode {
 		if (typeof storage.render === "function") {
 			return storage.render({
 				...attrs,
-				alt: attrs.alt ?? "uploaded image",
+				alt: attrs.alt ?? "上傳的圖片",
 			});
 		}
 

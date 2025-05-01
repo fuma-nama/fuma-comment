@@ -75,10 +75,10 @@ export function EditForm({
 				}, [])}
 				onEscape={onClose}
 				onSubmit={submit}
-				placeholder="Edit Message"
+				placeholder="編輯訊息"
 			>
 				<button
-					aria-label="Edit"
+					aria-label="編輯"
 					className={cn(
 						buttonVariants({
 							variant: "primary",

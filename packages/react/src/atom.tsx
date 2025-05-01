@@ -22,7 +22,7 @@ import { createFetcher } from "./utils/fetcher";
 
 export interface CommentsProviderProps {
 	/**
-	 * Comments will be grouped by `page`
+	 * 評論將按 `page` 分組
 	 */
 	page: string;
 
@@ -33,9 +33,9 @@ export interface CommentsProviderProps {
 	storage?: StorageContext;
 
 	/**
-	 * The URL of the API endpoint.
+	 * API 端點的 URL。
 	 *
-	 * If not specified, the API will be fetched from `/api/comments`.
+	 * 如果未指定，API 將從 `/api/comments` 獲取。
 	 */
 	apiUrl?: string;
 
@@ -97,7 +97,7 @@ export function AuthButton(
 	if (typeof signIn === "function")
 		return (
 			<button {...props} onClick={signIn} type="button">
-				{props.children ?? "Sign In"}
+				{props.children ?? "登入"}
 			</button>
 		);
 
