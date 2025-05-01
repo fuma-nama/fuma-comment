@@ -32,7 +32,7 @@ export default function EmojiPickerPopover({
 					e.preventDefault();
 				}}
 			>
-				<DialogTitle className="sr-only">Insert Emoji</DialogTitle>
+				<DialogTitle className="sr-only">插入表情符號</DialogTitle>
 				<EmojiPicker.Root
 					className="flex w-full flex-col h-[368px] isolate max-sm:-mt-3"
 					onEmojiSelect={(emoji) => {
@@ -41,6 +41,7 @@ export default function EmojiPickerPopover({
 					}}
 				>
 					<EmojiPicker.Search
+						placeholder="搜尋表情符號"
 						type="text"
 						className={cn(
 							inputVariants({
