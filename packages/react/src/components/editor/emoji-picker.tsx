@@ -26,7 +26,7 @@ export default function EmojiPickerPopover({
 				<Smile className="size-4" />
 			</DialogTrigger>
 			<DialogContent
-				className="p-0 max-sm:pt-2"
+				full
 				onCloseAutoFocus={(e) => {
 					editor.commands.focus();
 					e.preventDefault();
@@ -34,7 +34,7 @@ export default function EmojiPickerPopover({
 			>
 				<DialogTitle className="sr-only">Insert Emoji</DialogTitle>
 				<EmojiPicker.Root
-					className="flex w-full flex-col h-[368px] isolate"
+					className="flex w-full flex-col h-[368px] isolate max-sm:-mt-3"
 					onEmojiSelect={(emoji) => {
 						editor.chain().insertContent(emoji.emoji).focus().run();
 						setIsOpen(false);

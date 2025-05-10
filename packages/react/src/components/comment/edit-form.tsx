@@ -59,6 +59,7 @@ export function EditForm({
 
 	return (
 		<form
+			className="relative"
 			onSubmit={(e) => {
 				submit();
 				e.preventDefault();
@@ -75,27 +76,21 @@ export function EditForm({
 				onEscape={onClose}
 				onSubmit={submit}
 				placeholder="Edit Message"
-			/>
-			<div className="mt-4 gap-1">
+			>
 				<button
 					aria-label="Edit"
 					className={cn(
-						buttonVariants({ variant: "primary", className: "gap-2" }),
+						buttonVariants({
+							variant: "primary",
+							size: "icon",
+						}),
 					)}
 					disabled={mutation.isMutating || isEmpty}
 					type="submit"
 				>
 					{mutation.isMutating ? <Spinner /> : <Pencil className="size-4" />}
-					Edit
 				</button>
-				<button
-					className={cn(buttonVariants({ variant: "secondary" }))}
-					onClick={onClose}
-					type="button"
-				>
-					Cancel
-				</button>
-			</div>
+			</CommentEditor>
 		</form>
 	);
 }

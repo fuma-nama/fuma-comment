@@ -90,35 +90,34 @@ export const CreateForm = forwardRef<
 				}, [])}
 				onSubmit={submit}
 				placeholder="Leave comment"
-			/>
-			{auth.isLoading || auth.session ? (
-				<button
-					aria-label="Send"
-					className={cn(
-						buttonVariants({
-							className: "absolute right-3.5 bottom-3",
-							size: "icon",
-						}),
-					)}
-					disabled={disabled || isEmpty}
-					type="submit"
-				>
-					{mutation.isMutating ? (
-						<Spinner />
-					) : (
-						<SendHorizonalIcon className="size-4" />
-					)}
-				</button>
-			) : (
-				<AuthButton
-					className={cn(
-						buttonVariants({
-							size: "small",
-							className: "absolute right-3.5 bottom-3",
-						}),
-					)}
-				/>
-			)}
+			>
+				{auth.isLoading || auth.session ? (
+					<button
+						aria-label="Send"
+						className={cn(
+							buttonVariants({
+								size: "icon",
+							}),
+						)}
+						disabled={disabled || isEmpty}
+						type="submit"
+					>
+						{mutation.isMutating ? (
+							<Spinner />
+						) : (
+							<SendHorizonalIcon className="size-4" />
+						)}
+					</button>
+				) : (
+					<AuthButton
+						className={cn(
+							buttonVariants({
+								size: "small",
+							}),
+						)}
+					/>
+				)}
+			</CommentEditor>
 		</form>
 	);
 });

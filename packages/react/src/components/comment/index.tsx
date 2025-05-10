@@ -30,7 +30,12 @@ import { EditForm } from "./edit-form";
 import { ContentRenderer } from "./content-renderer";
 import { Timestamp } from "../timestamp";
 import { useCommentsContext } from "../../contexts/comments";
-import { Dialog, DialogContent, DialogTitle } from "../dialog";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogTitle,
+} from "../dialog";
 
 export function Comment({
 	comment: cached,
@@ -132,7 +137,10 @@ function CommentMenu({
 	return (
 		<Dialog open={isEditing} onOpenChange={setIsEditing}>
 			<DialogContent>
-				<DialogTitle>Edit Comment</DialogTitle>
+				<DialogTitle className="max-sm:sr-only">Edit Comment</DialogTitle>
+				<DialogDescription className="max-sm:sr-only">
+					Edit the content of your comment.
+				</DialogDescription>
 				<EditForm onClose={() => setIsEditing(false)} />
 			</DialogContent>
 			<Menu>

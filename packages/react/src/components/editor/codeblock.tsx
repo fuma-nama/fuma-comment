@@ -32,10 +32,7 @@ export default function CodeBlockButton({
 			>
 				<SquareCode className="size-4" />
 			</DialogTrigger>
-			<DialogContent
-				className="p-0 overflow-hidden max-sm:pt-2"
-				onCloseAutoFocus={(e) => e.preventDefault()}
-			>
+			<DialogContent full onCloseAutoFocus={(e) => e.preventDefault()}>
 				<DialogTitle className="sr-only">Insert CodeBlock</DialogTitle>
 				<CodeBlockForm editor={editor} onClose={() => setIsOpen(false)} />
 			</DialogContent>

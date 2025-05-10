@@ -62,9 +62,13 @@ const overlayVariants = cva(
 );
 
 const sharedVariants = cva(
-	"fixed left-1/2 flex w-full -translate-x-1/2 flex-col bg-fc-popover text-fc-popover-foreground p-4 shadow-lg",
+	"fixed left-1/2 flex w-full -translate-x-1/2 flex-col bg-fc-popover text-fc-popover-foreground shadow-lg overflow-hidden",
 	{
 		variants: {
+			full: {
+				true: "p-0",
+				false: "p-4",
+			},
 			variant: {
 				drawer:
 					"rounded-t-3xl outline-none pt-2 pb-10 transition-transform data-[state=closed]:animate-fc-drawerHide data-[state=open]:animate-fc-drawerShow",
@@ -78,8 +82,11 @@ const sharedVariants = cva(
 export function DialogContent({
 	children,
 	className,
+	full = false,
 	...props
-}: Primitive.DialogContentProps): React.ReactElement {
+}: Primitive.DialogContentProps & {
+	full?: boolean;
+}): React.ReactElement {
 	const bottomPadding = 20;
 	const contentRef = useRef<HTMLDivElement>(null);
 	const [pressing, setPressing] = useState(false);
@@ -175,7 +182,7 @@ export function DialogContent({
 							onStopDrag();
 						}
 					}}
-					className={cn(sharedVariants({ variant: "drawer" }), className)}
+					className={cn(sharedVariants({ variant: "drawer", full }), className)}
 					{...props}
 					style={{
 						...props.style,
@@ -184,7 +191,9 @@ export function DialogContent({
 						transform: "translateY(var(--drawer-offset))",
 					}}
 				>
-					<div className="mx-auto w-12 h-1 rounded-full bg-fc-primary/30" />
+					{!full && (
+						<div className="mb-3 mx-auto w-12 h-1 rounded-full bg-fc-primary/30" />
+					)}
 					{children}
 				</Primitive.Content>
 			</Primitive.Portal>
@@ -196,7 +205,7 @@ export function DialogContent({
 			<Primitive.Overlay className={overlayVariants()} />
 			<Primitive.Content
 				data-position={position}
-				className={cn(sharedVariants({ variant: "modal" }), className)}
+				className={cn(sharedVariants({ variant: "modal", full }), className)}
 				{...props}
 			>
 				{children}
@@ -222,10 +231,7 @@ export function DialogTitle({
 }: Primitive.DialogTitleProps): React.ReactElement {
 	return (
 		<Primitive.Title
-			className={cn(
-				"my-2 font-semibold first:mt-0 max-sm:text-center",
-				className,
-			)}
+			className={cn("mb-2 font-semibold max-sm:text-center", className)}
 			{...props}
 		>
 			{props.children}

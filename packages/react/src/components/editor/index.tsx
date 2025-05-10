@@ -32,6 +32,7 @@ export interface EditorProps {
 	onEscape?: (editor: UseCommentEditor) => void;
 	containerProps?: HTMLAttributes<HTMLDivElement>;
 	editorProps?: HTMLAttributes<HTMLDivElement>;
+	children?: ReactNode;
 
 	persistentId?: string;
 }
@@ -83,7 +84,10 @@ const CodeBlockButton = lazy(() => import("./codeblock"));
 const ImageUploadButton = lazy(() => import("./image-upload"));
 
 export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
-	({ editorRef, disabled = false, containerProps, ...props }, ref) => {
+	(
+		{ editorRef, disabled = false, containerProps, children, ...props },
+		ref,
+	) => {
 		const [editor, setEditor] = useState<Editor>();
 		const mention = useMention();
 		const storage = useStorage();
@@ -206,6 +210,8 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 					<CodeBlockButton editor={editor} />
 					<EmojiPickerButton editor={editor} />
 					{storage.enabled ? <ImageUploadButton editor={editor} /> : null}
+					<div className="flex-1" />
+					{children}
 				</div>
 			</div>
 		);
@@ -218,7 +224,11 @@ function MarkButton({
 	editor,
 	name,
 	icon,
-}: { editor: Editor; name: string; icon: ReactNode }): React.ReactNode {
+}: {
+	editor: Editor;
+	name: string;
+	icon: ReactNode;
+}): React.ReactNode {
 	useHookUpdate(editor);
 
 	return (

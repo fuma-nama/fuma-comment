@@ -87,24 +87,24 @@ export function ReplyForm({
 				onEscape={onCancel}
 				onSubmit={submit}
 				placeholder="Reply to comment"
-			/>
-			<button
-				aria-label="Reply"
-				className={cn(
-					buttonVariants({
-						size: "icon",
-						className: "absolute right-1.5 bottom-2",
-					}),
-				)}
-				disabled={mutation.isMutating || isEmpty}
-				type="submit"
 			>
-				{mutation.isMutating ? (
-					<Spinner />
-				) : (
-					<SendHorizonalIcon className="size-4" />
-				)}
-			</button>
+				<button
+					aria-label="Reply"
+					className={cn(
+						buttonVariants({
+							size: "icon",
+						}),
+					)}
+					disabled={mutation.isMutating || isEmpty}
+					type="submit"
+				>
+					{mutation.isMutating ? (
+						<Spinner />
+					) : (
+						<SendHorizonalIcon className="size-4" />
+					)}
+				</button>
+			</CommentEditor>
 		</form>
 	);
 }
