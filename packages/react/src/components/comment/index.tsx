@@ -30,6 +30,7 @@ import { EditForm } from "./edit-form";
 import { ContentRenderer } from "./content-renderer";
 import { Timestamp } from "../timestamp";
 import { useCommentsContext } from "../../contexts/comments";
+import { Dialog, DialogContent, DialogTitle } from "../dialog";
 
 export function Comment({
 	comment: cached,
@@ -40,21 +41,18 @@ export function Comment({
 	comment: SerializedComment;
 	actions?: ReactNode;
 }): React.ReactElement {
-	const [edit, setEdit] = useState(false);
 	const [isReply, setIsReply] = useState(false);
 	const editorRef = useRef<UseCommentEditor | undefined>(undefined);
 	const comment = useCommentManager(cached.id) ?? cached;
 
 	const context = useMemo<CommentContext>(() => {
 		return {
-			isEditing: edit,
 			isReplying: isReply,
-			setEdit,
 			editorRef,
 			setReply: setIsReply,
 			comment,
 		};
-	}, [comment, edit, isReply]);
+	}, [comment, isReply]);
 
 	return (
 		<CommentProvider value={context}>
@@ -65,7 +63,6 @@ export function Comment({
 					props.className,
 				)}
 				data-fc-comment={context.comment.id}
-				data-fc-edit={context.isEditing}
 				data-fc-reply={context.isReplying}
 			>
 				<Avatar
@@ -81,14 +78,8 @@ export function Comment({
 						</span>
 						<CommentMenu className="ms-auto -my-2" />
 					</div>
-					{edit ? (
-						<EditForm />
-					) : (
-						<>
-							<ContentRenderer content={comment.content} />
-							{actions}
-						</>
-					)}
+					<ContentRenderer content={comment.content} />
+					{actions}
 				</div>
 			</div>
 			{children}
@@ -101,8 +92,8 @@ function CommentMenu({
 	...props
 }: ButtonHTMLAttributes<HTMLButtonElement>): React.ReactNode {
 	const { session } = useAuthContext();
-	const { comment, editorRef, isEditing, isReplying, setEdit } =
-		useCommentContext();
+	const [isEditing, setIsEditing] = useState(false);
+	const { comment, editorRef, isReplying } = useCommentContext();
 	const { fetcher } = useCommentsContext();
 
 	const deleteMutation = useSWRMutation(
@@ -131,7 +122,7 @@ function CommentMenu({
 	};
 
 	const onEdit = () => {
-		setEdit(true);
+		setIsEditing(true);
 	};
 
 	const onDelete = () => {
@@ -139,51 +130,57 @@ function CommentMenu({
 	};
 
 	return (
-		<Menu>
-			<MenuTrigger
-				aria-label="Open Menu"
-				className={cn(
-					buttonVariants({
-						size: "icon",
-						variant: "ghost",
-						className:
-							"text-fc-muted-foreground data-[state=open]:bg-fc-accent data-[state=open]:text-fc-accent-foreground disabled:invisible",
-					}),
-					className,
-				)}
-				disabled={isEditing || isReplying}
-				{...props}
-			>
-				<MoreVertical className="size-4" />
-			</MenuTrigger>
-			<MenuItems
-				onCloseAutoFocus={(e) => {
-					editorRef.current?.commands.focus("end");
-					e.preventDefault();
-				}}
-			>
-				<MenuItem onSelect={onCopy}>
-					Copy
-					<CopyIcon />
-				</MenuItem>
-				{canEdit ? (
-					<MenuItem onSelect={onEdit}>
-						Edit
-						<PencilIcon />
+		<Dialog open={isEditing} onOpenChange={setIsEditing}>
+			<DialogContent>
+				<DialogTitle>Edit Comment</DialogTitle>
+				<EditForm onClose={() => setIsEditing(false)} />
+			</DialogContent>
+			<Menu>
+				<MenuTrigger
+					aria-label="Open Menu"
+					className={cn(
+						buttonVariants({
+							size: "icon",
+							variant: "ghost",
+							className:
+								"text-fc-muted-foreground data-[state=open]:bg-fc-accent data-[state=open]:text-fc-accent-foreground disabled:invisible",
+						}),
+						className,
+					)}
+					disabled={isEditing || isReplying}
+					{...props}
+				>
+					<MoreVertical className="size-4" />
+				</MenuTrigger>
+				<MenuItems
+					onCloseAutoFocus={(e) => {
+						editorRef.current?.commands.focus("end");
+						e.preventDefault();
+					}}
+				>
+					<MenuItem onSelect={onCopy}>
+						Copy
+						<CopyIcon />
 					</MenuItem>
-				) : null}
-				{canDelete ? (
-					<MenuItem
-						disabled={deleteMutation.isMutating}
-						onSelect={onDelete}
-						variant="destructive"
-					>
-						Delete
-						<Trash2Icon />
-					</MenuItem>
-				) : null}
-			</MenuItems>
-		</Menu>
+					{canEdit ? (
+						<MenuItem onSelect={onEdit}>
+							Edit
+							<PencilIcon />
+						</MenuItem>
+					) : null}
+					{canDelete ? (
+						<MenuItem
+							disabled={deleteMutation.isMutating}
+							onSelect={onDelete}
+							variant="destructive"
+						>
+							Delete
+							<Trash2Icon />
+						</MenuItem>
+					) : null}
+				</MenuItems>
+			</Menu>
+		</Dialog>
 	);
 }
 

@@ -58,7 +58,7 @@ export function DialogDescription({
 }
 
 const overlayVariants = cva(
-	"fixed inset-0 bg-black/50 data-[state=open]:animate-overlayShow data-[state=closed]:animate-overlayHide",
+	"fixed inset-0 bg-black/50 data-[state=open]:animate-fc-overlayShow data-[state=closed]:animate-fc-overlayHide",
 );
 
 const sharedVariants = cva(
@@ -67,9 +67,9 @@ const sharedVariants = cva(
 		variants: {
 			variant: {
 				drawer:
-					"rounded-t-3xl outline-none pt-2 pb-10 transition-transform data-[state=closed]:animate-drawerHide data-[state=open]:animate-drawerShow",
+					"rounded-t-3xl outline-none pt-2 pb-10 transition-transform data-[state=closed]:animate-fc-drawerHide data-[state=open]:animate-fc-drawerShow",
 				modal:
-					"rounded-2xl border border-fc-border max-w-md top-1/2 -translate-y-1/2 data-[state=closed]:animate-dialogHide data-[state=open]:animate-dialogShow",
+					"rounded-2xl border border-fc-border max-w-md top-1/2 -translate-y-1/2 data-[state=closed]:animate-fc-dialogHide data-[state=open]:animate-fc-dialogShow",
 			},
 		},
 	},
@@ -184,7 +184,7 @@ export function DialogContent({
 						transform: "translateY(var(--drawer-offset))",
 					}}
 				>
-					<div className="mx-auto mb-3 w-12 h-1 rounded-full bg-fc-primary/30" />
+					<div className="mx-auto w-12 h-1 rounded-full bg-fc-primary/30" />
 					{children}
 				</Primitive.Content>
 			</Primitive.Portal>
@@ -222,7 +222,10 @@ export function DialogTitle({
 }: Primitive.DialogTitleProps): React.ReactElement {
 	return (
 		<Primitive.Title
-			className={cn("mb-2 font-semibold max-sm:text-center", className)}
+			className={cn(
+				"my-2 font-semibold first:mt-0 max-sm:text-center",
+				className,
+			)}
 			{...props}
 		>
 			{props.children}

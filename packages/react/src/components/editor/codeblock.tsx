@@ -17,7 +17,9 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
 
 export default function CodeBlockButton({
 	editor,
-}: { editor: Editor }): React.ReactNode {
+}: {
+	editor: Editor;
+}): React.ReactNode {
 	const [isOpen, setIsOpen] = useState(false);
 	useHookUpdate(editor);
 
@@ -31,7 +33,7 @@ export default function CodeBlockButton({
 				<SquareCode className="size-4" />
 			</DialogTrigger>
 			<DialogContent
-				className="p-0 overflow-hidden"
+				className="p-0 overflow-hidden max-sm:pt-2"
 				onCloseAutoFocus={(e) => e.preventDefault()}
 			>
 				<DialogTitle className="sr-only">Insert CodeBlock</DialogTitle>

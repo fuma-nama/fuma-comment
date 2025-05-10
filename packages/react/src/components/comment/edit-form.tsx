@@ -15,9 +15,13 @@ import {
 import { Spinner } from "../spinner";
 import { useCommentsContext } from "../../contexts/comments";
 
-export function EditForm(): React.ReactNode {
+export function EditForm({
+	onClose,
+}: {
+	onClose: () => void;
+}): React.ReactNode {
 	const [isEmpty, setIsEmpty] = useState(false);
-	const { comment, editorRef, setEdit } = useCommentContext();
+	const { comment, editorRef } = useCommentContext();
 	const { fetcher } = useCommentsContext();
 
 	const mutation = useSWRMutation(
@@ -36,10 +40,6 @@ export function EditForm(): React.ReactNode {
 		},
 	);
 
-	const onClose = useLatestCallback(() => {
-		setEdit(false);
-	});
-
 	const submit = useLatestCallback(() => {
 		if (!editorRef.current) return;
 		const content = editorRef.current.getJSON();
@@ -50,7 +50,7 @@ export function EditForm(): React.ReactNode {
 			{ content },
 			{
 				onSuccess() {
-					setEdit(false);
+					onClose();
 					updateComment(comment.id, (item) => ({ ...item, content }));
 				},
 			},
@@ -76,7 +76,7 @@ export function EditForm(): React.ReactNode {
 				onSubmit={submit}
 				placeholder="Edit Message"
 			/>
-			<div className="mt-2 flex flex-row gap-1">
+			<div className="mt-4 gap-1">
 				<button
 					aria-label="Edit"
 					className={cn(

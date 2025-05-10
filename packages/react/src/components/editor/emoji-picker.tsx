@@ -9,7 +9,9 @@ import { inputVariants } from "../input";
 
 export default function EmojiPickerPopover({
 	editor,
-}: { editor: Editor }): React.ReactElement {
+}: {
+	editor: Editor;
+}): React.ReactElement {
 	useHookUpdate(editor);
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -24,7 +26,7 @@ export default function EmojiPickerPopover({
 				<Smile className="size-4" />
 			</DialogTrigger>
 			<DialogContent
-				className="p-0"
+				className="p-0 max-sm:pt-2"
 				onCloseAutoFocus={(e) => {
 					editor.commands.focus();
 					e.preventDefault();

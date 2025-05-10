@@ -3,9 +3,7 @@ import type { SerializedComment } from "@fuma-comment/server";
 import type { UseCommentEditor } from "../components/editor";
 
 export interface CommentContext {
-	isEditing: boolean;
 	isReplying: boolean;
-	setEdit: (v: boolean) => void;
 	setReply: (v: boolean) => void;
 	comment: SerializedComment;
 	editorRef: RefObject<UseCommentEditor | undefined>;
