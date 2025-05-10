@@ -166,21 +166,24 @@ export function DialogContent({
 
 						const newOffset = Math.max(0, offsetRef.current + e.movementY);
 						setOffset(newOffset);
-						if (
-							(contentRef.current &&
-								newOffset > contentRef.current.clientHeight / 2) ||
-							e.movementY > 18
-						) {
-							setOpen(false);
-							setPressing(false);
-						}
 						e.preventDefault();
 					}}
 					onAnimationEnd={() => {
 						setOffset(0);
 					}}
 					onPointerLeave={onStopDrag}
-					onPointerUp={onStopDrag}
+					onPointerUp={(e) => {
+						if (
+							(contentRef.current &&
+								offsetRef.current > contentRef.current.clientHeight / 3) ||
+							e.movementY > 18
+						) {
+							setOpen(false);
+							setPressing(false);
+						} else {
+							onStopDrag();
+						}
+					}}
 					className={cn(sharedVariants({ variant: "drawer" }), className)}
 					{...props}
 					style={{
