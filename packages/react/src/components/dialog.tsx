@@ -62,14 +62,14 @@ const overlayVariants = cva(
 );
 
 const sharedVariants = cva(
-	"fixed left-1/2 flex w-full -translate-x-1/2 flex-col rounded-2xl bg-fc-popover text-fc-popover-foreground p-4 shadow-lg",
+	"fixed left-1/2 flex w-full -translate-x-1/2 flex-col bg-fc-popover text-fc-popover-foreground p-4 shadow-lg",
 	{
 		variants: {
 			variant: {
 				drawer:
-					"bottom-0 rounded-b-none outline-none pb-6 transition-transform data-[state=closed]:animate-drawerHide data-[state=open]:animate-drawerShow",
+					"rounded-t-3xl outline-none pt-2 pb-10 transition-transform data-[state=closed]:animate-drawerHide data-[state=open]:animate-drawerShow",
 				modal:
-					"border border-fc-border max-w-md top-1/2 -translate-y-1/2 data-[state=closed]:animate-dialogHide data-[state=open]:animate-dialogShow",
+					"rounded-2xl border border-fc-border max-w-md top-1/2 -translate-y-1/2 data-[state=closed]:animate-dialogHide data-[state=open]:animate-dialogShow",
 			},
 		},
 	},
@@ -80,35 +80,23 @@ export function DialogContent({
 	className,
 	...props
 }: Primitive.DialogContentProps): React.ReactElement {
+	const bottomPadding = 20;
 	const contentRef = useRef<HTMLDivElement>(null);
 	const [pressing, setPressing] = useState(false);
 	const offsetRef = useRef(0);
 	const { setOpen } = useContext();
 	const isMobile = useIsMobile();
 	const position = isMobile ? "bottom" : "center";
-	const closeBn = (
-		<Primitive.Close
-			className={cn(
-				buttonVariants({
-					variant: "ghost",
-					size: "icon",
-					className: "absolute text-fc-muted-foreground right-3.5 top-3.5",
-				}),
-			)}
-		>
-			<X className="size-4" />
-		</Primitive.Close>
-	);
-
-	function setOffset(v: number) {
-		offsetRef.current = v;
-		const element = contentRef.current;
-		if (element) {
-			element.style.setProperty("--drawer-offset", `${offsetRef.current}px`);
-		}
-	}
 
 	if (position === "bottom") {
+		function setOffset(v: number) {
+			offsetRef.current = v;
+			const element = contentRef.current;
+			if (element) {
+				element.style.setProperty("--drawer-offset", `${offsetRef.current}px`);
+			}
+		}
+
 		// with reference of https://github.com/emilkowalski/vaul/blob/main/src/index.tsx
 		function shouldDrag(target: HTMLElement): boolean {
 			if (target.isContentEditable) return false;
@@ -141,11 +129,11 @@ export function DialogContent({
 			return true;
 		}
 
-		const onStopDrag = () => {
+		function onStopDrag() {
 			if (!pressing) return;
 			setOffset(0);
 			setPressing(false);
-		};
+		}
 
 		return (
 			<Primitive.Portal>
@@ -164,7 +152,10 @@ export function DialogContent({
 						)
 							return;
 
-						const newOffset = Math.max(0, offsetRef.current + e.movementY);
+						const newOffset = Math.max(
+							-bottomPadding,
+							offsetRef.current + e.movementY,
+						);
 						setOffset(newOffset);
 						e.preventDefault();
 					}}
@@ -188,12 +179,13 @@ export function DialogContent({
 					{...props}
 					style={{
 						...props.style,
+						bottom: -bottomPadding,
 						transition: pressing ? "none" : props.style?.transition,
 						transform: "translateY(var(--drawer-offset))",
 					}}
 				>
+					<div className="mx-auto mb-3 w-12 h-1 rounded-full bg-fc-primary/30" />
 					{children}
-					{closeBn}
 				</Primitive.Content>
 			</Primitive.Portal>
 		);
@@ -208,7 +200,17 @@ export function DialogContent({
 				{...props}
 			>
 				{children}
-				{closeBn}
+				<Primitive.Close
+					className={cn(
+						buttonVariants({
+							variant: "ghost",
+							size: "icon",
+							className: "absolute text-fc-muted-foreground right-3.5 top-3.5",
+						}),
+					)}
+				>
+					<X className="size-4" />
+				</Primitive.Close>
 			</Primitive.Content>
 		</Primitive.Portal>
 	);
