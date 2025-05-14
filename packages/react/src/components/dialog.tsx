@@ -105,7 +105,7 @@ export function DialogContent({
 		}
 
 		// with reference of https://github.com/emilkowalski/vaul/blob/main/src/index.tsx
-		function shouldDrag(target: HTMLElement): boolean {
+		function shouldDrag(target: HTMLElement, movement: number): boolean {
 			if (target.isContentEditable) return false;
 
 			const highlightedText = window.getSelection()?.toString();
@@ -121,12 +121,11 @@ export function DialogContent({
 			while (element) {
 				if (element.getAttribute("role") === "dialog") break;
 
-				if (
-					element.scrollHeight > element.clientHeight &&
-					element.scrollTop > 0
-				) {
-					// The element is scrollable and not scrolled to the top, so don't drag
-					return false;
+				if (element.scrollHeight > element.clientHeight) {
+					const bottom = element.scrollHeight - element.clientHeight;
+					if (element.scrollTop <= 0 && movement < 0) return false;
+					if (element.scrollTop > 0 && element.scrollTop < bottom) return false;
+					if (element.scrollTop === bottom && movement > 0) return false;
 				}
 
 				// Move up to the parent element
@@ -146,6 +145,7 @@ export function DialogContent({
 			<Primitive.Portal>
 				<Primitive.Overlay className={overlayVariants()} />
 				<Primitive.Content
+				data-fc-drawer
 					ref={contentRef}
 					onPointerDown={() => {
 						setPressing(true);
@@ -155,7 +155,7 @@ export function DialogContent({
 						if (
 							!pressing ||
 							!(e.target instanceof HTMLElement) ||
-							!shouldDrag(e.target)
+							!shouldDrag(e.target, e.movementY)
 						)
 							return;
 
@@ -174,7 +174,7 @@ export function DialogContent({
 						if (
 							(contentRef.current &&
 								offsetRef.current > contentRef.current.clientHeight / 3) ||
-							e.movementY > 18
+							e.movementY > 17
 						) {
 							setOpen(false);
 							setPressing(false);
@@ -192,7 +192,7 @@ export function DialogContent({
 					}}
 				>
 					{!full && (
-						<div className="mb-3 mx-auto w-12 h-1 rounded-full bg-fc-primary/30" />
+						<div className="z-[2] mb-3 mx-auto w-12 h-1 rounded-full bg-fc-primary/30" />
 					)}
 					{children}
 				</Primitive.Content>
