@@ -61,7 +61,7 @@ const overlayVariants = cva(
 	"fixed inset-0 bg-black/50 data-[state=open]:animate-fc-overlayShow data-[state=closed]:animate-fc-overlayHide",
 );
 
-const sharedVariants = cva(
+const contentVariants = cva(
 	"fixed left-1/2 flex w-full -translate-x-1/2 flex-col bg-fc-popover text-fc-popover-foreground shadow-lg overflow-hidden",
 	{
 		variants: {
@@ -90,6 +90,7 @@ export function DialogContent({
 	const bottomPadding = 20;
 	const contentRef = useRef<HTMLDivElement>(null);
 	const [pressing, setPressing] = useState(false);
+	const targetRef = useRef<HTMLElement>(null);
 	const offsetRef = useRef(0);
 	const { setOpen } = useContext();
 	const isMobile = useIsMobile();
@@ -121,11 +122,11 @@ export function DialogContent({
 			while (element) {
 				if (element.getAttribute("role") === "dialog") break;
 
-				if (element.scrollHeight > element.clientHeight) {
-					const bottom = element.scrollHeight - element.clientHeight;
-					if (element.scrollTop <= 0 && movement < 0) return false;
-					if (element.scrollTop > 0 && element.scrollTop < bottom) return false;
-					if (element.scrollTop === bottom && movement > 0) return false;
+				if (
+					element.scrollHeight > element.clientHeight &&
+					(element.scrollTop > 0 || movement < 0)
+				) {
+					return false;
 				}
 
 				// Move up to the parent element
@@ -145,17 +146,24 @@ export function DialogContent({
 			<Primitive.Portal>
 				<Primitive.Overlay className={overlayVariants()} />
 				<Primitive.Content
-				data-fc-drawer
+					data-fc-drawer
 					ref={contentRef}
-					onPointerDown={() => {
+					onPointerDown={(e) => {
+						if (
+							!(e.target instanceof HTMLElement) ||
+							!shouldDrag(e.target, e.movementY)
+						)
+							return;
+
 						setPressing(true);
+						targetRef.current = e.target;
 						window.addEventListener("touchend", onStopDrag, { once: true });
 					}}
 					onPointerMove={(e) => {
 						if (
 							!pressing ||
-							!(e.target instanceof HTMLElement) ||
-							!shouldDrag(e.target, e.movementY)
+							!targetRef.current ||
+							!shouldDrag(targetRef.current, e.movementY)
 						)
 							return;
 
@@ -182,7 +190,13 @@ export function DialogContent({
 							onStopDrag();
 						}
 					}}
-					className={cn(sharedVariants({ variant: "drawer", full }), className)}
+					className={cn(
+						contentVariants({
+							variant: "drawer",
+							full,
+						}),
+						className,
+					)}
 					{...props}
 					style={{
 						...props.style,
@@ -205,7 +219,7 @@ export function DialogContent({
 			<Primitive.Overlay className={overlayVariants()} />
 			<Primitive.Content
 				data-position={position}
-				className={cn(sharedVariants({ variant: "modal", full }), className)}
+				className={cn(contentVariants({ variant: "modal", full }), className)}
 				{...props}
 			>
 				{children}
