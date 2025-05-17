@@ -157,6 +157,9 @@ export function createEditor({
 			Extension.create({
 				addKeyboardShortcuts() {
 					return {
+						Tab: () => {
+							return this.editor.commands.insertContent("\t");
+						},
 						"Mod-Enter": onSubmit,
 						Escape: onEscape,
 					};
