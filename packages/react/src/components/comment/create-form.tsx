@@ -25,8 +25,10 @@ import { AuthButton } from "../../atom";
 
 export const CreateForm = forwardRef<
 	HTMLFormElement,
-	FormHTMLAttributes<HTMLFormElement>
->((props, ref) => {
+	FormHTMLAttributes<HTMLFormElement> & {
+		placeholder?: string;
+	}
+>(({ placeholder = "Leave comment", ...props }, ref) => {
 	const auth = useAuthContext();
 	const { page, fetcher } = useCommentsContext();
 	const [isEmpty, setIsEmpty] = useState(true);
@@ -89,7 +91,7 @@ export const CreateForm = forwardRef<
 					setIsEmpty(v.isEmpty);
 				}, [])}
 				onSubmit={submit}
-				placeholder="Leave comment"
+				placeholder={placeholder}
 			>
 				{auth.isLoading || auth.session ? (
 					<button

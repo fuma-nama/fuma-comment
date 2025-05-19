@@ -92,6 +92,7 @@ export function DialogContent({
 	const [pressing, setPressing] = useState(false);
 	const targetRef = useRef<HTMLElement>(null);
 	const offsetRef = useRef(0);
+	const lastMovementRef = useRef(0);
 	const { setOpen } = useContext();
 	const isMobile = useIsMobile();
 	const position = isMobile ? "bottom" : "center";
@@ -171,6 +172,7 @@ export function DialogContent({
 							-bottomPadding,
 							offsetRef.current + e.movementY,
 						);
+						lastMovementRef.current = e.movementY;
 						setOffset(newOffset);
 						e.preventDefault();
 					}}
@@ -178,11 +180,11 @@ export function DialogContent({
 						setOffset(0);
 					}}
 					onPointerLeave={onStopDrag}
-					onPointerUp={(e) => {
+					onPointerUp={() => {
 						if (
 							(contentRef.current &&
 								offsetRef.current > contentRef.current.clientHeight / 3) ||
-							e.movementY > 17
+							lastMovementRef.current > 15
 						) {
 							setOpen(false);
 							setPressing(false);

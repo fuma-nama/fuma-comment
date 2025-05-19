@@ -14,10 +14,10 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@changesets/cli": "^2.29.3",
+		"@changesets/cli": "^2.29.4",
 		"dotenv-cli": "^8.0.0",
 		"tsconfig": "workspace:*",
-		"tsup": "^8.4.0",
+		"tsup": "^8.5.0",
 		"turbo": "^2.5.3"
 	}
 }
