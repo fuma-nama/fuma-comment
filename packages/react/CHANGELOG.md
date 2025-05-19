@@ -1,5 +1,12 @@
 # @fuma-comment/react
 
+## 1.2.4
+
+### Patch Changes
+
+- 283637c: Support setting `placeholder` on `CommentsPost` and `Comments`
+- 283637c: Bump deps
+
 ## 1.2.3
 
 ### Patch Changes
