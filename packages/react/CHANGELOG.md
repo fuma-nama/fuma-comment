@@ -1,5 +1,11 @@
 # @fuma-comment/react
 
+## 1.2.5
+
+### Patch Changes
+
+- 7ed48aa: Bump deps & improve drawer
+
 ## 1.2.4
 
 ### Patch Changes
