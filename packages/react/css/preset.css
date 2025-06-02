@@ -73,10 +73,10 @@
 	--animate-fc-fadeOut: fc-fadeOut 200ms cubic-bezier(0.16, 1, 0.3, 1);
 	--animate-fc-overlayShow: fc-overlayShow 400ms cubic-bezier(0.16, 1, 0.3, 1);
 	--animate-fc-overlayHide: fc-overlayHide 400ms cubic-bezier(0.16, 1, 0.3, 1);
-	--animate-fc-dialogShow: fc-dialogShow 400ms cubic-bezier(0.16, 1, 0.3, 1);
-	--animate-fc-dialogHide: fc-dialogHide 500ms cubic-bezier(0.16, 1, 0.3, 1);
+	--animate-fc-dialogShow: fc-dialogShow 300ms cubic-bezier(0.16, 1, 0.3, 1);
+	--animate-fc-dialogHide: fc-dialogHide 300ms cubic-bezier(0.16, 1, 0.3, 1);
 	--animate-fc-drawerShow: fc-drawerShow 400ms cubic-bezier(0.16, 1, 0.3, 1);
-	--animate-fc-drawerHide: fc-drawerHide 500ms cubic-bezier(0.16, 1, 0.3, 1);
+	--animate-fc-drawerHide: fc-drawerHide 400ms cubic-bezier(0.16, 1, 0.3, 1);
 
 	@keyframes fc-fadeIn {
 		from {

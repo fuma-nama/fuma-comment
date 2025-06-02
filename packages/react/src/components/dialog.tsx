@@ -79,150 +79,24 @@ const contentVariants = cva(
 	},
 );
 
-export function DialogContent({
-	children,
-	className,
-	full = false,
-	...props
-}: Primitive.DialogContentProps & {
+interface DialogProps extends Primitive.DialogContentProps {
 	full?: boolean;
-}): React.ReactElement {
-	const bottomPadding = 20;
-	const contentRef = useRef<HTMLDivElement>(null);
-	const [pressing, setPressing] = useState(false);
-	const targetRef = useRef<HTMLElement>(null);
-	const offsetRef = useRef(0);
-	const lastMovementRef = useRef(0);
-	const { setOpen } = useContext();
+}
+
+export function DialogContent(props: DialogProps): React.ReactElement {
 	const isMobile = useIsMobile();
-	const position = isMobile ? "bottom" : "center";
 
-	if (position === "bottom") {
-		function setOffset(v: number) {
-			offsetRef.current = v;
-			const element = contentRef.current;
-			if (element) {
-				element.style.setProperty("--drawer-offset", `${offsetRef.current}px`);
-			}
-		}
-
-		// with reference of https://github.com/emilkowalski/vaul/blob/main/src/index.tsx
-		function shouldDrag(target: HTMLElement, movement: number): boolean {
-			if (target.isContentEditable) return false;
-
-			const highlightedText = window.getSelection()?.toString();
-			if (highlightedText && highlightedText.length > 0) {
-				return false;
-			}
-
-			if (target.tagName === "SELECT" || target.tagName === "INPUT") {
-				return false;
-			}
-
-			let element = target;
-			while (element) {
-				if (element.getAttribute("role") === "dialog") break;
-
-				if (
-					element.scrollHeight > element.clientHeight &&
-					(element.scrollTop > 0 || movement < 0)
-				) {
-					return false;
-				}
-
-				// Move up to the parent element
-				element = element.parentNode as HTMLElement;
-			}
-
-			return true;
-		}
-
-		function onStopDrag() {
-			if (!pressing) return;
-			setOffset(0);
-			setPressing(false);
-		}
-
-		return (
-			<Primitive.Portal>
-				<Primitive.Overlay className={overlayVariants()} />
-				<Primitive.Content
-					data-fc-drawer
-					ref={contentRef}
-					onPointerDown={(e) => {
-						if (
-							!(e.target instanceof HTMLElement) ||
-							!shouldDrag(e.target, e.movementY)
-						)
-							return;
-
-						setPressing(true);
-						targetRef.current = e.target;
-						window.addEventListener("touchend", onStopDrag, { once: true });
-					}}
-					onPointerMove={(e) => {
-						if (
-							!pressing ||
-							!targetRef.current ||
-							!shouldDrag(targetRef.current, e.movementY)
-						)
-							return;
-
-						const newOffset = Math.max(
-							-bottomPadding,
-							offsetRef.current + e.movementY,
-						);
-						lastMovementRef.current = e.movementY;
-						setOffset(newOffset);
-						e.preventDefault();
-					}}
-					onAnimationEnd={() => {
-						setOffset(0);
-					}}
-					onPointerLeave={onStopDrag}
-					onPointerUp={() => {
-						if (
-							(contentRef.current &&
-								offsetRef.current > contentRef.current.clientHeight / 3) ||
-							lastMovementRef.current > 15
-						) {
-							setOpen(false);
-							setPressing(false);
-						} else {
-							onStopDrag();
-						}
-					}}
-					className={cn(
-						contentVariants({
-							variant: "drawer",
-							full,
-						}),
-						className,
-					)}
-					{...props}
-					style={{
-						...props.style,
-						bottom: -bottomPadding,
-						transition: pressing ? "none" : props.style?.transition,
-						transform: "translateY(var(--drawer-offset))",
-					}}
-				>
-					{!full && (
-						<div className="z-[2] mb-3 mx-auto w-12 h-1 rounded-full bg-fc-primary/30" />
-					)}
-					{children}
-				</Primitive.Content>
-			</Primitive.Portal>
-		);
+	if (isMobile) {
+		return <DrawerContent {...props} />;
 	}
 
+	const { children, full = false, className, ...rest } = props;
 	return (
 		<Primitive.Portal>
 			<Primitive.Overlay className={overlayVariants()} />
 			<Primitive.Content
-				data-position={position}
-				className={cn(contentVariants({ variant: "modal", full }), className)}
-				{...props}
+				className={cn(contentVariants({ variant: "modal", full, className }))}
+				{...rest}
 			>
 				{children}
 				<Primitive.Close
@@ -236,6 +110,139 @@ export function DialogContent({
 				>
 					<X className="size-4" />
 				</Primitive.Close>
+			</Primitive.Content>
+		</Primitive.Portal>
+	);
+}
+
+function DrawerContent({
+	full = false,
+	children,
+	className,
+	...props
+}: DialogProps) {
+	const bottomPadding = 20;
+	const contentRef = useRef<HTMLDivElement>(null);
+	const targetRef = useRef<HTMLElement>(null);
+	const offsetRef = useRef(0);
+	const lastMovementRef = useRef(0);
+	const [pressing, setPressing] = useState(false);
+	const { setOpen } = useContext();
+
+	function setOffset(v: number) {
+		offsetRef.current = v;
+		const element = contentRef.current;
+		if (element) {
+			element.style.setProperty("--drawer-offset", `${offsetRef.current}px`);
+		}
+	}
+
+	// with reference to https://github.com/emilkowalski/vaul/blob/main/src/index.tsx
+	function shouldDrag(target: HTMLElement, movement: number): boolean {
+		if (target.isContentEditable) return false;
+
+		const highlightedText = window.getSelection()?.toString();
+		if (highlightedText && highlightedText.length > 0) {
+			return false;
+		}
+
+		if (target.tagName === "SELECT" || target.tagName === "INPUT") {
+			return false;
+		}
+
+		let element = target;
+		while (element) {
+			if (element.getAttribute("role") === "dialog") break;
+
+			if (
+				element.scrollHeight > element.clientHeight &&
+				(element.scrollTop > 0 || movement < 0)
+			) {
+				return false;
+			}
+
+			// Move up to the parent element
+			element = element.parentNode as HTMLElement;
+		}
+
+		return true;
+	}
+
+	function onStopDrag() {
+		if (!pressing) return;
+		setOffset(0);
+		setPressing(false);
+	}
+
+	return (
+		<Primitive.Portal>
+			<Primitive.Overlay className={overlayVariants()} />
+			<Primitive.Content
+				data-fc-drawer
+				ref={contentRef}
+				onPointerDown={(e) => {
+					if (
+						!(e.target instanceof HTMLElement) ||
+						!shouldDrag(e.target, e.movementY)
+					)
+						return;
+
+					setPressing(true);
+					targetRef.current = e.target;
+					lastMovementRef.current = 0;
+					window.addEventListener("touchend", onStopDrag, { once: true });
+				}}
+				onPointerMove={(e) => {
+					if (
+						!pressing ||
+						!targetRef.current ||
+						!shouldDrag(targetRef.current, e.movementY)
+					)
+						return;
+
+					const newOffset = Math.max(
+						-bottomPadding,
+						offsetRef.current + e.movementY,
+					);
+					lastMovementRef.current = e.movementY;
+					setOffset(newOffset);
+					e.preventDefault();
+				}}
+				onAnimationEnd={() => {
+					setOffset(0);
+				}}
+				onPointerLeave={onStopDrag}
+				onPointerUp={() => {
+					if (
+						(contentRef.current &&
+							offsetRef.current > contentRef.current.clientHeight / 3) ||
+						lastMovementRef.current > 15
+					) {
+						setOpen(false);
+						setPressing(false);
+					} else {
+						onStopDrag();
+					}
+				}}
+				className={cn(
+					contentVariants({
+						variant: "drawer",
+						full,
+						className,
+					}),
+				)}
+				{...props}
+				style={{
+					...props.style,
+					bottom: -bottomPadding,
+					transition: pressing ? "none" : props.style?.transition,
+					transform: "translateY(var(--drawer-offset))",
+				}}
+			>
+				{!full && (
+					<div className="z-[2] mb-3 mx-auto w-12 h-1 rounded-full bg-fc-primary/30" />
+				)}
+				{children}
 			</Primitive.Content>
 		</Primitive.Portal>
 	);
