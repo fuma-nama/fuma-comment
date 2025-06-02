@@ -45,23 +45,23 @@
 		"dev": "tsup --watch"
 	},
 	"devDependencies": {
-		"@clerk/backend": "^1.32.2",
-		"@elysiajs/node": "^1.2.6",
-		"@hono/node-server": "^1.14.2",
+		"@clerk/backend": "^1.34.0",
+		"@elysiajs/node": "^1.3.0",
+		"@hono/node-server": "^1.14.3",
 		"@types/express": "^5.0.2",
-		"@types/node": "^22.15.19",
+		"@types/node": "^22.15.29",
 		"better-auth": "^1.2.8",
-		"drizzle-orm": "^0.43.1",
-		"elysia": "^1.3.1",
+		"drizzle-orm": "^0.44.1",
+		"elysia": "^1.3.3",
 		"express": "^5.1.0",
-		"hono": "^4.7.10",
+		"hono": "^4.7.11",
 		"mongodb": "^6.16.0",
-		"next": "^15.3.2",
+		"next": "^15.3.3",
 		"next-auth": "^4.24.11",
 		"tsconfig": "workspace:*",
 		"tsup": "^8.5.0",
 		"typescript": "^5.8.3",
-		"vitest": "^3.1.3"
+		"vitest": "^3.2.0"
 	},
 	"peerDependencies": {
 		"@clerk/backend": "1.x.x",
@@ -97,7 +97,7 @@
 		}
 	},
 	"dependencies": {
-		"zod": "^3.24.4"
+		"zod": "^3.25.48"
 	},
 	"publishConfig": {
 		"access": "public"
