@@ -5,7 +5,7 @@
 	"compilerOptions": {
 		"noEmit": true,
 		"jsx": "react-jsx",
-		"lib": ["ES2015", "DOM"],
+		"lib": ["ESNext", "DOM"],
 		"module": "ESNext",
 		"target": "es6"
 	}
