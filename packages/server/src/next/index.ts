@@ -63,7 +63,7 @@ function createRequest(
 export function NextComment(options: NextCommentOptions): NextCommentRouter {
 	const internal = CustomComment<RequestType>(options);
 	const router: RouteHandler = async (req, context) => {
-		const catchAll = (await context.params).comment.join("/");
+		const catchAll = ['comments', ...(await context.params).comment].join("/");
 		const res = await internal.handleRequest(req.method, catchAll, (params) =>
 			createRequest(req, params),
 		);
