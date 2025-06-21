@@ -32,7 +32,7 @@ export interface CustomRequest {
 	params: MapLike<string, string>;
 
 	/** Headers */
-	headers: MapLike<string, readonly string[] | string>;
+	headers: Map<string, readonly string[] | string>;
 }
 
 export type CustomResponse =

@@ -13,8 +13,8 @@
 		"format": "biome format --write ."
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
-		"@changesets/cli": "^2.29.4",
+		"@biomejs/biome": "2.0.4",
+		"@changesets/cli": "^2.29.5",
 		"dotenv-cli": "^8.0.0",
 		"tsconfig": "workspace:*",
 		"tsup": "^8.5.0",

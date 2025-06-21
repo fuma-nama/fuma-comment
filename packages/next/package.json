@@ -7,7 +7,9 @@
 	"author": "Fuma Nama",
 	"homepage": "https://fuma-comment.vercel.app",
 	"repository": "https://github.com/fuma-nama/fuma-comment",
-	"files": ["./dist"],
+	"files": [
+		"./dist"
+	],
 	"license": "MIT",
 	"scripts": {
 		"lint": "biome lint .",
@@ -18,7 +20,7 @@
 		"@fuma-comment/server": "workspace:*"
 	},
 	"devDependencies": {
-		"@types/node": "^22.15.29",
+		"@types/node": "^24.0.3",
 		"tsconfig": "workspace:*",
 		"tsup": "^8.5.0",
 		"typescript": "^5.8.3"

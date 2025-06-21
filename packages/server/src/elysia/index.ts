@@ -45,11 +45,11 @@ export function commentPlugin<Prefix extends string>(
 			);
 
 			if (!res) return status(404, "Not Found");
-			if (res.type === 'success') {
-				return res.data
+			if (res.type === "success") {
+				return res.data;
 			}
 
-			return status(res.status, res.data)
+			return status(res.status, res.data);
 		},
 	);
 

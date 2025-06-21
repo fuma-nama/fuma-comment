@@ -11,30 +11,41 @@ export type TanstackRequest = CustomRequest & {
 export type TanstackCommentOptions = CustomCommentOptions<TanstackRequest>;
 
 const comment = CustomComment<TanstackRequest>({
-    storage: mockAdapter,
-    auth: {
-        getSession() {
-            return null
-        },
-    }
+	storage: mockAdapter,
+	auth: {
+		getSession() {
+			return null;
+		},
+	},
 });
 
 async function endpoint({
 	request,
 	params,
-}: { request: Request; params: Record<string, string> }) {
+}: {
+	request: Request;
+	params: Record<string, string>;
+}) {
 	const res = await comment.handleRequest(
 		request.method,
 		params._splat,
-		(params) => ({
-			method: request.method,
-			body() {
-				return request.json();
-			},
-			headers: request.headers,
-			params,
-			queryParams: new URL(request.url).searchParams,
-		}),
+		(params) => {
+			const headers = new Map();
+
+			request.headers.forEach((value, key) => {
+				headers.set(key, value);
+			});
+
+			return {
+				method: request.method,
+				body() {
+					return request.json();
+				},
+				headers,
+				params,
+				queryParams: new URL(request.url).searchParams,
+			};
+		},
 	);
 
 	if (!res) {
