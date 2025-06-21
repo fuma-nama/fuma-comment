@@ -19,7 +19,7 @@ export default function EmojiPickerPopover({
 		<Dialog onOpenChange={setIsOpen} open={isOpen}>
 			<DialogTrigger
 				type="button"
-				aria-label="Add Emoji"
+				aria-label="新增表情符號"
 				className={cn(toggleVariants())}
 				disabled={!editor.isEditable}
 			>
@@ -51,10 +51,10 @@ export default function EmojiPickerPopover({
 					/>
 					<EmojiPicker.Viewport className="relative flex-1 outline-hidden">
 						<EmojiPicker.Loading className="absolute inset-0 flex items-center justify-center text-fc-muted-foreground text-sm">
-							Loading…
+							載入中…
 						</EmojiPicker.Loading>
 						<EmojiPicker.Empty className="absolute inset-0 flex items-center justify-center text-fc-muted-foreground text-sm">
-							No emoji found.
+							找不到表情符號。
 						</EmojiPicker.Empty>
 						<EmojiPicker.List
 							className="select-none pb-1.5"
