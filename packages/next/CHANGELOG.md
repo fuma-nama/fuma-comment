@@ -1,5 +1,16 @@
 # @fuma-comment/next
 
+## 1.3.0
+
+### Minor Changes
+
+- d19e461: Move method handlers of `CustomComment()` to `.methods`
+
+### Patch Changes
+
+- Updated dependencies [d19e461]
+  - @fuma-comment/server@1.3.0
+
 ## 1.2.4
 
 ### Patch Changes
