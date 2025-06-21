@@ -12,7 +12,9 @@ export function ClerkAdapter(
 	return {
 		async getSession(request) {
 			const auth = await authObjectFn(request);
-			return auth.userId ? { id: auth.userId } : null;
+
+			if (!("userId" in auth) || !auth.userId) return null;
+			return { id: auth.userId };
 		},
 		async getUsers(userIds) {
 			const result = await clerkClient.users.getUserList({
