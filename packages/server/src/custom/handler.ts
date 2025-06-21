@@ -44,7 +44,7 @@ export function requestHandler<R extends CustomRequest>(
 	}
 
 	if (method === "POST") {
-		if (segments.length === 2) {
+		if (segments.length === 1) {
 			return [
 				methods["POST /comments/[page]"],
 				new Map([["page", segments[0]]]),
