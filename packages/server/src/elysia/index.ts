@@ -44,7 +44,7 @@ export function commentPlugin<Prefix extends string>(
 				},
 			);
 
-			if (!res) return status(404, "Not Found");
+			if (!res) return status(404, { message: "Not Found" });
 			if (res.type === "success") {
 				return res.data;
 			}

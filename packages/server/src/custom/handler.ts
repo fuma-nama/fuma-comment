@@ -1,86 +1,58 @@
 import type { CustomCommentRouter, CustomRequest, RouteHandler } from ".";
 
-export function requestHandler<R extends CustomRequest>(
+export function convertToRequestHandler<R extends CustomRequest>(
 	methods: CustomCommentRouter<R>,
-	catchAll: string,
-	_method: string,
-): [handler: RouteHandler<R>, params: Map<string, string>] | undefined {
-	const method = _method.toUpperCase();
-	const segments = catchAll.split("/").filter((v) => v.length > 0);
+) {
+	let transformed: {
+		pattern: URLPattern;
+		method: string;
+		handler: RouteHandler<R>;
+	}[];
 
-	if (method === "GET") {
-		if (segments.length === 1) {
-			return [
-				methods["GET /comments/[page]"],
-				new Map([["page", segments[0]]]),
-			];
+	return async (
+		_method: string,
+		catchAll: string,
+		createRequest: (params: Map<string, string>) => R,
+	) => {
+		const method = _method.toUpperCase();
+
+		// @ts-ignore: Property 'UrlPattern' does not exist
+		if (!globalThis.URLPattern) {
+			await import("urlpattern-polyfill");
 		}
 
-		if (segments.length === 2 && segments[1] === "auth") {
-			return [
-				methods["GET /comments/[page]/auth"],
-				new Map([["page", segments[0]]]),
-			];
-		}
+		transformed ??= Object.entries(methods).map(([key, value]) => {
+			const [method, pathname] = key.split(" ", 2);
 
-		if (segments.length === 2 && segments[1] === "users") {
-			return [
-				methods["GET /comments/[page]/users"],
-				new Map([["page", segments[0]]]),
-			];
-		}
-	}
+			return {
+				pattern: new URLPattern({
+					pathname: pathname
+						.split("/")
+						.map((v) =>
+							v.startsWith("[") && v.endsWith("]") ? `:${v.slice(1, -1)}` : v,
+						)
+						.join("/"),
+				}),
+				method,
+				handler: value,
+			};
+		});
 
-	if (method === "PATCH") {
-		if (segments.length === 2) {
-			return [
-				methods["PATCH /comments/[page]/[id]"],
-				new Map([
-					["page", segments[0]],
-					["id", segments[1]],
-				]),
-			];
-		}
-	}
+		const virtualPathname =
+			catchAll.length === 0 ? "/comments" : `/comments/${catchAll}`;
 
-	if (method === "POST") {
-		if (segments.length === 1) {
-			return [
-				methods["POST /comments/[page]"],
-				new Map([["page", segments[0]]]),
-			];
-		}
+		for (const handler of transformed) {
+			if (handler.method !== method) continue;
+			const match = handler.pattern.exec({ pathname: virtualPathname });
+			if (!match) continue;
 
-		if (segments.length === 3 && segments[2] === "rate") {
-			return [
-				methods["POST /comments/[page]/[id]/rate"],
-				new Map([
-					["page", segments[0]],
-					["id", segments[1]],
-				]),
-			];
+			return handler.handler(
+				createRequest(
+					new Map(
+						Object.entries(match.pathname.groups as Record<string, string>),
+					),
+				),
+			);
 		}
-	}
-
-	if (method === "DELETE") {
-		if (segments.length === 2) {
-			return [
-				methods["DELETE /comments/[page]/[id]"],
-				new Map([
-					["page", segments[0]],
-					["id", segments[1]],
-				]),
-			];
-		}
-
-		if (segments.length === 3 && segments[2] === "rate") {
-			return [
-				methods["DELETE /comments/[page]/[id]/rate"],
-				new Map([
-					["page", segments[0]],
-					["id", segments[1]],
-				]),
-			];
-		}
-	}
+	};
 }

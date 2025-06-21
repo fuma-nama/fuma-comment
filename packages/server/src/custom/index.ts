@@ -1,10 +1,5 @@
 import { ZodError } from "zod";
-import type {
-	AuthInfo,
-	AuthInfoWithRole,
-	Awaitable,
-	UserProfile,
-} from "../types";
+import type { AuthInfoWithRole, Awaitable, UserProfile } from "../types";
 import { RouteError } from "../errors";
 import type { AuthAdapter, StorageAdapter } from "../adapter";
 import {
@@ -13,7 +8,7 @@ import {
 	sortSchema,
 	updateCommentSchema,
 } from "./schemas";
-import { requestHandler } from "./handler";
+import { convertToRequestHandler } from "./handler";
 
 interface MapLike<K, V> {
 	get: (key: K) => V | undefined | null;
@@ -324,16 +319,6 @@ export function CustomComment<R extends CustomRequest>({
 
 	return {
 		methods,
-		handleRequest(
-			method: string,
-			catchAll: string,
-			createRequest: (params: Map<string, string>) => R,
-		) {
-			const result = requestHandler(methods, catchAll, method);
-			if (!result) return;
-			const [handler, params] = result;
-
-			return handler(createRequest(params));
-		},
+		handleRequest: convertToRequestHandler(methods),
 	};
 }
