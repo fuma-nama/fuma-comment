@@ -26,15 +26,15 @@ export default function UploadImageButton({
 		<Dialog onOpenChange={setIsOpen} open={isOpen}>
 			<DialogTrigger
 				type="button"
-				aria-label="Upload Image"
+				aria-label="上傳圖片"
 				className={cn(toggleVariants())}
 				disabled={!editor.can().setImage({ src: "" }) || !editor.isEditable}
 			>
 				<ImageIcon className="size-4" />
 			</DialogTrigger>
 			<DialogContent onCloseAutoFocus={(e) => e.preventDefault()}>
-				<DialogTitle>Upload Image</DialogTitle>
-				<DialogDescription>Attach your own image to comment.</DialogDescription>
+				<DialogTitle>上傳圖片</DialogTitle>
+				<DialogDescription>在評論中附加您自己的圖片。</DialogDescription>
 				<UploadImage
 					editor={editor}
 					onClose={() => {
@@ -109,7 +109,7 @@ function UploadImage({
 					{mutation.isMutating ? (
 						<div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center text-xs backdrop-blur-lg backdrop-brightness-50">
 							<Spinner className="size-8" />
-							Uploading
+							上傳中
 						</div>
 					) : null}
 					<img alt="preview" className="mx-auto max-h-96" src={fileUrl} />
@@ -119,7 +119,7 @@ function UploadImage({
 					className="cursor-pointer rounded-xl border border-fc-border bg-fc-background p-4 text-center text-sm font-medium text-fc-muted-foreground"
 					htmlFor="image"
 				>
-					Upload Image
+					上傳圖片
 				</label>
 			)}
 
@@ -129,7 +129,7 @@ function UploadImage({
 					disabled={mutation.isMutating}
 					type="submit"
 				>
-					Save
+					儲存
 				</button>
 			</div>
 		</form>

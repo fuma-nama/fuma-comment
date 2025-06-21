@@ -83,12 +83,12 @@ export const MentionList = forwardRef<
 				</button>
 			))}
 			{query.data?.length === 0 && (
-				<p className="p-3 text-fc-muted-foreground">No result</p>
+				<p className="p-3 text-fc-muted-foreground">沒有結果</p>
 			)}
 			{!query.data ? (
 				<div className="flex flex-row items-center gap-1.5 p-3 text-fc-muted-foreground">
 					<Spinner className="size-4" />
-					Loading
+					載入中
 				</div>
 			) : null}
 		</div>
