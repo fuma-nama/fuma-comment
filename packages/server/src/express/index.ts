@@ -25,10 +25,10 @@ interface ExpressOptions extends CustomCommentOptions<RequestType> {
  */
 export function ExpressComment(options: ExpressOptions): void {
 	const { app } = options;
-	const custom = CustomComment<RequestType>(options);
+	const methods = CustomComment<RequestType>(options).methods;
 
-	for (const key of Object.keys(custom)) {
-		const fn = custom[key as keyof typeof custom];
+	for (const key of Object.keys(methods)) {
+		const fn = methods[key as keyof typeof methods];
 		const [method, path] = key.split(" ");
 
 		const pathWithBase = [
@@ -58,6 +58,7 @@ export function ExpressComment(options: ExpressOptions): void {
 
 function readRequest(req: Request): RequestType {
 	return {
+		method: req.method,
 		req,
 		body: () => req.body as unknown,
 		headers: new Map(Object.entries(req.headers)) as RequestType["headers"],

@@ -18,7 +18,9 @@ import { ImageIcon } from "lucide-react";
 
 export default function UploadImageButton({
 	editor,
-}: { editor: Editor }): React.ReactElement {
+}: {
+	editor: Editor;
+}): React.ReactElement {
 	useHookUpdate(editor);
 	const [isOpen, setIsOpen] = useState(false);
 

@@ -1,28 +1,31 @@
 import type { CustomCommentRouter, CustomRequest, RouteHandler } from ".";
 
 export function requestHandler<R extends CustomRequest>(
-	server: CustomCommentRouter<R>,
-	requestUrl: string,
+	methods: CustomCommentRouter<R>,
+	catchAll: string,
 	_method: string,
 ): [handler: RouteHandler<R>, params: Map<string, string>] | undefined {
 	const method = _method.toUpperCase();
-	const segments = requestUrl.split("/").filter((v) => v.length > 0);
+	const segments = catchAll.split("/").filter((v) => v.length > 0);
 
 	if (method === "GET") {
 		if (segments.length === 1) {
-			return [server["GET /comments/[page]"], new Map([["page", segments[0]]])];
+			return [
+				methods["GET /comments/[page]"],
+				new Map([["page", segments[0]]]),
+			];
 		}
 
 		if (segments.length === 2 && segments[1] === "auth") {
 			return [
-				server["GET /comments/[page]/auth"],
+				methods["GET /comments/[page]/auth"],
 				new Map([["page", segments[0]]]),
 			];
 		}
 
 		if (segments.length === 2 && segments[1] === "users") {
 			return [
-				server["GET /comments/[page]/users"],
+				methods["GET /comments/[page]/users"],
 				new Map([["page", segments[0]]]),
 			];
 		}
@@ -31,7 +34,7 @@ export function requestHandler<R extends CustomRequest>(
 	if (method === "PATCH") {
 		if (segments.length === 2) {
 			return [
-				server["PATCH /comments/[page]/[id]"],
+				methods["PATCH /comments/[page]/[id]"],
 				new Map([
 					["page", segments[0]],
 					["id", segments[1]],
@@ -43,14 +46,14 @@ export function requestHandler<R extends CustomRequest>(
 	if (method === "POST") {
 		if (segments.length === 2) {
 			return [
-				server["POST /comments/[page]"],
+				methods["POST /comments/[page]"],
 				new Map([["page", segments[0]]]),
 			];
 		}
 
 		if (segments.length === 3 && segments[2] === "rate") {
 			return [
-				server["POST /comments/[page]/[id]/rate"],
+				methods["POST /comments/[page]/[id]/rate"],
 				new Map([
 					["page", segments[0]],
 					["id", segments[1]],
@@ -62,7 +65,7 @@ export function requestHandler<R extends CustomRequest>(
 	if (method === "DELETE") {
 		if (segments.length === 2) {
 			return [
-				server["DELETE /comments/[page]/[id]"],
+				methods["DELETE /comments/[page]/[id]"],
 				new Map([
 					["page", segments[0]],
 					["id", segments[1]],
@@ -72,7 +75,7 @@ export function requestHandler<R extends CustomRequest>(
 
 		if (segments.length === 3 && segments[2] === "rate") {
 			return [
-				server["DELETE /comments/[page]/[id]/rate"],
+				methods["DELETE /comments/[page]/[id]/rate"],
 				new Map([
 					["page", segments[0]],
 					["id", segments[1]],

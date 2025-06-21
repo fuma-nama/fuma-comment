@@ -4,7 +4,9 @@ import { toLocalString } from "../utils/date";
 
 export function Timestamp({
 	timestamp,
-}: { timestamp: Date | string }): React.ReactNode {
+}: {
+	timestamp: Date | string;
+}): React.ReactNode {
 	const [str, setStr] = useState("");
 
 	useLayoutEffect(() => {

@@ -195,7 +195,10 @@ export function ContentRenderer({
 function CodeBlock({
 	language,
 	content,
-}: { language: string; content: string }) {
+}: {
+	language: string;
+	content: string;
+}) {
 	const tree = lowlight.highlight(
 		lowlight.registered(language) ? language : "plaintext",
 		content,

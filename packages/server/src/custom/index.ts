@@ -13,12 +13,15 @@ import {
 	sortSchema,
 	updateCommentSchema,
 } from "./schemas";
+import { requestHandler } from "./handler";
 
 interface MapLike<K, V> {
 	get: (key: K) => V | undefined | null;
 }
 
 export interface CustomRequest {
+	method: string;
+
 	/** Get body (to JSON) */
 	body: () => Awaitable<unknown>;
 
@@ -29,7 +32,7 @@ export interface CustomRequest {
 	params: MapLike<string, string>;
 
 	/** Headers */
-	headers: Map<string, readonly string[] | string>;
+	headers: MapLike<string, readonly string[] | string>;
 }
 
 export type CustomResponse =
@@ -118,7 +121,7 @@ export function CustomComment<R extends CustomRequest>({
 	role = "none",
 	mention = { enabled: false },
 	auth: { getSession, getSessionWithRole },
-}: CustomCommentOptions<R>): CustomCommentRouter<R> {
+}: CustomCommentOptions<R>) {
 	async function getSessionWithRoleAuto(
 		req: R,
 	): Promise<AuthInfoWithRole | null> {
@@ -152,130 +155,6 @@ export function CustomComment<R extends CustomRequest>({
 			}),
 		};
 	}
-
-	return {
-		"GET /comments/[page]/auth": handleError(async (req) => {
-			const auth = await getSessionWithRoleAuto(req);
-
-			if (!auth) return NOT_AUTHORIZED;
-			return {
-				type: "success",
-				data: auth,
-			};
-		}),
-		"GET /comments/[page]/users": handleError(async (req) => {
-			if (!mention.enabled) throw new Error("Mention is disabled");
-
-			const name = req.queryParams.get("name");
-			const page = req.params.get("page");
-			if (!name || !page) return INVALID_PARAM;
-
-			const queryUsers = storage.queryUsers ?? mention.queryUsers;
-			if (!queryUsers)
-				throw new Error(
-					"`queryUsers` is not supported by the storage adapter. You must implement the `queryUsers` function to enable mention auto-completion",
-				);
-
-			return {
-				type: "success",
-				data: await queryUsers({ name, page, limit: 10 }),
-			};
-		}),
-		"GET /comments/[page]": handleError(async (req) => {
-			const auth = (await getSession(req)) ?? undefined;
-			const sort = sortSchema.parse(req.queryParams.get("sort") ?? undefined);
-			const before = req.queryParams.get("before");
-			const after = req.queryParams.get("after");
-			const limit = Number(req.queryParams.get("limit") ?? 40);
-			const thread = req.queryParams.get("thread") ?? undefined;
-			const page = req.params.get("page");
-
-			if (!page) return INVALID_PARAM;
-			if (limit > 50)
-				return {
-					type: "error",
-					status: 400,
-					data: {
-						message: "The `limit` param cannot exceed 50",
-					},
-				};
-
-			return {
-				type: "success",
-				data: await storage.getComments({
-					sort,
-					auth,
-					thread,
-					limit,
-					page,
-					after: after ? new Date(Number(after)) : undefined,
-					before: before ? new Date(Number(before)) : undefined,
-				}),
-			};
-		}),
-		"POST /comments/[page]": handleError(async (req) => {
-			const auth = await getSession(req);
-			const content = postCommentSchema.parse(await req.body());
-			const page = req.params.get("page");
-
-			if (!auth) return NOT_AUTHORIZED;
-			if (!page) return INVALID_PARAM;
-
-			return {
-				type: "success",
-				data: await storage.postComment({ auth, body: content, page }),
-			};
-		}),
-		"POST /comments/[page]/[id]/rate": handleError(async (req) => {
-			const id = req.params.get("id");
-			const page = req.params.get("page");
-			if (!id || !page) return INVALID_PARAM;
-
-			const auth = await getSession(req);
-			if (!auth) return NOT_AUTHORIZED;
-
-			const content = setRateSchema.parse(await req.body());
-			await storage.setRate({ id, auth, body: content, page });
-			return { type: "success", data: { message: "Successful" } };
-		}),
-		"PATCH /comments/[page]/[id]": handleError(async (req) => {
-			const id = req.params.get("id");
-			const page = req.params.get("page");
-			if (!id || !page) return INVALID_PARAM;
-
-			const auth = await getSession(req);
-			if (!auth) return NOT_AUTHORIZED;
-
-			const content = updateCommentSchema.parse(await req.body());
-			await storage.updateComment({ id, auth, body: content, page });
-			return { type: "success", data: { message: "Successful" } };
-		}),
-		"DELETE /comments/[page]/[id]": handleError(async (req) => {
-			const id = req.params.get("id");
-			const page = req.params.get("page");
-			if (!id || !page) return INVALID_PARAM;
-
-			const auth = await getSessionWithRoleAuto(req);
-			if (!auth) return NOT_AUTHORIZED;
-
-			const author = await storage.getCommentAuthor({ id });
-			if (author !== auth.id && !auth.role?.canDelete) return NOT_AUTHORIZED;
-
-			await storage.deleteComment({ id, auth, page });
-			return { type: "success", data: { message: "Successful" } };
-		}),
-		"DELETE /comments/[page]/[id]/rate": handleError(async (req) => {
-			const id = req.params.get("id");
-			const page = req.params.get("page");
-			if (!id || !page) return INVALID_PARAM;
-
-			const auth = await getSession(req);
-			if (!auth) return NOT_AUTHORIZED;
-
-			await storage.deleteRate({ id, auth, page });
-			return { type: "success", data: { message: "Successful" } };
-		}),
-	};
 
 	function handleError(handler: RouteHandler<R>): RouteHandler<R> {
 		return async (...args) => {
@@ -314,4 +193,147 @@ export function CustomComment<R extends CustomRequest>({
 			}
 		};
 	}
+
+	function createMethods(): CustomCommentRouter<R> {
+		return {
+			"GET /comments/[page]/auth": handleError(async (req) => {
+				const auth = await getSessionWithRoleAuto(req);
+
+				if (!auth) return NOT_AUTHORIZED;
+				return {
+					type: "success",
+					data: auth,
+				};
+			}),
+			"GET /comments/[page]/users": handleError(async (req) => {
+				if (!mention.enabled) throw new Error("Mention is disabled");
+
+				const name = req.queryParams.get("name");
+				const page = req.params.get("page");
+				if (!name || !page) return INVALID_PARAM;
+
+				const queryUsers = storage.queryUsers ?? mention.queryUsers;
+				if (!queryUsers)
+					throw new Error(
+						"`queryUsers` is not supported by the storage adapter. You must implement the `queryUsers` function to enable mention auto-completion",
+					);
+
+				return {
+					type: "success",
+					data: await queryUsers({ name, page, limit: 10 }),
+				};
+			}),
+			"GET /comments/[page]": handleError(async (req) => {
+				const auth = (await getSession(req)) ?? undefined;
+				const sort = sortSchema.parse(req.queryParams.get("sort") ?? undefined);
+				const before = req.queryParams.get("before");
+				const after = req.queryParams.get("after");
+				const limit = Number(req.queryParams.get("limit") ?? 40);
+				const thread = req.queryParams.get("thread") ?? undefined;
+				const page = req.params.get("page");
+
+				if (!page) return INVALID_PARAM;
+				if (limit > 50)
+					return {
+						type: "error",
+						status: 400,
+						data: {
+							message: "The `limit` param cannot exceed 50",
+						},
+					};
+
+				return {
+					type: "success",
+					data: await storage.getComments({
+						sort,
+						auth,
+						thread,
+						limit,
+						page,
+						after: after ? new Date(Number(after)) : undefined,
+						before: before ? new Date(Number(before)) : undefined,
+					}),
+				};
+			}),
+			"POST /comments/[page]": handleError(async (req) => {
+				const auth = await getSession(req);
+				const content = postCommentSchema.parse(await req.body());
+				const page = req.params.get("page");
+
+				if (!auth) return NOT_AUTHORIZED;
+				if (!page) return INVALID_PARAM;
+
+				return {
+					type: "success",
+					data: await storage.postComment({ auth, body: content, page }),
+				};
+			}),
+			"POST /comments/[page]/[id]/rate": handleError(async (req) => {
+				const id = req.params.get("id");
+				const page = req.params.get("page");
+				if (!id || !page) return INVALID_PARAM;
+
+				const auth = await getSession(req);
+				if (!auth) return NOT_AUTHORIZED;
+
+				const content = setRateSchema.parse(await req.body());
+				await storage.setRate({ id, auth, body: content, page });
+				return { type: "success", data: { message: "Successful" } };
+			}),
+			"PATCH /comments/[page]/[id]": handleError(async (req) => {
+				const id = req.params.get("id");
+				const page = req.params.get("page");
+				if (!id || !page) return INVALID_PARAM;
+
+				const auth = await getSession(req);
+				if (!auth) return NOT_AUTHORIZED;
+
+				const content = updateCommentSchema.parse(await req.body());
+				await storage.updateComment({ id, auth, body: content, page });
+				return { type: "success", data: { message: "Successful" } };
+			}),
+			"DELETE /comments/[page]/[id]": handleError(async (req) => {
+				const id = req.params.get("id");
+				const page = req.params.get("page");
+				if (!id || !page) return INVALID_PARAM;
+
+				const auth = await getSessionWithRoleAuto(req);
+				if (!auth) return NOT_AUTHORIZED;
+
+				const author = await storage.getCommentAuthor({ id });
+				if (author !== auth.id && !auth.role?.canDelete) return NOT_AUTHORIZED;
+
+				await storage.deleteComment({ id, auth, page });
+				return { type: "success", data: { message: "Successful" } };
+			}),
+			"DELETE /comments/[page]/[id]/rate": handleError(async (req) => {
+				const id = req.params.get("id");
+				const page = req.params.get("page");
+				if (!id || !page) return INVALID_PARAM;
+
+				const auth = await getSession(req);
+				if (!auth) return NOT_AUTHORIZED;
+
+				await storage.deleteRate({ id, auth, page });
+				return { type: "success", data: { message: "Successful" } };
+			}),
+		};
+	}
+
+	const methods = createMethods();
+
+	return {
+		methods,
+		handleRequest(
+			method: string,
+			catchAll: string,
+			createRequest: (params: Map<string, string>) => R,
+		) {
+			const result = requestHandler(methods, catchAll, method);
+			if (!result) return;
+			const [handler, params] = result;
+
+			return handler(createRequest(params));
+		},
+	};
 }

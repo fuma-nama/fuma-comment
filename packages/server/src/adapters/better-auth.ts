@@ -3,9 +3,9 @@ import type { CustomRequest } from "../custom";
 
 export function createBetterAuthAdapter(auth: {
 	api: {
-		getSession: (options: { headers: Headers }) => Promise<
-			{ user: { id: string } } | undefined | null
-		>;
+		getSession: (options: {
+			headers: Headers;
+		}) => Promise<{ user: { id: string } } | undefined | null>;
 	};
 }): AuthAdapter<CustomRequest> {
 	return {

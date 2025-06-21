@@ -59,6 +59,7 @@ const app = CustomComment<MockRequest>({
 });
 
 function createReq(options: {
+	method: string;
 	auth?: boolean;
 	headers?: Record<string, string>;
 	params?: Record<string, string>;
@@ -66,6 +67,7 @@ function createReq(options: {
 	body?: MockRequest["body"];
 }): MockRequest {
 	return {
+		method: options.method,
 		auth: options.auth ?? false,
 		body: options.body ?? (() => null),
 		params: new Map(Object.entries(options.params ?? {})),
@@ -79,6 +81,7 @@ describe("Custom Comment Routes", () => {
 		{
 			name: "Normal",
 			req: createReq({
+				method: "GET",
 				body() {
 					return null;
 				},
@@ -91,6 +94,8 @@ describe("Custom Comment Routes", () => {
 		{
 			name: "With Auth",
 			req: createReq({
+				method: "GET",
+
 				auth: true,
 				body() {
 					return null;
@@ -104,6 +109,8 @@ describe("Custom Comment Routes", () => {
 		{
 			name: "Invalid",
 			req: createReq({
+				method: "GET",
+
 				auth: false,
 				body() {
 					return null;
@@ -115,7 +122,7 @@ describe("Custom Comment Routes", () => {
 			success: false,
 		},
 	])("Get Comments $name", async ({ req, success }) => {
-		const result = await app["GET /comments/[page]"](req);
+		const result = await app.methods["GET /comments/[page]"](req);
 
 		expect(result.type).toBe(success ? "success" : "error");
 	});
@@ -124,6 +131,7 @@ describe("Custom Comment Routes", () => {
 		{
 			name: "Normal",
 			req: createReq({
+				method: "POST",
 				auth: true,
 				body() {
 					return { content: createContent("Hello World") };
@@ -137,6 +145,7 @@ describe("Custom Comment Routes", () => {
 		{
 			name: "Invalid",
 			req: createReq({
+				method: "POST",
 				auth: true,
 				body() {
 					return { content: createContent(" ") };
@@ -150,6 +159,7 @@ describe("Custom Comment Routes", () => {
 		{
 			name: "Unauthorized",
 			req: createReq({
+				method: "POST",
 				auth: false,
 				body() {
 					return { content: createContent("Hello World") };
@@ -161,7 +171,7 @@ describe("Custom Comment Routes", () => {
 			success: false,
 		},
 	])("Post Comments $name", async ({ req, success }) => {
-		const result = await app["POST /comments/[page]"](req);
+		const result = await app.methods["POST /comments/[page]"](req);
 
 		expect(result.type).toBe(success ? "success" : "error");
 	});
@@ -170,6 +180,7 @@ describe("Custom Comment Routes", () => {
 		{
 			name: "Normal",
 			req: createReq({
+				method: "PATCH",
 				auth: true,
 				body() {
 					return { content: createContent("Hello World") };
@@ -184,6 +195,8 @@ describe("Custom Comment Routes", () => {
 		{
 			name: "Invalid",
 			req: createReq({
+				method: "PATCH",
+
 				auth: true,
 				body() {
 					return { content: createContent(" ") };
@@ -198,6 +211,8 @@ describe("Custom Comment Routes", () => {
 		{
 			name: "Unauthorized",
 			req: createReq({
+				method: "PATCH",
+
 				auth: false,
 				body() {
 					return { content: createContent("Hello World") };
@@ -210,7 +225,7 @@ describe("Custom Comment Routes", () => {
 			success: false,
 		},
 	])("Update Comments $name", async ({ req, success }) => {
-		const result = await app["PATCH /comments/[page]/[id]"](req);
+		const result = await app.methods["PATCH /comments/[page]/[id]"](req);
 
 		expect(result.type).toBe(success ? "success" : "error");
 	});
@@ -219,6 +234,7 @@ describe("Custom Comment Routes", () => {
 		{
 			name: "Normal",
 			req: createReq({
+				method: "DELETE",
 				auth: true,
 				body() {
 					return null;
@@ -233,6 +249,8 @@ describe("Custom Comment Routes", () => {
 		{
 			name: "Unauthorized",
 			req: createReq({
+				method: "DELETE",
+
 				auth: false,
 				body() {
 					return null;
@@ -245,7 +263,7 @@ describe("Custom Comment Routes", () => {
 			success: false,
 		},
 	])("Delete Comments $name", async ({ req, success }) => {
-		const result = await app["DELETE /comments/[page]/[id]"](req);
+		const result = await app.methods["DELETE /comments/[page]/[id]"](req);
 
 		expect(result.type).toBe(success ? "success" : "error");
 	});
@@ -254,6 +272,7 @@ describe("Custom Comment Routes", () => {
 		{
 			name: "Normal",
 			req: createReq({
+				method: "POST",
 				auth: true,
 				body() {
 					return { like: true };
@@ -268,6 +287,8 @@ describe("Custom Comment Routes", () => {
 		{
 			name: "Invalid",
 			req: createReq({
+				method: "POST",
+
 				body() {
 					return { like: "invalid" };
 				},
@@ -282,6 +303,8 @@ describe("Custom Comment Routes", () => {
 		{
 			name: "Unauthorized",
 			req: createReq({
+				method: "POST",
+
 				auth: false,
 				body() {
 					return null;
@@ -294,7 +317,7 @@ describe("Custom Comment Routes", () => {
 			success: false,
 		},
 	])("POST /api/comments/[id]/rate $name", async ({ req, success }) => {
-		const result = await app["POST /comments/[page]/[id]/rate"](req);
+		const result = await app.methods["POST /comments/[page]/[id]/rate"](req);
 
 		expect(result.type).toBe(success ? "success" : "error");
 	});
@@ -303,6 +326,7 @@ describe("Custom Comment Routes", () => {
 		{
 			name: "Normal",
 			req: createReq({
+				method: "DELETE",
 				auth: true,
 				body() {
 					return null;
@@ -317,6 +341,8 @@ describe("Custom Comment Routes", () => {
 		{
 			name: "Unauthorized",
 			req: createReq({
+				method: "DELETE",
+
 				auth: false,
 				body() {
 					return null;
@@ -329,7 +355,7 @@ describe("Custom Comment Routes", () => {
 			success: false,
 		},
 	])("DELETE /api/comments/[id]/rate $name", async ({ req, success }) => {
-		const result = await app["DELETE /comments/[page]/[id]/rate"](req);
+		const result = await app.methods["DELETE /comments/[page]/[id]/rate"](req);
 
 		expect(result.type).toBe(success ? "success" : "error");
 	});

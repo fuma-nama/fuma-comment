@@ -26,10 +26,10 @@ type HonoContext = Context;
  */
 export function HonoComment(options: HonoOptions): void {
 	const { app } = options;
-	const custom = CustomComment<RequestType>(options);
+	const methods = CustomComment<RequestType>(options).methods;
 
-	for (const key of Object.keys(custom)) {
-		const fn = custom[key as keyof typeof custom];
+	for (const key of Object.keys(methods)) {
+		const fn = methods[key as keyof typeof methods];
 		const [method, path] = key.split(" ");
 
 		const pathWithBase = [
@@ -55,6 +55,7 @@ export function HonoComment(options: HonoOptions): void {
 function readRequest(c: HonoContext): RequestType {
 	const headers = c.req.header();
 	return {
+		method: c.req.method,
 		req: c.req,
 		body: () => c.req.json(),
 		headers: new Map(Object.entries(headers)),
