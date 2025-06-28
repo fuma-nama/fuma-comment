@@ -1,5 +1,15 @@
 # @fuma-comment/server
 
+## 1.3.0
+
+### Minor Changes
+
+- d19e461: Move method handlers of `CustomComment()` to `.methods`
+
+### Patch Changes
+
+- 5e8346c: Hotfix MongoDB + NextAuth adapter uses wrong document name
+
 ## 1.2.4
 
 ### Patch Changes

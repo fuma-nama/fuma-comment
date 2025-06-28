@@ -1,5 +1,15 @@
 # @fuma-comment/react
 
+## 1.3.0
+
+### Minor Changes
+
+- d19e461: Move method handlers of `CustomComment()` to `.methods`
+
+### Patch Changes
+
+- 7ed48aa: Bump deps & improve drawer
+
 ## 1.2.4
 
 ### Patch Changes
