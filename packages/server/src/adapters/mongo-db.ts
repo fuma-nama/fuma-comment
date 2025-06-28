@@ -22,11 +22,16 @@ interface RoleType {
 	canDelete: boolean;
 }
 
+interface AuthCollections {
+	UserCollection?: string;
+}
+
 export function createMongoDBAdapter({
 	db,
 	RateCollection = "rate",
 	CommentCollection = "comment",
 	RoleCollection = "role",
+	AuthCollections,
 	...options
 }: {
 	db: Db;
@@ -34,10 +39,15 @@ export function createMongoDBAdapter({
 	RateCollection?: string;
 	CommentCollection?: string;
 	RoleCollection?: string;
+
+	/**
+	 * For `better-auth` & `next-auth`
+	 */
+	AuthCollections?: AuthCollections;
 }): StorageAdapter {
 	const auth =
 		typeof options.auth === "string"
-			? createGenericProvider(db, options.auth)
+			? createGenericProvider(db, options.auth, AuthCollections)
 			: options.auth;
 
 	return {
@@ -235,20 +245,22 @@ export function createMongoDBAdapter({
 function createGenericProvider(
 	db: Db,
 	auth: "better-auth" | "next-auth",
+	collections: AuthCollections = {},
 ): StorageAuthProvider {
+	const { UserCollection = auth === "better-auth" ? "user" : "users" } =
+		collections;
+
 	const idField = auth === "better-auth" ? "_id" : "email";
+	const Users = db.collection(UserCollection);
 
 	return {
 		async getUsers(userIds) {
-			const result = await db
-				.collection("user")
-				.find({
-					[idField]: {
-						$in:
-							idField === "_id" ? userIds.map((v) => new ObjectId(v)) : userIds,
-					},
-				})
-				.toArray();
+			const result = await Users.find({
+				[idField]: {
+					$in:
+						idField === "_id" ? userIds.map((v) => new ObjectId(v)) : userIds,
+				},
+			}).toArray();
 
 			return result.map((res) => ({
 				id: res[idField].toString(),
@@ -257,13 +269,11 @@ function createGenericProvider(
 			})) as UserProfile[];
 		},
 		async queryUsers(options) {
-			const result = await db
-				.collection("user")
-				.find({
-					name: {
-						$regex: options.name,
-					},
-				})
+			const result = await Users.find({
+				name: {
+					$regex: options.name,
+				},
+			})
 				.limit(options.limit)
 				.toArray();
 
