@@ -2,6 +2,29 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### Environment Setup
+
+Copy the environment variables template:
+
+```bash
+cp .env.example .env.local
+```
+
+Fill in the required environment variables in `.env.local`:
+
+- `DATABASE_URL`: PostgreSQL connection string
+- `GITHUB_ID`: GitHub OAuth client ID 
+- `GITHUB_SECRET`: GitHub OAuth client secret
+- `BETTER_AUTH_SECRET`: Random secret key for session encryption
+- `BETTER_AUTH_URL`: Base URL of your application
+
+Set up PostgreSQL database:
+
+- Using Docker: `docker-compose up -d`
+- Or use your local/cloud PostgreSQL instance
+
+### Development Server
+
 First, run the development server:
 
 ```bash
