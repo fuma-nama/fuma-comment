@@ -21,10 +21,10 @@
 		"@vercel/postgres": "^0.10.0",
 		"cva": "1.0.0-beta.2",
 		"date-fns": "^4.1.0",
-		"fumadocs-core": "^15.6.7",
+		"fumadocs-core": "^15.6.8",
 		"fumadocs-docgen": "^2.1.0",
 		"fumadocs-mdx": "^11.7.3",
-		"fumadocs-ui": "^15.6.7",
+		"fumadocs-ui": "^15.6.8",
 		"lucide-react": "^0.536.0",
 		"next": "^15.4.5",
 		"next-auth": "^4.24.11",
@@ -32,10 +32,10 @@
 		"prisma": "^6.13.0",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
-		"recharts": "^2.15.4",
+		"recharts": "^3.1.0",
 		"tailwind-merge": "^3.3.1",
 		"uploadthing": "^7.7.3",
-		"zod": "^3.25.67"
+		"zod": "^4.0.14"
 	},
 	"devDependencies": {
 		"@tailwindcss/postcss": "^4.1.11",
