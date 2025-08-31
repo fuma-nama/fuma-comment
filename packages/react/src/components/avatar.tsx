@@ -29,7 +29,7 @@ export function Avatar({
 	return (
 		<div
 			{...props}
-			aria-label={placeholder}
+			aria-describedby={placeholder}
 			className={cn(
 				"size-8 rounded-full bg-gradient-to-br from-blue-600 to-red-600",
 				props.className,

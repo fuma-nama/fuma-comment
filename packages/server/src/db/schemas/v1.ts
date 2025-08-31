@@ -4,15 +4,15 @@ export const v1 = schema({
 	version: "1.0.0",
 	tables: {
 		comments: table("comments", {
-			id: idColumn("id", "varchar(255)", { default: "auto" }),
+			id: idColumn("id", "varchar(255)").defaultTo$('auto'),
 			page: column("page", "varchar(255)"),
-			thread: column("thread", "varchar(255)", { nullable: true }),
+			thread: column("thread", "varchar(255)").nullable(),
 			author: column("author", "varchar(255)"),
 			content: column("content", "json"),
-			timestamp: column("timestamp", "timestamp", { default: "now" }),
+			timestamp: column("timestamp", "timestamp").defaultTo$('now'),
 		}),
 		rates: table("rates", {
-			id: idColumn("id", "varchar(255)", { default: "auto" }),
+			id: idColumn("id", "varchar(255)").defaultTo$('auto'),
 
 			userId: column("userId", "varchar(255)"),
 			commentId: column("commentId", "varchar(255)"),

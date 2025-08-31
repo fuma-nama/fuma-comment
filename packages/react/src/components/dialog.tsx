@@ -19,10 +19,11 @@ const Context = createContext<{
 } | null>(null);
 
 export function Dialog(props: ComponentProps<typeof Primitive.Root>) {
+	const _state = useState(false)
 	const [open, setOpen] =
 		props.open !== undefined
 			? [props.open, props.onOpenChange ?? (() => {})]
-			: useState(false);
+			: _state
 
 	return (
 		<Primitive.Root {...props} open={open} onOpenChange={setOpen}>

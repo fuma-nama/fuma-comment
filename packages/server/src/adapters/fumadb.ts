@@ -42,7 +42,7 @@ export function createFumaDBAdapter({
 								b(
 									"commentId",
 									"in",
-									comments.map((comment) => comment.id) as any,
+									comments.map((comment) => comment.id),
 								),
 							),
 					})

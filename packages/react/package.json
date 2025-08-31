@@ -29,8 +29,8 @@
 		}
 	},
 	"scripts": {
-		"lint": "biome lint .",
 		"build": "tsup && tailwindcss -i css/styles.css -o ./dist/style.css",
+		"check:types": "tsc --noEmit",
 		"dev": "concurrently \"pnpm dev:layout\" \"pnpm dev:tailwind\"",
 		"dev:layout": "tsup --watch",
 		"dev:tailwind": "tailwindcss -i css/styles.css -o ./dist/style.css --watch"
@@ -46,7 +46,7 @@
 		"@types/react": "^19.1.9",
 		"@types/react-dom": "^19.1.7",
 		"concurrently": "^9.2.0",
-		"lucide-react": "^0.536.0",
+		"lucide-react": "^0.542.0",
 		"postcss": "^8.5.6",
 		"postcss-cli": "^11.0.1",
 		"react": "^19.1.1",
@@ -61,6 +61,7 @@
 		"@radix-ui/react-dialog": "^1.1.14",
 		"@radix-ui/react-dropdown-menu": "^2.1.15",
 		"@radix-ui/react-popover": "^1.1.14",
+		"@tiptap/core": "^3.3.0",
 		"@tiptap/extension-bold": "^3.0.9",
 		"@tiptap/extension-code": "^3.0.9",
 		"@tiptap/extension-code-block-lowlight": "^3.0.9",

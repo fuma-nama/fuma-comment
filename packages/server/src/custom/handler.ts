@@ -16,7 +16,7 @@ export function convertToRequestHandler<R extends CustomRequest>(
 	) => {
 		const method = _method.toUpperCase();
 
-		// @ts-ignore: Property 'UrlPattern' does not exist
+		// @ts-expect-error: Property 'UrlPattern' does not exist
 		if (!globalThis.URLPattern) {
 			await import("urlpattern-polyfill");
 		}

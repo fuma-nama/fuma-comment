@@ -5,26 +5,25 @@
 	"scripts": {
 		"dev": "next dev --turbopack",
 		"build": "next build",
-		"start": "next start",
-		"lint": "next lint"
+		"start": "next start"
 	},
 	"dependencies": {
-		"@clerk/nextjs": "^6.28.1",
+		"@clerk/nextjs": "^6.31.6",
 		"@fuma-comment/react": "workspace:*",
 		"@fuma-comment/server": "workspace:*",
-		"drizzle-orm": "^0.44.4",
-		"next": "15.4.5",
+		"drizzle-orm": "^0.44.5",
+		"next": "15.5.2",
 		"pg": "^8.16.3",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1"
 	},
 	"devDependencies": {
-		"@tailwindcss/postcss": "^4.1.11",
-		"@types/node": "^24.1.0",
-		"@types/react": "^19.1.9",
-		"@types/react-dom": "^19.1.7",
+		"@tailwindcss/postcss": "^4.1.12",
+		"@types/node": "^24.3.0",
+		"@types/react": "^19.1.12",
+		"@types/react-dom": "^19.1.9",
 		"drizzle-kit": "^0.31.4",
-		"tailwindcss": "^4.1.11",
+		"tailwindcss": "^4.1.12",
 		"typescript": "^5.9.2"
 	}
 }

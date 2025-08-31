@@ -59,8 +59,8 @@ export const CreateForm = forwardRef<
 	const submit = useLatestCallback(() => {
 		if (auth.isLoading || auth.session === null || !editorRef.current) return;
 		const content = editorRef.current.getJSON();
+		if (editorRef.current.isEmpty) return;
 
-		if (content.length === 0) return;
 		clearPersistentId("create");
 		void mutation.trigger({ content });
 	});

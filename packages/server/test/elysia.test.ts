@@ -3,8 +3,9 @@ import { commentPlugin } from "../src/elysia";
 import { mockAdapter } from "./utils";
 import { test } from "vitest";
 import { node } from "@elysiajs/node";
+
 test("Elysia", async () => {
-	const app = new Elysia({ adapter: node() })
+	new Elysia({ adapter: node() })
 		.use(
 			commentPlugin({
 				auth: {

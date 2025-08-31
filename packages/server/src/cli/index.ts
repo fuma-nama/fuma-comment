@@ -1,6 +1,6 @@
-import { type InferFumaDB } from "fumadb";
+import type { InferFumaDB } from "fumadb";
 import { createCli } from "fumadb/cli";
-import { type FumaCommentDB } from "../db";
+import type { FumaCommentDB } from "../db";
 
 export function run(db: InferFumaDB<typeof FumaCommentDB>) {
 	const { main } = createCli({

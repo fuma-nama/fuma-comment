@@ -42,9 +42,9 @@ export function EditForm({
 
 	const submit = useLatestCallback(() => {
 		if (!editorRef.current) return;
-		const content = editorRef.current.getJSON();
+		if (editorRef.current.isEmpty) return;
 
-		if (content.length === 0) return;
+		const content = editorRef.current.getJSON();
 		clearPersistentId(`edit-${comment.id}`);
 		void mutation.trigger(
 			{ content },

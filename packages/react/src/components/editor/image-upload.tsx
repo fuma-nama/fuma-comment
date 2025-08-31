@@ -15,6 +15,7 @@ import {
 	DialogTrigger,
 } from "../dialog";
 import { ImageIcon } from "lucide-react";
+import { useId } from "react";
 
 export default function UploadImageButton({
 	editor,
@@ -59,6 +60,7 @@ function UploadImage({
 	const storage = useStorage();
 	const [file, setFile] = useState<Blob | null>(null);
 	const fileUrl = useObjectURL(file);
+	const id =useId()
 	const mutation = useSWRMutation(
 		"fc-upload-image",
 		(_, { arg }: { arg: { file: Blob } }) => storage.upload(arg.file),
@@ -67,7 +69,6 @@ function UploadImage({
 				editor.commands.setImage({
 					src: data.url,
 					alt: data.alt,
-					// @ts-expect-error -- add width, height properties
 					width: data.width,
 					height: data.height,
 				});
@@ -91,7 +92,7 @@ function UploadImage({
 			<input
 				accept="image/png, image/jpeg"
 				hidden
-				id="image"
+				id={id}
 				onChange={(e) => {
 					if (e.target.files && e.target.files.length > 0) {
 						setFile(e.target.files.item(0));
@@ -106,7 +107,7 @@ function UploadImage({
 						"relative overflow-hidden rounded-xl border border-fc-border bg-fc-muted",
 						mutation.isMutating ? "cursor-not-allowed" : "cursor-pointer",
 					)}
-					htmlFor="image"
+					htmlFor={id}
 				>
 					{mutation.isMutating ? (
 						<div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center text-xs backdrop-blur-lg backdrop-brightness-50">
@@ -119,7 +120,7 @@ function UploadImage({
 			) : (
 				<label
 					className="cursor-pointer rounded-xl border border-fc-border bg-fc-background p-4 text-center text-sm font-medium text-fc-muted-foreground"
-					htmlFor="image"
+					htmlFor={id}
 				>
 					Upload Image
 				</label>

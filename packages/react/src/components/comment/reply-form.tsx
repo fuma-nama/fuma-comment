@@ -55,10 +55,9 @@ export function ReplyForm({
 	);
 
 	const submit = useLatestCallback(() => {
-		if (!editorRef.current) return;
+		if (!editorRef.current || editorRef.current.isEmpty) return;
 		const content = editorRef.current.getJSON();
 
-		if (content.length === 0) return;
 		clearPersistentId(`reply-${comment.id}`);
 		void mutation.trigger({ content });
 	});
