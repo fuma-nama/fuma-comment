@@ -1,5 +1,15 @@
 # @fuma-comment/next
 
+## 1.3.1
+
+### Patch Changes
+
+- 527f783: bump deps & fix types error
+- Updated dependencies [527f783]
+- Updated dependencies [9ea6b9c]
+- Updated dependencies [9ea6b9c]
+  - @fuma-comment/server@1.3.1
+
 ## 1.3.0
 
 ### Minor Changes
