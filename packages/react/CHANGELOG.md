@@ -1,5 +1,12 @@
 # @fuma-comment/react
 
+## 1.3.1
+
+### Patch Changes
+
+- 527f783: bump deps & fix types error
+- 9ea6b9c: bump deps
+
 ## 1.3.0
 
 ### Minor Changes
