@@ -14,7 +14,7 @@
 		"format": "biome format --write ."
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.2",
+		"@biomejs/biome": "2.2.3",
 		"@changesets/cli": "^2.29.6",
 		"dotenv-cli": "^10.0.0",
 		"tsconfig": "workspace:*",
