@@ -6,16 +6,16 @@ import { db } from "@/lib/database";
 import { comments, rates, roles, user } from "@/lib/schema";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
-	mention: { enabled: true },
-	auth: createBetterAuthAdapter(auth),
-	storage: createDrizzleAdapter({
-		auth: "better-auth",
-		db,
-		schemas: {
-			comments,
-			rates,
-			roles,
-			user,
-		},
-	}),
+  mention: { enabled: true },
+  auth: createBetterAuthAdapter(auth),
+  storage: createDrizzleAdapter({
+    auth: "better-auth",
+    db,
+    schemas: {
+      comments,
+      rates,
+      roles,
+      user,
+    },
+  }),
 });

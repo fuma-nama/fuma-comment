@@ -7,11 +7,11 @@ import { db } from "./database";
 export const clerkAdapter = ClerkAdapter(() => auth());
 
 export const storage = createDrizzleAdapter({
-	db,
-	schemas: {
-		comments,
-		rates,
-		roles,
-	},
-	auth: clerkAdapter,
+  db,
+  schemas: {
+    comments,
+    rates,
+    roles,
+  },
+  auth: clerkAdapter,
 });

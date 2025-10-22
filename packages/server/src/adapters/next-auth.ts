@@ -1,27 +1,27 @@
 import {
-	getServerSession,
-	type NextAuthOptions,
-	type Session,
+  getServerSession,
+  type NextAuthOptions,
+  type Session,
 } from "next-auth";
 import type { AuthAdapter } from "../adapter";
 import type { CustomRequest } from "../custom";
 
 export function createNextAuthAdapter(
-	authOptions: NextAuthOptions,
-	options: {
-		sessionId?: keyof Required<Session>["user"];
-	} = {},
+  authOptions: NextAuthOptions,
+  options: {
+    sessionId?: keyof Required<Session>["user"];
+  } = {},
 ): AuthAdapter<CustomRequest> {
-	const { sessionId = "email" } = options;
+  const { sessionId = "email" } = options;
 
-	return {
-		async getSession() {
-			const session = await getServerSession(authOptions);
-			if (!session?.user?.[sessionId]) return null;
+  return {
+    async getSession() {
+      const session = await getServerSession(authOptions);
+      if (!session?.user?.[sessionId]) return null;
 
-			return {
-				id: session.user[sessionId],
-			};
-		},
-	};
+      return {
+        id: session.user[sessionId],
+      };
+    },
+  };
 }

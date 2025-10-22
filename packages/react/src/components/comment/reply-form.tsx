@@ -1,11 +1,11 @@
 import type { SerializedComment } from "@fuma-comment/server";
 import { SendHorizonalIcon } from "lucide-react";
 import {
-	type HTMLAttributes,
-	type ReactNode,
-	type RefObject,
-	useCallback,
-	useState,
+  type HTMLAttributes,
+  type ReactNode,
+  type RefObject,
+  useCallback,
+  useState,
 } from "react";
 import useSWRMutation from "swr/mutation";
 import { useCommentsContext } from "../../contexts/comments";
@@ -15,95 +15,95 @@ import { type FetcherError, getCommentsKey } from "../../utils/fetcher";
 import { useLatestCallback } from "../../utils/hooks";
 import { buttonVariants } from "../button";
 import {
-	CommentEditor,
-	clearPersistentId,
-	type UseCommentEditor,
+  CommentEditor,
+  clearPersistentId,
+  type UseCommentEditor,
 } from "../editor";
 import { Spinner } from "../spinner";
 
 export function ReplyForm({
-	editorRef,
-	onCancel,
-	comment,
-	...props
+  editorRef,
+  onCancel,
+  comment,
+  ...props
 }: HTMLAttributes<HTMLFormElement> & {
-	comment: SerializedComment;
-	onCancel?: () => void;
-	editorRef: RefObject<UseCommentEditor | undefined>;
+  comment: SerializedComment;
+  onCancel?: () => void;
+  editorRef: RefObject<UseCommentEditor | undefined>;
 }): ReactNode {
-	const [isEmpty, setIsEmpty] = useState(true);
-	const { fetcher } = useCommentsContext();
+  const [isEmpty, setIsEmpty] = useState(true);
+  const { fetcher } = useCommentsContext();
 
-	const mutation = useSWRMutation(
-		getCommentsKey({
-			thread: comment.threadId ?? comment.id,
-			page: comment.page,
-		}),
-		(key, { arg }: { arg: { content: object } }) =>
-			fetcher.postComment({
-				...key[1],
-				...arg,
-			}),
-		{
-			revalidate: false,
-			onSuccess(data) {
-				onCommentReplied(data);
-				onCancel?.();
-				editorRef.current?.commands.clearContent();
-			},
-		},
-	);
+  const mutation = useSWRMutation(
+    getCommentsKey({
+      thread: comment.threadId ?? comment.id,
+      page: comment.page,
+    }),
+    (key, { arg }: { arg: { content: object } }) =>
+      fetcher.postComment({
+        ...key[1],
+        ...arg,
+      }),
+    {
+      revalidate: false,
+      onSuccess(data) {
+        onCommentReplied(data);
+        onCancel?.();
+        editorRef.current?.commands.clearContent();
+      },
+    },
+  );
 
-	const submit = useLatestCallback(() => {
-		if (!editorRef.current || editorRef.current.isEmpty) return;
-		const content = editorRef.current.getJSON();
+  const submit = useLatestCallback(() => {
+    if (!editorRef.current || editorRef.current.isEmpty) return;
+    const content = editorRef.current.getJSON();
 
-		clearPersistentId(`reply-${comment.id}`);
-		void mutation.trigger({ content });
-	});
+    clearPersistentId(`reply-${comment.id}`);
+    void mutation.trigger({ content });
+  });
 
-	return (
-		<form
-			{...props}
-			className={cn("relative", props.className)}
-			onSubmit={(e) => {
-				submit();
-				e.preventDefault();
-			}}
-		>
-			{mutation.error ? (
-				<p className="mb-1 text-sm text-fc-error">
-					{(mutation.error as FetcherError).message}
-				</p>
-			) : null}
-			<CommentEditor
-				persistentId={`reply-${comment.id}`}
-				disabled={mutation.isMutating}
-				editorRef={editorRef}
-				onChange={useCallback((v: UseCommentEditor) => {
-					setIsEmpty(v.isEmpty);
-				}, [])}
-				onEscape={onCancel}
-				onSubmit={submit}
-				placeholder="Reply to comment"
-			>
-				<button
-					aria-label="Reply"
-					className={cn(
-						buttonVariants({
-							size: "icon",
-						}),
-					)}
-					disabled={mutation.isMutating || isEmpty}
-					type="submit"
-				>
-					{mutation.isMutating ? (
-						<Spinner />
-					) : (
-						<SendHorizonalIcon className="size-4" />
-					)}
-				</button>
-			</CommentEditor>
-		</form>
-	);
+  return (
+    <form
+      {...props}
+      className={cn("relative", props.className)}
+      onSubmit={(e) => {
+        submit();
+        e.preventDefault();
+      }}
+    >
+      {mutation.error ? (
+        <p className="mb-1 text-sm text-fc-error">
+          {(mutation.error as FetcherError).message}
+        </p>
+      ) : null}
+      <CommentEditor
+        persistentId={`reply-${comment.id}`}
+        disabled={mutation.isMutating}
+        editorRef={editorRef}
+        onChange={useCallback((v: UseCommentEditor) => {
+          setIsEmpty(v.isEmpty);
+        }, [])}
+        onEscape={onCancel}
+        onSubmit={submit}
+        placeholder="Reply to comment"
+      >
+        <button
+          aria-label="Reply"
+          className={cn(
+            buttonVariants({
+              size: "icon",
+            }),
+          )}
+          disabled={mutation.isMutating || isEmpty}
+          type="submit"
+        >
+          {mutation.isMutating ? (
+            <Spinner />
+          ) : (
+            <SendHorizonalIcon className="size-4" />
+          )}
+        </button>
+      </CommentEditor>
+    </form>
+  );
 }

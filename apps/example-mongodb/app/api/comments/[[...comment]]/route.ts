@@ -5,10 +5,10 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/database";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
-	mention: { enabled: true },
-	auth: createBetterAuthAdapter(auth),
-	storage: createMongoDBAdapter({
-		db,
-		auth: "better-auth",
-	}),
+  mention: { enabled: true },
+  auth: createBetterAuthAdapter(auth),
+  storage: createMongoDBAdapter({
+    db,
+    auth: "better-auth",
+  }),
 });

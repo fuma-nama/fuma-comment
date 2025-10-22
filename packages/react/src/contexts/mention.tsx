@@ -4,57 +4,57 @@ import { useLatestCallback } from "../utils/hooks";
 import { useCommentsContext } from "./comments";
 
 export type MentionOptions = Partial<Pick<MentionContextType, "query">> &
-	Omit<MentionContextType, "query">;
+  Omit<MentionContextType, "query">;
 
 export interface MentionContextType {
-	enabled: boolean;
+  enabled: boolean;
 
-	/**
-	 * Auto-complete queries.
-	 *
-	 * When not specified, fetch from API endpoints.
-	 */
-	query: (
-		text: string,
-		options: { page: string },
-	) => MentionItem[] | Promise<MentionItem[]>;
+  /**
+   * Auto-complete queries.
+   *
+   * When not specified, fetch from API endpoints.
+   */
+  query: (
+    text: string,
+    options: { page: string },
+  ) => MentionItem[] | Promise<MentionItem[]>;
 }
 
 const MentionContext = createContext<MentionContextType>({
-	enabled: false,
-	query: () => [],
+  enabled: false,
+  query: () => [],
 });
 
 export function MentionProvider({
-	mention,
-	children,
+  mention,
+  children,
 }: {
-	mention: MentionOptions;
-	children: ReactNode;
+  mention: MentionOptions;
+  children: ReactNode;
 }): ReactNode {
-	const { fetcher } = useCommentsContext();
-	const query = useLatestCallback<MentionContextType["query"]>(
-		async (name, options) => {
-			if (mention.query) void mention.query(name, options);
+  const { fetcher } = useCommentsContext();
+  const query = useLatestCallback<MentionContextType["query"]>(
+    async (name, options) => {
+      if (mention.query) void mention.query(name, options);
 
-			const res = await fetcher.queryUsers({ name, page: options.page });
-			return res.map((user) => ({ label: user.name, id: user.id }));
-		},
-	);
+      const res = await fetcher.queryUsers({ name, page: options.page });
+      return res.map((user) => ({ label: user.name, id: user.id }));
+    },
+  );
 
-	const value = useMemo<MentionContextType>(
-		() => ({
-			enabled: mention.enabled,
-			query,
-		}),
-		[mention.enabled, query],
-	);
+  const value = useMemo<MentionContextType>(
+    () => ({
+      enabled: mention.enabled,
+      query,
+    }),
+    [mention.enabled, query],
+  );
 
-	return (
-		<MentionContext.Provider value={value}>{children}</MentionContext.Provider>
-	);
+  return (
+    <MentionContext.Provider value={value}>{children}</MentionContext.Provider>
+  );
 }
 
 export function useMention(): MentionContextType {
-	return useContext(MentionContext);
+  return useContext(MentionContext);
 }

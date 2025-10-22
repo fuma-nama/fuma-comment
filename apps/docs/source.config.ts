@@ -2,14 +2,14 @@ import { fileGenerator, remarkDocGen, remarkInstall } from "fumadocs-docgen";
 import { defineConfig, defineDocs } from "fumadocs-mdx/config";
 
 export const docs = defineDocs({
-	dir: "content/docs",
+  dir: "content/docs",
 });
 
 export default defineConfig({
-	mdxOptions: {
-		remarkPlugins: [
-			remarkInstall,
-			[remarkDocGen, { generators: [fileGenerator()] }],
-		],
-	},
+  mdxOptions: {
+    remarkPlugins: [
+      remarkInstall,
+      [remarkDocGen, { generators: [fileGenerator()] }],
+    ],
+  },
 });

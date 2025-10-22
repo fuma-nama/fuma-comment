@@ -5,14 +5,14 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { prisma } from "@/utils/database";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
-	role: "database",
-	mention: { enabled: true },
-	auth: createNextAuthAdapter(authOptions, {
-		sessionId: "id",
-	}),
-	storage: createPrismaAdapter({
-		db: prisma,
-		auth: "next-auth",
-		UserIdField: "id",
-	}),
+  role: "database",
+  mention: { enabled: true },
+  auth: createNextAuthAdapter(authOptions, {
+    sessionId: "id",
+  }),
+  storage: createPrismaAdapter({
+    db: prisma,
+    auth: "next-auth",
+    UserIdField: "id",
+  }),
 });

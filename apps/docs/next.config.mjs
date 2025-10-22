@@ -4,17 +4,17 @@ const withMDX = createMDX();
 
 /** @type {import('next').NextConfig} */
 const config = {
-	reactStrictMode: true,
-	images: {
-		remotePatterns: [
-			{
-				hostname: "avatars.githubusercontent.com",
-			},
-		],
-	},
-	eslint: {
-		ignoreDuringBuilds: true,
-	},
+  reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        hostname: "avatars.githubusercontent.com",
+      },
+    ],
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default withMDX(config);

@@ -1,21 +1,21 @@
 import type { Express, Request, Response } from "express";
 import type {
-	CustomCommentOptions,
-	CustomRequest,
-	CustomResponse,
+  CustomCommentOptions,
+  CustomRequest,
+  CustomResponse,
 } from "../custom";
 import { CustomComment } from "../custom";
 
 type RequestType = CustomRequest & {
-	req: Request;
+  req: Request;
 };
 
 interface ExpressOptions extends CustomCommentOptions<RequestType> {
-	app: Express;
-	/**
-	 * Base URL of API endpoints
-	 */
-	baseUrl?: string;
+  app: Express;
+  /**
+   * Base URL of API endpoints
+   */
+  baseUrl?: string;
 }
 
 /**
@@ -24,61 +24,61 @@ interface ExpressOptions extends CustomCommentOptions<RequestType> {
  * Should have `express.json()` body parser enabled
  */
 export function ExpressComment(options: ExpressOptions): void {
-	const { app } = options;
-	const methods = CustomComment<RequestType>(options).methods;
+  const { app } = options;
+  const methods = CustomComment<RequestType>(options).methods;
 
-	for (const key of Object.keys(methods)) {
-		const fn = methods[key as keyof typeof methods];
-		const [method, path] = key.split(" ");
+  for (const key of Object.keys(methods)) {
+    const fn = methods[key as keyof typeof methods];
+    const [method, path] = key.split(" ");
 
-		const pathWithBase = [
-			...(options.baseUrl ?? "").split("/"),
-			...path.split("/"),
-		]
-			.filter((v) => v.length > 0)
-			.map((v) =>
-				v.startsWith("[") && v.endsWith("]") ? `:${v.slice(1, -1)}` : v,
-			)
-			.join("/");
+    const pathWithBase = [
+      ...(options.baseUrl ?? "").split("/"),
+      ...path.split("/"),
+    ]
+      .filter((v) => v.length > 0)
+      .map((v) =>
+        v.startsWith("[") && v.endsWith("]") ? `:${v.slice(1, -1)}` : v,
+      )
+      .join("/");
 
-		app[method.toLowerCase() as "get" | "post" | "patch" | "delete"](
-			`/${pathWithBase}`,
-			(req, res) => {
-				void fn(readRequest(req))
-					.then((result) => {
-						sendResponse(res, result);
-					})
-					.catch((e: unknown) => {
-						throw e;
-					});
-			},
-		);
-	}
+    app[method.toLowerCase() as "get" | "post" | "patch" | "delete"](
+      `/${pathWithBase}`,
+      (req, res) => {
+        void fn(readRequest(req))
+          .then((result) => {
+            sendResponse(res, result);
+          })
+          .catch((e: unknown) => {
+            throw e;
+          });
+      },
+    );
+  }
 }
 
 function readRequest(req: Request): RequestType {
-	return {
-		method: req.method,
-		req,
-		body: () => req.body as unknown,
-		headers: new Map(Object.entries(req.headers)) as RequestType["headers"],
-		params: {
-			get(key) {
-				return req.params[key];
-			},
-		},
-		queryParams: {
-			get(key) {
-				return req.query[key] as string;
-			},
-		},
-	};
+  return {
+    method: req.method,
+    req,
+    body: () => req.body as unknown,
+    headers: new Map(Object.entries(req.headers)) as RequestType["headers"],
+    params: {
+      get(key) {
+        return req.params[key];
+      },
+    },
+    queryParams: {
+      get(key) {
+        return req.query[key] as string;
+      },
+    },
+  };
 }
 
 function sendResponse(res: Response, result: CustomResponse): void {
-	if (result.type === "success") {
-		res.status(200).json(result.data);
-	} else {
-		res.status(result.status).json(result.data);
-	}
+  if (result.type === "success") {
+    res.status(200).json(result.data);
+  } else {
+    res.status(result.status).json(result.data);
+  }
 }

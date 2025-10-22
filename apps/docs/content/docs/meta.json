@@ -1,16 +1,16 @@
 {
-	"pages": [
-		"index",
-		"...",
-		"---Server---",
-		"hono",
-		"---Storage---",
-		"drizzle",
-		"prisma",
-		"mongodb",
-		"---Auth---",
-		"better-auth",
-		"next-auth",
-		"clerk"
-	]
+  "pages": [
+    "index",
+    "...",
+    "---Server---",
+    "hono",
+    "---Storage---",
+    "drizzle",
+    "prisma",
+    "mongodb",
+    "---Auth---",
+    "better-auth",
+    "next-auth",
+    "clerk"
+  ]
 }

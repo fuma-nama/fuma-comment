@@ -1,140 +1,140 @@
 import type { z } from "zod";
 import type { CustomRequest } from "./custom";
 import type {
-	postCommentSchema,
-	setRateSchema,
-	sortSchema,
-	updateCommentSchema,
+  postCommentSchema,
+  setRateSchema,
+  sortSchema,
+  updateCommentSchema,
 } from "./custom/schemas";
 import type {
-	AuthInfo,
-	AuthInfoWithRole,
-	Awaitable,
-	Comment,
-	Role,
-	UserProfile,
+  AuthInfo,
+  AuthInfoWithRole,
+  Awaitable,
+  Comment,
+  Role,
+  UserProfile,
 } from "./types";
 
 interface SetRateOptions {
-	/** Comment ID */
-	id: string;
-	page: string;
+  /** Comment ID */
+  id: string;
+  page: string;
 
-	auth: AuthInfo;
-	body: z.infer<typeof setRateSchema>;
+  auth: AuthInfo;
+  body: z.infer<typeof setRateSchema>;
 }
 
 interface DeleteRateOptions {
-	/** Comment ID */
-	id: string;
-	page: string;
+  /** Comment ID */
+  id: string;
+  page: string;
 
-	auth: AuthInfo;
+  auth: AuthInfo;
 }
 
 interface UpdateCommentOptions {
-	id: string;
-	page: string;
+  id: string;
+  page: string;
 
-	auth: AuthInfo;
-	body: z.infer<typeof updateCommentSchema>;
+  auth: AuthInfo;
+  body: z.infer<typeof updateCommentSchema>;
 }
 
 interface DeleteCommentOptions {
-	id: string;
-	page: string;
+  id: string;
+  page: string;
 
-	auth: AuthInfo;
+  auth: AuthInfo;
 }
 
 interface PostCommentOptions {
-	auth: AuthInfo;
-	body: z.infer<typeof postCommentSchema>;
-	page: string;
+  auth: AuthInfo;
+  body: z.infer<typeof postCommentSchema>;
+  page: string;
 }
 
 interface GetCommentsOptions {
-	/**
-	 * Fetch comments after a specific timestamp
-	 */
-	after?: Date;
+  /**
+   * Fetch comments after a specific timestamp
+   */
+  after?: Date;
 
-	/**
-	 * Fetch comments before a specific timestamp
-	 */
-	before?: Date;
+  /**
+   * Fetch comments before a specific timestamp
+   */
+  before?: Date;
 
-	/**
-	 * Count to fetch
-	 */
-	limit: number;
+  /**
+   * Count to fetch
+   */
+  limit: number;
 
-	sort: z.infer<typeof sortSchema>;
-	page?: string;
+  sort: z.infer<typeof sortSchema>;
+  page?: string;
 
-	auth?: AuthInfo;
-	thread?: string;
+  auth?: AuthInfo;
+  thread?: string;
 }
 
 interface GetRoleOptions {
-	/**
-	 * User info
-	 */
-	auth: AuthInfo;
+  /**
+   * User info
+   */
+  auth: AuthInfo;
 
-	page: string;
+  page: string;
 }
 
 interface GetCommentOptions {
-	/**
-	 * Comment ID
-	 */
-	id: string;
+  /**
+   * Comment ID
+   */
+  id: string;
 }
 
 export interface StorageAdapter {
-	updateComment: (options: UpdateCommentOptions) => Awaitable<void>;
-	deleteComment: (options: DeleteCommentOptions) => Awaitable<void>;
+  updateComment: (options: UpdateCommentOptions) => Awaitable<void>;
+  deleteComment: (options: DeleteCommentOptions) => Awaitable<void>;
 
-	/**
-	 * Get the user ID of comment author
-	 */
-	getCommentAuthor: (options: GetCommentOptions) => Awaitable<string | null>;
-	getComments: (options: GetCommentsOptions) => Awaitable<Comment[]>;
-	postComment: (options: PostCommentOptions) => Awaitable<Comment>;
-	setRate: (options: SetRateOptions) => Awaitable<void>;
-	deleteRate: (options: DeleteRateOptions) => Awaitable<void>;
+  /**
+   * Get the user ID of comment author
+   */
+  getCommentAuthor: (options: GetCommentOptions) => Awaitable<string | null>;
+  getComments: (options: GetCommentsOptions) => Awaitable<Comment[]>;
+  postComment: (options: PostCommentOptions) => Awaitable<Comment>;
+  setRate: (options: SetRateOptions) => Awaitable<void>;
+  deleteRate: (options: DeleteRateOptions) => Awaitable<void>;
 
-	getRole: (options: GetRoleOptions) => Awaitable<Role | null>;
+  getRole: (options: GetRoleOptions) => Awaitable<Role | null>;
 
-	queryUsers?: (options: {
-		name: string;
-		page: string;
+  queryUsers?: (options: {
+    name: string;
+    page: string;
 
-		/**
-		 * Max count of results
-		 */
-		limit: number;
-	}) => Awaitable<UserProfile[]>;
+    /**
+     * Max count of results
+     */
+    limit: number;
+  }) => Awaitable<UserProfile[]>;
 }
 
 export interface AuthAdapter<R extends CustomRequest> {
-	/** Get user session */
-	getSession: (request: R) => Awaitable<AuthInfo | null>;
+  /** Get user session */
+  getSession: (request: R) => Awaitable<AuthInfo | null>;
 
-	/** Get user session with role information */
-	getSessionWithRole?: (
-		request: R,
-		options: {
-			page: string;
-		},
-	) => Awaitable<AuthInfoWithRole | null>;
+  /** Get user session with role information */
+  getSessionWithRole?: (
+    request: R,
+    options: {
+      page: string;
+    },
+  ) => Awaitable<AuthInfoWithRole | null>;
 }
 
 export interface StorageAuthProvider
-	extends Pick<StorageAdapter, "queryUsers"> {
-	/**
-	 * Manually join User table after selecting comments
-	 */
-	getUsers: (userIds: string[]) => UserProfile[] | Promise<UserProfile[]>;
+  extends Pick<StorageAdapter, "queryUsers"> {
+  /**
+   * Manually join User table after selecting comments
+   */
+  getUsers: (userIds: string[]) => UserProfile[] | Promise<UserProfile[]>;
 }

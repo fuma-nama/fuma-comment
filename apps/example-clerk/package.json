@@ -1,29 +1,29 @@
 {
-	"name": "example-clerk",
-	"version": "0.1.0",
-	"private": true,
-	"scripts": {
-		"dev": "next dev --turbopack",
-		"build": "next build",
-		"start": "next start"
-	},
-	"dependencies": {
-		"@clerk/nextjs": "^6.31.9",
-		"@fuma-comment/react": "workspace:*",
-		"@fuma-comment/server": "workspace:*",
-		"drizzle-orm": "^0.44.5",
-		"next": "15.5.2",
-		"pg": "^8.16.3",
-		"react": "^19.1.1",
-		"react-dom": "^19.1.1"
-	},
-	"devDependencies": {
-		"@tailwindcss/postcss": "^4.1.13",
-		"@types/node": "^24.3.1",
-		"@types/react": "^19.1.12",
-		"@types/react-dom": "^19.1.9",
-		"drizzle-kit": "^0.31.4",
-		"tailwindcss": "^4.1.13",
-		"typescript": "^5.9.2"
-	}
+  "name": "example-clerk",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "^6.31.9",
+    "@fuma-comment/react": "workspace:*",
+    "@fuma-comment/server": "workspace:*",
+    "drizzle-orm": "^0.44.5",
+    "next": "15.5.2",
+    "pg": "^8.16.3",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/node": "^24.3.1",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "drizzle-kit": "^0.31.4",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2"
+  }
 }

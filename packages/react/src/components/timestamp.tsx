@@ -3,15 +3,15 @@ import { useLayoutEffect, useState } from "react";
 import { toLocalString } from "../utils/date";
 
 export function Timestamp({
-	timestamp,
+  timestamp,
 }: {
-	timestamp: Date | string;
+  timestamp: Date | string;
 }): React.ReactNode {
-	const [str, setStr] = useState("");
+  const [str, setStr] = useState("");
 
-	useLayoutEffect(() => {
-		setStr(toLocalString(new Date(timestamp)));
-	}, [timestamp]);
+  useLayoutEffect(() => {
+    setStr(toLocalString(new Date(timestamp)));
+  }, [timestamp]);
 
-	return str;
+  return str;
 }

@@ -4,162 +4,162 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-	/* Light theme colors */
-	--color-fc-background: hsl(0 0% 100%);
-	--color-fc-foreground: hsl(0 0% 3.9%);
-	--color-fc-muted: hsl(0 0% 96.1%);
-	--color-fc-muted-foreground: hsl(0 0% 45.1%);
-	--color-fc-popover: hsl(0 0% 100%);
-	--color-fc-popover-foreground: hsl(0 0% 15.1%);
-	--color-fc-card: hsl(0 0% 96.7%);
-	--color-fc-card-foreground: hsl(0 0% 3.9%);
-	--color-fc-border: hsl(0 0% 89.8%);
-	--color-fc-primary: hsl(0 0% 9%);
-	--color-fc-primary-foreground: hsl(0 0% 98%);
-	--color-fc-accent: hsl(0 0% 94.1%);
-	--color-fc-accent-foreground: hsl(0 0% 9%);
-	--color-fc-danger: hsl(3 99% 55%);
-	--color-fc-ring: hsl(0 0% 63.9%);
+  /* Light theme colors */
+  --color-fc-background: hsl(0 0% 100%);
+  --color-fc-foreground: hsl(0 0% 3.9%);
+  --color-fc-muted: hsl(0 0% 96.1%);
+  --color-fc-muted-foreground: hsl(0 0% 45.1%);
+  --color-fc-popover: hsl(0 0% 100%);
+  --color-fc-popover-foreground: hsl(0 0% 15.1%);
+  --color-fc-card: hsl(0 0% 96.7%);
+  --color-fc-card-foreground: hsl(0 0% 3.9%);
+  --color-fc-border: hsl(0 0% 89.8%);
+  --color-fc-primary: hsl(0 0% 9%);
+  --color-fc-primary-foreground: hsl(0 0% 98%);
+  --color-fc-accent: hsl(0 0% 94.1%);
+  --color-fc-accent-foreground: hsl(0 0% 9%);
+  --color-fc-danger: hsl(3 99% 55%);
+  --color-fc-ring: hsl(0 0% 63.9%);
 }
 
 /* Dark theme colors */
 .dark {
-	--color-fc-background: hsl(0 0% 3.9%);
-	--color-fc-foreground: hsl(0 0% 98%);
-	--color-fc-muted: hsl(0 0% 14.9%);
-	--color-fc-muted-foreground: hsl(0 0% 60.9%);
-	--color-fc-popover: hsl(0 0% 9%);
-	--color-fc-popover-foreground: hsl(0 0% 88%);
-	--color-fc-card: hsl(0 0% 8%);
-	--color-fc-card-foreground: hsl(0 0% 98%);
-	--color-fc-border: hsla(0, 0%, 50%, 0.3);
-	--color-fc-primary: hsl(0 0% 98%);
-	--color-fc-primary-foreground: hsl(0 0% 9%);
-	--color-fc-accent: hsl(0 0% 14.9%);
-	--color-fc-accent-foreground: hsl(0 0% 98%);
-	--color-fc-ring: hsl(0 0% 14.9%);
-	--color-fc-danger: hsl(3 95% 64%);
+  --color-fc-background: hsl(0 0% 3.9%);
+  --color-fc-foreground: hsl(0 0% 98%);
+  --color-fc-muted: hsl(0 0% 14.9%);
+  --color-fc-muted-foreground: hsl(0 0% 60.9%);
+  --color-fc-popover: hsl(0 0% 9%);
+  --color-fc-popover-foreground: hsl(0 0% 88%);
+  --color-fc-card: hsl(0 0% 8%);
+  --color-fc-card-foreground: hsl(0 0% 98%);
+  --color-fc-border: hsla(0, 0%, 50%, 0.3);
+  --color-fc-primary: hsl(0 0% 98%);
+  --color-fc-primary-foreground: hsl(0 0% 9%);
+  --color-fc-accent: hsl(0 0% 14.9%);
+  --color-fc-accent-foreground: hsl(0 0% 98%);
+  --color-fc-ring: hsl(0 0% 14.9%);
+  --color-fc-danger: hsl(3 95% 64%);
 }
 
 /* TipTap editor styles */
 .tiptap p.is-editor-empty:first-child::before {
-	content: attr(data-placeholder);
-	float: left;
-	height: 0;
-	pointer-events: none;
-	color: var(--color-fc-muted-foreground);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: var(--color-fc-muted-foreground);
 }
 
 .tiptap img {
-	border-radius: 0.5rem;
-	max-width: 100%;
-	width: auto;
-	max-height: 15rem;
+  border-radius: 0.5rem;
+  max-width: 100%;
+  width: auto;
+  max-height: 15rem;
 }
 
 .tiptap img.ProseMirror-selectednode {
-	outline: 2px solid var(--color-fc-primary);
+  outline: 2px solid var(--color-fc-primary);
 }
 
 .tiptap a {
-	font-weight: 500;
-	text-decoration-line: underline;
+  font-weight: 500;
+  text-decoration-line: underline;
 }
 
 @theme {
-	--animate-fc-accordion-down: fc-accordion-down 200ms ease-out;
-	--animate-fc-accordion-up: fc-accordion-up 200ms ease-out;
-	--animate-fc-fadeIn: fc-fadeIn 200ms cubic-bezier(0.16, 1, 0.3, 1);
-	--animate-fc-fadeOut: fc-fadeOut 200ms cubic-bezier(0.16, 1, 0.3, 1);
-	--animate-fc-overlayShow: fc-overlayShow 400ms cubic-bezier(0.16, 1, 0.3, 1);
-	--animate-fc-overlayHide: fc-overlayHide 400ms cubic-bezier(0.16, 1, 0.3, 1);
-	--animate-fc-dialogShow: fc-dialogShow 300ms cubic-bezier(0.16, 1, 0.3, 1);
-	--animate-fc-dialogHide: fc-dialogHide 300ms cubic-bezier(0.16, 1, 0.3, 1);
-	--animate-fc-drawerShow: fc-drawerShow 400ms cubic-bezier(0.16, 1, 0.3, 1);
-	--animate-fc-drawerHide: fc-drawerHide 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fc-accordion-down: fc-accordion-down 200ms ease-out;
+  --animate-fc-accordion-up: fc-accordion-up 200ms ease-out;
+  --animate-fc-fadeIn: fc-fadeIn 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fc-fadeOut: fc-fadeOut 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fc-overlayShow: fc-overlayShow 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fc-overlayHide: fc-overlayHide 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fc-dialogShow: fc-dialogShow 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fc-dialogHide: fc-dialogHide 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fc-drawerShow: fc-drawerShow 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fc-drawerHide: fc-drawerHide 400ms cubic-bezier(0.16, 1, 0.3, 1);
 
-	@keyframes fc-fadeIn {
-		from {
-			opacity: 0;
-			transform: translateY(-20px) scale(0.9);
-		}
-		to {
-			opacity: 1;
-		}
-	}
+  @keyframes fc-fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.9);
+    }
+    to {
+      opacity: 1;
+    }
+  }
 
-	@keyframes fc-fadeOut {
-		from {
-			opacity: 1;
-		}
-		to {
-			opacity: 0;
-			transform: translateY(-20px) scale(0.9);
-		}
-	}
+  @keyframes fc-fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.9);
+    }
+  }
 
-	@keyframes fc-dialogShow {
-		from {
-			opacity: 0;
-			transform: scale(1.2);
-		}
-	}
+  @keyframes fc-dialogShow {
+    from {
+      opacity: 0;
+      transform: scale(1.2);
+    }
+  }
 
-	@keyframes fc-dialogHide {
-		to {
-			opacity: 0;
-			transform: scale(1.2);
-			filter: blur(12px);
-		}
-	}
+  @keyframes fc-dialogHide {
+    to {
+      opacity: 0;
+      transform: scale(1.2);
+      filter: blur(12px);
+    }
+  }
 
-	@keyframes fc-drawerShow {
-		from {
-			transform: translateY(100%);
-		}
-	}
+  @keyframes fc-drawerShow {
+    from {
+      transform: translateY(100%);
+    }
+  }
 
-	@keyframes fc-drawerHide {
-		to {
-			transform: translateY(100%);
-		}
-	}
+  @keyframes fc-drawerHide {
+    to {
+      transform: translateY(100%);
+    }
+  }
 
-	@keyframes fc-overlayShow {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
+  @keyframes fc-overlayShow {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 
-	@keyframes fc-overlayHide {
-		from {
-			opacity: 1;
-		}
-		to {
-			opacity: 0;
-		}
-	}
+  @keyframes fc-overlayHide {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
 
-	@keyframes fc-accordion-down {
-		from {
-			height: 0;
-			opacity: 0.5;
-		}
-		to {
-			height: var(--radix-collapsible-content-height);
-		}
-	}
+  @keyframes fc-accordion-down {
+    from {
+      height: 0;
+      opacity: 0.5;
+    }
+    to {
+      height: var(--radix-collapsible-content-height);
+    }
+  }
 
-	@keyframes fc-accordion-up {
-		from {
-			height: var(--radix-collapsible-content-height);
-		}
-		to {
-			height: 0;
-			opacity: 0.5;
-		}
-	}
+  @keyframes fc-accordion-up {
+    from {
+      height: var(--radix-collapsible-content-height);
+    }
+    to {
+      height: 0;
+      opacity: 0.5;
+    }
+  }
 }

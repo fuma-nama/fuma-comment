@@ -1,25 +1,25 @@
 {
-	"name": "fuma-comment",
-	"private": true,
-	"packageManager": "pnpm@10.19.0",
-	"scripts": {
-		"version": "changeset version",
-		"release": "turbo run build --filter=./packages/* && changeset publish",
-		"build": "turbo run build",
-		"dev": "turbo run dev",
-		"test": "turbo run test",
-		"check:types": "turbo run check:types",
-		"test:integrate": "docker compose run --rm --build tests pnpm turbo run test:integrate --concurrency=1",
-		"lint": "biome check",
-		"lint:fix": "biome check --write",
-		"format": "biome format --write ."
-	},
-	"devDependencies": {
-		"@biomejs/biome": "2.2.3",
-		"@changesets/cli": "^2.29.6",
-		"dotenv-cli": "^10.0.0",
-		"tsconfig": "workspace:*",
-		"tsup": "^8.5.0",
-		"turbo": "^2.5.6"
-	}
+  "name": "fuma-comment",
+  "private": true,
+  "packageManager": "pnpm@10.19.0",
+  "scripts": {
+    "version": "changeset version",
+    "release": "turbo run build --filter=./packages/* && changeset publish",
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "check:types": "turbo run check:types",
+    "test:integrate": "docker compose run --rm --build tests pnpm turbo run test:integrate --concurrency=1",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
+    "format": "biome format --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.3",
+    "@changesets/cli": "^2.29.6",
+    "dotenv-cli": "^10.0.0",
+    "tsconfig": "workspace:*",
+    "tsup": "^8.5.0",
+    "turbo": "^2.5.6"
+  }
 }

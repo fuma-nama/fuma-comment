@@ -1,14 +1,14 @@
 {
-	"$schema": "https://unpkg.com/@changesets/config@2.3.1/schema.json",
-	"changelog": "@changesets/cli/changelog",
-	"commit": false,
-	"fixed": [],
-	"linked": [
-		["@fuma-comment/server", "@fuma-comment/react", "@fuma-comment/next"]
-	],
-	"access": "restricted",
-	"baseBranch": "main",
-	"updateInternalDependencies": "patch",
-	"ignore": ["docs"],
-	"privatePackages": { "tag": false, "version": false }
+  "$schema": "https://unpkg.com/@changesets/config@2.3.1/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "fixed": [],
+  "linked": [
+    ["@fuma-comment/server", "@fuma-comment/react", "@fuma-comment/next"]
+  ],
+  "access": "restricted",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": ["docs"],
+  "privatePackages": { "tag": false, "version": false }
 }
