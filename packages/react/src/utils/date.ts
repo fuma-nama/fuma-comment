@@ -1,4 +1,4 @@
-export function toLocalString(date: Date): string {
+function toLocalString(date: Date): string {
   const today = new Date(Date.now());
 
   const isToday =
@@ -21,3 +21,5 @@ export function toLocalString(date: Date): string {
 
   return `${day} ${time}`;
 }
+
+export { toLocalString };

@@ -9,14 +9,14 @@ const map = new Map<string, Item>();
 
 const { useListener, trigger } = createListener<[Item]>();
 
-export function useCommentManager(id: string): Item | undefined {
+function useCommentManager(id: string): Item | undefined {
   const [value, setValue] = useState(() => map.get(id));
   useListener(id, setValue);
 
   return value;
 }
 
-export function syncComments(comments: SerializedComment[]): void {
+function syncComments(comments: SerializedComment[]): void {
   for (const comment of comments) {
     setComment(comment.id, comment);
   }
@@ -27,7 +27,7 @@ function setComment(id: string, c: Item): void {
   trigger(id, c);
 }
 
-export function updateComment(
+function updateComment(
   commentId: string,
   updateFn: (comment: Item) => Item,
 ): void {
@@ -37,7 +37,7 @@ export function updateComment(
   setComment(commentId, updateFn(comment));
 }
 
-export function onCommentReplied(reply: SerializedComment): void {
+function onCommentReplied(reply: SerializedComment): void {
   updateCommentList([reply.page, reply.threadId], (v) =>
     v ? [...v, reply] : undefined,
   );
@@ -49,7 +49,7 @@ export function onCommentReplied(reply: SerializedComment): void {
   }
 }
 
-export function onCommentDeleted(comment: SerializedComment): void {
+function onCommentDeleted(comment: SerializedComment): void {
   updateCommentList([comment.page, comment.threadId], (v) =>
     v?.filter((item) => item.id !== comment.id),
   );
@@ -62,10 +62,7 @@ export function onCommentDeleted(comment: SerializedComment): void {
   }
 }
 
-export function onLikeUpdated(
-  commentId: string,
-  value: boolean | undefined,
-): void {
+function onLikeUpdated(commentId: string, value: boolean | undefined): void {
   updateComment(commentId, (comment) => {
     let likes: number = comment.likes;
     let dislikes: number = comment.dislikes;
@@ -86,3 +83,13 @@ export function onLikeUpdated(
     };
   });
 }
+
+export {
+  useCommentManager,
+  syncComments,
+  setComment,
+  updateComment,
+  onCommentReplied,
+  onCommentDeleted,
+  onLikeUpdated,
+};

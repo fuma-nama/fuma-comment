@@ -6,7 +6,13 @@ import {
 } from "@radix-ui/react-collapsible";
 import type { Editor } from "@tiptap/react";
 import { ChevronDown } from "lucide-react";
-import { type ComponentProps, type FC, useRef, useState } from "react";
+import {
+  type ComponentProps,
+  type FC,
+  type ReactNode,
+  useRef,
+  useState,
+} from "react";
 import useSWRImmutable from "swr/immutable";
 import { useAuthContext } from "../../contexts/auth";
 import { useCommentContext } from "../../contexts/comment";
@@ -25,7 +31,7 @@ import { ReplyForm } from "./reply-form";
 
 const count = 40;
 
-export interface CommentListProps extends ComponentProps<"div"> {
+interface CommentListProps extends ComponentProps<"div"> {
   threadId?: string;
   isSubThread?: boolean;
   components?: {
@@ -41,7 +47,7 @@ const defaultComponents: Required<Required<CommentListProps>["components"]> = {
   ),
 };
 
-export function CommentList({
+function CommentList({
   ref,
   threadId,
   isSubThread = false,
@@ -104,7 +110,7 @@ export function CommentList({
   );
 }
 
-export function Replies(): React.ReactNode {
+function Replies(): ReactNode {
   const { comment } = useCommentContext();
   const auth = useAuthContext();
   const isMobile = useIsMobile();
@@ -181,3 +187,5 @@ export function Replies(): React.ReactNode {
     </Collapsible>
   );
 }
+
+export { CommentList, Replies, type CommentListProps };

@@ -20,15 +20,15 @@ type BaseRenderer = (props: {
   children: ReactNode;
 }) => ReactNode;
 
-export const mentionVariants = cva(
+const mentionVariants = cva(
   "rounded-md bg-fc-primary/10 p-0.5 font-medium text-fc-primary",
 );
 
-export const codeVariants = cva(
+const codeVariants = cva(
   "rounded-sm border border-fc-border bg-fc-muted p-0.5",
 );
 
-export const codeBlockVariants = cva(
+const codeBlockVariants = cva(
   "relative grid rounded-sm border border-fc-border bg-fc-muted p-2 text-sm my-1.5",
 );
 
@@ -175,18 +175,14 @@ function render(content: JSONContent, storage: StorageContext): ReactNode {
 
   if (content.type === "doc") {
     return (
-      <div key={id++} className="grid whitespace-pre-wrap break-words">
+      <div key={id++} className="grid whitespace-pre-wrap wrap-break-word">
         {joined}
       </div>
     );
   }
 }
 
-export function ContentRenderer({
-  content,
-}: {
-  content: JSONContent;
-}): ReactNode {
+function ContentRenderer({ content }: { content: JSONContent }): ReactNode {
   const ctx = useStorage();
 
   return useMemo(() => render(content, ctx), [content, ctx]);
@@ -234,3 +230,5 @@ function CodeBlock({
     </pre>
   );
 }
+
+export { mentionVariants, codeVariants, codeBlockVariants, ContentRenderer };

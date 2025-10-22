@@ -2,7 +2,6 @@ import type { SerializedComment } from "@fuma-comment/server";
 import type { JSONContent } from "@tiptap/react";
 import { CopyIcon, MoreVertical, PencilIcon, Trash2Icon } from "lucide-react";
 import {
-  type ButtonHTMLAttributes,
   type ComponentProps,
   type ReactNode,
   useMemo,
@@ -37,7 +36,7 @@ import { Timestamp } from "../timestamp";
 import { ContentRenderer } from "./content-renderer";
 import { EditForm } from "./edit-form";
 
-export function Comment({
+function Comment({
   comment: cached,
   actions,
   children,
@@ -45,7 +44,7 @@ export function Comment({
 }: ComponentProps<"div"> & {
   comment: SerializedComment;
   actions?: ReactNode;
-}): React.ReactElement {
+}): ReactNode {
   const [isReply, setIsReply] = useState(false);
   const editorRef = useRef<UseCommentEditor | undefined>(undefined);
   const comment = useCommentManager(cached.id) ?? cached;
@@ -71,8 +70,8 @@ export function Comment({
         data-fc-reply={context.isReplying}
       >
         <Avatar
-          placeholder={comment.author.name}
-          image={comment.author.image}
+          src={comment.author.image}
+          alt={comment.author.name}
           className="shrink-0"
         />
         <div className="min-w-0 flex-1">
@@ -95,7 +94,7 @@ export function Comment({
 function CommentMenu({
   className,
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement>): React.ReactNode {
+}: ComponentProps<"button">): ReactNode {
   const { session } = useAuthContext();
   const [isEditing, setIsEditing] = useState(false);
   const { comment, editorRef, isReplying } = useCommentContext();
@@ -201,3 +200,5 @@ function getTextFromContent(content: JSONContent): string {
   if (content.type === "paragraph") return `${child}\n`;
   return child;
 }
+
+export { Comment };

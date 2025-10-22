@@ -1,7 +1,7 @@
 import type { SerializedComment } from "@fuma-comment/server";
 import { SendHorizonalIcon } from "lucide-react";
 import {
-  type HTMLAttributes,
+  type ComponentProps,
   type ReactNode,
   type RefObject,
   useCallback,
@@ -21,12 +21,12 @@ import {
 } from "../editor";
 import { Spinner } from "../spinner";
 
-export function ReplyForm({
+function ReplyForm({
   editorRef,
   onCancel,
   comment,
   ...props
-}: HTMLAttributes<HTMLFormElement> & {
+}: ComponentProps<"form"> & {
   comment: SerializedComment;
   onCancel?: () => void;
   editorRef: RefObject<UseCommentEditor | undefined>;
@@ -107,3 +107,5 @@ export function ReplyForm({
     </form>
   );
 }
+
+export { ReplyForm };

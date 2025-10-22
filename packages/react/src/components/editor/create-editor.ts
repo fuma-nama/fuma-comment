@@ -51,7 +51,7 @@ const ImageWithWidth = Image.extend({
   },
 });
 
-export type CreateEditorOptions = Partial<EditorOptions> & {
+type CreateEditorOptions = Partial<EditorOptions> & {
   placeholder?: string;
   mentionEnabled: boolean;
 
@@ -115,7 +115,7 @@ function createMention(): Node {
   });
 }
 
-export function createEditor({
+function createEditor({
   onSubmit,
   onEscape,
   mentionEnabled,
@@ -169,3 +169,5 @@ export function createEditor({
     ],
   });
 }
+
+export { createEditor, type CreateEditorOptions };

@@ -1,7 +1,7 @@
 import { SendHorizonalIcon } from "lucide-react";
 import {
-  type FormHTMLAttributes,
-  forwardRef,
+  type ComponentProps,
+  type ReactNode,
   useCallback,
   useRef,
   useState,
@@ -23,12 +23,10 @@ import {
 } from "../editor";
 import { Spinner } from "../spinner";
 
-export const CreateForm = forwardRef<
-  HTMLFormElement,
-  FormHTMLAttributes<HTMLFormElement> & {
-    placeholder?: string;
-  }
->(({ placeholder = "Leave comment", ...props }, ref) => {
+function CreateForm({
+  placeholder = "Leave comment",
+  ...props
+}: ComponentProps<"form"> & { placeholder?: string }): ReactNode {
   const auth = useAuthContext();
   const { page, fetcher } = useCommentsContext();
   const [isEmpty, setIsEmpty] = useState(true);
@@ -67,7 +65,6 @@ export const CreateForm = forwardRef<
 
   return (
     <form
-      ref={ref}
       onSubmit={(e) => {
         submit();
         e.preventDefault();
@@ -122,6 +119,6 @@ export const CreateForm = forwardRef<
       </CommentEditor>
     </form>
   );
-});
+}
 
-CreateForm.displayName = "CreateForm";
+export { CreateForm };

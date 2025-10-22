@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export function createListener<Args extends unknown[]>(): {
+function createListener<Args extends unknown[]>(): {
   trigger: (id: string | number, ...arg: Args) => void;
   useListener: (id: string | number, listener: (...args: Args) => void) => void;
 } {
@@ -28,3 +28,5 @@ export function createListener<Args extends unknown[]>(): {
     },
   };
 }
+
+export { createListener };

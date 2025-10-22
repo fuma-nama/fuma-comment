@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  type ButtonHTMLAttributes,
-  forwardRef,
-  type HTMLAttributes,
-  type ReactNode,
-  useMemo,
-} from "react";
+import { type ComponentProps, type ReactNode, useMemo } from "react";
 import { CreateForm } from "./components/comment/create-form";
 import { CommentList } from "./components/comment/list";
 import {
@@ -20,9 +14,9 @@ import { type StorageContext, StorageProvider } from "./contexts/storage";
 import { cn } from "./utils/cn";
 import { createFetcher } from "./utils/fetcher";
 
-export interface CommentsProviderProps {
+interface CommentsProviderProps {
   /**
-   * Comments will be grouped by `page`
+   * The unique identifier for the page where comments are displayed.
    */
   page: string;
 
@@ -35,21 +29,21 @@ export interface CommentsProviderProps {
   /**
    * The URL of the API endpoint.
    *
-   * If not specified, the API will be fetched from `/api/comments`.
+   * @default "/api/comments"
    */
   apiUrl?: string;
 
   children?: ReactNode;
 }
 
-export function CommentsProvider({
+function CommentsProvider({
   page,
   children,
   mention,
   storage,
   auth,
   apiUrl,
-}: CommentsProviderProps): React.ReactNode {
+}: CommentsProviderProps): ReactNode {
   let child = children;
   const context = useMemo(
     () => ({
@@ -73,25 +67,20 @@ export function CommentsProvider({
     </Provider>
   );
 }
+const CommentsPost = CreateForm;
 
-export const CommentsPost = CreateForm;
-
-export const CommentsList = forwardRef<
-  HTMLDivElement,
-  HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
+function CommentsList({
+  className,
+  ...props
+}: ComponentProps<"div">): ReactNode {
   return (
-    <div className={cn("flex flex-col", className)} ref={ref} {...props}>
+    <div className={cn("flex flex-col", className)} {...props}>
       <CommentList />
     </div>
   );
-});
+}
 
-CommentsList.displayName = "CommentsList";
-
-export function AuthButton(
-  props: ButtonHTMLAttributes<HTMLButtonElement>,
-): React.ReactNode {
+function AuthButton(props: ComponentProps<"button">): ReactNode {
   const { signIn } = useAuthContext();
 
   if (typeof signIn === "function")
@@ -106,3 +95,10 @@ export function AuthButton(
 
 export { ContentRenderer } from "./components/comment/content-renderer";
 export { Comment } from "./components/comment/index";
+export {
+  CommentsProvider,
+  CommentsPost,
+  CommentsList,
+  AuthButton,
+  type CommentsProviderProps,
+};

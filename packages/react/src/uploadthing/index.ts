@@ -3,7 +3,7 @@ import type { StorageContext } from "../contexts/storage";
 
 const { uploadFiles } = genUploader();
 
-export function createUploadThingStorage(): StorageContext {
+function createUploadThingStorage(): StorageContext {
   return {
     enabled: true,
     async upload(file) {
@@ -37,3 +37,5 @@ export function createUploadThingStorage(): StorageContext {
     },
   };
 }
+
+export { createUploadThingStorage };

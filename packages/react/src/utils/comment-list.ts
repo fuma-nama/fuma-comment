@@ -7,7 +7,7 @@ type KeyArray = [page: string, threadId: string | undefined];
 const data = new Map<string, SerializedComment[]>();
 const { useListener, trigger } = createListener<[]>();
 
-export function useCommentList(id: KeyArray): SerializedComment[] {
+function useCommentList(id: KeyArray): SerializedComment[] {
   const key = getKey(id);
   const [list, setList] = useState(() => data.get(key) ?? []);
 
@@ -21,7 +21,7 @@ export function useCommentList(id: KeyArray): SerializedComment[] {
   return list;
 }
 
-export function updateCommentList(
+function updateCommentList(
   id: KeyArray,
   update: (
     prev: SerializedComment[] | undefined,
@@ -40,3 +40,5 @@ export function updateCommentList(
 function getKey(id: KeyArray): string {
   return `${id[0]}:${id[1] ?? "unset"}`;
 }
+
+export { useCommentList, updateCommentList };

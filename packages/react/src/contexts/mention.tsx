@@ -1,12 +1,12 @@
-import { createContext, type ReactNode, useContext, useMemo } from "react";
+import { createContext, type ReactNode, use, useMemo } from "react";
 import type { MentionItem } from "../components/editor/mention";
 import { useLatestCallback } from "../utils/hooks";
 import { useCommentsContext } from "./comments";
 
-export type MentionOptions = Partial<Pick<MentionContextType, "query">> &
+type MentionOptions = Partial<Pick<MentionContextType, "query">> &
   Omit<MentionContextType, "query">;
 
-export interface MentionContextType {
+interface MentionContextType {
   enabled: boolean;
 
   /**
@@ -25,7 +25,7 @@ const MentionContext = createContext<MentionContextType>({
   query: () => [],
 });
 
-export function MentionProvider({
+function MentionProvider({
   mention,
   children,
 }: {
@@ -55,6 +55,13 @@ export function MentionProvider({
   );
 }
 
-export function useMention(): MentionContextType {
-  return useContext(MentionContext);
+function useMention(): MentionContextType {
+  return use(MentionContext);
 }
+
+export {
+  MentionProvider,
+  useMention,
+  type MentionOptions,
+  type MentionContextType,
+};

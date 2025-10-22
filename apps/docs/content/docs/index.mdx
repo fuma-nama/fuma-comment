@@ -96,7 +96,7 @@ const storage = createDrizzleAdapter({
     user,
   },
   // Use tables created by your auth provider
-  auth: "next-auth" | "better-auth",
+  auth: "better-auth",
 });
 ```
 
@@ -120,7 +120,7 @@ import { createPrismaAdapter } from "@fuma-comment/server/adapters/prisma";
 const storage = createPrismaAdapter({
   db: prisma,
   // Use tables created by your auth provider
-  auth: "next-auth" | "better-auth",
+  auth: "better-auth",
 });
 ```
 

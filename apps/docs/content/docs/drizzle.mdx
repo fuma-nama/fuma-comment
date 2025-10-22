@@ -23,7 +23,7 @@ import { comments, rates, roles, user } from "@/lib/schema";
 
 const storage = createDrizzleAdapter({
   db,
-  auth: "next-auth" | "better-auth",
+  auth: "better-auth",
   schemas: {
     comments,
     rates,

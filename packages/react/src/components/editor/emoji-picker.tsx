@@ -1,17 +1,13 @@
 import type { Editor } from "@tiptap/react";
 import { EmojiPicker } from "frimousse";
 import { Smile } from "lucide-react";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import { cn } from "../../utils/cn";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
 import { inputVariants } from "../input";
 import { toggleVariants, useHookUpdate } from ".";
 
-export default function EmojiPickerPopover({
-  editor,
-}: {
-  editor: Editor;
-}): React.ReactElement {
+function EmojiPickerPopover({ editor }: { editor: Editor }): ReactNode {
   useHookUpdate(editor);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -73,7 +69,7 @@ export default function EmojiPickerPopover({
                 ),
                 Emoji: ({ emoji, ...props }) => (
                   <button
-                    className="flex size-11 items-center justify-center rounded-md text-3xl data-[active]:bg-fc-accent"
+                    className="flex size-11 items-center justify-center rounded-md text-3xl data-active:bg-fc-accent"
                     {...props}
                   >
                     {emoji.emoji}
@@ -87,3 +83,5 @@ export default function EmojiPickerPopover({
     </Dialog>
   );
 }
+
+export default EmojiPickerPopover;

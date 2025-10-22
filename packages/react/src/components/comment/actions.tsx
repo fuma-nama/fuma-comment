@@ -24,7 +24,7 @@ const rateVariants = cva(
   },
 );
 
-export function Actions({
+function Actions({
   canReply = false,
 }: {
   canReply?: boolean;
@@ -137,3 +137,5 @@ export function Actions({
     </>
   );
 }
+
+export { Actions };

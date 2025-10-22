@@ -8,18 +8,14 @@ import {
   CommandList,
 } from "cmdk";
 import { SquareCode } from "lucide-react";
-import { type ComponentProps, useState } from "react";
+import { type ComponentProps, type ReactNode, useState } from "react";
 import { cn } from "../../utils/cn";
 import { lowlight } from "../../utils/highlighter";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
 import { inputVariants } from "../input";
 import { toggleVariants, useHookUpdate } from ".";
 
-export default function CodeBlockButton({
-  editor,
-}: {
-  editor: Editor;
-}): React.ReactNode {
+function CodeBlockButton({ editor }: { editor: Editor }): ReactNode {
   const [isOpen, setIsOpen] = useState(false);
   useHookUpdate(editor);
 
@@ -86,3 +82,5 @@ function CodeBlockForm({
     </Command>
   );
 }
+
+export default CodeBlockButton;

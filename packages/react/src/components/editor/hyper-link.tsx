@@ -1,16 +1,16 @@
 import type { Editor } from "@tiptap/react";
-import { useLayoutEffect, useState } from "react";
+import { type ReactNode, useLayoutEffect, useState } from "react";
 import { cn } from "../../utils/cn";
 import { buttonVariants } from "../button";
 import { inputVariants } from "../input";
 
-export function HyperLink({
+function HyperLink({
   editor,
   onClose,
 }: {
   editor: Editor;
   onClose: () => void;
-}): React.ReactElement {
+}): ReactNode {
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
   const isInsert = editor.state.selection.empty;
@@ -103,3 +103,5 @@ export function HyperLink({
     </form>
   );
 }
+
+export { HyperLink };

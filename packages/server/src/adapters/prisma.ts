@@ -19,7 +19,7 @@ export interface Options {
    */
   RoleModel?: string;
 
-  auth: StorageAuthProvider | "next-auth" | "better-auth";
+  auth: StorageAuthProvider | "better-auth";
 
   UserModel?: string;
   UserIdField?: string;
@@ -55,7 +55,7 @@ export function createPrismaAdapter(options: Options): StorageAdapter {
   const db = options.db as PrismaClientInternal;
   let auth: StorageAuthProvider;
 
-  if (defaultAuth === "next-auth" || defaultAuth === "better-auth") {
+  if (defaultAuth === "better-auth") {
     auth = createGenericProvider(db, options);
   } else {
     auth = defaultAuth;

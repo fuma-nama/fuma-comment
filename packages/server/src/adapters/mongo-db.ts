@@ -35,13 +35,13 @@ export function createMongoDBAdapter({
   ...options
 }: {
   db: Db;
-  auth: "better-auth" | "next-auth" | StorageAuthProvider;
+  auth: "better-auth" | StorageAuthProvider;
   RateCollection?: string;
   CommentCollection?: string;
   RoleCollection?: string;
 
   /**
-   * For `better-auth` & `next-auth`
+   * For `better-auth`
    */
   AuthCollections?: AuthCollections;
 }): StorageAdapter {
@@ -244,7 +244,7 @@ export function createMongoDBAdapter({
 
 function createGenericProvider(
   db: Db,
-  auth: "better-auth" | "next-auth",
+  auth: "better-auth",
   collections: AuthCollections = {},
 ): StorageAuthProvider {
   const { UserCollection = auth === "better-auth" ? "user" : "users" } =

@@ -1,6 +1,6 @@
 import { cva } from "class-variance-authority";
 
-export const inputVariants = cva(
+const inputVariants = cva(
   "appearance-none px-2 py-1.5 placeholder:text-fc-muted-foreground focus-visible:outline-none",
   {
     variants: {
@@ -15,3 +15,5 @@ export const inputVariants = cva(
     },
   },
 );
+
+export { inputVariants };

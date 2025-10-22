@@ -26,7 +26,7 @@ export interface Options {
     user?: unknown;
   };
 
-  auth: StorageAuthProvider | "next-auth" | "better-auth";
+  auth: StorageAuthProvider | "better-auth";
 }
 
 /**
@@ -44,7 +44,7 @@ export function createDrizzleAdapter(options: Options): StorageAdapter {
   }
 
   let auth: StorageAuthProvider;
-  if (options.auth === "next-auth" || options.auth === "better-auth") {
+  if (options.auth === "better-auth") {
     auth = createGenericProvider(db, options);
   } else {
     auth = options.auth;

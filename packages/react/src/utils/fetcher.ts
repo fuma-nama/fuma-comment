@@ -4,13 +4,13 @@ import type {
   UserProfile,
 } from "@fuma-comment/server";
 
-export interface FetcherError {
+interface FetcherError {
   message: string;
 }
 
-export type Fetcher = ReturnType<typeof createFetcher>;
+type Fetcher = ReturnType<typeof createFetcher>;
 
-export function createFetcher(apiUrl = "/api/comments") {
+function createFetcher(apiUrl = "/api/comments") {
   async function fetcher<T = void>(
     url: string,
     init?: RequestInit,
@@ -148,13 +148,13 @@ export function createFetcher(apiUrl = "/api/comments") {
   };
 }
 
-export function getCommentsKey(
+function getCommentsKey(
   options: CommentOptions,
 ): [api: string, args: CommentOptions] {
   return ["/api/comments", options];
 }
 
-export interface CommentOptions {
+interface CommentOptions {
   page: string;
   thread?: string;
 
@@ -171,3 +171,6 @@ export interface CommentOptions {
   after?: Date;
   sort?: "newest" | "oldest";
 }
+
+export { createFetcher, getCommentsKey };
+export type { Fetcher, FetcherError, CommentOptions };

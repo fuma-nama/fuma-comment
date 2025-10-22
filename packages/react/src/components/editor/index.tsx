@@ -2,7 +2,6 @@ import { type Editor, EditorContent, type JSONContent } from "@tiptap/react";
 import { cva } from "class-variance-authority";
 import { Bold, Code, Italic, LinkIcon, Strikethrough } from "lucide-react";
 import {
-  forwardRef,
   type HTMLAttributes,
   lazy,
   type ReactNode,
@@ -19,9 +18,9 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
 import { HyperLink } from "./hyper-link";
 import { createEditorLazy } from "./lazy-load";
 
-export type UseCommentEditor = Editor;
+type UseCommentEditor = Editor;
 
-export interface EditorProps {
+interface EditorProps {
   defaultValue?: JSONContent;
   placeholder?: string;
   disabled?: boolean;
@@ -37,18 +36,18 @@ export interface EditorProps {
   persistentId?: string;
 }
 
-export function useCommentEditor(): [
+function useCommentEditor(): [
   editor: UseCommentEditor | null,
   setEditor: (editor: UseCommentEditor) => void,
 ] {
   return useState<UseCommentEditor | null>(null);
 }
 
-export const editorVariants = cva(
+const editorVariants = cva(
   "rounded-xl border border-fc-border bg-fc-card text-base transition-colors focus-within:ring-2 focus-within:ring-fc-ring aria-disabled:cursor-not-allowed aria-disabled:opacity-80",
 );
 
-export const toggleVariants = cva(
+const toggleVariants = cva(
   "inline-flex rounded-md p-1.5 disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
@@ -62,19 +61,19 @@ export const toggleVariants = cva(
   },
 );
 
-export function getPersistentId(id: string) {
+function getPersistentId(id: string) {
   const storageKey = `fc_textarea_${id}`;
   const cached = sessionStorage.getItem(storageKey);
 
   return cached ? JSON.parse(cached) : null;
 }
 
-export function setPersistentId(id: string, value: object) {
+function setPersistentId(id: string, value: object) {
   const storageKey = `fc_textarea_${id}`;
   sessionStorage.setItem(storageKey, JSON.stringify(value));
 }
 
-export function clearPersistentId(id: string) {
+function clearPersistentId(id: string) {
   const storageKey = `fc_textarea_${id}`;
   sessionStorage.removeItem(storageKey);
 }
@@ -83,142 +82,139 @@ const EmojiPickerButton = lazy(() => import("./emoji-picker"));
 const CodeBlockButton = lazy(() => import("./codeblock"));
 const ImageUploadButton = lazy(() => import("./image-upload"));
 
-export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
-  (
-    { editorRef, disabled = false, containerProps, children, ...props },
-    ref,
-  ) => {
-    const [editor, setEditor] = useState<Editor>();
-    const mention = useMention();
-    const storage = useStorage();
+function CommentEditor({
+  editorRef,
+  disabled = false,
+  containerProps,
+  children,
+  ...props
+}: EditorProps): ReactNode {
+  const [editor, setEditor] = useState<Editor>();
+  const mention = useMention();
+  const storage = useStorage();
 
-    // force editor props to be immutable
-    const propsRef = useRef({
-      ...props,
-      mentionEnabled: mention.enabled,
+  // force editor props to be immutable
+  const propsRef = useRef({
+    ...props,
+    mentionEnabled: mention.enabled,
+  });
+
+  useLayoutEffect(() => {
+    let instance: Editor | undefined;
+    const { persistentId, defaultValue } = propsRef.current;
+
+    let timeout: number | undefined;
+    const save = () => {
+      if (instance && persistentId)
+        setPersistentId(persistentId, instance.getJSON());
+    };
+
+    void createEditorLazy({
+      autofocus: false,
+      content: persistentId
+        ? (getPersistentId(persistentId) ?? defaultValue)
+        : defaultValue,
+      editorProps: {
+        attributes: {
+          class: "flex-1 px-3 pt-2.5 focus-visible:outline-none",
+        },
+      },
+      onEscape: () => {
+        if (instance) propsRef.current.onEscape?.(instance);
+        return true;
+      },
+      onSubmit: () => {
+        if (instance) propsRef.current.onSubmit?.(instance);
+        return true;
+      },
+      mentionEnabled: propsRef.current.mentionEnabled,
+      placeholder: propsRef.current.placeholder,
+      onTransaction(v) {
+        propsRef.current.onChange?.(v.editor as Editor);
+
+        if (persistentId && v.transaction.docChanged) {
+          clearTimeout(timeout);
+          timeout = window.setTimeout(save, 500);
+        }
+      },
+    }).then((res) => {
+      instance = res;
+      setEditor(instance);
     });
 
-    useLayoutEffect(() => {
-      let instance: Editor | undefined;
-      const { persistentId, defaultValue } = propsRef.current;
+    return () => {
+      if (!instance) return;
+      instance.destroy();
+    };
+  }, []);
 
-      let timeout: number | undefined;
-      const save = () => {
-        if (instance && persistentId)
-          setPersistentId(persistentId, instance.getJSON());
-      };
-
-      void createEditorLazy({
-        autofocus: false,
-        content: persistentId
-          ? (getPersistentId(persistentId) ?? defaultValue)
-          : defaultValue,
-        editorProps: {
-          attributes: {
-            class: "flex-1 px-3 pt-2.5 focus-visible:outline-none",
-          },
-        },
-        onEscape: () => {
-          if (instance) propsRef.current.onEscape?.(instance);
-          return true;
-        },
-        onSubmit: () => {
-          if (instance) propsRef.current.onSubmit?.(instance);
-          return true;
-        },
-        mentionEnabled: propsRef.current.mentionEnabled,
-        placeholder: propsRef.current.placeholder,
-        onTransaction(v) {
-          propsRef.current.onChange?.(v.editor as Editor);
-
-          if (persistentId && v.transaction.docChanged) {
-            clearTimeout(timeout);
-            timeout = window.setTimeout(save, 500);
-          }
-        },
-      }).then((res) => {
-        instance = res;
-        setEditor(instance);
-      });
-
-      return () => {
-        if (!instance) return;
-        instance.destroy();
-      };
-    }, []);
-
-    if (!editor) {
-      return (
-        <div
-          {...containerProps}
-          ref={ref}
-          className={cn(editorVariants(), "p-1", containerProps?.className)}
-        >
-          <p
-            {...props.editorProps}
-            className={cn(
-              "px-3 py-2.5 h-[38px] text-fc-muted-foreground mb-9",
-              props.editorProps?.className,
-            )}
-          >
-            {props.placeholder}
-          </p>
-        </div>
-      );
-    }
-
-    if (editorRef) editorRef.current = editor;
-    if (editor.isEditable === disabled) {
-      editor.setEditable(!disabled);
-    }
-
+  if (!editor) {
     return (
       <div
         {...containerProps}
-        aria-disabled={disabled}
-        className={cn(editorVariants(), containerProps?.className)}
-        ref={ref}
+        className={cn(editorVariants(), "p-1", containerProps?.className)}
       >
-        <EditorContent
-          editor={editor}
+        <p
           {...props.editorProps}
-          className={cn("min-h-[38px]", props.editorProps?.className)}
-        />
-        <div className="flex flex-row items-center p-1">
-          <MarkButton
-            editor={editor}
-            name="bold"
-            icon={<Bold className="size-4" />}
-          />
-          <MarkButton
-            editor={editor}
-            name="italic"
-            icon={<Italic className="size-4" />}
-          />
-          <MarkButton
-            editor={editor}
-            name="strike"
-            icon={<Strikethrough className="size-4" />}
-          />
-          <MarkButton
-            editor={editor}
-            name="code"
-            icon={<Code className="size-4" />}
-          />
-          <div className="w-px h-4 bg-fc-border mx-0.5 last:hidden" />
-          <UpdateLink editor={editor} />
-          <CodeBlockButton editor={editor} />
-          <EmojiPickerButton editor={editor} />
-          {storage.enabled ? <ImageUploadButton editor={editor} /> : null}
-          <div className="flex-1" />
-          {children}
-        </div>
+          className={cn(
+            "px-3 py-2.5 h-[38px] text-fc-muted-foreground mb-9",
+            props.editorProps?.className,
+          )}
+        >
+          {props.placeholder}
+        </p>
       </div>
     );
-  },
-);
+  }
 
-CommentEditor.displayName = "Editor";
+  if (editorRef) editorRef.current = editor;
+  if (editor.isEditable === disabled) {
+    editor.setEditable(!disabled);
+  }
+
+  return (
+    <div
+      {...containerProps}
+      aria-disabled={disabled}
+      className={cn(editorVariants(), containerProps?.className)}
+    >
+      <EditorContent
+        editor={editor}
+        {...props.editorProps}
+        className={cn("min-h-[38px]", props.editorProps?.className)}
+      />
+      <div className="flex flex-row items-center p-1">
+        <MarkButton
+          editor={editor}
+          name="bold"
+          icon={<Bold className="size-4" />}
+        />
+        <MarkButton
+          editor={editor}
+          name="italic"
+          icon={<Italic className="size-4" />}
+        />
+        <MarkButton
+          editor={editor}
+          name="strike"
+          icon={<Strikethrough className="size-4" />}
+        />
+        <MarkButton
+          editor={editor}
+          name="code"
+          icon={<Code className="size-4" />}
+        />
+        <div className="w-px h-4 bg-fc-border mx-0.5 last:hidden" />
+        <UpdateLink editor={editor} />
+        <CodeBlockButton editor={editor} />
+        <EmojiPickerButton editor={editor} />
+        {storage.enabled ? <ImageUploadButton editor={editor} /> : null}
+        <div className="flex-1" />
+        {children}
+      </div>
+    </div>
+  );
+}
 
 function MarkButton({
   editor,
@@ -252,7 +248,7 @@ function MarkButton({
   );
 }
 
-function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
+function UpdateLink({ editor }: { editor: Editor }): React.ReactNode {
   useHookUpdate(editor);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -280,7 +276,7 @@ function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
   );
 }
 
-export function useHookUpdate(editor: Editor): void {
+function useHookUpdate(editor: Editor): void {
   const [, forceUpdate] = useState(0);
 
   useEffect(() => {
@@ -294,3 +290,16 @@ export function useHookUpdate(editor: Editor): void {
     };
   }, [editor]);
 }
+
+export {
+  CommentEditor,
+  useCommentEditor,
+  useHookUpdate,
+  editorVariants,
+  toggleVariants,
+  getPersistentId,
+  setPersistentId,
+  clearPersistentId,
+  type EditorProps,
+  type UseCommentEditor,
+};

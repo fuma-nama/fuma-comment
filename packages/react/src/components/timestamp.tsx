@@ -1,12 +1,9 @@
 "use client";
-import { useLayoutEffect, useState } from "react";
+
+import { type ReactNode, useLayoutEffect, useState } from "react";
 import { toLocalString } from "../utils/date";
 
-export function Timestamp({
-  timestamp,
-}: {
-  timestamp: Date | string;
-}): React.ReactNode {
+function Timestamp({ timestamp }: { timestamp: Date | string }): ReactNode {
   const [str, setStr] = useState("");
 
   useLayoutEffect(() => {
@@ -15,3 +12,5 @@ export function Timestamp({
 
   return str;
 }
+
+export { Timestamp };

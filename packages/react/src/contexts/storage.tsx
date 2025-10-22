@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { createContext, useContext } from "react";
+import { createContext, use } from "react";
 
 interface UploadResponse {
   /**
@@ -12,7 +12,7 @@ interface UploadResponse {
   height?: number;
 }
 
-export interface StorageContext {
+interface StorageContext {
   /**
    * Able to upload, default: `false`
    */
@@ -39,11 +39,11 @@ const StorageContext = createContext<StorageContext>({
   },
 });
 
-export function useStorage(): StorageContext {
-  return useContext(StorageContext);
+function useStorage(): StorageContext {
+  return use(StorageContext);
 }
 
-export function StorageProvider({
+function StorageProvider({
   storage,
   children,
 }: {
@@ -56,3 +56,5 @@ export function StorageProvider({
     </StorageContext.Provider>
   );
 }
+
+export { StorageProvider, useStorage, type StorageContext };

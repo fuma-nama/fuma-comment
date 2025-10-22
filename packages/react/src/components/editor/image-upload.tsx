@@ -1,6 +1,6 @@
 import type { Editor } from "@tiptap/react";
 import { ImageIcon } from "lucide-react";
-import { useId, useState } from "react";
+import { type ReactNode, useId, useState } from "react";
 import useSWRMutation from "swr/mutation";
 import { useStorage } from "../../contexts/storage";
 import { cn } from "../../utils/cn";
@@ -16,11 +16,7 @@ import {
 import { Spinner } from "../spinner";
 import { toggleVariants, useHookUpdate } from ".";
 
-export default function UploadImageButton({
-  editor,
-}: {
-  editor: Editor;
-}): React.ReactElement {
+function UploadImageButton({ editor }: { editor: Editor }): ReactNode {
   useHookUpdate(editor);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -55,7 +51,7 @@ function UploadImage({
 }: {
   editor: Editor;
   onClose: () => void;
-}): React.ReactElement {
+}): React.ReactNode {
   const storage = useStorage();
   const [file, setFile] = useState<Blob | null>(null);
   const fileUrl = useObjectURL(file);
@@ -137,3 +133,5 @@ function UploadImage({
     </form>
   );
 }
+
+export default UploadImageButton;

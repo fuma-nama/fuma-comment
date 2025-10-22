@@ -1,6 +1,6 @@
 import * as Primitive from "@radix-ui/react-dropdown-menu";
 import { cva, type VariantProps } from "class-variance-authority";
-import { forwardRef } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { cn } from "../utils/cn";
 
 const menuItemVariants = cva(
@@ -8,9 +8,9 @@ const menuItemVariants = cva(
   {
     variants: {
       variant: {
-        destructive: "text-fc-danger data-[highlighted]:bg-fc-danger/10",
+        destructive: "text-fc-danger data-highlighted:bg-fc-danger/10",
         default:
-          "data-[highlighted]:bg-fc-accent data-[highlighted]:text-fc-accent-foreground",
+          "data-highlighted:bg-fc-accent data-highlighted:text-fc-accent-foreground",
       },
     },
     defaultVariants: {
@@ -19,47 +19,43 @@ const menuItemVariants = cva(
   },
 );
 
-const menuItemsVariants = cva(
-  "flex w-56 flex-col overflow-hidden rounded-lg border border-fc-border bg-fc-popover text-sm text-fc-popover-foreground shadow-lg z-50 focus-visible:outline-none data-[state=closed]:animate-fc-fadeOut",
-);
+const Menu = Primitive.Root;
 
-const MenuItems = forwardRef<
-  HTMLDivElement,
-  Primitive.DropdownMenuContentProps
->(({ className, ...props }, ref) => {
+const MenuTrigger = Primitive.Trigger;
+
+function MenuItems({
+  className,
+  ...props
+}: ComponentProps<typeof Primitive.Content>): ReactNode {
   return (
     <Primitive.Portal>
       <Primitive.Content
-        className={cn(menuItemsVariants({ className }))}
-        ref={ref}
+        className={cn(
+          "flex w-56 flex-col overflow-hidden rounded-lg border border-fc-border bg-fc-popover text-sm text-fc-popover-foreground shadow-lg z-50 focus-visible:outline-none data-[state=closed]:animate-fc-fadeOut",
+          className,
+        )}
         {...props}
       >
         {props.children}
       </Primitive.Content>
     </Primitive.Portal>
   );
-});
+}
 
-MenuItems.displayName = "MenuItems";
-
-const MenuItem = forwardRef<
-  HTMLDivElement,
-  Primitive.DropdownMenuItemProps & VariantProps<typeof menuItemVariants>
->(({ className, variant, ...props }, ref) => {
+function MenuItem({
+  className,
+  variant,
+  ...props
+}: Primitive.DropdownMenuItemProps &
+  VariantProps<typeof menuItemVariants>): ReactNode {
   return (
     <Primitive.Item
       className={cn(menuItemVariants({ className, variant }))}
-      ref={ref}
       {...props}
     >
       {props.children}
     </Primitive.Item>
   );
-});
+}
 
-MenuItem.displayName = "MenuItem";
-
-const MenuTrigger = Primitive.Trigger;
-const Menu = Primitive.Root;
-
-export { Menu, MenuItems, MenuItem, MenuTrigger };
+export { Menu, MenuTrigger, MenuItems, MenuItem };

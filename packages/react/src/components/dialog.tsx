@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import {
   type ComponentProps,
   createContext,
+  type ReactNode,
   use,
   useMemo,
   useRef,
@@ -18,7 +19,7 @@ const Context = createContext<{
   setOpen: (v: boolean) => void;
 } | null>(null);
 
-export function Dialog(props: ComponentProps<typeof Primitive.Root>) {
+function Dialog(props: ComponentProps<typeof Primitive.Root>) {
   const _state = useState(false);
   const [open, setOpen] =
     props.open !== undefined
@@ -42,11 +43,12 @@ export function Dialog(props: ComponentProps<typeof Primitive.Root>) {
   );
 }
 
-export const DialogTrigger = Primitive.Trigger;
-export function DialogDescription({
+const DialogTrigger = Primitive.Trigger;
+
+function DialogDescription({
   className,
   ...props
-}: Primitive.DialogDescriptionProps): React.ReactElement {
+}: ComponentProps<typeof Primitive.Description>): ReactNode {
   return (
     <Primitive.Description
       className={cn(
@@ -80,11 +82,11 @@ const contentVariants = cva(
   },
 );
 
-interface DialogProps extends Primitive.DialogContentProps {
+interface DialogProps extends ComponentProps<typeof Primitive.Content> {
   full?: boolean;
 }
 
-export function DialogContent(props: DialogProps): React.ReactElement {
+function DialogContent(props: DialogProps): ReactNode {
   const isMobile = useIsMobile();
 
   if (isMobile) {
@@ -241,7 +243,7 @@ function DrawerContent({
         }}
       >
         {!full && (
-          <div className="z-[2] mb-3 mx-auto w-12 h-1 rounded-full bg-fc-primary/30" />
+          <div className="z-2 mb-3 mx-auto w-12 h-1 rounded-full bg-fc-primary/30" />
         )}
         {children}
       </Primitive.Content>
@@ -249,10 +251,10 @@ function DrawerContent({
   );
 }
 
-export function DialogTitle({
+function DialogTitle({
   className,
   ...props
-}: Primitive.DialogTitleProps): React.ReactElement {
+}: ComponentProps<typeof Primitive.Title>): ReactNode {
   return (
     <Primitive.Title
       className={cn("mb-2 font-semibold max-sm:text-center", className)}
@@ -268,3 +270,5 @@ function useContext() {
   if (!ctx) throw new Error("Root missing");
   return ctx;
 }
+
+export { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription };

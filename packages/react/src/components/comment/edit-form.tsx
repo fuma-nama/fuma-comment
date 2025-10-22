@@ -1,5 +1,5 @@
 import { Pencil } from "lucide-react";
-import { useCallback, useState } from "react";
+import { type ReactNode, useCallback, useState } from "react";
 import useSWRMutation from "swr/mutation";
 import { useCommentContext } from "../../contexts/comment";
 import { useCommentsContext } from "../../contexts/comments";
@@ -15,11 +15,7 @@ import {
 } from "../editor";
 import { Spinner } from "../spinner";
 
-export function EditForm({
-  onClose,
-}: {
-  onClose: () => void;
-}): React.ReactNode {
+function EditForm({ onClose }: { onClose: () => void }): ReactNode {
   const [isEmpty, setIsEmpty] = useState(false);
   const { comment, editorRef } = useCommentContext();
   const { fetcher } = useCommentsContext();
@@ -94,3 +90,5 @@ export function EditForm({
     </form>
   );
 }
+
+export { EditForm };

@@ -1,18 +1,14 @@
 import { Loader2 } from "lucide-react";
-import type { HTMLAttributes } from "react";
-import { forwardRef } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { cn } from "../utils/cn";
 
-export const Spinner = forwardRef<SVGSVGElement, HTMLAttributes<SVGSVGElement>>(
-  ({ className, ...props }, ref) => {
-    return (
-      <Loader2
-        className={cn("size-4 animate-spin rounded-full", className)}
-        ref={ref}
-        {...props}
-      />
-    );
-  },
-);
+function Spinner({ className, ...props }: ComponentProps<"svg">): ReactNode {
+  return (
+    <Loader2
+      className={cn("size-4 animate-spin rounded-full", className)}
+      {...props}
+    />
+  );
+}
 
-Spinner.displayName = "Spinner";
+export { Spinner };

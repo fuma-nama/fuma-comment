@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, use } from "react";
 import type { Fetcher } from "../utils/fetcher";
 
 interface CommentsContext {
@@ -8,8 +8,8 @@ interface CommentsContext {
 
 const CommentsContext = createContext<CommentsContext | null>(null);
 
-export function useCommentsContext(): CommentsContext {
-  const context = useContext(CommentsContext);
+function useCommentsContext(): CommentsContext {
+  const context = use(CommentsContext);
 
   if (!context) {
     throw new Error(
@@ -20,4 +20,6 @@ export function useCommentsContext(): CommentsContext {
   return context;
 }
 
-export const CommentsProvider = CommentsContext.Provider;
+const CommentsProvider = CommentsContext.Provider;
+
+export { CommentsProvider, useCommentsContext, type CommentsContext };

@@ -1,8 +1,8 @@
-import { createContext, type ReactNode, useContext, useMemo } from "react";
+import { createContext, type ReactNode, use, useMemo } from "react";
 import useSWRImmutable from "swr/immutable";
 import { useCommentsContext } from "./comments";
 
-export interface Session {
+interface Session {
   id: string;
   permissions?: Partial<{
     /* Delete other comments */
@@ -10,7 +10,7 @@ export interface Session {
   }>;
 }
 
-export interface AuthContextType {
+interface AuthContextType {
   session: Session | null;
   isLoading: boolean;
   signIn: ReactNode | (() => void);
@@ -18,15 +18,15 @@ export interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function useAuthContext(): AuthContextType {
-  const auth = useContext(AuthContext);
+function useAuthContext(): AuthContextType {
+  const auth = use(AuthContext);
 
   if (!auth)
     throw new Error("Components must be wrapped under <CommentsProvider />");
   return auth;
 }
 
-export type AuthOptions =
+type AuthOptions =
   | {
       type: "api";
       signIn: ReactNode | (() => void);
@@ -37,7 +37,7 @@ export type AuthOptions =
       signIn: ReactNode | (() => void);
     };
 
-export function AuthProvider({
+function AuthProvider({
   page,
   auth,
   children,
@@ -79,3 +79,5 @@ export function AuthProvider({
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
+
+export { AuthProvider, useAuthContext, type AuthOptions, type AuthContextType };

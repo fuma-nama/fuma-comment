@@ -1,21 +1,16 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { cn } from "../utils/cn";
 
-interface AvatarProps extends HTMLAttributes<HTMLElement> {
-  image?: string | null;
-  placeholder?: string;
-}
-
-export function Avatar({
-  image,
-  placeholder = "avatar",
+function Avatar({
+  src,
+  alt = "avatar",
   ...props
-}: AvatarProps): ReactNode {
-  if (image) {
+}: ComponentProps<"img">): ReactNode {
+  if (src) {
     return (
       <img
-        src={image}
-        alt={placeholder}
+        src={src}
+        alt={alt}
         {...props}
         className={cn(
           "size-8 select-none rounded-full bg-fc-muted",
@@ -29,11 +24,13 @@ export function Avatar({
   return (
     <div
       {...props}
-      aria-describedby={placeholder}
+      aria-describedby={alt}
       className={cn(
-        "size-8 rounded-full bg-gradient-to-br from-blue-600 to-red-600",
+        "size-8 rounded-full bg-linear-to-br from-blue-600 to-red-600",
         props.className,
       )}
     />
   );
 }
+
+export { Avatar };

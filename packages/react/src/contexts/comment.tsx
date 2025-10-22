@@ -2,7 +2,7 @@ import type { SerializedComment } from "@fuma-comment/server";
 import { createContext, type RefObject, useContext } from "react";
 import type { UseCommentEditor } from "../components/editor";
 
-export interface CommentContext {
+interface CommentContext {
   isReplying: boolean;
   setReply: (v: boolean) => void;
   comment: SerializedComment;
@@ -11,11 +11,13 @@ export interface CommentContext {
 
 const CommentContext = createContext<CommentContext | undefined>(undefined);
 
-export function useCommentContext(): CommentContext {
+function useCommentContext(): CommentContext {
   const ctx = useContext(CommentContext);
 
   if (!ctx) throw new Error("Missing Commend Context");
   return ctx;
 }
 
-export const CommentProvider = CommentContext.Provider;
+const CommentProvider = CommentContext.Provider;
+
+export { CommentProvider, useCommentContext, type CommentContext };
