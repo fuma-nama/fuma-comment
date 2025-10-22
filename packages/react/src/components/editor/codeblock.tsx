@@ -1,19 +1,19 @@
 import type { Editor } from "@tiptap/react";
 import {
 	Command,
-	CommandInput,
-	CommandList,
 	CommandEmpty,
 	CommandGroup,
+	CommandInput,
 	CommandItem,
+	CommandList,
 } from "cmdk";
 import { SquareCode } from "lucide-react";
-import { useState, type ComponentProps } from "react";
-import { useHookUpdate, toggleVariants } from ".";
+import { type ComponentProps, useState } from "react";
 import { cn } from "../../utils/cn";
 import { lowlight } from "../../utils/highlighter";
-import { inputVariants } from "../input";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
+import { inputVariants } from "../input";
+import { toggleVariants, useHookUpdate } from ".";
 
 export default function CodeBlockButton({
 	editor,

@@ -1,12 +1,12 @@
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { forwardRef } from "react";
-import { cn } from "./utils/cn";
 import {
-	CommentsProvider,
-	CommentsPost,
 	CommentsList,
+	CommentsPost,
+	CommentsProvider,
 	type CommentsProviderProps,
 } from "./atom";
+import { cn } from "./utils/cn";
 
 export type CommentsProps = Omit<
 	HTMLAttributes<HTMLDivElement>,

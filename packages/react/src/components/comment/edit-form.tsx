@@ -1,19 +1,19 @@
-import useSWRMutation from "swr/mutation";
 import { Pencil } from "lucide-react";
 import { useCallback, useState } from "react";
-import { cn } from "../../utils/cn";
-import { getCommentsKey } from "../../utils/fetcher";
+import useSWRMutation from "swr/mutation";
 import { useCommentContext } from "../../contexts/comment";
+import { useCommentsContext } from "../../contexts/comments";
+import { cn } from "../../utils/cn";
 import { updateComment } from "../../utils/comment-manager";
+import { getCommentsKey } from "../../utils/fetcher";
 import { useLatestCallback } from "../../utils/hooks";
 import { buttonVariants } from "../button";
 import {
-	clearPersistentId,
 	CommentEditor,
+	clearPersistentId,
 	type UseCommentEditor,
 } from "../editor";
 import { Spinner } from "../spinner";
-import { useCommentsContext } from "../../contexts/comments";
 
 export function EditForm({
 	onClose,

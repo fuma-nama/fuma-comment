@@ -1,7 +1,7 @@
+import { Loader2 } from "lucide-react";
 import type { HTMLAttributes } from "react";
 import { forwardRef } from "react";
 import { cn } from "../utils/cn";
-import { Loader2 } from "lucide-react";
 
 export const Spinner = forwardRef<SVGSVGElement, HTMLAttributes<SVGSVGElement>>(
 	({ className, ...props }, ref) => {

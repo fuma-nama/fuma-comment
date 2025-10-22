@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
-import {
-	DocsPage,
-	DocsBody,
-	DocsTitle,
-	DocsDescription,
-} from "fumadocs-ui/page";
-import { notFound } from "next/navigation";
 import { Tab, Tabs } from "fumadocs-ui/components/tabs";
-import { source } from "@/app/source";
 import defaultMdxComponents from "fumadocs-ui/mdx";
+import {
+	DocsBody,
+	DocsDescription,
+	DocsPage,
+	DocsTitle,
+} from "fumadocs-ui/page";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { source } from "@/app/source";
 
 export default async function Page({
 	params,

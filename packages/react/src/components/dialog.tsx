@@ -1,17 +1,17 @@
 import * as Primitive from "@radix-ui/react-dialog";
-import { X } from "lucide-react";
-import { cn } from "../utils/cn";
-import { buttonVariants } from "./button";
-import { useIsMobile } from "../utils/use-media-query";
 import { cva } from "class-variance-authority";
+import { X } from "lucide-react";
 import {
+	type ComponentProps,
 	createContext,
 	use,
 	useMemo,
 	useRef,
 	useState,
-	type ComponentProps,
 } from "react";
+import { cn } from "../utils/cn";
+import { useIsMobile } from "../utils/use-media-query";
+import { buttonVariants } from "./button";
 
 const Context = createContext<{
 	open: boolean;
@@ -19,11 +19,11 @@ const Context = createContext<{
 } | null>(null);
 
 export function Dialog(props: ComponentProps<typeof Primitive.Root>) {
-	const _state = useState(false)
+	const _state = useState(false);
 	const [open, setOpen] =
 		props.open !== undefined
 			? [props.open, props.onOpenChange ?? (() => {})]
-			: _state
+			: _state;
 
 	return (
 		<Primitive.Root {...props} open={open} onOpenChange={setOpen}>

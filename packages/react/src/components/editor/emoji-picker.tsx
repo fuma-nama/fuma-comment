@@ -3,9 +3,9 @@ import { EmojiPicker } from "frimousse";
 import { Smile } from "lucide-react";
 import { useState } from "react";
 import { cn } from "../../utils/cn";
-import { useHookUpdate, toggleVariants } from ".";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
 import { inputVariants } from "../input";
+import { toggleVariants, useHookUpdate } from ".";
 
 export default function EmojiPickerPopover({
 	editor,

@@ -1,7 +1,7 @@
-import { useState } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
-import { createListener } from "./use-listener";
+import { useState } from "react";
 import { updateCommentList } from "./comment-list";
+import { createListener } from "./use-listener";
 
 type Item = SerializedComment;
 

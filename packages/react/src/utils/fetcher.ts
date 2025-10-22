@@ -19,7 +19,7 @@ export function createFetcher(apiUrl = "/api/comments") {
 
 		if (!response.ok) {
 			const message = await response.text();
-			let err = new Error(message)
+			let err = new Error(message);
 
 			try {
 				const obj = JSON.parse(message) as object;

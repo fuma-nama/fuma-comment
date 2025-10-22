@@ -1,8 +1,8 @@
 "use client";
-import { signIn } from "next-auth/react";
 import type { CommentsProps } from "@fuma-comment/react";
 import { Comments } from "@fuma-comment/react";
 import { createUploadThingStorage } from "@fuma-comment/react/uploadthing";
+import { signIn } from "next-auth/react";
 
 const storage = createUploadThingStorage();
 

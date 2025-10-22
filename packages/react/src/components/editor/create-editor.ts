@@ -1,3 +1,18 @@
+import { Bold } from "@tiptap/extension-bold";
+import { Code } from "@tiptap/extension-code";
+import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
+import { Document } from "@tiptap/extension-document";
+import { Dropcursor } from "@tiptap/extension-dropcursor";
+import { Gapcursor } from "@tiptap/extension-gapcursor";
+import { History } from "@tiptap/extension-history";
+import { Image } from "@tiptap/extension-image";
+import { Italic } from "@tiptap/extension-italic";
+import { Link } from "@tiptap/extension-link";
+import { Mention } from "@tiptap/extension-mention";
+import { Paragraph } from "@tiptap/extension-paragraph";
+import { Placeholder } from "@tiptap/extension-placeholder";
+import { Strike } from "@tiptap/extension-strike";
+import { Text } from "@tiptap/extension-text";
 import {
 	Editor,
 	type EditorOptions,
@@ -5,29 +20,14 @@ import {
 	type Node,
 	ReactRenderer,
 } from "@tiptap/react";
-import { Document } from "@tiptap/extension-document";
-import { Dropcursor } from "@tiptap/extension-dropcursor";
-import { Gapcursor } from "@tiptap/extension-gapcursor";
-import { Bold } from "@tiptap/extension-bold";
-import { Strike } from "@tiptap/extension-strike";
-import { Code } from "@tiptap/extension-code";
-import { Link } from "@tiptap/extension-link";
-import { Italic } from "@tiptap/extension-italic";
-import { History } from "@tiptap/extension-history";
-import { Paragraph } from "@tiptap/extension-paragraph";
-import { Text } from "@tiptap/extension-text";
-import { Placeholder } from "@tiptap/extension-placeholder";
-import { Image } from "@tiptap/extension-image";
-import { Mention } from "@tiptap/extension-mention";
 import tippy, { type Instance } from "tippy.js";
+import { lowlight } from "../../utils/highlighter";
 import {
 	codeBlockVariants,
 	codeVariants,
 	mentionVariants,
 } from "../comment/content-renderer";
 import { MentionList, type MentionListRef } from "./mention";
-import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
-import { lowlight } from "../../utils/highlighter";
 
 const ImageWithWidth = Image.extend({
 	addAttributes() {

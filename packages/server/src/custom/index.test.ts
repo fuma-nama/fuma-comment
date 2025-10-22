@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
-import type { StorageAdapter } from "../adapter";
 import { createContent } from "../../test/utils";
+import type { StorageAdapter } from "../adapter";
 import type { CustomRequest } from ".";
 import { CustomComment } from ".";
 

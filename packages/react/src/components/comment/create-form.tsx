@@ -1,4 +1,3 @@
-import useSWRMutation from "swr/mutation";
 import { SendHorizonalIcon } from "lucide-react";
 import {
 	type FormHTMLAttributes,
@@ -7,21 +6,22 @@ import {
 	useRef,
 	useState,
 } from "react";
+import useSWRMutation from "swr/mutation";
+import { AuthButton } from "../../atom";
 import { useAuthContext } from "../../contexts/auth";
-import { cn } from "../../utils/cn";
-import { type FetcherError, getCommentsKey } from "../../utils/fetcher";
 import { useCommentsContext } from "../../contexts/comments";
+import { cn } from "../../utils/cn";
+import { updateCommentList } from "../../utils/comment-list";
+import { syncComments } from "../../utils/comment-manager";
+import { type FetcherError, getCommentsKey } from "../../utils/fetcher";
 import { useLatestCallback } from "../../utils/hooks";
 import { buttonVariants } from "../button";
 import {
-	clearPersistentId,
 	CommentEditor,
+	clearPersistentId,
 	type UseCommentEditor,
 } from "../editor";
 import { Spinner } from "../spinner";
-import { updateCommentList } from "../../utils/comment-list";
-import { syncComments } from "../../utils/comment-manager";
-import { AuthButton } from "../../atom";
 
 export const CreateForm = forwardRef<
 	HTMLFormElement,

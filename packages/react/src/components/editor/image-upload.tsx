@@ -1,12 +1,11 @@
 import type { Editor } from "@tiptap/react";
-import { useState } from "react";
+import { ImageIcon } from "lucide-react";
+import { useId, useState } from "react";
 import useSWRMutation from "swr/mutation";
 import { useStorage } from "../../contexts/storage";
-import { useObjectURL } from "../../utils/hooks";
 import { cn } from "../../utils/cn";
-import { Spinner } from "../spinner";
+import { useObjectURL } from "../../utils/hooks";
 import { buttonVariants } from "../button";
-import { toggleVariants, useHookUpdate } from ".";
 import {
 	Dialog,
 	DialogContent,
@@ -14,8 +13,8 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "../dialog";
-import { ImageIcon } from "lucide-react";
-import { useId } from "react";
+import { Spinner } from "../spinner";
+import { toggleVariants, useHookUpdate } from ".";
 
 export default function UploadImageButton({
 	editor,
@@ -60,7 +59,7 @@ function UploadImage({
 	const storage = useStorage();
 	const [file, setFile] = useState<Blob | null>(null);
 	const fileUrl = useObjectURL(file);
-	const id =useId()
+	const id = useId();
 	const mutation = useSWRMutation(
 		"fc-upload-image",
 		(_, { arg }: { arg: { file: Blob } }) => storage.upload(arg.file),

@@ -1,6 +1,7 @@
 "use client";
 import { Comments } from "@fuma-comment/react";
 import { createAuthClient } from "better-auth/client";
+
 const authClient = createAuthClient();
 
 const signIn = () => {

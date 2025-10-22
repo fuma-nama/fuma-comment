@@ -1,5 +1,5 @@
-import { Hono } from "hono";
 import { serve } from "@hono/node-server";
+import { Hono } from "hono";
 import { describe, expect, test } from "vitest";
 import { createContent, mockAdapter } from "../../test/utils";
 import { HonoComment } from ".";

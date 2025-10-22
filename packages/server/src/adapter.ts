@@ -1,4 +1,11 @@
 import type { z } from "zod";
+import type { CustomRequest } from "./custom";
+import type {
+	postCommentSchema,
+	setRateSchema,
+	sortSchema,
+	updateCommentSchema,
+} from "./custom/schemas";
 import type {
 	AuthInfo,
 	AuthInfoWithRole,
@@ -7,13 +14,6 @@ import type {
 	Role,
 	UserProfile,
 } from "./types";
-import type {
-	updateCommentSchema,
-	postCommentSchema,
-	setRateSchema,
-	sortSchema,
-} from "./custom/schemas";
-import type { CustomRequest } from "./custom";
 
 interface SetRateOptions {
 	/** Comment ID */

@@ -1,14 +1,14 @@
 import {
-	pgTable,
-	varchar,
 	boolean,
-	text,
-	integer,
-	serial,
-	json,
-	timestamp,
-	primaryKey,
 	index,
+	integer,
+	json,
+	pgTable,
+	primaryKey,
+	serial,
+	text,
+	timestamp,
+	varchar,
 } from "drizzle-orm/pg-core";
 
 // Role table

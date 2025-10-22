@@ -1,5 +1,5 @@
-import { cn } from "@/utils/cn";
 import Image from "next/image";
+import { cn } from "@/utils/cn";
 import { getSponsors, receiver, tiers } from "./get-sponsors";
 
 export const revalidate = 3600;

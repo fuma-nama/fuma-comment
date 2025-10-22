@@ -1,16 +1,16 @@
-import { ReplyIcon, ThumbsDown, ThumbsUp } from "lucide-react";
-import { cva } from "class-variance-authority";
-import { useEffect, useRef } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
-import { useCommentContext } from "../../contexts/comment";
+import { cva } from "class-variance-authority";
+import { ReplyIcon, ThumbsDown, ThumbsUp } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { useAuthContext } from "../../contexts/auth";
-import { onLikeUpdated } from "../../utils/comment-manager";
-import { cn } from "../../utils/cn";
-import type { UseCommentEditor } from "../editor";
-import { ReplyForm } from "./reply-form";
+import { useCommentContext } from "../../contexts/comment";
 import { useCommentsContext } from "../../contexts/comments";
+import { cn } from "../../utils/cn";
+import { onLikeUpdated } from "../../utils/comment-manager";
 import { useIsMobile } from "../../utils/use-media-query";
 import { Dialog, DialogContent, DialogTitle } from "../dialog";
+import type { UseCommentEditor } from "../editor";
+import { ReplyForm } from "./reply-form";
 
 const rateVariants = cva(
 	"inline-flex items-center gap-1.5 p-2 text-xs transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fc-ring",

@@ -1,7 +1,7 @@
 import type { SerializedComment } from "@fuma-comment/server";
 import { useState } from "react";
-import { createListener } from "./use-listener";
 import { useLatestCallback } from "./hooks";
+import { createListener } from "./use-listener";
 
 type KeyArray = [page: string, threadId: string | undefined];
 const data = new Map<string, SerializedComment[]>();

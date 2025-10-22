@@ -1,3 +1,16 @@
 packages:
-  - "apps/*"
-  - "packages/*"
+  - apps/*
+  - packages/*
+
+onlyBuiltDependencies:
+  - '@clerk/shared'
+  - '@parcel/watcher'
+  - '@prisma/client'
+  - '@prisma/engines'
+  - '@tailwindcss/oxide'
+  - bufferutil
+  - esbuild
+  - msgpackr-extract
+  - prisma
+  - sharp
+  - utf-8-validate

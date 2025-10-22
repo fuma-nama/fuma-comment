@@ -1,6 +1,6 @@
 import type { InferFumaDB } from "fumadb";
-import type { FumaCommentDB } from "../db";
 import type { StorageAdapter, StorageAuthProvider } from "../adapter";
+import type { FumaCommentDB } from "../db";
 import type { Comment } from "../types";
 
 export interface Options {

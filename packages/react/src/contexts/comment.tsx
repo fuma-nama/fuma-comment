@@ -1,5 +1,5 @@
-import { createContext, type RefObject, useContext } from "react";
 import type { SerializedComment } from "@fuma-comment/server";
+import { createContext, type RefObject, useContext } from "react";
 import type { UseCommentEditor } from "../components/editor";
 
 export interface CommentContext {

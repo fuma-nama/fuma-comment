@@ -1,7 +1,7 @@
 "use client";
 import { formatDate } from "date-fns/format";
 import { formatRelative } from "date-fns/formatRelative";
-import { type ButtonHTMLAttributes, useState, type ReactNode } from "react";
+import { type ButtonHTMLAttributes, type ReactNode, useState } from "react";
 
 export function SmartDate({
 	date,

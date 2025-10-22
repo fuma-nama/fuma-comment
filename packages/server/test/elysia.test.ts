@@ -1,8 +1,8 @@
+import { node } from "@elysiajs/node";
 import Elysia from "elysia";
+import { test } from "vitest";
 import { commentPlugin } from "../src/elysia";
 import { mockAdapter } from "./utils";
-import { test } from "vitest";
-import { node } from "@elysiajs/node";
 
 test("Elysia", async () => {
 	new Elysia({ adapter: node() })

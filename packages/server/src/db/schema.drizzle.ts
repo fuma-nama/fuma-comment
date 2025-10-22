@@ -1,13 +1,13 @@
 import {
-	pgTable,
-	varchar,
 	boolean,
-	integer,
-	serial,
-	json,
-	timestamp,
-	primaryKey,
 	index,
+	integer,
+	json,
+	pgTable,
+	primaryKey,
+	serial,
+	timestamp,
+	varchar,
 } from "drizzle-orm/pg-core";
 
 export const roles = pgTable("roles", {

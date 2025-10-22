@@ -1,5 +1,5 @@
 import { NextComment } from "@fuma-comment/server/next";
-import { storage, clerkAdapter } from "@/lib/comment.config";
+import { clerkAdapter, storage } from "@/lib/comment.config";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
 	// import from comment.config.ts

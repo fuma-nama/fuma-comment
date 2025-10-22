@@ -1,7 +1,7 @@
 import {
 	getServerSession,
-	type Session,
 	type NextAuthOptions,
+	type Session,
 } from "next-auth";
 import type { AuthAdapter } from "../adapter";
 import type { CustomRequest } from "../custom";

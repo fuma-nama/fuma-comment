@@ -1,11 +1,11 @@
 import type { Context, Hono, HonoRequest } from "hono";
+import type { ContentfulStatusCode } from "hono/utils/http-status";
 import type {
 	CustomCommentOptions,
 	CustomRequest,
 	CustomResponse,
 } from "../custom";
 import { CustomComment } from "../custom";
-import type { ContentfulStatusCode } from "hono/utils/http-status";
 
 type RequestType = CustomRequest & {
 	req: HonoRequest;

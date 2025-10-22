@@ -1,27 +1,27 @@
-import { type ComponentProps, type FC, useRef, useState } from "react";
-import useSWRImmutable from "swr/immutable";
+import type { SerializedComment } from "@fuma-comment/server";
 import {
 	Collapsible,
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from "@radix-ui/react-collapsible";
+import type { Editor } from "@tiptap/react";
 import { ChevronDown } from "lucide-react";
-import { getCommentsKey } from "../../utils/fetcher";
-import { cn } from "../../utils/cn";
-import { buttonVariants } from "../button";
-import { syncComments } from "../../utils/comment-manager";
-import { updateCommentList, useCommentList } from "../../utils/comment-list";
-import { useCommentsContext } from "../../contexts/comments";
+import { type ComponentProps, type FC, useRef, useState } from "react";
+import useSWRImmutable from "swr/immutable";
+import { useAuthContext } from "../../contexts/auth";
 import { useCommentContext } from "../../contexts/comment";
+import { useCommentsContext } from "../../contexts/comments";
+import { cn } from "../../utils/cn";
+import { updateCommentList, useCommentList } from "../../utils/comment-list";
+import { syncComments } from "../../utils/comment-manager";
+import { getCommentsKey } from "../../utils/fetcher";
+import { useIsMobile } from "../../utils/use-media-query";
+import { buttonVariants } from "../button";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
+import { Spinner } from "../spinner";
 import { Actions } from "./actions";
 import { Comment } from "./index";
-import { Spinner } from "../spinner";
-import { useIsMobile } from "../../utils/use-media-query";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
-import type { SerializedComment } from "@fuma-comment/server";
 import { ReplyForm } from "./reply-form";
-import type { Editor } from "@tiptap/react";
-import { useAuthContext } from "../../contexts/auth";
 
 const count = 40;
 

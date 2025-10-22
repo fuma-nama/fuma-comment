@@ -1,23 +1,23 @@
 "use client";
 
 import {
-	useMemo,
-	type ReactNode,
-	type HTMLAttributes,
-	forwardRef,
 	type ButtonHTMLAttributes,
+	forwardRef,
+	type HTMLAttributes,
+	type ReactNode,
+	useMemo,
 } from "react";
-import { CommentsProvider as Provider } from "./contexts/comments";
-import {
-	AuthProvider,
-	type AuthOptions,
-	useAuthContext,
-} from "./contexts/auth";
-import { cn } from "./utils/cn";
 import { CreateForm } from "./components/comment/create-form";
 import { CommentList } from "./components/comment/list";
+import {
+	type AuthOptions,
+	AuthProvider,
+	useAuthContext,
+} from "./contexts/auth";
+import { CommentsProvider as Provider } from "./contexts/comments";
 import { type MentionOptions, MentionProvider } from "./contexts/mention";
 import { type StorageContext, StorageProvider } from "./contexts/storage";
+import { cn } from "./utils/cn";
 import { createFetcher } from "./utils/fetcher";
 
 export interface CommentsProviderProps {
@@ -104,5 +104,5 @@ export function AuthButton(
 	return signIn;
 }
 
-export { Comment } from "./components/comment/index";
 export { ContentRenderer } from "./components/comment/content-renderer";
+export { Comment } from "./components/comment/index";

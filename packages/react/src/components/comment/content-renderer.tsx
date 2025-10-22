@@ -1,13 +1,13 @@
 import type { JSONContent } from "@tiptap/react";
-import { type ReactNode, useMemo, useState } from "react";
 import { cva } from "class-variance-authority";
-import { cn } from "../../utils/cn";
-import { type StorageContext, useStorage } from "../../contexts/storage";
 import { toJsxRuntime } from "hast-util-to-jsx-runtime";
-import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { CheckIcon, CopyIcon } from "lucide-react";
-import { buttonVariants } from "../button";
+import { type ReactNode, useMemo, useState } from "react";
+import { Fragment, jsx, jsxs } from "react/jsx-runtime";
+import { type StorageContext, useStorage } from "../../contexts/storage";
+import { cn } from "../../utils/cn";
 import { lowlight } from "../../utils/highlighter";
+import { buttonVariants } from "../button";
 
 interface Mark {
 	type: string;

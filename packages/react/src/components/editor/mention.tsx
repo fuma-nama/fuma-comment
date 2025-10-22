@@ -1,9 +1,9 @@
 import type { SuggestionProps } from "@tiptap/suggestion";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import useSWR from "swr";
-import { cn } from "../../utils/cn";
 import { useCommentsContext } from "../../contexts/comments";
 import { useMention } from "../../contexts/mention";
+import { cn } from "../../utils/cn";
 import { Spinner } from "../spinner";
 
 export interface MentionListRef {

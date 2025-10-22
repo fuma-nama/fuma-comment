@@ -1,8 +1,8 @@
 import type { Editor } from "@tiptap/react";
 import { useLayoutEffect, useState } from "react";
 import { cn } from "../../utils/cn";
-import { inputVariants } from "../input";
 import { buttonVariants } from "../button";
+import { inputVariants } from "../input";
 
 export function HyperLink({
 	editor,

@@ -1,23 +1,23 @@
-import { type JSONContent, type Editor, EditorContent } from "@tiptap/react";
-import {
-	type HTMLAttributes,
-	useLayoutEffect,
-	forwardRef,
-	useState,
-	useRef,
-	useEffect,
-	type RefObject,
-	type ReactNode,
-	lazy,
-} from "react";
+import { type Editor, EditorContent, type JSONContent } from "@tiptap/react";
 import { cva } from "class-variance-authority";
 import { Bold, Code, Italic, LinkIcon, Strikethrough } from "lucide-react";
-import { cn } from "../../utils/cn";
-import { useStorage } from "../../contexts/storage";
+import {
+	forwardRef,
+	type HTMLAttributes,
+	lazy,
+	type ReactNode,
+	type RefObject,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from "react";
 import { useMention } from "../../contexts/mention";
+import { useStorage } from "../../contexts/storage";
+import { cn } from "../../utils/cn";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
 import { HyperLink } from "./hyper-link";
 import { createEditorLazy } from "./lazy-load";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
 
 export type UseCommentEditor = Editor;
 

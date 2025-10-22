@@ -1,6 +1,6 @@
+import { type AuthObject, createClerkClient } from "@clerk/backend";
 import type { AuthAdapter, StorageAuthProvider } from "../adapter";
 import type { CustomRequest } from "../custom";
-import { type AuthObject, createClerkClient } from "@clerk/backend";
 
 const clerkClient = createClerkClient({
 	secretKey: process.env.CLERK_SECRET_KEY,
