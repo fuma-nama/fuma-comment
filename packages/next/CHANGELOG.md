@@ -1,5 +1,16 @@
 # @fuma-comment/next
 
+## 1.4.0
+
+### Minor Changes
+
+- e1c4cb4: Bump deps
+
+### Patch Changes
+
+- Updated dependencies [e1c4cb4]
+  - @fuma-comment/server@1.4.0
+
 ## 1.3.1
 
 ### Patch Changes

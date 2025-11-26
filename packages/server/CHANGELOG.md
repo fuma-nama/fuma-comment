@@ -1,5 +1,11 @@
 # @fuma-comment/server
 
+## 1.4.0
+
+### Minor Changes
+
+- e1c4cb4: Bump deps
+
 ## 1.3.1
 
 ### Patch Changes
