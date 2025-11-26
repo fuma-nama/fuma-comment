@@ -2,7 +2,8 @@
 	"extends": "tsconfig/nextjs.json",
 	"compilerOptions": {
 		"paths": {
-			"@/*": ["./*"]
+			"@/*": ["./*"],
+			"fumadocs-mdx:collections/*": ["./.source/*"]
 		},
 		"plugins": [{ "name": "next" }]
 	},

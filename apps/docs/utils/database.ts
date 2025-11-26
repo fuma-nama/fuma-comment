@@ -1,5 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaClient } from '@/.prisma/client'
 
-if (!globalThis.prisma) globalThis.prisma = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
 
-export const prisma = globalThis.prisma as PrismaClient;
+export const prisma: PrismaClient = (globalThis.prisma ??= new PrismaClient({ adapter }));
