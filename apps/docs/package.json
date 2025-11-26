@@ -5,8 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "next dev --turbo",
-		"build": "prisma migrate deploy && next build",
-		"postinstall": "dotenv -e .env.local -- prisma generate",
+		"build": "prisma migrate deploy && prisma generate && next build",
+		"db:generate": "dotenv -e .env.local -- prisma generate",
 		"migrate:deploy": "dotenv -e .env.production -- prisma migrate deploy",
 		"db:push": "dotenv -e .env.local -- prisma db push",
 		"start": "next start"
