@@ -8,7 +8,7 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@clerk/nextjs": "^6.35.5",
+		"@clerk/nextjs": "^7.0.0",
 		"@fuma-comment/react": "workspace:*",
 		"@fuma-comment/server": "workspace:*",
 		"drizzle-orm": "^0.45.0",
