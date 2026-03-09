@@ -78,6 +78,7 @@
 		"@tiptap/extension-placeholder": "^3.20.1",
 		"@tiptap/extension-strike": "^3.20.1",
 		"@tiptap/extension-text": "^3.20.1",
+		"@tiptap/extensions": "^3.20.1",
 		"@tiptap/pm": "^3.20.1",
 		"@tiptap/react": "^3.20.1",
 		"@tiptap/suggestion": "^3.20.1",
