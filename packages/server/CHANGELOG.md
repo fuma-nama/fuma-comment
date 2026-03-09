@@ -1,5 +1,12 @@
 # @fuma-comment/server
 
+## 1.4.1
+
+### Patch Changes
+
+- 69b8003: bump deps
+- 69b8003: strict query parameter checking
+
 ## 1.4.0
 
 ### Minor Changes
