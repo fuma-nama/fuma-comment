@@ -2,7 +2,7 @@
 @import "@fuma-comment/react/preset.css";
 
 /* path of the package relative to the CSS file */
-@source '../node_modules/@fuma-comment/react/dist/**/*.js';
+@source "../node_modules/@fuma-comment/react/dist/**/*.js";
 
 :root {
 	--background: #ffffff;

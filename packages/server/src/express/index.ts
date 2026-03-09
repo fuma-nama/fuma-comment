@@ -69,7 +69,13 @@ function readRequest(req: Request): RequestType {
 		},
 		queryParams: {
 			get(key) {
-				return req.query[key] as string;
+				const parsed = req.query[key];
+				if (
+					typeof parsed === "string" ||
+					(Array.isArray(parsed) &&
+						parsed.every((item) => typeof item === "string"))
+				)
+					return parsed;
 			},
 		},
 	};

@@ -1,5 +1,5 @@
 @import "./tokyo-night.css";
-@source '../dist/**/*.js';
+@source "../dist/**/*.js";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

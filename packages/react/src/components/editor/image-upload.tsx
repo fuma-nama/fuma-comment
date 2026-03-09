@@ -60,7 +60,7 @@ function UploadImage({
 	const storage = useStorage();
 	const [file, setFile] = useState<Blob | null>(null);
 	const fileUrl = useObjectURL(file);
-	const id =useId()
+	const id = useId();
 	const mutation = useSWRMutation(
 		"fc-upload-image",
 		(_, { arg }: { arg: { file: Blob } }) => storage.upload(arg.file),

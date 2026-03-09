@@ -49,33 +49,33 @@
 		"check:types": "tsc --noEmit"
 	},
 	"devDependencies": {
-		"fumadb": "^0.2.1",
-		"@clerk/backend": "^2.24.0",
-		"@elysiajs/node": "^1.4.2",
-		"@hono/node-server": "^1.19.6",
-		"@tanstack/react-router": "^1.139.7",
-		"@tanstack/react-start": "^1.139.7",
-		"@types/express": "^5.0.5",
-		"@types/node": "^24.10.1",
-		"better-auth": "^1.4.2",
-		"drizzle-orm": "^0.45.0",
-		"elysia": "^1.4.16",
-		"express": "^5.1.0",
-		"hono": "^4.10.7",
-		"mongodb": "^7.0.0",
-		"next": "^16.0.4",
+		"@clerk/backend": "^3.0.1",
+		"@elysiajs/node": "^1.4.5",
+		"@hono/node-server": "^1.19.11",
+		"@tanstack/react-router": "^1.166.3",
+		"@tanstack/react-start": "^1.166.3",
+		"@types/express": "^5.0.6",
+		"@types/node": "^25.3.5",
+		"better-auth": "^1.5.4",
+		"drizzle-orm": "^0.45.1",
+		"elysia": "^1.4.27",
+		"express": "^5.2.1",
+		"fumadb": "^0.2.2",
+		"hono": "^4.12.5",
+		"mongodb": "^7.1.0",
+		"next": "^16.1.6",
 		"next-auth": "^4.24.13",
 		"tsconfig": "workspace:*",
 		"tsup": "^8.5.1",
 		"typescript": "^5.9.3",
-		"vitest": "^4.0.14"
+		"vitest": "^4.0.18"
 	},
 	"peerDependencies": {
-		"fumadb": "^0.2.1",
-		"@clerk/backend": "2.x.x",
+		"@clerk/backend": "2.x.x || 3.x.x",
 		"better-auth": "1.x.x",
-		"drizzle-orm": "^0.44.0 || ^0.45.0",
+		"drizzle-orm": "0.x.x",
 		"elysia": "1.x.x",
+		"fumadb": "^0.2.1",
 		"hono": "*",
 		"mongodb": "6.x.x || 7.x.x",
 		"next": "^14.0.0 || ^15.0.0 || ^16.0.0",
@@ -109,7 +109,7 @@
 	},
 	"dependencies": {
 		"urlpattern-polyfill": "^10.1.0",
-		"zod": "^4.1.13"
+		"zod": "^4.3.6"
 	},
 	"publishConfig": {
 		"access": "public"

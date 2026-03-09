@@ -1,4 +1,3 @@
-import { ZodError } from "zod";
 import type { AuthInfoWithRole, Awaitable, UserProfile } from "../types";
 import { RouteError } from "../errors";
 import type { AuthAdapter, StorageAdapter } from "../adapter";
@@ -9,6 +8,7 @@ import {
 	updateCommentSchema,
 } from "./schemas";
 import { convertToRequestHandler } from "./handler";
+import { prettifyError, $ZodError } from "zod/v4/core";
 
 interface MapLike<K, V> {
 	get: (key: K) => V | undefined | null;
@@ -21,10 +21,10 @@ export interface CustomRequest {
 	body: () => Awaitable<unknown>;
 
 	/** Query parameters */
-	queryParams: MapLike<string, string>;
+	queryParams: MapLike<string, readonly string[] | string>;
 
 	/** Path parameters */
-	params: MapLike<string, string>;
+	params: MapLike<string, readonly string[] | string>;
 
 	/** Headers */
 	headers: Map<string, readonly string[] | string>;
@@ -121,7 +121,7 @@ export function CustomComment<R extends CustomRequest>({
 		req: R,
 	): Promise<AuthInfoWithRole | null> {
 		const page = req.params.get("page");
-		if (!page) throw new Error("Page parameter required");
+		if (typeof page !== "string") throw new Error("Page parameter required");
 
 		if (role === "auth") {
 			if (!getSessionWithRole)
@@ -166,19 +166,12 @@ export function CustomComment<R extends CustomRequest>({
 					};
 				}
 
-				if (e instanceof ZodError) {
-					const issuesToString = e.issues
-						.map(
-							(issue) =>
-								`${(issue.path.at(-1) ?? "root").toString()}: ${issue.message}`,
-						)
-						.join("\n");
-
+				if (e instanceof $ZodError) {
 					return {
 						type: "error",
 						status: 400,
 						data: {
-							message: issuesToString,
+							message: prettifyError(e),
 							info: e,
 						},
 					};
@@ -205,7 +198,8 @@ export function CustomComment<R extends CustomRequest>({
 
 				const name = req.queryParams.get("name");
 				const page = req.params.get("page");
-				if (!name || !page) return INVALID_PARAM;
+				if (typeof name !== "string" || typeof page !== "string")
+					return INVALID_PARAM;
 
 				const queryUsers = storage.queryUsers ?? mention.queryUsers;
 				if (!queryUsers)
@@ -227,7 +221,7 @@ export function CustomComment<R extends CustomRequest>({
 				const thread = req.queryParams.get("thread") ?? undefined;
 				const page = req.params.get("page");
 
-				if (!page) return INVALID_PARAM;
+				if (typeof page !== "string") return INVALID_PARAM;
 				if (limit > 50)
 					return {
 						type: "error",
@@ -242,7 +236,7 @@ export function CustomComment<R extends CustomRequest>({
 					data: await storage.getComments({
 						sort,
 						auth,
-						thread,
+						thread: typeof thread === "string" ? thread : undefined,
 						limit,
 						page,
 						after: after ? new Date(Number(after)) : undefined,
@@ -256,7 +250,7 @@ export function CustomComment<R extends CustomRequest>({
 				const page = req.params.get("page");
 
 				if (!auth) return NOT_AUTHORIZED;
-				if (!page) return INVALID_PARAM;
+				if (typeof page !== "string") return INVALID_PARAM;
 
 				return {
 					type: "success",
@@ -266,7 +260,8 @@ export function CustomComment<R extends CustomRequest>({
 			"POST /comments/[page]/[id]/rate": handleError(async (req) => {
 				const id = req.params.get("id");
 				const page = req.params.get("page");
-				if (!id || !page) return INVALID_PARAM;
+				if (typeof id !== "string" || typeof page !== "string")
+					return INVALID_PARAM;
 
 				const auth = await getSession(req);
 				if (!auth) return NOT_AUTHORIZED;
@@ -278,7 +273,8 @@ export function CustomComment<R extends CustomRequest>({
 			"PATCH /comments/[page]/[id]": handleError(async (req) => {
 				const id = req.params.get("id");
 				const page = req.params.get("page");
-				if (!id || !page) return INVALID_PARAM;
+				if (typeof id !== "string" || typeof page !== "string")
+					return INVALID_PARAM;
 
 				const auth = await getSession(req);
 				if (!auth) return NOT_AUTHORIZED;
@@ -290,7 +286,8 @@ export function CustomComment<R extends CustomRequest>({
 			"DELETE /comments/[page]/[id]": handleError(async (req) => {
 				const id = req.params.get("id");
 				const page = req.params.get("page");
-				if (!id || !page) return INVALID_PARAM;
+				if (typeof id !== "string" || typeof page !== "string")
+					return INVALID_PARAM;
 
 				const auth = await getSessionWithRoleAuto(req);
 				if (!auth) return NOT_AUTHORIZED;
@@ -304,7 +301,8 @@ export function CustomComment<R extends CustomRequest>({
 			"DELETE /comments/[page]/[id]/rate": handleError(async (req) => {
 				const id = req.params.get("id");
 				const page = req.params.get("page");
-				if (!id || !page) return INVALID_PARAM;
+				if (typeof id !== "string" || typeof page !== "string")
+					return INVALID_PARAM;
 
 				const auth = await getSession(req);
 				if (!auth) return NOT_AUTHORIZED;

@@ -10,18 +10,18 @@
 	"dependencies": {
 		"@fuma-comment/react": "workspace:*",
 		"@fuma-comment/server": "workspace:*",
-		"better-auth": "^1.4.2",
-		"mongodb": "^7.0.0",
-		"next": "16.0.10",
-		"react": "^19.2.0",
-		"react-dom": "^19.2.0"
+		"better-auth": "^1.5.4",
+		"mongodb": "^7.1.0",
+		"next": "16.1.6",
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4"
 	},
 	"devDependencies": {
-		"@tailwindcss/postcss": "^4.1.17",
-		"@types/node": "^24.10.1",
-		"@types/react": "^19.2.7",
+		"@tailwindcss/postcss": "^4.2.1",
+		"@types/node": "^25.3.5",
+		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
-		"tailwindcss": "^4.1.17",
+		"tailwindcss": "^4.2.1",
 		"typescript": "^5.9.3"
 	}
 }
