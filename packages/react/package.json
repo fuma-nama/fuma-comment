@@ -53,7 +53,7 @@
 		"tailwindcss": "^4.2.1",
 		"tsconfig": "workspace:*",
 		"tsup": "^8.5.1",
-		"typescript": "^5.9.3",
+		"typescript": "^6.0.0",
 		"uploadthing": "^7.7.3"
 	},
 	"dependencies": {
