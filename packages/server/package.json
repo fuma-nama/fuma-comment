@@ -67,7 +67,7 @@
 		"next-auth": "^4.24.13",
 		"tsconfig": "workspace:*",
 		"tsup": "^8.5.1",
-		"typescript": "^5.9.3",
+		"typescript": "^6.0.0",
 		"vitest": "^4.0.18"
 	},
 	"peerDependencies": {
