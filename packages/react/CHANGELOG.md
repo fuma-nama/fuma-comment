@@ -1,5 +1,12 @@
 # @fuma-comment/react
 
+## 1.4.2
+
+### Patch Changes
+
+- 24f8a57: Bump deps
+- 50733be: fix https://github.com/fuma-nama/fuma-comment/issues/131
+
 ## 1.4.1
 
 ### Patch Changes
