@@ -19,6 +19,6 @@
 		"dotenv-cli": "^11.0.0",
 		"tsconfig": "workspace:*",
 		"tsdown": "^0.21.10",
-		"turbo": "^2.9.6"
+		"turbo": "^2.9.14"
 	}
 }
