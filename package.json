@@ -1,7 +1,7 @@
 {
 	"name": "fuma-comment",
 	"private": true,
-	"packageManager": "pnpm@9.15.9",
+	"packageManager": "pnpm@11.1.3",
 	"scripts": {
 		"version": "changeset version",
 		"release": "turbo run build --filter=./packages/* && changeset publish",
