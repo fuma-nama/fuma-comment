@@ -19,10 +19,7 @@ export function createListener<Args extends unknown[]>(): {
 				listeners.set(id, list);
 
 				return () => {
-					listeners.set(
-						id,
-						listeners.get(id)?.filter((item) => item !== listener) ?? [],
-					);
+					listeners.set(id, listeners.get(id)?.filter((item) => item !== listener) ?? []);
 				};
 			}, [id, listener, listeners]);
 		},

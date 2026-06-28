@@ -1,13 +1,7 @@
 "use client";
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/select";
 import type { SummaryType } from "./page";
 
 export function ModeSelect({ value }: { value: SummaryType }): ReactNode {

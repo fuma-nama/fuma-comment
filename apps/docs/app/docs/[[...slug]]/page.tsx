@@ -1,20 +1,11 @@
 import type { Metadata } from "next";
-import {
-	DocsPage,
-	DocsBody,
-	DocsTitle,
-	DocsDescription,
-} from "fumadocs-ui/page";
+import { DocsPage, DocsBody, DocsTitle, DocsDescription } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
 import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import { source } from "@/app/source";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 
-export default async function Page({
-	params,
-}: {
-	params: Promise<{ slug?: string[] }>;
-}) {
+export default async function Page({ params }: { params: Promise<{ slug?: string[] }> }) {
 	const page = source.getPage((await params).slug);
 
 	if (!page) {

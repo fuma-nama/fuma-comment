@@ -1,10 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import type {
-	CustomCommentOptions,
-	CustomRequest,
-	CustomResponse,
-} from "../custom";
+import type { CustomCommentOptions, CustomRequest, CustomResponse } from "../custom";
 import { CustomComment } from "../custom";
 
 type RouteHandler = (
@@ -39,10 +35,7 @@ function createResponse(result: CustomResponse): NextResponse {
 	return NextResponse.json(result.data, { status: result.status });
 }
 
-function createRequest(
-	req: NextRequest,
-	params: Map<string, string>,
-): RequestType {
+function createRequest(req: NextRequest, params: Map<string, string>): RequestType {
 	const headers = new Map<string, readonly string[] | string>();
 	req.headers.forEach((value, key) => {
 		headers.set(key, value);

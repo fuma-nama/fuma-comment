@@ -1,0 +1,12 @@
+{
+	"$schema": "./node_modules/oxfmt/configuration_schema.json",
+	"useTabs": true,
+	"embeddedLanguageFormatting": "auto",
+	"ignorePatterns": [
+		"CHANGELOG.md",
+		"pnpm-lock.yaml",
+		"**/dist/**",
+		"**/.next/**",
+		"**/.source/**",
+	],
+}

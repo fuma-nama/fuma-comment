@@ -84,10 +84,7 @@ const CodeBlockButton = lazy(() => import("./codeblock"));
 const ImageUploadButton = lazy(() => import("./image-upload"));
 
 export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
-	(
-		{ editorRef, disabled = false, containerProps, children, ...props },
-		ref,
-	) => {
+	({ editorRef, disabled = false, containerProps, children, ...props }, ref) => {
 		const [editor, setEditor] = useState<Editor>();
 		const mention = useMention();
 		const storage = useStorage();
@@ -104,15 +101,12 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 
 			let timeout: number | undefined;
 			const save = () => {
-				if (instance && persistentId)
-					setPersistentId(persistentId, instance.getJSON());
+				if (instance && persistentId) setPersistentId(persistentId, instance.getJSON());
 			};
 
 			void createEditorLazy({
 				autofocus: false,
-				content: persistentId
-					? (getPersistentId(persistentId) ?? defaultValue)
-					: defaultValue,
+				content: persistentId ? (getPersistentId(persistentId) ?? defaultValue) : defaultValue,
 				editorProps: {
 					attributes: {
 						class: "flex-1 px-3 pt-2.5 focus-visible:outline-none",
@@ -185,26 +179,10 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 					className={cn("min-h-[38px]", props.editorProps?.className)}
 				/>
 				<div className="flex flex-row items-center p-1">
-					<MarkButton
-						editor={editor}
-						name="bold"
-						icon={<Bold className="size-4" />}
-					/>
-					<MarkButton
-						editor={editor}
-						name="italic"
-						icon={<Italic className="size-4" />}
-					/>
-					<MarkButton
-						editor={editor}
-						name="strike"
-						icon={<Strikethrough className="size-4" />}
-					/>
-					<MarkButton
-						editor={editor}
-						name="code"
-						icon={<Code className="size-4" />}
-					/>
+					<MarkButton editor={editor} name="bold" icon={<Bold className="size-4" />} />
+					<MarkButton editor={editor} name="italic" icon={<Italic className="size-4" />} />
+					<MarkButton editor={editor} name="strike" icon={<Strikethrough className="size-4" />} />
+					<MarkButton editor={editor} name="code" icon={<Code className="size-4" />} />
 					<div className="w-px h-4 bg-fc-border mx-0.5 last:hidden" />
 					<UpdateLink editor={editor} />
 					<CodeBlockButton editor={editor} />
@@ -241,11 +219,7 @@ function MarkButton({
 					active: editor.isActive(name),
 				}),
 			)}
-			disabled={
-				editor.isDestroyed ||
-				!editor.isEditable ||
-				!editor.can().toggleMark(name)
-			}
+			disabled={editor.isDestroyed || !editor.isEditable || !editor.can().toggleMark(name)}
 			onMouseDown={(e) => {
 				editor.commands.toggleMark(name);
 				e.preventDefault();
@@ -266,11 +240,7 @@ function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
 				type="button"
 				aria-label="Toggle Link"
 				className={cn(toggleVariants({ active: editor.isActive("link") }))}
-				disabled={
-					editor.isDestroyed ||
-					!editor.isEditable ||
-					!editor.can().setLink({ href: "" })
-				}
+				disabled={editor.isDestroyed || !editor.isEditable || !editor.can().setLink({ href: "" })}
 			>
 				<LinkIcon className="size-4" />
 			</DialogTrigger>

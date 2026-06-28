@@ -1,9 +1,5 @@
 import type { Context, Hono, HonoRequest } from "hono";
-import type {
-	CustomCommentOptions,
-	CustomRequest,
-	CustomResponse,
-} from "../custom";
+import type { CustomCommentOptions, CustomRequest, CustomResponse } from "../custom";
 import { CustomComment } from "../custom";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 
@@ -32,14 +28,9 @@ export function HonoComment(options: HonoOptions): void {
 		const fn = methods[key as keyof typeof methods];
 		const [method, path] = key.split(" ");
 
-		const pathWithBase = [
-			...(options.baseUrl ?? "").split("/"),
-			...path.split("/"),
-		]
+		const pathWithBase = [...(options.baseUrl ?? "").split("/"), ...path.split("/")]
 			.filter((v) => v.length > 0)
-			.map((v) =>
-				v.startsWith("[") && v.endsWith("]") ? `:${v.slice(1, -1)}` : v,
-			)
+			.map((v) => (v.startsWith("[") && v.endsWith("]") ? `:${v.slice(1, -1)}` : v))
 			.join("/");
 
 		app[method.toLowerCase() as "get" | "post" | "patch" | "delete"](

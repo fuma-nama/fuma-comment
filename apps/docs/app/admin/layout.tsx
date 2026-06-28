@@ -1,11 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-export default function Layout({
-	children,
-}: {
-	children: ReactNode;
-}): ReactNode {
+export default function Layout({ children }: { children: ReactNode }): ReactNode {
 	return (
 		<div className="px-2">
 			<div

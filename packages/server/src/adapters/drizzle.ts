@@ -35,12 +35,10 @@ export interface Options {
 export function createDrizzleAdapter(options: Options): StorageAdapter {
 	const db = options.db as BaseSQLiteDatabase<"async", unknown>;
 	const { schemas = db._.fullSchema } = options;
-	// biome-ignore lint/suspicious/noExplicitAny: don't overcomplicate the types
+	// oxlint-disable-next-line @typescript-eslint/no-explicit-any -- don't overcomplicate the types
 	const { comments, rates, roles } = schemas as Record<string, any>;
 	if (!comments || !rates || !roles) {
-		throw new Error(
-			"Missing required schemas, pass the full schema to the `schemas` option",
-		);
+		throw new Error("Missing required schemas, pass the full schema to the `schemas` option");
 	}
 
 	let auth: StorageAuthProvider;
@@ -68,18 +66,12 @@ export function createDrizzleAdapter(options: Options): StorageAdapter {
 				.where(
 					and(
 						page ? eq(comments.page, page) : undefined,
-						thread
-							? eq(comments.thread, Number(thread))
-							: isNull(comments.thread),
+						thread ? eq(comments.thread, Number(thread)) : isNull(comments.thread),
 						before ? lt(comments.timestamp, before) : undefined,
 						after ? gt(comments.timestamp, after) : undefined,
 					),
 				)
-				.orderBy(
-					sort === "newest"
-						? desc(comments.timestamp)
-						: asc(comments.timestamp),
-				)
+				.orderBy(sort === "newest" ? desc(comments.timestamp) : asc(comments.timestamp))
 				.limit(limit)
 				.leftJoin(
 					rates,
@@ -88,10 +80,7 @@ export function createDrizzleAdapter(options: Options): StorageAdapter {
 						: sql<boolean>`false`,
 				)
 				.leftJoin(likes, and(eq(likes.commentId, comments.id), likes.like))
-				.leftJoin(
-					dislikes,
-					and(eq(dislikes.commentId, comments.id), not(dislikes.like)),
-				)
+				.leftJoin(dislikes, and(eq(dislikes.commentId, comments.id), not(dislikes.like)))
 				.groupBy(comments.id, rates.userId, rates.commentId);
 
 			const userInfos = await getUsers(result.map((c) => c.comments.author));
@@ -118,22 +107,16 @@ export function createDrizzleAdapter(options: Options): StorageAdapter {
 						timestamp: row.comments.timestamp,
 						liked: row.selfRate?.like,
 						page: row.comments.page,
-						threadId: row.comments.thread
-							? String(row.comments.thread)
-							: undefined,
+						threadId: row.comments.thread ? String(row.comments.thread) : undefined,
 					} satisfies Comment;
 				}),
 			);
 		},
 		async deleteComment({ id, page }) {
-			await db
-				.delete(comments)
-				.where(and(eq(comments.id, Number(id)), eq(comments.page, page)));
+			await db.delete(comments).where(and(eq(comments.id, Number(id)), eq(comments.page, page)));
 		},
 		async deleteRate({ auth, id }) {
-			await db
-				.delete(rates)
-				.where(and(eq(rates.commentId, Number(id)), eq(rates.userId, auth.id)));
+			await db.delete(rates).where(and(eq(rates.commentId, Number(id)), eq(rates.userId, auth.id)));
 		},
 		async postComment({ auth, body, page }) {
 			const data = {
@@ -170,9 +153,9 @@ export function createDrizzleAdapter(options: Options): StorageAdapter {
 			const result = (await db
 				.update(rates)
 				.set({ like: body.like })
-				.where(
-					and(eq(rates.commentId, Number(id)), eq(rates.userId, auth.id)),
-				)) as { rowCount: number };
+				.where(and(eq(rates.commentId, Number(id)), eq(rates.userId, auth.id)))) as {
+				rowCount: number;
+			};
 
 			if (result.rowCount === 0) {
 				await db.insert(rates).values({
@@ -187,11 +170,7 @@ export function createDrizzleAdapter(options: Options): StorageAdapter {
 				.update(comments)
 				.set({ content: body.content as object })
 				.where(
-					and(
-						eq(comments.author, auth.id),
-						eq(comments.id, Number(id)),
-						eq(comments.page, page),
-					),
+					and(eq(comments.author, auth.id), eq(comments.id, Number(id)), eq(comments.page, page)),
 				);
 		},
 		async getCommentAuthor({ id }) {
@@ -227,7 +206,7 @@ function createGenericProvider(
 	db: BaseSQLiteDatabase<"async", unknown>,
 	options: Options,
 ): StorageAuthProvider {
-	// biome-ignore lint/suspicious/noExplicitAny: don't overcomplicate the types
+	// oxlint-disable-next-line @typescript-eslint/no-explicit-any -- don't overcomplicate the types
 	const { user } = options.schemas ?? (db._.fullSchema as Record<string, any>);
 
 	return {

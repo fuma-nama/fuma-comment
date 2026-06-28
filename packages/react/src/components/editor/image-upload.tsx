@@ -7,21 +7,11 @@ import { cn } from "../../utils/cn";
 import { Spinner } from "../spinner";
 import { buttonVariants } from "../button";
 import { toggleVariants, useHookUpdate } from ".";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogTitle,
-	DialogTrigger,
-} from "../dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "../dialog";
 import { ImageIcon } from "lucide-react";
 import { useId } from "react";
 
-export default function UploadImageButton({
-	editor,
-}: {
-	editor: Editor;
-}): React.ReactElement {
+export default function UploadImageButton({ editor }: { editor: Editor }): React.ReactElement {
 	useHookUpdate(editor);
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -31,11 +21,7 @@ export default function UploadImageButton({
 				type="button"
 				aria-label="Upload Image"
 				className={cn(toggleVariants())}
-				disabled={
-					editor.isDestroyed ||
-					!editor.isEditable ||
-					!editor.can().setImage({ src: "" })
-				}
+				disabled={editor.isDestroyed || !editor.isEditable || !editor.can().setImage({ src: "" })}
 			>
 				<ImageIcon className="size-4" />
 			</DialogTrigger>
@@ -131,11 +117,7 @@ function UploadImage({
 			)}
 
 			<div className="mt-4 flex gap-1">
-				<button
-					className={cn(buttonVariants())}
-					disabled={mutation.isMutating}
-					type="submit"
-				>
+				<button className={cn(buttonVariants())} disabled={mutation.isMutating} type="submit">
 					Save
 				</button>
 			</div>

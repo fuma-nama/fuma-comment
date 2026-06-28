@@ -11,9 +11,7 @@ export default async function Page() {
 		<>
 			<div className="text-center mb-8">
 				<h1 className="text-xl font-semibold mb-2">Sponsors</h1>
-				<p className="text-muted-foreground mb-6">
-					Support the open source work of Fuma Comment.
-				</p>
+				<p className="text-muted-foreground mb-6">Support the open source work of Fuma Comment.</p>
 				<a
 					href={`https://github.com/sponsors/${receiver}`}
 					rel="noreferrer noopener"
@@ -44,12 +42,8 @@ export default async function Page() {
 									unoptimized
 								/>
 								<div>
-									<p className="text-sm font-medium group-hover:text-primary">
-										{sponsor.name}
-									</p>
-									<p className="text-xs text-muted-foreground">
-										@{sponsor.login}
-									</p>
+									<p className="text-sm font-medium group-hover:text-primary">{sponsor.name}</p>
+									<p className="text-xs text-muted-foreground">@{sponsor.login}</p>
 								</div>
 							</div>
 							{sponsor.tier.name && (
@@ -67,9 +61,7 @@ export default async function Page() {
 				</div>
 			) : (
 				<div className="text-center py-12">
-					<p className="text-muted-foreground">
-						No sponsors yet. Be the first to support us!
-					</p>
+					<p className="text-muted-foreground">No sponsors yet. Be the first to support us!</p>
 				</div>
 			)}
 		</>

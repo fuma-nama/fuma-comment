@@ -19,13 +19,13 @@ import { comments, rates, roles } from "@/lib/schema";
 export const clerkAdapter = ClerkAdapter(() => auth());
 
 export const storage = createDrizzleAdapter({
-  db,
-  schemas: {
-    comments,
-    rates,
-    roles,
-  },
-  auth: clerkAdapter,
+	db,
+	schemas: {
+		comments,
+		rates,
+		roles,
+	},
+	auth: clerkAdapter,
 });
 ```
 
@@ -36,8 +36,8 @@ import { NextComment } from "@fuma-comment/server/next";
 import { clerkAdapter, storage } from "@/lib/comment.config";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
-  // import from comment.config.ts
-  auth: clerkAdapter,
-  storage,
+	// import from comment.config.ts
+	auth: clerkAdapter,
+	storage,
 });
 ```

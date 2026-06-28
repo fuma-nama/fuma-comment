@@ -27,10 +27,7 @@ function setComment(id: string, c: Item): void {
 	trigger(id, c);
 }
 
-export function updateComment(
-	commentId: string,
-	updateFn: (comment: Item) => Item,
-): void {
+export function updateComment(commentId: string, updateFn: (comment: Item) => Item): void {
 	const comment = map.get(commentId);
 
 	if (!comment) return;
@@ -38,9 +35,7 @@ export function updateComment(
 }
 
 export function onCommentReplied(reply: SerializedComment): void {
-	updateCommentList([reply.page, reply.threadId], (v) =>
-		v ? [...v, reply] : undefined,
-	);
+	updateCommentList([reply.page, reply.threadId], (v) => (v ? [...v, reply] : undefined));
 
 	if (reply.threadId) {
 		updateComment(reply.threadId, (c) => {
@@ -62,10 +57,7 @@ export function onCommentDeleted(comment: SerializedComment): void {
 	}
 }
 
-export function onLikeUpdated(
-	commentId: string,
-	value: boolean | undefined,
-): void {
+export function onLikeUpdated(commentId: string, value: boolean | undefined): void {
 	updateComment(commentId, (comment) => {
 		let likes: number = comment.likes;
 		let dislikes: number = comment.dislikes;

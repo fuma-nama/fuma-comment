@@ -1,8 +1,4 @@
-import type {
-	AuthInfoWithRole,
-	SerializedComment,
-	UserProfile,
-} from "@fuma-comment/server";
+import type { AuthInfoWithRole, SerializedComment, UserProfile } from "@fuma-comment/server";
 
 export interface FetcherError {
 	message: string;
@@ -11,10 +7,7 @@ export interface FetcherError {
 export type Fetcher = ReturnType<typeof createFetcher>;
 
 export function createFetcher(apiUrl = "/api/comments") {
-	async function fetcher<T = void>(
-		url: string,
-		init?: RequestInit,
-	): Promise<T> {
+	async function fetcher<T = void>(url: string, init?: RequestInit): Promise<T> {
 		const response = await fetch(url, init);
 
 		if (!response.ok) {
@@ -90,47 +83,32 @@ export function createFetcher(apiUrl = "/api/comments") {
 		});
 	}
 
-	async function deleteComment(options: {
-		id: string;
-		page: string;
-	}): Promise<void> {
+	async function deleteComment(options: { id: string; page: string }): Promise<void> {
 		await fetcher(`${apiUrl}/${options.page}/${options.id}`, {
 			method: "DELETE",
 		});
 	}
-	async function setRate(options: {
-		id: string;
-		page: string;
-		like: boolean;
-	}): Promise<void> {
+	async function setRate(options: { id: string; page: string; like: boolean }): Promise<void> {
 		await fetcher(`${apiUrl}/${options.page}/${options.id}/rate`, {
 			method: "POST",
 			body: JSON.stringify({ like: options.like }),
 		});
 	}
 
-	async function queryUsers(options: {
-		name: string;
-		page: string;
-	}): Promise<UserProfile[]> {
+	async function queryUsers(options: { name: string; page: string }): Promise<UserProfile[]> {
 		const params = new URLSearchParams();
 		params.append("name", options.name);
 
 		return fetcher(`${apiUrl}/${options.page}/users?${params.toString()}`);
 	}
 
-	async function deleteRate(options: {
-		id: string;
-		page: string;
-	}): Promise<void> {
+	async function deleteRate(options: { id: string; page: string }): Promise<void> {
 		await fetcher(`${apiUrl}/${options.page}/${options.id}/rate`, {
 			method: "DELETE",
 		});
 	}
 
-	async function getAuthSession(options: {
-		page: string;
-	}): Promise<AuthInfoWithRole> {
+	async function getAuthSession(options: { page: string }): Promise<AuthInfoWithRole> {
 		return await fetcher(`${apiUrl}/${options.page}/auth`, {
 			method: "GET",
 		});
@@ -148,9 +126,7 @@ export function createFetcher(apiUrl = "/api/comments") {
 	};
 }
 
-export function getCommentsKey(
-	options: CommentOptions,
-): [api: string, args: CommentOptions] {
+export function getCommentsKey(options: CommentOptions): [api: string, args: CommentOptions] {
 	return ["/api/comments", options];
 }
 

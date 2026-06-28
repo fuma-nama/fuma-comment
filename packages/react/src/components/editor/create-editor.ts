@@ -1,10 +1,4 @@
-import {
-	Editor,
-	type EditorOptions,
-	Extension,
-	type Node,
-	ReactRenderer,
-} from "@tiptap/react";
+import { Editor, type EditorOptions, Extension, type Node, ReactRenderer } from "@tiptap/react";
 import { Document } from "@tiptap/extension-document";
 import { Dropcursor } from "@tiptap/extension-dropcursor";
 import { Gapcursor } from "@tiptap/extension-gapcursor";
@@ -19,11 +13,7 @@ import { Text } from "@tiptap/extension-text";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import { Image } from "@tiptap/extension-image";
 import { Mention } from "@tiptap/extension-mention";
-import {
-	codeBlockVariants,
-	codeVariants,
-	mentionVariants,
-} from "../comment/content-renderer";
+import { codeBlockVariants, codeVariants, mentionVariants } from "../comment/content-renderer";
 import { MentionList, type MentionListRef } from "./mention";
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
 import { lowlight } from "../../utils/highlighter";

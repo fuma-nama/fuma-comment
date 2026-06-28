@@ -12,16 +12,9 @@ import { CopyIcon, MoreVertical, PencilIcon, Trash2Icon } from "lucide-react";
 import type { JSONContent } from "@tiptap/react";
 import { cn } from "../../utils/cn";
 import { getCommentsKey } from "../../utils/fetcher";
-import {
-	type CommentContext,
-	useCommentContext,
-	CommentProvider,
-} from "../../contexts/comment";
+import { type CommentContext, useCommentContext, CommentProvider } from "../../contexts/comment";
 import { useAuthContext } from "../../contexts/auth";
-import {
-	onCommentDeleted,
-	useCommentManager,
-} from "../../utils/comment-manager";
+import { onCommentDeleted, useCommentManager } from "../../utils/comment-manager";
 import { MenuTrigger, MenuItems, MenuItem, Menu } from "../menu";
 import { buttonVariants } from "../button";
 import type { UseCommentEditor } from "../editor";
@@ -30,12 +23,7 @@ import { EditForm } from "./edit-form";
 import { ContentRenderer } from "./content-renderer";
 import { Timestamp } from "../timestamp";
 import { useCommentsContext } from "../../contexts/comments";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogTitle,
-} from "../dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../dialog";
 
 export function Comment({
 	comment: cached,
@@ -63,10 +51,7 @@ export function Comment({
 		<CommentProvider value={context}>
 			<div
 				{...props}
-				className={cn(
-					"relative flex flex-row gap-2 p-4 text-sm",
-					props.className,
-				)}
+				className={cn("relative flex flex-row gap-2 p-4 text-sm", props.className)}
 				data-fc-comment={context.comment.id}
 				data-fc-reply={context.isReplying}
 			>
@@ -117,8 +102,7 @@ function CommentMenu({
 
 	const canEdit = session !== null && session.id === comment.author.id;
 	const canDelete =
-		session !== null &&
-		(session.permissions?.delete || session.id === comment.author.id);
+		session !== null && (session.permissions?.delete || session.id === comment.author.id);
 
 	const onCopy = () => {
 		const text = getTextFromContent(comment.content as JSONContent);
@@ -194,9 +178,7 @@ function CommentMenu({
 
 function getTextFromContent(content: JSONContent): string {
 	if (content.type === "text") return content.text ?? "";
-	const child = (content.content?.map((c) => getTextFromContent(c)) ?? [])
-		.join("")
-		.trimEnd();
+	const child = (content.content?.map((c) => getTextFromContent(c)) ?? []).join("").trimEnd();
 
 	if (content.type === "paragraph") return `${child}\n`;
 	return child;

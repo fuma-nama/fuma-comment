@@ -15,7 +15,7 @@ export type SerializedComment = Serialize<Comment>;
 
 type JsonPrimitive = boolean | number | string | null;
 
-// biome-ignore lint: For internal use only
+// oxlint-disable-next-line @typescript-eslint/no-unsafe-function-type -- for internal use only
 type NonJsonPrimitive = Function | symbol | undefined;
 
 type SerializeTupleOrObject<T extends [unknown, ...unknown[]] | object> = {

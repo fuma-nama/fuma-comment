@@ -14,10 +14,10 @@ import { commentPlugin } from "@fuma-comment/server/fastify";
 const app = Fastify();
 
 await app.register(
-  commentPlugin({
-    storage, // storage adapter
-    auth, // auth adapter
-  }),
+	commentPlugin({
+		storage, // storage adapter
+		auth, // auth adapter
+	}),
 );
 
 await app.listen({ port: 3000 });
@@ -31,11 +31,11 @@ Use `baseUrl` to mount routes under a prefix (e.g. `/api/comments/:page`):
 
 ```ts
 await app.register(
-  commentPlugin({
-    storage,
-    auth,
-    baseUrl: "api",
-  }),
+	commentPlugin({
+		storage,
+		auth,
+		baseUrl: "api",
+	}),
 );
 ```
 
@@ -47,8 +47,8 @@ Alternatively, pass your Fastify instance to `FastifyComment`:
 import { FastifyComment } from "@fuma-comment/server/fastify";
 
 FastifyComment({
-  app,
-  storage,
-  auth,
+	app,
+	storage,
+	auth,
 });
 ```

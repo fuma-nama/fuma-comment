@@ -22,9 +22,7 @@ export const comments = pgTable("comments", {
 	thread: integer("thread"),
 	author: varchar("author", { length: 256 }).notNull(),
 	content: json("content").notNull(),
-	timestamp: timestamp("timestamp", { withTimezone: true })
-		.defaultNow()
-		.notNull(),
+	timestamp: timestamp("timestamp", { withTimezone: true }).defaultNow().notNull(),
 });
 
 export const rates = pgTable(

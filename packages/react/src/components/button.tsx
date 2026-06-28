@@ -13,8 +13,7 @@ export const buttonVariants = cva(
 			variant: {
 				primary:
 					"bg-fc-primary text-fc-primary-foreground transition-colors hover:bg-fc-primary/80",
-				secondary:
-					"border border-fc-border bg-fc-card transition-colors hover:bg-fc-accent",
+				secondary: "border border-fc-border bg-fc-card transition-colors hover:bg-fc-accent",
 				ghost: "transition-colors hover:bg-fc-accent/80",
 			},
 		},

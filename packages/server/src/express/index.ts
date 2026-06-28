@@ -1,9 +1,5 @@
 import type { Express, Request, Response } from "express";
-import type {
-	CustomCommentOptions,
-	CustomRequest,
-	CustomResponse,
-} from "../custom";
+import type { CustomCommentOptions, CustomRequest, CustomResponse } from "../custom";
 import { CustomComment } from "../custom";
 
 type RequestType = CustomRequest & {
@@ -31,14 +27,9 @@ export function ExpressComment(options: ExpressOptions): void {
 		const fn = methods[key as keyof typeof methods];
 		const [method, path] = key.split(" ");
 
-		const pathWithBase = [
-			...(options.baseUrl ?? "").split("/"),
-			...path.split("/"),
-		]
+		const pathWithBase = [...(options.baseUrl ?? "").split("/"), ...path.split("/")]
 			.filter((v) => v.length > 0)
-			.map((v) =>
-				v.startsWith("[") && v.endsWith("]") ? `:${v.slice(1, -1)}` : v,
-			)
+			.map((v) => (v.startsWith("[") && v.endsWith("]") ? `:${v.slice(1, -1)}` : v))
 			.join("/");
 
 		app[method.toLowerCase() as "get" | "post" | "patch" | "delete"](
@@ -72,8 +63,7 @@ function readRequest(req: Request): RequestType {
 				const parsed = req.query[key];
 				if (
 					typeof parsed === "string" ||
-					(Array.isArray(parsed) &&
-						parsed.every((item) => typeof item === "string"))
+					(Array.isArray(parsed) && parsed.every((item) => typeof item === "string"))
 				)
 					return parsed;
 			},

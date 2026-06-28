@@ -1,12 +1,5 @@
 import type { z } from "zod";
-import type {
-	AuthInfo,
-	AuthInfoWithRole,
-	Awaitable,
-	Comment,
-	Role,
-	UserProfile,
-} from "./types";
+import type { AuthInfo, AuthInfoWithRole, Awaitable, Comment, Role, UserProfile } from "./types";
 import type {
 	updateCommentSchema,
 	postCommentSchema,
@@ -131,8 +124,7 @@ export interface AuthAdapter<R extends CustomRequest> {
 	) => Awaitable<AuthInfoWithRole | null>;
 }
 
-export interface StorageAuthProvider
-	extends Pick<StorageAdapter, "queryUsers"> {
+export interface StorageAuthProvider extends Pick<StorageAdapter, "queryUsers"> {
 	/**
 	 * Manually join User table after selecting comments
 	 */

@@ -10,10 +10,7 @@ export interface Options {
 
 export { FumaCommentDB } from "../db";
 
-export function createFumaDBAdapter({
-	client,
-	auth: { getUsers },
-}: Options): StorageAdapter {
+export function createFumaDBAdapter({ client, auth: { getUsers } }: Options): StorageAdapter {
 	const orm = client.orm("1.0.0");
 
 	return {
@@ -60,15 +57,12 @@ export function createFumaDBAdapter({
 							where: (b) => b("thread", "=", comment.id),
 						}),
 						likes: await orm.count("rates", {
-							where: (b) =>
-								b.and(b("commentId", "=", comment.id), b("like", "=", true)),
+							where: (b) => b.and(b("commentId", "=", comment.id), b("like", "=", true)),
 						}),
 						dislikes: await orm.count("rates", {
-							where: (b) =>
-								b.and(b("commentId", "=", comment.id), b("like", "=", false)),
+							where: (b) => b.and(b("commentId", "=", comment.id), b("like", "=", false)),
 						}),
-						liked: selfRates?.find((item) => item.commentId === comment.id)
-							?.like,
+						liked: selfRates?.find((item) => item.commentId === comment.id)?.like,
 						content: comment.content as object,
 					} satisfies Comment;
 				}),
@@ -81,11 +75,7 @@ export function createFumaDBAdapter({
 		},
 		async deleteRate(options) {
 			await orm.deleteMany("rates", {
-				where: (b) =>
-					b.and(
-						b("commentId", "=", options.id),
-						b("userId", "=", options.auth.id),
-					),
+				where: (b) => b.and(b("commentId", "=", options.id), b("userId", "=", options.auth.id)),
 			});
 		},
 		async setRate({ id, auth, body }) {
@@ -124,12 +114,7 @@ export function createFumaDBAdapter({
 		async updateComment({ id, auth, body, page }) {
 			await orm.updateMany("comments", {
 				set: { content: body.content },
-				where: (b) =>
-					b.and(
-						b("id", "=", id),
-						b("author", "=", auth.id),
-						b("page", "=", page),
-					),
+				where: (b) => b.and(b("id", "=", id), b("author", "=", auth.id), b("page", "=", page)),
 			});
 		},
 		async getCommentAuthor({ id }) {

@@ -7,11 +7,7 @@ import { useHookUpdate, toggleVariants } from ".";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
 import { inputVariants } from "../input";
 
-export default function EmojiPickerPopover({
-	editor,
-}: {
-	editor: Editor;
-}): React.ReactElement {
+export default function EmojiPickerPopover({ editor }: { editor: Editor }): React.ReactElement {
 	useHookUpdate(editor);
 	const [isOpen, setIsOpen] = useState(false);
 

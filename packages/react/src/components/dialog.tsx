@@ -4,14 +4,7 @@ import { cn } from "../utils/cn";
 import { buttonVariants } from "./button";
 import { useIsMobile } from "../utils/use-media-query";
 import { cva } from "class-variance-authority";
-import {
-	createContext,
-	use,
-	useMemo,
-	useRef,
-	useState,
-	type ComponentProps,
-} from "react";
+import { createContext, use, useMemo, useRef, useState, type ComponentProps } from "react";
 
 const Context = createContext<{
 	open: boolean;
@@ -21,9 +14,7 @@ const Context = createContext<{
 export function Dialog(props: ComponentProps<typeof Primitive.Root>) {
 	const _state = useState(false);
 	const [open, setOpen] =
-		props.open !== undefined
-			? [props.open, props.onOpenChange ?? (() => {})]
-			: _state;
+		props.open !== undefined ? [props.open, props.onOpenChange ?? (() => {})] : _state;
 
 	return (
 		<Primitive.Root {...props} open={open} onOpenChange={setOpen}>
@@ -49,10 +40,7 @@ export function DialogDescription({
 }: Primitive.DialogDescriptionProps): React.ReactElement {
 	return (
 		<Primitive.Description
-			className={cn(
-				"text-fc-muted-foreground text-sm mb-4 max-sm:text-center",
-				className,
-			)}
+			className={cn("text-fc-muted-foreground text-sm mb-4 max-sm:text-center", className)}
 			{...props}
 		/>
 	);
@@ -116,12 +104,7 @@ export function DialogContent(props: DialogProps): React.ReactElement {
 	);
 }
 
-function DrawerContent({
-	full = false,
-	children,
-	className,
-	...props
-}: DialogProps) {
+function DrawerContent({ full = false, children, className, ...props }: DialogProps) {
 	const bottomPadding = 20;
 	const contentRef = useRef<HTMLDivElement>(null);
 	const targetRef = useRef<HTMLElement>(null);
@@ -155,10 +138,7 @@ function DrawerContent({
 		while (element) {
 			if (element.getAttribute("role") === "dialog") break;
 
-			if (
-				element.scrollHeight > element.clientHeight &&
-				(element.scrollTop > 0 || movement < 0)
-			) {
+			if (element.scrollHeight > element.clientHeight && (element.scrollTop > 0 || movement < 0)) {
 				return false;
 			}
 
@@ -182,11 +162,7 @@ function DrawerContent({
 				data-fc-drawer
 				ref={contentRef}
 				onPointerDown={(e) => {
-					if (
-						!(e.target instanceof HTMLElement) ||
-						!shouldDrag(e.target, e.movementY)
-					)
-						return;
+					if (!(e.target instanceof HTMLElement) || !shouldDrag(e.target, e.movementY)) return;
 
 					setPressing(true);
 					targetRef.current = e.target;
@@ -194,17 +170,10 @@ function DrawerContent({
 					window.addEventListener("touchend", onStopDrag, { once: true });
 				}}
 				onPointerMove={(e) => {
-					if (
-						!pressing ||
-						!targetRef.current ||
-						!shouldDrag(targetRef.current, e.movementY)
-					)
+					if (!pressing || !targetRef.current || !shouldDrag(targetRef.current, e.movementY))
 						return;
 
-					const newOffset = Math.max(
-						-bottomPadding,
-						offsetRef.current + e.movementY,
-					);
+					const newOffset = Math.max(-bottomPadding, offsetRef.current + e.movementY);
 					lastMovementRef.current = e.movementY;
 					setOffset(newOffset);
 					e.preventDefault();
@@ -215,8 +184,7 @@ function DrawerContent({
 				onPointerLeave={onStopDrag}
 				onPointerUp={() => {
 					if (
-						(contentRef.current &&
-							offsetRef.current > contentRef.current.clientHeight / 3) ||
+						(contentRef.current && offsetRef.current > contentRef.current.clientHeight / 3) ||
 						lastMovementRef.current > 15
 					) {
 						setOpen(false);
@@ -240,9 +208,7 @@ function DrawerContent({
 					transform: "translateY(var(--drawer-offset))",
 				}}
 			>
-				{!full && (
-					<div className="z-[2] mb-3 mx-auto w-12 h-1 rounded-full bg-fc-primary/30" />
-				)}
+				{!full && <div className="z-[2] mb-3 mx-auto w-12 h-1 rounded-full bg-fc-primary/30" />}
 				{children}
 			</Primitive.Content>
 		</Primitive.Portal>
@@ -254,10 +220,7 @@ export function DialogTitle({
 	...props
 }: Primitive.DialogTitleProps): React.ReactElement {
 	return (
-		<Primitive.Title
-			className={cn("mb-2 font-semibold max-sm:text-center", className)}
-			{...props}
-		>
+		<Primitive.Title className={cn("mb-2 font-semibold max-sm:text-center", className)} {...props}>
 			{props.children}
 		</Primitive.Title>
 	);

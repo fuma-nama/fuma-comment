@@ -1,16 +1,16 @@
 {
 	"name": "@fuma-comment/react",
 	"version": "1.5.0",
-	"types": "./dist/index.d.ts",
-	"author": "Fuma Nama",
 	"homepage": "https://fuma-comment.vercel.app",
+	"license": "MIT",
+	"author": "Fuma Nama",
 	"repository": "https://github.com/fuma-nama/fuma-comment",
 	"files": [
 		"./dist",
 		"./css"
 	],
-	"license": "MIT",
 	"type": "module",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		".": "./dist/index.js",
 		"./atom": "./dist/atom.js",
@@ -19,44 +19,15 @@
 		"./style.css": "./dist/style.css",
 		"./preset.css": "./css/preset.css"
 	},
+	"publishConfig": {
+		"access": "public"
+	},
 	"scripts": {
 		"build": "tsdown && tailwindcss -i css/styles.css -o ./dist/style.css",
 		"check:types": "tsc --noEmit",
 		"dev": "concurrently \"pnpm dev:layout\" \"pnpm dev:tailwind\"",
 		"dev:layout": "tsdown --watch",
 		"dev:tailwind": "tailwindcss -i css/styles.css -o ./dist/style.css --watch"
-	},
-	"peerDependencies": {
-		"lucide-react": "1.x.x",
-		"react": "^19.x",
-		"react-dom": "^19.x",
-		"uploadthing": "7.x.x"
-	},
-	"peerDependenciesMeta": {
-		"lucide-react": {
-			"optional": true
-		},
-		"uploadthing": {
-			"optional": true
-		}
-	},
-	"devDependencies": {
-		"@fuma-comment/server": "workspace:^",
-		"@tailwindcss/cli": "^4.3.1",
-		"@types/hast": "^3.0.4",
-		"@types/node": "^26.0.1",
-		"@types/react": "^19.2.17",
-		"@types/react-dom": "^19.2.3",
-		"concurrently": "^10.0.3",
-		"lucide-react": "1.21.0",
-		"postcss": "^8.5.15",
-		"postcss-cli": "^11.0.1",
-		"react": "^19.2.7",
-		"tailwindcss": "^4.3.1",
-		"tsconfig": "workspace:*",
-		"tsdown": "^0.22.3",
-		"typescript": "^6.0.3",
-		"uploadthing": "^7.7.3"
 	},
 	"dependencies": {
 		"@radix-ui/react-collapsible": "^1.1.14",
@@ -90,7 +61,36 @@
 		"swr": "^2.4.2",
 		"tailwind-merge": "^3.6.0"
 	},
-	"publishConfig": {
-		"access": "public"
+	"devDependencies": {
+		"@fuma-comment/server": "workspace:^",
+		"@tailwindcss/cli": "^4.3.1",
+		"@types/hast": "^3.0.4",
+		"@types/node": "^26.0.1",
+		"@types/react": "^19.2.17",
+		"@types/react-dom": "^19.2.3",
+		"concurrently": "^10.0.3",
+		"lucide-react": "1.21.0",
+		"postcss": "^8.5.15",
+		"postcss-cli": "^11.0.1",
+		"react": "^19.2.7",
+		"tailwindcss": "^4.3.1",
+		"tsconfig": "workspace:*",
+		"tsdown": "^0.22.3",
+		"typescript": "^6.0.3",
+		"uploadthing": "^7.7.3"
+	},
+	"peerDependencies": {
+		"lucide-react": "1.x.x",
+		"react": "^19.x",
+		"react-dom": "^19.x",
+		"uploadthing": "7.x.x"
+	},
+	"peerDependenciesMeta": {
+		"lucide-react": {
+			"optional": true
+		},
+		"uploadthing": {
+			"optional": true
+		}
 	}
 }

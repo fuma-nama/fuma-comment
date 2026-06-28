@@ -1,18 +1,13 @@
 import Elysia, { type ElysiaConfig, status } from "elysia";
-import {
-	CustomComment,
-	type CustomCommentOptions,
-	type CustomRequest,
-} from "../custom";
+import { CustomComment, type CustomCommentOptions, type CustomRequest } from "../custom";
 
-export interface CommentPluginOptions<Prefix extends string | undefined>
-	extends CustomCommentOptions<CustomRequest> {
+export interface CommentPluginOptions<
+	Prefix extends string | undefined,
+> extends CustomCommentOptions<CustomRequest> {
 	elysia?: ElysiaConfig<Prefix>;
 }
 
-export function commentPlugin<Prefix extends string>(
-	options: CommentPluginOptions<Prefix>,
-) {
+export function commentPlugin<Prefix extends string>(options: CommentPluginOptions<Prefix>) {
 	const server = CustomComment(options);
 
 	const app = new Elysia<Prefix>(options.elysia).all(

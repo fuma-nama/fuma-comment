@@ -1,23 +1,13 @@
 import useSWRMutation from "swr/mutation";
 import { SendHorizonalIcon } from "lucide-react";
-import {
-	type FormHTMLAttributes,
-	forwardRef,
-	useCallback,
-	useRef,
-	useState,
-} from "react";
+import { type FormHTMLAttributes, forwardRef, useCallback, useRef, useState } from "react";
 import { useAuthContext } from "../../contexts/auth";
 import { cn } from "../../utils/cn";
 import { type FetcherError, getCommentsKey } from "../../utils/fetcher";
 import { useCommentsContext } from "../../contexts/comments";
 import { useLatestCallback } from "../../utils/hooks";
 import { buttonVariants } from "../button";
-import {
-	clearPersistentId,
-	CommentEditor,
-	type UseCommentEditor,
-} from "../editor";
+import { clearPersistentId, CommentEditor, type UseCommentEditor } from "../editor";
 import { Spinner } from "../spinner";
 import { updateCommentList } from "../../utils/comment-list";
 import { syncComments } from "../../utils/comment-manager";
@@ -45,9 +35,7 @@ export const CreateForm = forwardRef<
 			}),
 		{
 			onSuccess: (data) => {
-				updateCommentList([data.page, data.threadId], (v) =>
-					v ? [data, ...v] : undefined,
-				);
+				updateCommentList([data.page, data.threadId], (v) => (v ? [data, ...v] : undefined));
 				syncComments([data]);
 				editorRef.current?.commands.clearContent(true);
 			},
@@ -76,9 +64,7 @@ export const CreateForm = forwardRef<
 			className={cn("relative", props.className)}
 		>
 			{mutation.error ? (
-				<p className="text-sm text-fc-danger p-4">
-					{(mutation.error as FetcherError).message}
-				</p>
+				<p className="text-sm text-fc-danger p-4">{(mutation.error as FetcherError).message}</p>
 			) : null}
 			<CommentEditor
 				persistentId="create"
@@ -104,11 +90,7 @@ export const CreateForm = forwardRef<
 						disabled={disabled || isEmpty}
 						type="submit"
 					>
-						{mutation.isMutating ? (
-							<Spinner />
-						) : (
-							<SendHorizonalIcon className="size-4" />
-						)}
+						{mutation.isMutating ? <Spinner /> : <SendHorizonalIcon className="size-4" />}
 					</button>
 				) : (
 					<AuthButton

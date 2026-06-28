@@ -21,8 +21,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function useAuthContext(): AuthContextType {
 	const auth = useContext(AuthContext);
 
-	if (!auth)
-		throw new Error("Components must be wrapped under <CommentsProvider />");
+	if (!auth) throw new Error("Components must be wrapped under <CommentsProvider />");
 	return auth;
 }
 

@@ -1,12 +1,7 @@
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { forwardRef } from "react";
 import { cn } from "./utils/cn";
-import {
-	CommentsProvider,
-	CommentsPost,
-	CommentsList,
-	type CommentsProviderProps,
-} from "./atom";
+import { CommentsProvider, CommentsPost, CommentsList, type CommentsProviderProps } from "./atom";
 
 export type CommentsProps = Omit<
 	HTMLAttributes<HTMLDivElement>,
@@ -30,28 +25,9 @@ interface InnerProps {
 }
 
 export const Comments = forwardRef<HTMLDivElement, CommentsProps>(
-	(
-		{
-			page,
-			className,
-			title,
-			storage,
-			editor,
-			mention,
-			auth,
-			apiUrl,
-			...props
-		},
-		ref,
-	) => {
+	({ page, className, title, storage, editor, mention, auth, apiUrl, ...props }, ref) => {
 		return (
-			<CommentsProvider
-				page={page}
-				apiUrl={apiUrl}
-				auth={auth}
-				storage={storage}
-				mention={mention}
-			>
+			<CommentsProvider page={page} apiUrl={apiUrl} auth={auth} storage={storage} mention={mention}>
 				<div
 					className={cn(
 						"overflow-hidden rounded-xl border border-fc-border bg-fc-background text-fc-foreground",

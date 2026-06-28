@@ -8,11 +8,7 @@ import {
 	type ButtonHTMLAttributes,
 } from "react";
 import { CommentsProvider as Provider } from "./contexts/comments";
-import {
-	AuthProvider,
-	type AuthOptions,
-	useAuthContext,
-} from "./contexts/auth";
+import { AuthProvider, type AuthOptions, useAuthContext } from "./contexts/auth";
 import { cn } from "./utils/cn";
 import { CreateForm } from "./components/comment/create-form";
 import { CommentList } from "./components/comment/list";
@@ -59,11 +55,9 @@ export function CommentsProvider({
 		[page, apiUrl],
 	);
 
-	if (mention)
-		child = <MentionProvider mention={mention}>{child}</MentionProvider>;
+	if (mention) child = <MentionProvider mention={mention}>{child}</MentionProvider>;
 
-	if (storage)
-		child = <StorageProvider storage={storage}>{child}</StorageProvider>;
+	if (storage) child = <StorageProvider storage={storage}>{child}</StorageProvider>;
 
 	return (
 		<Provider value={context}>
@@ -76,22 +70,19 @@ export function CommentsProvider({
 
 export const CommentsPost = CreateForm;
 
-export const CommentsList = forwardRef<
-	HTMLDivElement,
-	HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
-	return (
-		<div className={cn("flex flex-col", className)} ref={ref} {...props}>
-			<CommentList />
-		</div>
-	);
-});
+export const CommentsList = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+	({ className, ...props }, ref) => {
+		return (
+			<div className={cn("flex flex-col", className)} ref={ref} {...props}>
+				<CommentList />
+			</div>
+		);
+	},
+);
 
 CommentsList.displayName = "CommentsList";
 
-export function AuthButton(
-	props: ButtonHTMLAttributes<HTMLButtonElement>,
-): React.ReactNode {
+export function AuthButton(props: ButtonHTMLAttributes<HTMLButtonElement>): React.ReactNode {
 	const { signIn } = useAuthContext();
 
 	if (typeof signIn === "function")

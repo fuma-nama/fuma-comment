@@ -19,34 +19,24 @@ const comment = CustomComment<TanstackRequest>({
 	},
 });
 
-async function endpoint({
-	request,
-	params,
-}: {
-	request: Request;
-	params: Record<string, string>;
-}) {
-	const res = await comment.handleRequest(
-		request.method,
-		params._splat,
-		(params) => {
-			const headers = new Map();
+async function endpoint({ request, params }: { request: Request; params: Record<string, string> }) {
+	const res = await comment.handleRequest(request.method, params._splat, (params) => {
+		const headers = new Map();
 
-			request.headers.forEach((value, key) => {
-				headers.set(key, value);
-			});
+		request.headers.forEach((value, key) => {
+			headers.set(key, value);
+		});
 
-			return {
-				method: request.method,
-				body() {
-					return request.json();
-				},
-				headers,
-				params,
-				queryParams: new URL(request.url).searchParams,
-			};
-		},
-	);
+		return {
+			method: request.method,
+			body() {
+				return request.json();
+			},
+			headers,
+			params,
+			queryParams: new URL(request.url).searchParams,
+		};
+	});
 
 	if (!res) {
 		return new Response("Not Found", {

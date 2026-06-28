@@ -24,11 +24,7 @@ const rateVariants = cva(
 	},
 );
 
-export function Actions({
-	canReply = false,
-}: {
-	canReply?: boolean;
-}): React.ReactNode {
+export function Actions({ canReply = false }: { canReply?: boolean }): React.ReactNode {
 	const { fetcher } = useCommentsContext();
 	const { comment, isReplying, setReply } = useCommentContext();
 	const editorRef = useRef<UseCommentEditor | undefined>(undefined);
@@ -115,14 +111,8 @@ export function Actions({
 						aria-describedby="reply-description"
 						onOpenAutoFocus={(e) => e.preventDefault()}
 					>
-						<DialogTitle className="sr-only">
-							Replying to {comment.author.name}
-						</DialogTitle>
-						<ReplyForm
-							editorRef={editorRef}
-							comment={comment}
-							onCancel={() => setReply(false)}
-						/>
+						<DialogTitle className="sr-only">Replying to {comment.author.name}</DialogTitle>
+						<ReplyForm editorRef={editorRef} comment={comment} onCancel={() => setReply(false)} />
 					</DialogContent>
 				</Dialog>
 			) : null}

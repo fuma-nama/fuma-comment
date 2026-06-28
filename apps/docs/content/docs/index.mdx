@@ -24,17 +24,17 @@ import { signIn } from "next-auth/react";
 import { Comments } from "@fuma-comment/react";
 
 export function CommentsWithAuth() {
-  return (
-    <Comments
-      // comments are grouped by page
-      page="default"
-      auth={{
-        type: "api",
-        // function to sign in
-        signIn: () => void signIn("github"),
-      }}
-    />
-  );
+	return (
+		<Comments
+			// comments are grouped by page
+			page="default"
+			auth={{
+				type: "api",
+				// function to sign in
+				signIn: () => void signIn("github"),
+			}}
+		/>
+	);
 }
 ```
 
@@ -75,11 +75,11 @@ Fuma Comment has built-in support for multiple ORMs, you can copy the required s
 
 ```json doc-gen:file
 {
-  "file": "../../packages/server/src/db/schema.drizzle.ts",
-  "codeblock": {
-    "lang": "ts",
-    "meta": "title=\"lib/schema.ts\""
-  }
+	"file": "../../packages/server/src/db/schema.drizzle.ts",
+	"codeblock": {
+		"lang": "ts",
+		"meta": "title=\"lib/schema.ts\""
+	}
 }
 ```
 
@@ -88,15 +88,15 @@ import { createDrizzleAdapter } from "@fuma-comment/server/adapters/drizzle";
 import { comments, rates, roles, user } from "@/lib/schema";
 
 const storage = createDrizzleAdapter({
-  db,
-  schemas: {
-    comments,
-    rates,
-    roles,
-    user,
-  },
-  // Use tables created by your auth provider
-  auth: "next-auth" | "better-auth",
+	db,
+	schemas: {
+		comments,
+		rates,
+		roles,
+		user,
+	},
+	// Use tables created by your auth provider
+	auth: "next-auth" | "better-auth",
 });
 ```
 
@@ -106,11 +106,11 @@ const storage = createDrizzleAdapter({
 
 ```json doc-gen:file
 {
-  "file": "../../packages/server/src/db/schema.prisma",
-  "codeblock": {
-    "lang": "prisma",
-    "meta": "title=\"schema.prisma\""
-  }
+	"file": "../../packages/server/src/db/schema.prisma",
+	"codeblock": {
+		"lang": "prisma",
+		"meta": "title=\"schema.prisma\""
+	}
 }
 ```
 
@@ -118,9 +118,9 @@ const storage = createDrizzleAdapter({
 import { createPrismaAdapter } from "@fuma-comment/server/adapters/prisma";
 
 const storage = createPrismaAdapter({
-  db: prisma,
-  // Use tables created by your auth provider
-  auth: "next-auth" | "better-auth",
+	db: prisma,
+	// Use tables created by your auth provider
+	auth: "next-auth" | "better-auth",
 });
 ```
 
@@ -165,9 +165,9 @@ Create `app/api/comments/[[...comment]]/route.ts`.
 import { NextComment } from "@fuma-comment/server/next";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
-  // import from comment.config.ts
-  auth,
-  storage,
+	// import from comment.config.ts
+	auth,
+	storage,
 });
 ```
 
@@ -194,18 +194,18 @@ import Elysia from "elysia";
 import { commentPlugin } from "@fuma-comment/server/elysia";
 
 const app = new Elysia()
-  .use(
-    commentPlugin({
-      // pass your adapters
-      auth,
-      storage,
-      elysia: {
-        // or other prefix if you wanted
-        prefix: "/api/comments",
-      },
-    }),
-  )
-  .listen(8080);
+	.use(
+		commentPlugin({
+			// pass your adapters
+			auth,
+			storage,
+			elysia: {
+				// or other prefix if you wanted
+				prefix: "/api/comments",
+			},
+		}),
+	)
+	.listen(8080);
 
 const res = await fetch("http://localhost:8080/api/comments/page");
 

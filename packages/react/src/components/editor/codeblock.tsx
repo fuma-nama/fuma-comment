@@ -1,23 +1,13 @@
 import type { Editor } from "@tiptap/react";
 import { SquareCode } from "lucide-react";
-import {
-	useEffect,
-	useEffectEvent,
-	useMemo,
-	useState,
-	type ComponentProps,
-} from "react";
+import { useEffect, useEffectEvent, useMemo, useState, type ComponentProps } from "react";
 import { useHookUpdate, toggleVariants } from ".";
 import { cn } from "../../utils/cn";
 import { lowlight } from "../../utils/highlighter";
 import { inputVariants } from "../input";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
 
-export default function CodeBlockButton({
-	editor,
-}: {
-	editor: Editor;
-}): React.ReactNode {
+export default function CodeBlockButton({ editor }: { editor: Editor }): React.ReactNode {
 	const [isOpen, setIsOpen] = useState(false);
 	useHookUpdate(editor);
 
@@ -53,9 +43,7 @@ function CodeBlockForm({
 	const items = useMemo(() => {
 		const normalized = search.toLowerCase();
 
-		return lowlight
-			.listLanguages()
-			.filter((item) => item.toLowerCase().includes(normalized));
+		return lowlight.listLanguages().filter((item) => item.toLowerCase().includes(normalized));
 	}, [search]);
 
 	function onSelect(value: string) {

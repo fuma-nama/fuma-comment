@@ -62,9 +62,7 @@ export default async function Page({
 }
 
 function LatestComments(): ReactNode {
-	return (
-		<CommentsList className="-mx-2 flex max-h-[400px] flex-col gap-2 overflow-auto" />
-	);
+	return <CommentsList className="-mx-2 flex max-h-[400px] flex-col gap-2 overflow-auto" />;
 }
 
 async function Summary({ type }: { type: SummaryType }): Promise<ReactElement> {
@@ -103,9 +101,7 @@ async function Summary({ type }: { type: SummaryType }): Promise<ReactElement> {
 	}));
 
 	for (const item of result) {
-		const i = Math.floor(
-			(item.timestamp.getTime() - start.getTime()) / unit + 0.5,
-		);
+		const i = Math.floor((item.timestamp.getTime() - start.getTime()) / unit + 0.5);
 
 		data[i].count++;
 	}

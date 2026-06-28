@@ -1,8 +1,4 @@
-import {
-	getServerSession,
-	type Session,
-	type NextAuthOptions,
-} from "next-auth";
+import { getServerSession, type Session, type NextAuthOptions } from "next-auth";
 import type { AuthAdapter } from "../adapter";
 import type { CustomRequest } from "../custom";
 

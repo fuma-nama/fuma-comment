@@ -80,24 +80,18 @@ export async function getSponsors(): Promise<Sponsor[]> {
       }
     `);
 
-		const sponsors = response.user.sponsorshipsAsMaintainer.nodes.map(
-			(node) => ({
-				login: node.sponsorEntity.login,
-				avatarUrl: node.sponsorEntity.avatarUrl,
-				name: node.sponsorEntity.name || node.sponsorEntity.login,
-				tier: {
-					monthlyPriceInDollars: node.tier.monthlyPriceInDollars,
-					name: tiers.find(
-						(tier) => node.tier.monthlyPriceInDollars >= tier.min,
-					)?.name,
-				},
-			}),
-		);
+		const sponsors = response.user.sponsorshipsAsMaintainer.nodes.map((node) => ({
+			login: node.sponsorEntity.login,
+			avatarUrl: node.sponsorEntity.avatarUrl,
+			name: node.sponsorEntity.name || node.sponsorEntity.login,
+			tier: {
+				monthlyPriceInDollars: node.tier.monthlyPriceInDollars,
+				name: tiers.find((tier) => node.tier.monthlyPriceInDollars >= tier.min)?.name,
+			},
+		}));
 
 		// Sort sponsors by tier price in descending order
-		return sponsors.sort(
-			(a, b) => b.tier.monthlyPriceInDollars - a.tier.monthlyPriceInDollars,
-		);
+		return sponsors.sort((a, b) => b.tier.monthlyPriceInDollars - a.tier.monthlyPriceInDollars);
 	} catch (error) {
 		console.error("Error fetching sponsors:", error);
 		throw error;

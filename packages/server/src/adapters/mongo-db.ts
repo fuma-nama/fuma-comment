@@ -51,15 +51,7 @@ export function createMongoDBAdapter({
 			: options.auth;
 
 	return {
-		async getComments({
-			sort,
-			page,
-			after,
-			thread,
-			before,
-			limit,
-			...options
-		}) {
+		async getComments({ sort, page, after, thread, before, limit, ...options }) {
 			const result = await db
 				.collection<CommentType>(CommentCollection)
 				.aggregate<
@@ -74,6 +66,12 @@ export function createMongoDBAdapter({
 						$match: {
 							page,
 							thread: thread ? new ObjectId(thread) : null,
+							...((before || after) && {
+								timestamp: {
+									...(before && { $lt: before }),
+									...(after && { $gt: after }),
+								},
+							}),
 						},
 					},
 					{
@@ -166,9 +164,7 @@ export function createMongoDBAdapter({
 				thread: options.body.thread ? new ObjectId(options.body.thread) : null,
 			};
 
-			const result = await db
-				.collection<CommentType>(CommentCollection)
-				.insertOne(value);
+			const result = await db.collection<CommentType>(CommentCollection).insertOne(value);
 			const { thread, ...rest } = value;
 
 			return {
@@ -225,11 +221,9 @@ export function createMongoDBAdapter({
 			});
 		},
 		async getCommentAuthor(options) {
-			const result = await db
-				.collection<CommentType>(CommentCollection)
-				.findOne({
-					_id: new ObjectId(options.id),
-				});
+			const result = await db.collection<CommentType>(CommentCollection).findOne({
+				_id: new ObjectId(options.id),
+			});
 			return result?.author ?? null;
 		},
 		async getRole(options) {
@@ -247,8 +241,7 @@ function createGenericProvider(
 	auth: "better-auth" | "next-auth",
 	collections: AuthCollections = {},
 ): StorageAuthProvider {
-	const { UserCollection = auth === "better-auth" ? "user" : "users" } =
-		collections;
+	const { UserCollection = auth === "better-auth" ? "user" : "users" } = collections;
 
 	const idField = auth === "better-auth" ? "_id" : "email";
 	const Users = db.collection(UserCollection);
@@ -257,8 +250,7 @@ function createGenericProvider(
 		async getUsers(userIds) {
 			const result = await Users.find({
 				[idField]: {
-					$in:
-						idField === "_id" ? userIds.map((v) => new ObjectId(v)) : userIds,
+					$in: idField === "_id" ? userIds.map((v) => new ObjectId(v)) : userIds,
 				},
 			}).toArray();
 

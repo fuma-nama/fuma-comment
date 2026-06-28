@@ -71,8 +71,7 @@ export const MentionList = forwardRef<
 					type="button"
 					className={cn(
 						"px-3 py-1.5 text-left font-medium",
-						index === selectedIndex &&
-							"bg-fc-primary text-fc-primary-foreground",
+						index === selectedIndex && "bg-fc-primary text-fc-primary-foreground",
 					)}
 					key={item.id}
 					onClick={() => {
@@ -82,9 +81,7 @@ export const MentionList = forwardRef<
 					{item.label}
 				</button>
 			))}
-			{query.data?.length === 0 && (
-				<p className="p-3 text-fc-muted-foreground">No result</p>
-			)}
+			{query.data?.length === 0 && <p className="p-3 text-fc-muted-foreground">No result</p>}
 			{!query.data ? (
 				<div className="flex flex-row items-center gap-1.5 p-3 text-fc-muted-foreground">
 					<Spinner className="size-4" />

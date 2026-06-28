@@ -6,21 +6,14 @@ interface AvatarProps extends HTMLAttributes<HTMLElement> {
 	placeholder?: string;
 }
 
-export function Avatar({
-	image,
-	placeholder = "avatar",
-	...props
-}: AvatarProps): ReactNode {
+export function Avatar({ image, placeholder = "avatar", ...props }: AvatarProps): ReactNode {
 	if (image) {
 		return (
 			<img
 				src={image}
 				alt={placeholder}
 				{...props}
-				className={cn(
-					"size-8 select-none rounded-full bg-fc-muted",
-					props.className,
-				)}
+				className={cn("size-8 select-none rounded-full bg-fc-muted", props.className)}
 				aria-label="avatar"
 			/>
 		);

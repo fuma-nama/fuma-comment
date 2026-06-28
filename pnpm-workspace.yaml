@@ -2,12 +2,14 @@ packages:
   - "apps/*"
   - "packages/*"
 allowBuilds:
-  '@clerk/shared': true
-  '@parcel/watcher': false
-  '@prisma/engines': true
+  "@clerk/shared": true
+  "@parcel/watcher": false
+  "@prisma/engines": true
   bufferutil: false
   esbuild: false
   msgpackr-extract: false
   prisma: true
   sharp: false
   utf-8-validate: false
+minimumReleaseAgeExclude:
+  - tegami@1.0.0-beta.2

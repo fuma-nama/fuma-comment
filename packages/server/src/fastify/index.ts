@@ -1,22 +1,12 @@
-import type {
-	FastifyInstance,
-	FastifyPluginAsync,
-	FastifyReply,
-	FastifyRequest,
-} from "fastify";
-import type {
-	CustomCommentOptions,
-	CustomRequest,
-	CustomResponse,
-} from "../custom";
+import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from "fastify";
+import type { CustomCommentOptions, CustomRequest, CustomResponse } from "../custom";
 import { CustomComment } from "../custom";
 
 type RequestType = CustomRequest & {
 	req: FastifyRequest;
 };
 
-export interface FastifyCommentOptions
-	extends CustomCommentOptions<RequestType> {
+export interface FastifyCommentOptions extends CustomCommentOptions<RequestType> {
 	app: FastifyInstance;
 	/**
 	 * Base URL of API endpoints
@@ -35,14 +25,9 @@ export function FastifyComment(options: FastifyCommentOptions): void {
 		const fn = methods[key as keyof typeof methods];
 		const [method, path] = key.split(" ");
 
-		const pathWithBase = [
-			...(options.baseUrl ?? "").split("/"),
-			...path.split("/"),
-		]
+		const pathWithBase = [...(options.baseUrl ?? "").split("/"), ...path.split("/")]
 			.filter((v) => v.length > 0)
-			.map((v) =>
-				v.startsWith("[") && v.endsWith("]") ? `:${v.slice(1, -1)}` : v,
-			)
+			.map((v) => (v.startsWith("[") && v.endsWith("]") ? `:${v.slice(1, -1)}` : v))
 			.join("/");
 
 		app.route({
@@ -56,9 +41,7 @@ export function FastifyComment(options: FastifyCommentOptions): void {
 	}
 }
 
-export function commentPlugin(
-	options: Omit<FastifyCommentOptions, "app">,
-): FastifyPluginAsync {
+export function commentPlugin(options: Omit<FastifyCommentOptions, "app">): FastifyPluginAsync {
 	return async (app) => {
 		FastifyComment({ ...options, app });
 	};
@@ -77,13 +60,10 @@ function readRequest(req: FastifyRequest): RequestType {
 		},
 		queryParams: {
 			get(key) {
-				const parsed = (
-					req.query as Record<string, string | string[] | undefined>
-				)[key];
+				const parsed = (req.query as Record<string, string | string[] | undefined>)[key];
 				if (
 					typeof parsed === "string" ||
-					(Array.isArray(parsed) &&
-						parsed.every((item) => typeof item === "string"))
+					(Array.isArray(parsed) && parsed.every((item) => typeof item === "string"))
 				)
 					return parsed;
 			},

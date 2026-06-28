@@ -16,16 +16,14 @@ export function createUploadThingStorage(): StorageContext {
 			const img = new Image();
 			img.src = URL.createObjectURL(file);
 
-			const size = await new Promise<{ width: number; height: number }>(
-				(resolve) => {
-					img.onload = () => {
-						resolve({
-							width: img.width,
-							height: img.height,
-						});
-					};
-				},
-			);
+			const size = await new Promise<{ width: number; height: number }>((resolve) => {
+				img.onload = () => {
+					resolve({
+						width: img.width,
+						height: img.height,
+					});
+				};
+			});
 
 			URL.revokeObjectURL(img.src);
 

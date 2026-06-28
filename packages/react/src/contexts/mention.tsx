@@ -14,10 +14,7 @@ export interface MentionContextType {
 	 *
 	 * When not specified, fetch from API endpoints.
 	 */
-	query: (
-		text: string,
-		options: { page: string },
-	) => MentionItem[] | Promise<MentionItem[]>;
+	query: (text: string, options: { page: string }) => MentionItem[] | Promise<MentionItem[]>;
 }
 
 const MentionContext = createContext<MentionContextType>({
@@ -33,14 +30,12 @@ export function MentionProvider({
 	children: ReactNode;
 }): ReactNode {
 	const { fetcher } = useCommentsContext();
-	const query = useLatestCallback<MentionContextType["query"]>(
-		async (name, options) => {
-			if (mention.query) void mention.query(name, options);
+	const query = useLatestCallback<MentionContextType["query"]>(async (name, options) => {
+		if (mention.query) void mention.query(name, options);
 
-			const res = await fetcher.queryUsers({ name, page: options.page });
-			return res.map((user) => ({ label: user.name, id: user.id }));
-		},
-	);
+		const res = await fetcher.queryUsers({ name, page: options.page });
+		return res.map((user) => ({ label: user.name, id: user.id }));
+	});
 
 	const value = useMemo<MentionContextType>(
 		() => ({
@@ -50,9 +45,7 @@ export function MentionProvider({
 		[mention.enabled, query],
 	);
 
-	return (
-		<MentionContext.Provider value={value}>{children}</MentionContext.Provider>
-	);
+	return <MentionContext.Provider value={value}>{children}</MentionContext.Provider>;
 }
 
 export function useMention(): MentionContextType {

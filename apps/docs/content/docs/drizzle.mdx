@@ -9,8 +9,8 @@ Add schemas:
 
 ```json doc-gen:file
 {
-  "file": "../../packages/server/src/db/schema.drizzle.ts",
-  "codeblock": true
+	"file": "../../packages/server/src/db/schema.drizzle.ts",
+	"codeblock": true
 }
 ```
 
@@ -22,13 +22,13 @@ import { db } from "@/lib/database";
 import { comments, rates, roles, user } from "@/lib/schema";
 
 const storage = createDrizzleAdapter({
-  db,
-  auth: "next-auth" | "better-auth",
-  schemas: {
-    comments,
-    rates,
-    roles,
-    user,
-  },
+	db,
+	auth: "next-auth" | "better-auth",
+	schemas: {
+		comments,
+		rates,
+		roles,
+		user,
+	},
 });
 ```

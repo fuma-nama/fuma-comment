@@ -1,13 +1,6 @@
 "use client";
 import type { ReactNode } from "react";
-import {
-	Bar,
-	BarChart,
-	ResponsiveContainer,
-	Tooltip,
-	XAxis,
-	YAxis,
-} from "recharts";
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export function Chart({ data }: { data: unknown[] }): ReactNode {
 	return (
@@ -18,17 +11,8 @@ export function Chart({ data }: { data: unknown[] }): ReactNode {
 				data={data}
 				margin={{ top: 0, right: 4, left: 0, bottom: 0 }}
 			>
-				<Bar
-					type="monotone"
-					dataKey="count"
-					fill="var(--color-fc-primary)"
-					radius={[8, 8, 0, 0]}
-				/>
-				<XAxis
-					dataKey="time"
-					fontSize={13}
-					stroke="var(--color-fc-muted-foreground)"
-				/>
+				<Bar type="monotone" dataKey="count" fill="var(--color-fc-primary)" radius={[8, 8, 0, 0]} />
+				<XAxis dataKey="time" fontSize={13} stroke="var(--color-fc-muted-foreground)" />
 				<YAxis
 					allowDecimals={false}
 					stroke="var(--color-fc-muted-foreground)"

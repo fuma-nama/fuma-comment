@@ -18,8 +18,8 @@ For example, on Next.js:
 import { NextComment } from "@fuma-comment/server/next";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
-  role: "database",
-  // other options
+	role: "database",
+	// other options
 });
 ```
 
@@ -36,12 +36,12 @@ You can define a custom function to fetch user info alone with their role inform
 import { NextComment } from "@fuma-comment/server/next";
 
 export const { GET, DELETE, PATCH, POST } = NextComment({
-  role: "auth",
-  auth: {
-    async getSessionWithRole(req, { page }) {
-      // ...
-    },
-  },
-  // other options
+	role: "auth",
+	auth: {
+		async getSessionWithRole(req, { page }) {
+			// ...
+		},
+	},
+	// other options
 });
 ```

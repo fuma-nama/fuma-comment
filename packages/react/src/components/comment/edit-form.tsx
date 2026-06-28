@@ -7,19 +7,11 @@ import { useCommentContext } from "../../contexts/comment";
 import { updateComment } from "../../utils/comment-manager";
 import { useLatestCallback } from "../../utils/hooks";
 import { buttonVariants } from "../button";
-import {
-	clearPersistentId,
-	CommentEditor,
-	type UseCommentEditor,
-} from "../editor";
+import { clearPersistentId, CommentEditor, type UseCommentEditor } from "../editor";
 import { Spinner } from "../spinner";
 import { useCommentsContext } from "../../contexts/comments";
 
-export function EditForm({
-	onClose,
-}: {
-	onClose: () => void;
-}): React.ReactNode {
+export function EditForm({ onClose }: { onClose: () => void }): React.ReactNode {
 	const [isEmpty, setIsEmpty] = useState(false);
 	const { comment, editorRef } = useCommentContext();
 	const { fetcher } = useCommentsContext();

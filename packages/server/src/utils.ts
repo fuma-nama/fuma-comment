@@ -1,9 +1,6 @@
 import type { Content } from "./types";
 
-type Serializers = Record<
-	string,
-	(content: Content, children: string) => string
->;
+type Serializers = Record<string, (content: Content, children: string) => string>;
 
 const defaultSerializers: Serializers = {
 	text: (content) => {
@@ -14,18 +11,12 @@ const defaultSerializers: Serializers = {
 	},
 };
 
-export function getTextFromContent(
-	content: Content,
-	customSerializer?: Serializers,
-): string {
+export function getTextFromContent(content: Content, customSerializer?: Serializers): string {
 	const serializers = { ...defaultSerializers, ...customSerializer };
-	const child = (
-		content.content?.map((c) => getTextFromContent(c, customSerializer)) ?? []
-	)
+	const child = (content.content?.map((c) => getTextFromContent(c, customSerializer)) ?? [])
 		.join("")
 		.trimEnd();
 
-	if (content.type in serializers)
-		return serializers[content.type](content, child);
+	if (content.type in serializers) return serializers[content.type](content, child);
 	return child;
 }

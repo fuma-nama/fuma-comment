@@ -9,8 +9,7 @@ const menuItemVariants = cva(
 		variants: {
 			variant: {
 				destructive: "text-fc-danger data-[highlighted]:bg-fc-danger/10",
-				default:
-					"data-[highlighted]:bg-fc-accent data-[highlighted]:text-fc-accent-foreground",
+				default: "data-[highlighted]:bg-fc-accent data-[highlighted]:text-fc-accent-foreground",
 			},
 		},
 		defaultVariants: {
@@ -23,22 +22,17 @@ const menuItemsVariants = cva(
 	"flex w-56 flex-col overflow-hidden rounded-lg border border-fc-border bg-fc-popover text-sm text-fc-popover-foreground shadow-lg z-50 focus-visible:outline-none data-[state=closed]:animate-fc-fadeOut",
 );
 
-const MenuItems = forwardRef<
-	HTMLDivElement,
-	Primitive.DropdownMenuContentProps
->(({ className, ...props }, ref) => {
-	return (
-		<Primitive.Portal>
-			<Primitive.Content
-				className={cn(menuItemsVariants({ className }))}
-				ref={ref}
-				{...props}
-			>
-				{props.children}
-			</Primitive.Content>
-		</Primitive.Portal>
-	);
-});
+const MenuItems = forwardRef<HTMLDivElement, Primitive.DropdownMenuContentProps>(
+	({ className, ...props }, ref) => {
+		return (
+			<Primitive.Portal>
+				<Primitive.Content className={cn(menuItemsVariants({ className }))} ref={ref} {...props}>
+					{props.children}
+				</Primitive.Content>
+			</Primitive.Portal>
+		);
+	},
+);
 
 MenuItems.displayName = "MenuItems";
 
@@ -47,11 +41,7 @@ const MenuItem = forwardRef<
 	Primitive.DropdownMenuItemProps & VariantProps<typeof menuItemVariants>
 >(({ className, variant, ...props }, ref) => {
 	return (
-		<Primitive.Item
-			className={cn(menuItemVariants({ className, variant }))}
-			ref={ref}
-			{...props}
-		>
+		<Primitive.Item className={cn(menuItemVariants({ className, variant }))} ref={ref} {...props}>
 			{props.children}
 		</Primitive.Item>
 	);

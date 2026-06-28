@@ -1,10 +1,6 @@
 import { type ComponentProps, type FC, useRef, useState } from "react";
 import useSWRImmutable from "swr/immutable";
-import {
-	Collapsible,
-	CollapsibleContent,
-	CollapsibleTrigger,
-} from "@radix-ui/react-collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@radix-ui/react-collapsible";
 import { ChevronDown } from "lucide-react";
 import { getCommentsKey } from "../../utils/fetcher";
 import { cn } from "../../utils/cn";
@@ -58,8 +54,7 @@ export function CommentList({
 			thread: threadId,
 			page,
 			sort: isSubThread ? "oldest" : "newest",
-			[isSubThread ? "after" : "before"]:
-				typeof cursor === "number" ? new Date(cursor) : undefined,
+			[isSubThread ? "after" : "before"]: typeof cursor === "number" ? new Date(cursor) : undefined,
 			limit: count,
 		}),
 		([_, options]) => fetcher.fetchComments(options),
@@ -74,9 +69,7 @@ export function CommentList({
 	return (
 		<div ref={ref} {...props} className={cn("flex flex-col", props.className)}>
 			{!query.isLoading && cursor === undefined && list.length === 0 && (
-				<p className="mx-auto my-4 text-center text-sm text-fc-muted-foreground">
-					No comments
-				</p>
+				<p className="mx-auto my-4 text-center text-sm text-fc-muted-foreground">No comments</p>
 			)}
 			{list.map((reply) => (
 				<Comment key={reply.id} comment={reply} />
@@ -92,8 +85,7 @@ export function CommentList({
 						}),
 					)}
 					onClick={() => {
-						if (list.length > 0)
-							setCursor(new Date(list[list.length - 1].timestamp).getTime());
+						if (list.length > 0) setCursor(new Date(list[list.length - 1].timestamp).getTime());
 					}}
 				>
 					Load More
@@ -120,14 +112,11 @@ export function Replies(): React.ReactNode {
 				buttonVariants({
 					variant: "ghost",
 					size: "medium",
-					className:
-						"w-full text-start justify-start gap-2 pl-13.5 bg-fc-card rounded-none",
+					className: "w-full text-start justify-start gap-2 pl-13.5 bg-fc-card rounded-none",
 				}),
 			)}
 		>
-			<ChevronDown
-				className={cn("size-4 transition-transform", open && "rotate-180")}
-			/>
+			<ChevronDown className={cn("size-4 transition-transform", open && "rotate-180")} />
 			{comment.replies} Replies
 		</button>
 	);
@@ -143,17 +132,11 @@ export function Replies(): React.ReactNode {
 						isSubThread
 						className="flex-1 -mx-4 overflow-y-auto"
 						components={{
-							Comment: ({ comment }) => (
-								<Comment comment={comment} actions={<Actions />} />
-							),
+							Comment: ({ comment }) => <Comment comment={comment} actions={<Actions />} />,
 						}}
 					/>
 					{auth.isLoading || auth.session ? (
-						<ReplyForm
-							comment={comment}
-							editorRef={editorRef}
-							className="bg-fc-popover"
-						/>
+						<ReplyForm comment={comment} editorRef={editorRef} className="bg-fc-popover" />
 					) : null}
 				</DialogContent>
 			</Dialog>
@@ -169,11 +152,7 @@ export function Replies(): React.ReactNode {
 					isSubThread
 					components={{
 						Comment: ({ comment }) => (
-							<Comment
-								comment={comment}
-								actions={<Actions canReply />}
-								className="ml-10"
-							/>
+							<Comment comment={comment} actions={<Actions canReply />} className="ml-10" />
 						),
 					}}
 				/>

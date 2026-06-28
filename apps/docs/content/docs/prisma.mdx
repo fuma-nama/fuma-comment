@@ -9,8 +9,8 @@ Add schemas:
 
 ```json doc-gen:file
 {
-  "file": "../../packages/server/src/db/schema.prisma",
-  "codeblock": true
+	"file": "../../packages/server/src/db/schema.prisma",
+	"codeblock": true
 }
 ```
 
@@ -20,7 +20,7 @@ Add to your Fuma Comment config:
 import { createPrismaAdapter } from "@fuma-comment/server/adapters/prisma";
 
 const storage = createPrismaAdapter({
-  db: prisma,
-  auth: "next-auth" | "better-auth",
+	db: prisma,
+	auth: "next-auth" | "better-auth",
 });
 ```

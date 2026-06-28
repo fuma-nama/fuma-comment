@@ -1,11 +1,15 @@
 {
 	"name": "@fuma-comment/server",
 	"version": "1.5.0",
-	"author": "Fuma Nama",
 	"homepage": "https://fuma-comment.vercel.app",
+	"license": "MIT",
+	"author": "Fuma Nama",
 	"repository": "https://github.com/fuma-nama/fuma-comment",
-	"types": "./dist/index.d.ts",
+	"files": [
+		"./dist"
+	],
 	"type": "module",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		".": "./dist/index.js",
 		"./adapters/better-auth": "./dist/adapters/better-auth.js",
@@ -24,15 +28,17 @@
 		"./next": "./dist/next/index.js",
 		"./package.json": "./package.json"
 	},
-	"files": [
-		"./dist"
-	],
-	"license": "MIT",
+	"publishConfig": {
+		"access": "public"
+	},
 	"scripts": {
 		"build": "tsdown",
 		"test": "vitest run",
 		"dev": "tsdown --watch",
 		"check:types": "tsc --noEmit"
+	},
+	"dependencies": {
+		"zod": "^4.4.3"
 	},
 	"devDependencies": {
 		"@clerk/backend": "^3.8.4",
@@ -52,10 +58,10 @@
 		"mongodb": "^7.4.0",
 		"next": "^16.2.9",
 		"next-auth": "^4.24.14",
+		"path-to-regexp": "^8.4.2",
 		"tsconfig": "workspace:*",
 		"tsdown": "^0.22.3",
 		"typescript": "^6.0.3",
-		"path-to-regexp": "^8.3.0",
 		"vitest": "^4.1.9"
 	},
 	"peerDependencies": {
@@ -98,12 +104,6 @@
 		"fumadb": {
 			"optional": true
 		}
-	},
-	"dependencies": {
-		"zod": "^4.4.3"
-	},
-	"publishConfig": {
-		"access": "public"
 	},
 	"inlinedDependencies": {
 		"path-to-regexp": "8.3.0"

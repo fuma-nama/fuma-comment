@@ -8,9 +8,6 @@ export const docs = defineDocs({
 
 export default defineConfig({
 	mdxOptions: {
-		remarkPlugins: [
-			remarkInstall,
-			[remarkDocGen, { generators: [fileGenerator()] }],
-		],
+		remarkPlugins: [remarkInstall, [remarkDocGen, { generators: [fileGenerator()] }]],
 	},
 });

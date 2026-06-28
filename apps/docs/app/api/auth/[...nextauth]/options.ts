@@ -4,9 +4,7 @@ import GithubProvider, { type GithubProfile } from "next-auth/providers/github";
 import { z } from "zod";
 import { prisma } from "@/utils/database";
 
-const env = z
-	.object({ GITHUB_ID: z.string(), GITHUB_SECRET: z.string() })
-	.parse(process.env);
+const env = z.object({ GITHUB_ID: z.string(), GITHUB_SECRET: z.string() }).parse(process.env);
 
 declare module "next-auth" {
 	export interface Session {

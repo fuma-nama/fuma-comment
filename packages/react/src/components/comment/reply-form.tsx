@@ -1,21 +1,11 @@
 import useSWRMutation from "swr/mutation";
-import {
-	type HTMLAttributes,
-	type ReactNode,
-	type RefObject,
-	useCallback,
-	useState,
-} from "react";
+import { type HTMLAttributes, type ReactNode, type RefObject, useCallback, useState } from "react";
 import { cn } from "../../utils/cn";
 import { type FetcherError, getCommentsKey } from "../../utils/fetcher";
 import { onCommentReplied } from "../../utils/comment-manager";
 import { useLatestCallback } from "../../utils/hooks";
 import { buttonVariants } from "../button";
-import {
-	clearPersistentId,
-	CommentEditor,
-	type UseCommentEditor,
-} from "../editor";
+import { clearPersistentId, CommentEditor, type UseCommentEditor } from "../editor";
 import { Spinner } from "../spinner";
 import { useCommentsContext } from "../../contexts/comments";
 import type { SerializedComment } from "@fuma-comment/server";
@@ -72,9 +62,7 @@ export function ReplyForm({
 			}}
 		>
 			{mutation.error ? (
-				<p className="mb-1 text-sm text-fc-error">
-					{(mutation.error as FetcherError).message}
-				</p>
+				<p className="mb-1 text-sm text-fc-error">{(mutation.error as FetcherError).message}</p>
 			) : null}
 			<CommentEditor
 				persistentId={`reply-${comment.id}`}
@@ -97,11 +85,7 @@ export function ReplyForm({
 					disabled={mutation.isMutating || isEmpty}
 					type="submit"
 				>
-					{mutation.isMutating ? (
-						<Spinner />
-					) : (
-						<SendHorizonalIcon className="size-4" />
-					)}
+					{mutation.isMutating ? <Spinner /> : <SendHorizonalIcon className="size-4" />}
 				</button>
 			</CommentEditor>
 		</form>

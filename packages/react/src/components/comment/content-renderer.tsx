@@ -15,18 +15,11 @@ interface Mark {
 	[key: string]: unknown;
 }
 
-type BaseRenderer = (props: {
-	className: string;
-	children: ReactNode;
-}) => ReactNode;
+type BaseRenderer = (props: { className: string; children: ReactNode }) => ReactNode;
 
-export const mentionVariants = cva(
-	"rounded-md bg-fc-primary/10 p-0.5 font-medium text-fc-primary",
-);
+export const mentionVariants = cva("rounded-md bg-fc-primary/10 p-0.5 font-medium text-fc-primary");
 
-export const codeVariants = cva(
-	"rounded-sm border border-fc-border bg-fc-muted p-0.5",
-);
+export const codeVariants = cva("rounded-sm border border-fc-border bg-fc-muted p-0.5");
 
 export const codeBlockVariants = cva(
 	"relative grid rounded-sm border border-fc-border bg-fc-muted p-2 text-sm my-1.5",
@@ -165,9 +158,7 @@ function render(content: JSONContent, storage: StorageContext): ReactNode {
 		);
 	}
 
-	const joined: ReactNode[] = content.content?.map((child) =>
-		render(child, storage),
-	) ?? [" "];
+	const joined: ReactNode[] = content.content?.map((child) => render(child, storage)) ?? [" "];
 
 	if (content.type === "paragraph") {
 		return <span key={id++}>{joined}</span>;
@@ -182,11 +173,7 @@ function render(content: JSONContent, storage: StorageContext): ReactNode {
 	}
 }
 
-export function ContentRenderer({
-	content,
-}: {
-	content: JSONContent;
-}): ReactNode {
+export function ContentRenderer({ content }: { content: JSONContent }): ReactNode {
 	const ctx = useStorage();
 
 	return useMemo(() => render(content, ctx), [content, ctx]);
@@ -194,18 +181,13 @@ export function ContentRenderer({
 
 function mapChild(child: RootContent, i: number, depth: number): ReactNode {
 	if (child.type === "element" && child.tagName) {
-		const props = Object.assign(
-			{ key: "lo-" + depth + "-" + i },
-			child.properties,
-		);
+		const props = Object.assign({ key: "lo-" + depth + "-" + i }, child.properties);
 
 		if (Array.isArray(props.className)) {
 			props.className = props.className.join(" ");
 		}
 
-		const children = child.children
-			? child.children.map(mapWithDepth(depth + 1))
-			: null;
+		const children = child.children ? child.children.map(mapWithDepth(depth + 1)) : null;
 
 		return createElement(child.tagName, props, children);
 	}
@@ -214,21 +196,12 @@ function mapChild(child: RootContent, i: number, depth: number): ReactNode {
 }
 
 function mapWithDepth(depth: number) {
-	return function mapChildrenWithDepth(
-		child: RootContent,
-		i: number,
-	): ReactNode {
+	return function mapChildrenWithDepth(child: RootContent, i: number): ReactNode {
 		return mapChild(child, i, depth);
 	};
 }
 
-function CodeBlock({
-	language,
-	content,
-}: {
-	language: string;
-	content: string;
-}) {
+function CodeBlock({ language, content }: { language: string; content: string }) {
 	const rendered = useMemo(() => {
 		const ast = lowlight.highlight(
 			lowlight.registered(language) ? language : "plaintext",
@@ -257,11 +230,7 @@ function CodeBlock({
 					setTimeout(() => setCopied(false), 1000);
 				}}
 			>
-				{copied ? (
-					<CheckIcon className="size-3.5" />
-				) : (
-					<CopyIcon className="size-3.5" />
-				)}
+				{copied ? <CheckIcon className="size-3.5" /> : <CopyIcon className="size-3.5" />}
 			</button>
 		</pre>
 	);
