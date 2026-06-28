@@ -8,22 +8,22 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@clerk/nextjs": "^7.3.7",
+		"@clerk/nextjs": "^7.5.9",
 		"@fuma-comment/react": "workspace:*",
 		"@fuma-comment/server": "workspace:*",
 		"drizzle-orm": "^0.45.2",
-		"next": "16.2.4",
-		"pg": "^8.21.0",
-		"react": "^19.2.6",
-		"react-dom": "^19.2.6"
+		"next": "16.2.9",
+		"pg": "^8.22.0",
+		"react": "^19.2.7",
+		"react-dom": "^19.2.7"
 	},
 	"devDependencies": {
-		"@tailwindcss/postcss": "^4.3.0",
-		"@types/node": "^25.9.1",
-		"@types/react": "^19.2.15",
+		"@tailwindcss/postcss": "^4.3.1",
+		"@types/node": "^26.0.1",
+		"@types/react": "^19.2.17",
 		"@types/react-dom": "^19.2.3",
 		"drizzle-kit": "^0.31.10",
-		"tailwindcss": "^4.3.0",
+		"tailwindcss": "^4.3.1",
 		"typescript": "^6.0.3"
 	}
 }

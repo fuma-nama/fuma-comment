@@ -1,38 +1,36 @@
+import { match, type MatchFunction } from "path-to-regexp";
 import type { CustomCommentRouter, CustomRequest, RouteHandler } from ".";
+
+function toPathPattern(pathname: string) {
+	return pathname
+		.split("/")
+		.map((v) =>
+			v.startsWith("[") && v.endsWith("]") ? `:${v.slice(1, -1)}` : v,
+		)
+		.join("/");
+}
 
 export function convertToRequestHandler<R extends CustomRequest>(
 	methods: CustomCommentRouter<R>,
 ) {
 	let transformed: {
-		pattern: URLPattern;
+		match: MatchFunction<Record<string, string>>;
 		method: string;
 		handler: RouteHandler<R>;
 	}[];
 
-	return async (
+	return (
 		_method: string,
 		catchAll: string,
 		createRequest: (params: Map<string, string>) => R,
 	) => {
 		const method = _method.toUpperCase();
 
-		// @ts-expect-error: Property 'UrlPattern' does not exist
-		if (!globalThis.URLPattern) {
-			await import("urlpattern-polyfill");
-		}
-
 		transformed ??= Object.entries(methods).map(([key, value]) => {
 			const [method, pathname] = key.split(" ", 2);
 
 			return {
-				pattern: new URLPattern({
-					pathname: pathname
-						.split("/")
-						.map((v) =>
-							v.startsWith("[") && v.endsWith("]") ? `:${v.slice(1, -1)}` : v,
-						)
-						.join("/"),
-				}),
+				match: match(toPathPattern(pathname)),
 				method,
 				handler: value,
 			};
@@ -43,15 +41,11 @@ export function convertToRequestHandler<R extends CustomRequest>(
 
 		for (const handler of transformed) {
 			if (handler.method !== method) continue;
-			const match = handler.pattern.exec({ pathname: virtualPathname });
-			if (!match) continue;
+			const result = handler.match(virtualPathname);
+			if (!result) continue;
 
 			return handler.handler(
-				createRequest(
-					new Map(
-						Object.entries(match.pathname.groups as Record<string, string>),
-					),
-				),
+				createRequest(new Map(Object.entries(result.params))),
 			);
 		}
 	};

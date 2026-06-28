@@ -3,6 +3,7 @@ import { defineConfig } from "tsdown";
 export default defineConfig({
 	entry: [
 		"./src/index.ts",
+		"./src/cli/index.ts",
 		"./src/{express,custom,elysia,next,hono}/index.ts",
 		"./src/adapters/*.ts",
 	],
@@ -10,7 +11,8 @@ export default defineConfig({
 	format: "esm",
 	target: "es2023",
 	platform: "neutral",
+	exports: true,
 	deps: {
-		onlyBundle: ["urlpattern-polyfill"],
+		onlyBundle: ["path-to-regexp"],
 	},
 });

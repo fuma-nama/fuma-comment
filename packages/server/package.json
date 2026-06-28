@@ -4,39 +4,24 @@
 	"author": "Fuma Nama",
 	"homepage": "https://fuma-comment.vercel.app",
 	"repository": "https://github.com/fuma-nama/fuma-comment",
-	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
-		"./cli": {
-			"import": "./dist/cli/index.js",
-			"types": "./dist/cli/index.d.ts"
-		},
-		"./express": {
-			"types": "./dist/express/index.d.ts",
-			"import": "./dist/express/index.js"
-		},
-		"./elysia": {
-			"types": "./dist/elysia/index.d.ts",
-			"import": "./dist/elysia/index.js"
-		},
-		"./custom": {
-			"types": "./dist/custom/index.d.ts",
-			"import": "./dist/custom/index.js"
-		},
-		"./next": {
-			"types": "./dist/next/index.d.ts",
-			"import": "./dist/next/index.js"
-		},
-		"./hono": {
-			"types": "./dist/hono/index.d.ts",
-			"import": "./dist/hono/index.js"
-		},
-		"./adapters/*": {
-			"types": "./dist/adapters/*.d.ts",
-			"import": "./dist/adapters/*.js"
-		}
+		"./adapters/better-auth": "./dist/adapters/better-auth.js",
+		"./adapters/clerk": "./dist/adapters/clerk.js",
+		"./adapters/drizzle": "./dist/adapters/drizzle.js",
+		"./adapters/fumadb": "./dist/adapters/fumadb.js",
+		"./adapters/mongo-db": "./dist/adapters/mongo-db.js",
+		"./adapters/next-auth": "./dist/adapters/next-auth.js",
+		"./adapters/prisma": "./dist/adapters/prisma.js",
+		"./cli": "./dist/cli/index.js",
+		"./custom": "./dist/custom/index.js",
+		"./elysia": "./dist/elysia/index.js",
+		"./express": "./dist/express/index.js",
+		"./hono": "./dist/hono/index.js",
+		"./next": "./dist/next/index.js",
+		"./package.json": "./package.json"
 	},
 	"files": [
 		"./dist"
@@ -49,34 +34,34 @@
 		"check:types": "tsc --noEmit"
 	},
 	"devDependencies": {
-		"@clerk/backend": "^3.4.11",
+		"@clerk/backend": "^3.8.4",
 		"@elysiajs/node": "^1.4.5",
-		"@hono/node-server": "^2.0.3",
-		"@tanstack/react-router": "^1.170.4",
-		"@tanstack/react-start": "^1.168.6",
+		"@hono/node-server": "^2.0.6",
+		"@tanstack/react-router": "^1.170.16",
+		"@tanstack/react-start": "^1.168.26",
 		"@types/express": "^5.0.6",
-		"@types/node": "^25.9.1",
-		"better-auth": "1.6.11",
+		"@types/node": "^26.0.1",
+		"better-auth": "1.6.22",
 		"drizzle-orm": "^0.45.2",
-		"elysia": "^1.4.28",
+		"elysia": "1.4.29",
 		"express": "^5.2.1",
-		"fumadb": "^0.2.2",
-		"hono": "^4.12.21",
-		"mongodb": "^7.2.0",
-		"next": "^16.2.6",
+		"fumadb": "^0.4.0",
+		"hono": "^4.12.27",
+		"mongodb": "^7.4.0",
+		"next": "^16.2.9",
 		"next-auth": "^4.24.14",
 		"tsconfig": "workspace:*",
-		"tsdown": "^0.21.10",
+		"tsdown": "^0.22.3",
 		"typescript": "^6.0.3",
-		"urlpattern-polyfill": "^10.1.0",
-		"vitest": "^4.1.6"
+		"path-to-regexp": "^8.3.0",
+		"vitest": "^4.1.9"
 	},
 	"peerDependencies": {
 		"@clerk/backend": "2.x.x || 3.x.x",
 		"better-auth": "1.x.x",
 		"drizzle-orm": "0.x.x",
 		"elysia": "1.x.x",
-		"fumadb": "^0.2.1",
+		"fumadb": "^0.2.1 || ^0.3.0 || ^0.4.0",
 		"hono": "*",
 		"mongodb": "6.x.x || 7.x.x",
 		"next": "^14.0.0 || ^15.0.0 || ^16.0.0",
@@ -113,5 +98,8 @@
 	},
 	"publishConfig": {
 		"access": "public"
+	},
+	"inlinedDependencies": {
+		"path-to-regexp": "8.3.0"
 	}
 }
