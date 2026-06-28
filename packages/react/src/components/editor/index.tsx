@@ -241,7 +241,11 @@ function MarkButton({
 					active: editor.isActive(name),
 				}),
 			)}
-			disabled={!editor.can().toggleMark(name) || !editor.isEditable}
+			disabled={
+				editor.isDestroyed ||
+				!editor.isEditable ||
+				!editor.can().toggleMark(name)
+			}
 			onMouseDown={(e) => {
 				editor.commands.toggleMark(name);
 				e.preventDefault();
@@ -262,7 +266,11 @@ function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
 				type="button"
 				aria-label="Toggle Link"
 				className={cn(toggleVariants({ active: editor.isActive("link") }))}
-				disabled={!editor.can().setLink({ href: "" }) || !editor.isEditable}
+				disabled={
+					editor.isDestroyed ||
+					!editor.isEditable ||
+					!editor.can().setLink({ href: "" })
+				}
 			>
 				<LinkIcon className="size-4" />
 			</DialogTrigger>

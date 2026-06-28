@@ -31,7 +31,11 @@ export default function UploadImageButton({
 				type="button"
 				aria-label="Upload Image"
 				className={cn(toggleVariants())}
-				disabled={!editor.can().setImage({ src: "" }) || !editor.isEditable}
+				disabled={
+					editor.isDestroyed ||
+					!editor.isEditable ||
+					!editor.can().setImage({ src: "" })
+				}
 			>
 				<ImageIcon className="size-4" />
 			</DialogTrigger>
