@@ -1,5 +1,15 @@
 # @fuma-comment/react
 
+## 1.5.0
+
+### Minor Changes
+
+- 916faba: Reduce dependencies
+
+### Patch Changes
+
+- 916faba: Fix potential error with https://github.com/fuma-nama/fuma-comment/issues/165
+
 ## 1.4.2
 
 ### Patch Changes
