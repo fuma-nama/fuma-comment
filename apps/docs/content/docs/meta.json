@@ -4,6 +4,7 @@
 		"...",
 		"---Server---",
 		"hono",
+		"fastify",
 		"---Storage---",
 		"drizzle",
 		"prisma",

@@ -4,7 +4,7 @@ export default defineConfig({
 	entry: [
 		"./src/index.ts",
 		"./src/cli/index.ts",
-		"./src/{express,custom,elysia,next,hono}/index.ts",
+		"./src/{express,custom,elysia,fastify,next,hono}/index.ts",
 		"./src/adapters/*.ts",
 	],
 	dts: true,

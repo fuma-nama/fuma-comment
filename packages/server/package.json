@@ -19,6 +19,7 @@
 		"./custom": "./dist/custom/index.js",
 		"./elysia": "./dist/elysia/index.js",
 		"./express": "./dist/express/index.js",
+		"./fastify": "./dist/fastify/index.js",
 		"./hono": "./dist/hono/index.js",
 		"./next": "./dist/next/index.js",
 		"./package.json": "./package.json"
@@ -45,6 +46,7 @@
 		"drizzle-orm": "^0.45.2",
 		"elysia": "1.4.29",
 		"express": "^5.2.1",
+		"fastify": "^5.7.4",
 		"fumadb": "^0.4.0",
 		"hono": "^4.12.27",
 		"mongodb": "^7.4.0",
@@ -61,6 +63,7 @@
 		"better-auth": "1.x.x",
 		"drizzle-orm": "0.x.x",
 		"elysia": "1.x.x",
+		"fastify": "5.x.x",
 		"fumadb": "^0.2.1 || ^0.3.0 || ^0.4.0",
 		"hono": "*",
 		"mongodb": "6.x.x || 7.x.x",
@@ -75,6 +78,9 @@
 			"optional": true
 		},
 		"elysia": {
+			"optional": true
+		},
+		"fastify": {
 			"optional": true
 		},
 		"@clerk/backend": {

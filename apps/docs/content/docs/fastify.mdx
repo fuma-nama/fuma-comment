@@ -1,0 +1,54 @@
+---
+title: Fastify
+description: Run Fuma Comment on Fastify
+---
+
+## Setup
+
+Register the comment plugin on your Fastify app.
+
+```ts
+import Fastify from "fastify";
+import { commentPlugin } from "@fuma-comment/server/fastify";
+
+const app = Fastify();
+
+await app.register(
+  commentPlugin({
+    storage, // storage adapter
+    auth, // auth adapter
+  }),
+);
+
+await app.listen({ port: 3000 });
+```
+
+Routes are registered at `/comments/:page` and related paths by default.
+
+### Custom base URL
+
+Use `baseUrl` to mount routes under a prefix (e.g. `/api/comments/:page`):
+
+```ts
+await app.register(
+  commentPlugin({
+    storage,
+    auth,
+    baseUrl: "api",
+  }),
+);
+```
+
+### Direct registration
+
+Alternatively, pass your Fastify instance to `FastifyComment`:
+
+```ts
+import { FastifyComment } from "@fuma-comment/server/fastify";
+
+FastifyComment({
+  app,
+  storage,
+  auth,
+});
+```
