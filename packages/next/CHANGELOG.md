@@ -1,5 +1,13 @@
 # @fuma-comment/next
 
+## 1.5.0
+
+### Patch Changes
+
+- Updated dependencies [916faba]
+- Updated dependencies [74077ff]
+  - @fuma-comment/server@1.5.0
+
 ## 1.4.2
 
 ### Patch Changes

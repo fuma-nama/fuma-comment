@@ -1,5 +1,12 @@
 # @fuma-comment/server
 
+## 1.5.0
+
+### Minor Changes
+
+- 916faba: Reduce dependencies
+- 74077ff: Support Fastify plugin
+
 ## 1.4.2
 
 ### Patch Changes
