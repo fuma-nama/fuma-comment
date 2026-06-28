@@ -52,6 +52,7 @@
 	"devDependencies": {
 		"@fuma-comment/server": "workspace:^",
 		"@tailwindcss/cli": "^4.3.1",
+		"@types/hast": "^3.0.4",
 		"@types/node": "^26.0.1",
 		"@types/react": "^19.2.17",
 		"@types/react-dom": "^19.2.3",
@@ -95,7 +96,6 @@
 		"class-variance-authority": "^0.7.1",
 		"cmdk": "^1.1.1",
 		"frimousse": "^0.3.0",
-		"hast-util-to-jsx-runtime": "^2.3.6",
 		"lowlight": "^3.3.0",
 		"swr": "^2.4.2",
 		"tailwind-merge": "^3.6.0",

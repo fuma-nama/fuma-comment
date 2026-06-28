@@ -3,11 +3,11 @@ import { type ReactNode, useMemo, useState } from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "../../utils/cn";
 import { type StorageContext, useStorage } from "../../contexts/storage";
-import { toJsxRuntime } from "hast-util-to-jsx-runtime";
-import { Fragment, jsx, jsxs } from "react/jsx-runtime";
+import { createElement } from "react";
 import { CheckIcon, CopyIcon } from "lucide-react";
 import { buttonVariants } from "../button";
 import { lowlight } from "../../utils/highlighter";
+import { RootContent } from "hast";
 
 interface Mark {
 	type: string;
@@ -192,6 +192,36 @@ export function ContentRenderer({
 	return useMemo(() => render(content, ctx), [content, ctx]);
 }
 
+function mapChild(child: RootContent, i: number, depth: number): ReactNode {
+	if (child.type === "element" && child.tagName) {
+		const props = Object.assign(
+			{ key: "lo-" + depth + "-" + i },
+			child.properties,
+		);
+
+		if (Array.isArray(props.className)) {
+			props.className = props.className.join(" ");
+		}
+
+		const children = child.children
+			? child.children.map(mapWithDepth(depth + 1))
+			: null;
+
+		return createElement(child.tagName, props, children);
+	}
+
+	if (child.type === "text") return child.value;
+}
+
+function mapWithDepth(depth: number) {
+	return function mapChildrenWithDepth(
+		child: RootContent,
+		i: number,
+	): ReactNode {
+		return mapChild(child, i, depth);
+	};
+}
+
 function CodeBlock({
 	language,
 	content,
@@ -199,17 +229,19 @@ function CodeBlock({
 	language: string;
 	content: string;
 }) {
-	const tree = lowlight.highlight(
-		lowlight.registered(language) ? language : "plaintext",
-		content,
-	);
+	const rendered = useMemo(() => {
+		const ast = lowlight.highlight(
+			lowlight.registered(language) ? language : "plaintext",
+			content,
+		).children;
+		return ast.map(mapWithDepth(0));
+	}, [content, language]);
+
 	const [copied, setCopied] = useState(false);
 
 	return (
 		<pre className={cn(codeBlockVariants(), "p-0")}>
-			<code className="overflow-auto p-2">
-				{toJsxRuntime(tree, { Fragment, jsx, jsxs })}
-			</code>
+			<code className="overflow-auto p-2">{rendered}</code>
 			<button
 				type="button"
 				className={cn(
