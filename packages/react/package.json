@@ -1,7 +1,6 @@
 {
 	"name": "@fuma-comment/react",
 	"version": "1.4.2",
-	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"author": "Fuma Nama",
 	"homepage": "https://fuma-comment.vercel.app",
@@ -13,20 +12,12 @@
 	"license": "MIT",
 	"type": "module",
 	"exports": {
-		".": {
-			"import": "./dist/index.js",
-			"types": "./dist/index.d.ts"
-		},
+		".": "./dist/index.js",
+		"./atom": "./dist/atom.js",
+		"./uploadthing": "./dist/uploadthing/index.js",
+		"./package.json": "./package.json",
 		"./style.css": "./dist/style.css",
-		"./preset.css": "./css/preset.css",
-		"./atom": {
-			"import": "./dist/atom.js",
-			"types": "./dist/atom.d.ts"
-		},
-		"./uploadthing": {
-			"import": "./dist/uploadthing/index.js",
-			"types": "./dist/uploadthing/index.d.ts"
-		}
+		"./preset.css": "./css/preset.css"
 	},
 	"scripts": {
 		"build": "tsdown && tailwindcss -i css/styles.css -o ./dist/style.css",

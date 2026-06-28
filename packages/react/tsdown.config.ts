@@ -5,10 +5,15 @@ const config = defineConfig({
 	format: "esm",
 	dts: true,
 	target: "es2023",
-	fixedExtension: false,
 	platform: "browser",
 	deps: {
 		onlyBundle: [],
+	},
+	exports: {
+		customExports: {
+			"./style.css": "./dist/style.css",
+			"./preset.css": "./css/preset.css",
+		},
 	},
 });
 
