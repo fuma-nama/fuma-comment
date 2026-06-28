@@ -19,7 +19,6 @@ import { Text } from "@tiptap/extension-text";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import { Image } from "@tiptap/extension-image";
 import { Mention } from "@tiptap/extension-mention";
-import tippy, { type Instance } from "tippy.js";
 import {
 	codeBlockVariants,
 	codeVariants,
@@ -66,9 +65,10 @@ function createMention(): Node {
 		},
 		deleteTriggerWithBackspace: true,
 		suggestion: {
+			placement: "bottom-start",
 			render() {
 				let component: ReactRenderer;
-				let popup: Instance[];
+				let unmount: (() => void) | undefined;
 
 				return {
 					onStart(props) {
@@ -77,19 +77,7 @@ function createMention(): Node {
 							editor: props.editor,
 						});
 
-						const clientRect = props.clientRect;
-						if (!clientRect) return;
-
-						popup = tippy("body", {
-							getReferenceClientRect: () =>
-								props.clientRect?.() ?? new DOMRect(0, 0),
-							appendTo: () => document.body,
-							content: component.element,
-							showOnCreate: true,
-							interactive: true,
-							trigger: "manual",
-							placement: "bottom-start",
-						});
+						unmount = props.mount(component.element);
 					},
 					onUpdate(props) {
 						component.updateProps(props);
@@ -97,8 +85,6 @@ function createMention(): Node {
 
 					onKeyDown(props) {
 						if (props.event.key === "Escape") {
-							popup[0].hide();
-
 							return true;
 						}
 
@@ -106,7 +92,7 @@ function createMention(): Node {
 					},
 
 					onExit() {
-						popup[0].destroy();
+						unmount?.();
 						component.destroy();
 					},
 				};

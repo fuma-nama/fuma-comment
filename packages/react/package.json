@@ -88,8 +88,7 @@
 		"frimousse": "^0.3.0",
 		"lowlight": "^3.3.0",
 		"swr": "^2.4.2",
-		"tailwind-merge": "^3.6.0",
-		"tippy.js": "^6.3.7"
+		"tailwind-merge": "^3.6.0"
 	},
 	"publishConfig": {
 		"access": "public"
