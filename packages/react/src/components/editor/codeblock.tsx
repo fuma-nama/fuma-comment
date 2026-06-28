@@ -1,14 +1,12 @@
 import type { Editor } from "@tiptap/react";
-import {
-	Command,
-	CommandInput,
-	CommandList,
-	CommandEmpty,
-	CommandGroup,
-	CommandItem,
-} from "cmdk";
 import { SquareCode } from "lucide-react";
-import { useState, type ComponentProps } from "react";
+import {
+	useEffect,
+	useEffectEvent,
+	useMemo,
+	useState,
+	type ComponentProps,
+} from "react";
 import { useHookUpdate, toggleVariants } from ".";
 import { cn } from "../../utils/cn";
 import { lowlight } from "../../utils/highlighter";
@@ -44,45 +42,101 @@ function CodeBlockForm({
 	editor,
 	onClose,
 	...props
-}: ComponentProps<typeof Command> & { editor: Editor; onClose: () => void }) {
-	const [value, setValue] = useState(
+}: ComponentProps<"div"> & { editor: Editor; onClose: () => void }) {
+	const [search, setSearch] = useState<string>(
+		() => editor.getAttributes("codeBlock").language ?? "",
+	);
+	const [selected, setSelected] = useState<string | undefined>(
 		() => editor.getAttributes("codeBlock").language,
 	);
 
+	const items = useMemo(() => {
+		const normalized = search.toLowerCase();
+
+		return lowlight
+			.listLanguages()
+			.filter((item) => item.toLowerCase().includes(normalized));
+	}, [search]);
+
+	function onSelect(value: string) {
+		editor
+			.chain()
+			.setCodeBlock({
+				language: value,
+			})
+			.focus()
+			.run();
+		onClose();
+	}
+
+	const listener = useEffectEvent((event: KeyboardEvent) => {
+		if (items.length === 0) return;
+
+		if (event.key === "ArrowUp") {
+			const idx = selected ? items.indexOf(selected) : -1;
+
+			setSelected(idx === -1 ? items[0] : items[idx - 1]);
+			event.preventDefault();
+			return true;
+		}
+
+		if (event.key === "ArrowDown") {
+			const idx = selected ? items.indexOf(selected) : -1;
+
+			setSelected(idx === -1 ? items[0] : items[idx + 1]);
+			event.preventDefault();
+			return true;
+		}
+
+		if (event.key === "Enter" && selected) {
+			onSelect(selected);
+			event.preventDefault();
+			return true;
+		}
+	});
+
+	useEffect(() => {
+		window.addEventListener("keydown", listener);
+		return () => window.removeEventListener("keydown", listener);
+	}, []);
+
+	if (items.length > 0 && (!selected || !items.includes(selected))) {
+		setSelected(items[0]);
+	}
+
 	return (
-		<Command {...props}>
-			<CommandInput
+		<div {...props}>
+			<input
 				className={cn(inputVariants({ variant: "ghost" }), "w-full")}
 				placeholder="Search language..."
-				value={value}
-				onValueChange={setValue}
+				value={search}
+				onChange={(e) => setSearch(e.target.value)}
 			/>
-			<CommandList className="h-[300px] overflow-auto">
-				<CommandEmpty className="absolute inset-0 flex items-center justify-center text-fc-muted-foreground text-sm">
-					No language found.
-				</CommandEmpty>
-				<CommandGroup>
-					{lowlight.listLanguages().map((item) => (
-						<CommandItem
+			<div className="relative text-sm h-[300px] overflow-auto">
+				{items.length === 0 && (
+					<div className="absolute inset-0 flex items-center justify-center text-fc-muted-foreground">
+						No language found.
+					</div>
+				)}
+				<ul>
+					{items.map((item) => (
+						<li
 							key={item}
-							value={item}
-							onSelect={(value) => {
-								editor
-									.chain()
-									.setCodeBlock({
-										language: value,
-									})
-									.focus()
-									.run();
-								onClose();
+							ref={(element) => {
+								if (selected === item) {
+									element?.scrollIntoView();
+								}
 							}}
-							className="px-4 py-1.5 aria-selected:bg-fc-accent aria-selected:text-fc-accent-foreground"
+							onClick={() => onSelect(item)}
+							onPointerEnter={() => setSelected(item)}
+							aria-selected={selected === item}
+							className="px-4 py-1.5 font-mono aria-selected:bg-fc-accent aria-selected:text-fc-accent-foreground"
 						>
 							{item}
-						</CommandItem>
+						</li>
 					))}
-				</CommandGroup>
-			</CommandList>
-		</Command>
+				</ul>
+			</div>
+		</div>
 	);
 }
