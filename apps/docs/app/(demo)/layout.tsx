@@ -16,9 +16,10 @@ export default function Layout({ children }: { children: ReactNode }) {
 					icon: <BookOpen />,
 				},
 				{
-					url: "/sponsors",
+					url: "https://fuma-nama.dev/sponsors",
 					text: "Sponsors",
 					icon: <Heart />,
+					external: true,
 				},
 			]}
 		>

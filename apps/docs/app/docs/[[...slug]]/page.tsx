@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import { source } from "@/app/source";
 import defaultMdxComponents from "fumadocs-ui/mdx";
+import { SponsorsMarquee } from "@/components/sponsors-marquee";
 
 export default async function Page({ params }: { params: Promise<{ slug?: string[] }> }) {
 	const page = source.getPage((await params).slug);
@@ -15,7 +16,11 @@ export default async function Page({ params }: { params: Promise<{ slug?: string
 	const Content = page.data.body;
 
 	return (
-		<DocsPage toc={page.data.toc} full={page.data.full}>
+		<DocsPage
+			toc={page.data.toc}
+			full={page.data.full}
+			tableOfContent={{ footer: <SponsorsMarquee /> }}
+		>
 			<DocsTitle>{page.data.title}</DocsTitle>
 			<DocsDescription>{page.data.description}</DocsDescription>
 			<DocsBody className="text-fd-muted-foreground">

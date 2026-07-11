@@ -15,7 +15,6 @@
 		"@auth/prisma-adapter": "^2.11.2",
 		"@fuma-comment/react": "workspace:*",
 		"@fuma-comment/server": "workspace:*",
-		"@octokit/rest": "^22.0.1",
 		"@prisma/adapter-pg": "^7.8.0",
 		"@prisma/client": "^7.8.0",
 		"@prisma/client-runtime-utils": "^7.8.0",
