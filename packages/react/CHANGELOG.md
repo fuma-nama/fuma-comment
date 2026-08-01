@@ -1,3 +1,9 @@
+## @fuma-comment/react@1.5.1
+
+### Add comment UI translations
+
+Comment components now accept a typed `translations` prop for localizing labels, placeholders, dialogs, editor controls, and accessibility text.
+
 # @fuma-comment/react
 
 ## 1.5.0
