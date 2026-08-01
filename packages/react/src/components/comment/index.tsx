@@ -24,6 +24,7 @@ import { ContentRenderer } from "./content-renderer";
 import { Timestamp } from "../timestamp";
 import { useCommentsContext } from "../../contexts/comments";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../dialog";
+import { useTranslations } from "@fuma-translate/react";
 
 export function Comment({
 	comment: cached,
@@ -81,6 +82,7 @@ function CommentMenu({
 	className,
 	...props
 }: ButtonHTMLAttributes<HTMLButtonElement>): React.ReactNode {
+	const t = useTranslations({ note: "comment menu" });
 	const { session } = useAuthContext();
 	const [isEditing, setIsEditing] = useState(false);
 	const { comment, editorRef, isReplying } = useCommentContext();
@@ -121,15 +123,15 @@ function CommentMenu({
 	return (
 		<Dialog open={isEditing} onOpenChange={setIsEditing}>
 			<DialogContent>
-				<DialogTitle className="max-sm:sr-only">Edit Comment</DialogTitle>
+				<DialogTitle className="max-sm:sr-only">{t("Edit comment")}</DialogTitle>
 				<DialogDescription className="max-sm:sr-only">
-					Edit the content of your comment.
+					{t("Edit the content of your comment.")}
 				</DialogDescription>
 				<EditForm onClose={() => setIsEditing(false)} />
 			</DialogContent>
 			<Menu>
 				<MenuTrigger
-					aria-label="Open Menu"
+					aria-label={t("Open menu", { note: "aria-label" })}
 					className={cn(
 						buttonVariants({
 							size: "icon",
@@ -151,12 +153,12 @@ function CommentMenu({
 					}}
 				>
 					<MenuItem onSelect={onCopy}>
-						Copy
+						{t("Copy")}
 						<CopyIcon />
 					</MenuItem>
 					{canEdit ? (
 						<MenuItem onSelect={onEdit}>
-							Edit
+							{t("Edit")}
 							<PencilIcon />
 						</MenuItem>
 					) : null}
@@ -166,7 +168,7 @@ function CommentMenu({
 							onSelect={onDelete}
 							variant="destructive"
 						>
-							Delete
+							{t("Delete")}
 							<Trash2Icon />
 						</MenuItem>
 					) : null}

@@ -8,6 +8,7 @@ import { CheckIcon, CopyIcon } from "lucide-react";
 import { buttonVariants } from "../button";
 import { lowlight } from "../../utils/highlighter";
 import { RootContent } from "hast";
+import { useTranslations } from "@fuma-translate/react";
 
 interface Mark {
 	type: string;
@@ -92,7 +93,7 @@ function renderText(content: JSONContent): ReactNode {
 	);
 }
 
-function render(content: JSONContent, storage: StorageContext): ReactNode {
+function render(content: JSONContent, storage: StorageContext, imageAlt: string): ReactNode {
 	if (content.type === "text") {
 		return renderText(content);
 	}
@@ -118,7 +119,7 @@ function render(content: JSONContent, storage: StorageContext): ReactNode {
 		if (typeof storage.render === "function") {
 			return storage.render({
 				...attrs,
-				alt: attrs.alt ?? "uploaded image",
+				alt: attrs.alt ?? imageAlt,
 			});
 		}
 
@@ -140,7 +141,7 @@ function render(content: JSONContent, storage: StorageContext): ReactNode {
 		return (
 			<img
 				key={id++}
-				alt={attrs.alt}
+				alt={attrs.alt ?? imageAlt}
 				className="rounded-lg my-1.5"
 				height={h}
 				width={w}
@@ -158,7 +159,9 @@ function render(content: JSONContent, storage: StorageContext): ReactNode {
 		);
 	}
 
-	const joined: ReactNode[] = content.content?.map((child) => render(child, storage)) ?? [" "];
+	const joined: ReactNode[] = content.content?.map((child) => render(child, storage, imageAlt)) ?? [
+		" ",
+	];
 
 	if (content.type === "paragraph") {
 		return <span key={id++}>{joined}</span>;
@@ -175,8 +178,10 @@ function render(content: JSONContent, storage: StorageContext): ReactNode {
 
 export function ContentRenderer({ content }: { content: JSONContent }): ReactNode {
 	const ctx = useStorage();
+	const t = useTranslations({ note: "comment content" });
+	const imageAlt = t("Uploaded image", { note: "image alt text" });
 
-	return useMemo(() => render(content, ctx), [content, ctx]);
+	return useMemo(() => render(content, ctx, imageAlt), [content, ctx, imageAlt]);
 }
 
 function mapChild(child: RootContent, i: number, depth: number): ReactNode {
@@ -184,7 +189,7 @@ function mapChild(child: RootContent, i: number, depth: number): ReactNode {
 		const props = Object.assign({ key: "lo-" + depth + "-" + i }, child.properties);
 
 		if (Array.isArray(props.className)) {
-			props.className = props.className.join(" ");
+			(props as Record<string, unknown>).className = props.className.join(" ");
 		}
 
 		const children = child.children ? child.children.map(mapWithDepth(depth + 1)) : null;
@@ -202,6 +207,7 @@ function mapWithDepth(depth: number) {
 }
 
 function CodeBlock({ language, content }: { language: string; content: string }) {
+	const t = useTranslations({ note: "code block" });
 	const rendered = useMemo(() => {
 		const ast = lowlight.highlight(
 			lowlight.registered(language) ? language : "plaintext",
@@ -217,6 +223,9 @@ function CodeBlock({ language, content }: { language: string; content: string })
 			<code className="overflow-auto p-2">{rendered}</code>
 			<button
 				type="button"
+				aria-label={
+					copied ? t("Copied", { note: "aria-label" }) : t("Copy", { note: "aria-label" })
+				}
 				className={cn(
 					buttonVariants({
 						size: "icon",

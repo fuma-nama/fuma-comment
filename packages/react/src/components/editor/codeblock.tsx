@@ -6,8 +6,10 @@ import { cn } from "../../utils/cn";
 import { lowlight } from "../../utils/highlighter";
 import { inputVariants } from "../input";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
+import { useTranslations } from "@fuma-translate/react";
 
 export default function CodeBlockButton({ editor }: { editor: Editor }): React.ReactNode {
+	const t = useTranslations({ note: "code block editor" });
 	const [isOpen, setIsOpen] = useState(false);
 	useHookUpdate(editor);
 
@@ -15,13 +17,13 @@ export default function CodeBlockButton({ editor }: { editor: Editor }): React.R
 		<Dialog onOpenChange={setIsOpen} open={isOpen}>
 			<DialogTrigger
 				type="button"
-				aria-label="Toggle CodeBlock"
+				aria-label={t("Toggle code block", { note: "aria-label" })}
 				className={cn(toggleVariants({ active: editor.isActive("codeBlock") }))}
 			>
 				<SquareCode className="size-4" />
 			</DialogTrigger>
 			<DialogContent full onCloseAutoFocus={(e) => e.preventDefault()}>
-				<DialogTitle className="sr-only">Insert CodeBlock</DialogTitle>
+				<DialogTitle className="sr-only">{t("Insert code block")}</DialogTitle>
 				<CodeBlockForm editor={editor} onClose={() => setIsOpen(false)} />
 			</DialogContent>
 		</Dialog>
@@ -33,6 +35,7 @@ function CodeBlockForm({
 	onClose,
 	...props
 }: ComponentProps<"div"> & { editor: Editor; onClose: () => void }) {
+	const t = useTranslations({ note: "code block editor" });
 	const [search, setSearch] = useState<string>(
 		() => editor.getAttributes("codeBlock").language ?? "",
 	);
@@ -96,16 +99,16 @@ function CodeBlockForm({
 		<div {...props}>
 			<input
 				className={cn(inputVariants({ variant: "ghost" }), "w-full")}
-				placeholder="Search language..."
+				placeholder={t("Search language...")}
 				value={search}
 				onChange={(e) => setSearch(e.target.value)}
 			/>
 			<div className="relative text-sm h-[300px] overflow-auto">
-				{items.length === 0 && (
+				{items.length === 0 ? (
 					<div className="absolute inset-0 flex items-center justify-center text-fc-muted-foreground">
-						No language found.
+						{t("No language found.")}
 					</div>
-				)}
+				) : null}
 				<ul>
 					{items.map((item) => (
 						<li

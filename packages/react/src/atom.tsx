@@ -15,6 +15,10 @@ import { CommentList } from "./components/comment/list";
 import { type MentionOptions, MentionProvider } from "./contexts/mention";
 import { type StorageContext, StorageProvider } from "./contexts/storage";
 import { createFetcher } from "./utils/fetcher";
+import { TranslationProvider, useTranslations } from "@fuma-translate/react";
+import type { Translations } from "./.translations";
+
+const emptyTranslations = {};
 
 export interface CommentsProviderProps {
 	/**
@@ -35,6 +39,11 @@ export interface CommentsProviderProps {
 	 */
 	apiUrl?: string;
 
+	/**
+	 * Translated UI labels. Unspecified labels fall back to English.
+	 */
+	translations?: Partial<Translations>;
+
 	children?: ReactNode;
 }
 
@@ -45,6 +54,7 @@ export function CommentsProvider({
 	storage,
 	auth,
 	apiUrl,
+	translations = emptyTranslations,
 }: CommentsProviderProps): React.ReactNode {
 	let child = children;
 	const context = useMemo(
@@ -60,11 +70,13 @@ export function CommentsProvider({
 	if (storage) child = <StorageProvider storage={storage}>{child}</StorageProvider>;
 
 	return (
-		<Provider value={context}>
-			<AuthProvider page={page} auth={auth}>
-				{child}
-			</AuthProvider>
-		</Provider>
+		<TranslationProvider translations={translations}>
+			<Provider value={context}>
+				<AuthProvider page={page} auth={auth}>
+					{child}
+				</AuthProvider>
+			</Provider>
+		</TranslationProvider>
 	);
 }
 
@@ -84,11 +96,12 @@ CommentsList.displayName = "CommentsList";
 
 export function AuthButton(props: ButtonHTMLAttributes<HTMLButtonElement>): React.ReactNode {
 	const { signIn } = useAuthContext();
+	const t = useTranslations({ note: "auth button" });
 
 	if (typeof signIn === "function")
 		return (
 			<button {...props} onClick={signIn} type="button">
-				{props.children ?? "Sign In"}
+				{props.children ?? t("Sign In")}
 			</button>
 		);
 
@@ -97,3 +110,4 @@ export function AuthButton(props: ButtonHTMLAttributes<HTMLButtonElement>): Reac
 
 export { Comment } from "./components/comment/index";
 export { ContentRenderer } from "./components/comment/content-renderer";
+export type { Translations } from "./.translations";

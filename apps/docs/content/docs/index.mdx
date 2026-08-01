@@ -42,6 +42,26 @@ Fuma Comment doesn't force an Auth system on your app, you can use your own Auth
 
 By default, it calls an API endpoint to get authentication data, you will need to provide a `signIn` function for user to sign in.
 
+### Localization
+
+Pass translated labels to the `translations` prop. Missing entries fall back to the built-in English labels.
+
+```tsx
+import { Comments, type Translations } from "@fuma-comment/react";
+
+const translations = {
+	"No comments(comment list)": "Aucun commentaire",
+	"Sign In(auth button)": "Se connecter",
+	"Today(timestamp)": "Aujourd'hui",
+} satisfies Partial<Translations>;
+
+export function CommentsWithAuth() {
+	return <Comments page="default" auth={auth} translations={translations} />;
+}
+```
+
+Use `satisfies Translations` instead when a locale should provide every label.
+
 ### Styling
 
 All components are pre-styled with Tailwind CSS, notice that it also normalizes your CSS ([Preflight](https://tailwindcss.com/docs/preflight)).

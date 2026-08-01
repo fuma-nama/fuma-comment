@@ -1,4 +1,4 @@
-export function toLocalString(date: Date): string {
+export function toLocalString(date: Date, todayLabel = "Today"): string {
 	const today = new Date(Date.now());
 
 	const isToday =
@@ -7,7 +7,7 @@ export function toLocalString(date: Date): string {
 		date.getDate() === today.getDate();
 
 	const day = isToday
-		? "Today"
+		? todayLabel
 		: [
 				date.getDate().toString().padStart(2, "0"),
 				(date.getMonth() + 1).toString().padStart(2, "0"),

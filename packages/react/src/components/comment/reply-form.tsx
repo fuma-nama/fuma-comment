@@ -10,6 +10,7 @@ import { Spinner } from "../spinner";
 import { useCommentsContext } from "../../contexts/comments";
 import type { SerializedComment } from "@fuma-comment/server";
 import { SendHorizonalIcon } from "lucide-react";
+import { useTranslations } from "@fuma-translate/react";
 
 export function ReplyForm({
 	editorRef,
@@ -21,6 +22,7 @@ export function ReplyForm({
 	onCancel?: () => void;
 	editorRef: RefObject<UseCommentEditor | undefined>;
 }): ReactNode {
+	const t = useTranslations({ note: "reply form" });
 	const [isEmpty, setIsEmpty] = useState(true);
 	const { fetcher } = useCommentsContext();
 
@@ -73,10 +75,10 @@ export function ReplyForm({
 				}, [])}
 				onEscape={onCancel}
 				onSubmit={submit}
-				placeholder="Reply to comment"
+				placeholder={t("Reply to comment")}
 			>
 				<button
-					aria-label="Reply"
+					aria-label={t("Reply", { note: "aria-label" })}
 					className={cn(
 						buttonVariants({
 							size: "icon",

@@ -5,6 +5,7 @@ import { buttonVariants } from "./button";
 import { useIsMobile } from "../utils/use-media-query";
 import { cva } from "class-variance-authority";
 import { createContext, use, useMemo, useRef, useState, type ComponentProps } from "react";
+import { useTranslations } from "@fuma-translate/react";
 
 const Context = createContext<{
 	open: boolean;
@@ -73,6 +74,7 @@ interface DialogProps extends Primitive.DialogContentProps {
 }
 
 export function DialogContent(props: DialogProps): React.ReactElement {
+	const t = useTranslations({ note: "dialog" });
 	const isMobile = useIsMobile();
 
 	if (isMobile) {
@@ -89,6 +91,7 @@ export function DialogContent(props: DialogProps): React.ReactElement {
 			>
 				{children}
 				<Primitive.Close
+					aria-label={t("Close", { note: "aria-label" })}
 					className={cn(
 						buttonVariants({
 							variant: "ghost",

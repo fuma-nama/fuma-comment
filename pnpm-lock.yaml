@@ -316,6 +316,9 @@ importers:
 
   packages/react:
     dependencies:
+      '@fuma-translate/react':
+        specifier: ^1.0.2
+        version: 1.0.2(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@radix-ui/react-collapsible':
         specifier: ^1.1.20
         version: 1.1.20(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -431,6 +434,9 @@ importers:
       concurrently:
         specifier: ^10.0.4
         version: 10.0.4
+      fuma-translate:
+        specifier: ^1.0.2
+        version: 1.0.2
       lucide-react:
         specifier: 1.28.0
         version: 1.28.0(react@19.2.8)
@@ -790,11 +796,17 @@ packages:
     peerDependencies:
       elysia: '>= 1.4.0'
 
+  '@emnapi/core@1.11.0':
+    resolution: {integrity: sha512-l9Oo58x0HOP5znGzVhYW9U3e5wVuA4LAZU2AGezTmkhO1CgQRFDhDg4nneHsu/t3WniXg9QrG2nIXL/ZS8ln8Q==}
+
   '@emnapi/core@1.11.1':
     resolution: {integrity: sha512-RSvbQmHzdKzNsLYa/wHrbc3KN4sYLKAdPZxqiM2HATqv/SBk2/ENSHpvXGaLOMcsAyz0poEGqkmmKYG3OWiJEQ==}
 
   '@emnapi/core@2.0.0-alpha.3':
     resolution: {integrity: sha512-AZypUeJ/yByuxyS7BlSNRDOMLMlROYtjYdIAuBmJssVz1UJDSeYxLrdizhXCFYhedC5bqd/ASy8EuNXbVVXp9g==}
+
+  '@emnapi/runtime@1.11.0':
+    resolution: {integrity: sha512-55coeOFKHv1ywEcUXJtWU5f+Jr/W5tZDvZig8DLKSwUN1JpROQ4rk/SNOQiFWmaR/VKF4zuFyW1B8JduOSv6Pg==}
 
   '@emnapi/runtime@1.11.1':
     resolution: {integrity: sha512-vgj7R3y3Wgx24IQaGPA/R6YFXLHVMOZ0uVEyIQPaWs+rd1AzfEMXlAC22FYwO1XkKR6NPsq7mUandH8oIRdZFw==}
@@ -1295,6 +1307,63 @@ packages:
 
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
+
+  '@fuma-translate/binding-darwin-arm64@1.0.2':
+    resolution: {integrity: sha512-SDM90GlvwwFmsj+dVjkTxJVyV3oFucv+Fow4V6lcjqxAeTYNMr3ICWA3nXzfBsMlr2398BH/W0W894SoE7TM6Q==}
+    engines: {node: '>=22'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@fuma-translate/binding-darwin-x64@1.0.2':
+    resolution: {integrity: sha512-jliaMstV81HfhM6HkalhPZJKbzlVnLgDF1Sd+9YqyX1ll0ItKgI7aIVfm0iWskch37qVbTOdVu4yJ+YLpIS1XQ==}
+    engines: {node: '>=22'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@fuma-translate/binding-linux-arm64-gnu@1.0.2':
+    resolution: {integrity: sha512-jUdg14XE658UXJWp97Ti6IiX+SLKIbYZ2CYx3ZGoalcS6SUHZQyBvirDlv2wFNTJtF/rRM2ovoWuz4298m6xWA==}
+    engines: {node: '>=22'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@fuma-translate/binding-linux-arm64-musl@1.0.2':
+    resolution: {integrity: sha512-tlP3TCjqkMPvHVGl1KWQO7jjj3sa253FF1R+NKid/LjBUHU32oVg4TJGnzYWHk+MrANCmhbTQuTkJci9EV++Ug==}
+    engines: {node: '>=22'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  '@fuma-translate/binding-linux-x64-gnu@1.0.2':
+    resolution: {integrity: sha512-TOYQhcuRxxYvyGczy65ioa320WhdPKTBwRTjHniicd2Sk6Jqq2Bpe3IOtzQwScEmr/8/eeBo+p+KkFo0+izRnw==}
+    engines: {node: '>=22'}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@fuma-translate/binding-linux-x64-musl@1.0.2':
+    resolution: {integrity: sha512-RQ5xgmIoUl7lb5qUta+SGXmCQc8tfGU18ARnkFEpqnNzusPf1EIeML1jiczcQW8mWKOpOR49dodXvRGkXDHS8A==}
+    engines: {node: '>=22'}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@fuma-translate/binding-wasm32-wasi@1.0.2':
+    resolution: {integrity: sha512-q0B0svbegfY1LF827qKAhA3n4O9RuaouszUdHL/D0j2hgvKjFPDXSpt3Gfje01isHRtimoUt1GJDz8eSzJV9KQ==}
+    engines: {node: '>=22'}
+    cpu: [wasm32]
+
+  '@fuma-translate/binding-win32-arm64-msvc@1.0.2':
+    resolution: {integrity: sha512-daB7znYkjvJwuL8tIOcHArkQSO6QZxmYDwk2Isw2NV0B1tSKrDb3giPnFD1vjc0wTLWBYnrzVFJH+MdP5YxAPQ==}
+    engines: {node: '>=22'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@fuma-translate/binding-win32-x64-msvc@1.0.2':
+    resolution: {integrity: sha512-cbctpFgBVd93xibGRnnXB8xVS+BYFN3fL5BUVhVz5aUhQUkJyitD1Y11x/rb5NtNfYEthOiaQDE/QMj7c9k7+Q==}
+    engines: {node: '>=22'}
+    cpu: [x64]
+    os: [win32]
 
   '@fuma-translate/react@1.0.2':
     resolution: {integrity: sha512-uOiOtBx3nRXR8Nu1GzBf1tApgF1FErDBTHxRIAQeyQdyOoZbrNRN6H4kDCWObY4qyGeGbHydG0DHzgeUgFDMIw==}
@@ -4485,6 +4554,11 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
+  fuma-translate@1.0.2:
+    resolution: {integrity: sha512-2JTiR0F4ZWYwPj6RPX7C4qb63yCFfQsrEYUuRYtDJboKZyhCGBNUd891ONKzK3OJXDAnddM5Fl/j67PwRix1wQ==}
+    engines: {node: '>=22'}
+    hasBin: true
+
   fumadb@0.4.0:
     resolution: {integrity: sha512-El7D9OBiCLc6aBTaacKtLtGsnlUlo68pyAFjbfzXEy4RcmXH66SRJz1FiLXcya94NI0SyxTbAaVOAUIGpxlRwA==}
     peerDependencies:
@@ -7000,6 +7074,12 @@ snapshots:
       elysia: 1.4.29(@sinclair/typebox@0.34.49)(exact-mirror@1.0.0)(file-type@22.0.1)(openapi-types@12.1.3)(typescript@6.0.3)
       srvx: 0.11.17
 
+  '@emnapi/core@1.11.0':
+    dependencies:
+      '@emnapi/wasi-threads': 1.2.2
+      tslib: 2.8.1
+    optional: true
+
   '@emnapi/core@1.11.1':
     dependencies:
       '@emnapi/wasi-threads': 1.2.2
@@ -7009,6 +7089,11 @@ snapshots:
   '@emnapi/core@2.0.0-alpha.3':
     dependencies:
       '@emnapi/wasi-threads': 2.0.1
+      tslib: 2.8.1
+    optional: true
+
+  '@emnapi/runtime@1.11.0':
+    dependencies:
       tslib: 2.8.1
     optional: true
 
@@ -7309,6 +7394,37 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
+  '@fuma-translate/binding-darwin-arm64@1.0.2':
+    optional: true
+
+  '@fuma-translate/binding-darwin-x64@1.0.2':
+    optional: true
+
+  '@fuma-translate/binding-linux-arm64-gnu@1.0.2':
+    optional: true
+
+  '@fuma-translate/binding-linux-arm64-musl@1.0.2':
+    optional: true
+
+  '@fuma-translate/binding-linux-x64-gnu@1.0.2':
+    optional: true
+
+  '@fuma-translate/binding-linux-x64-musl@1.0.2':
+    optional: true
+
+  '@fuma-translate/binding-wasm32-wasi@1.0.2':
+    dependencies:
+      '@emnapi/core': 1.11.0
+      '@emnapi/runtime': 1.11.0
+      '@napi-rs/wasm-runtime': 1.2.2(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)
+    optional: true
+
+  '@fuma-translate/binding-win32-arm64-msvc@1.0.2':
+    optional: true
+
+  '@fuma-translate/binding-win32-x64-msvc@1.0.2':
+    optional: true
+
   '@fuma-translate/react@1.0.2(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       react: 19.2.8
@@ -7494,6 +7610,13 @@ snapshots:
     optional: true
 
   '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.3':
+    optional: true
+
+  '@napi-rs/wasm-runtime@1.2.2(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)':
+    dependencies:
+      '@emnapi/core': 1.11.0
+      '@emnapi/runtime': 1.11.0
+      '@tybys/wasm-util': 0.10.3
     optional: true
 
   '@napi-rs/wasm-runtime@1.2.2(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)':
@@ -10344,6 +10467,20 @@ snapshots:
 
   fsevents@2.3.3:
     optional: true
+
+  fuma-translate@1.0.2:
+    dependencies:
+      chokidar: 5.0.0
+    optionalDependencies:
+      '@fuma-translate/binding-darwin-arm64': 1.0.2
+      '@fuma-translate/binding-darwin-x64': 1.0.2
+      '@fuma-translate/binding-linux-arm64-gnu': 1.0.2
+      '@fuma-translate/binding-linux-arm64-musl': 1.0.2
+      '@fuma-translate/binding-linux-x64-gnu': 1.0.2
+      '@fuma-translate/binding-linux-x64-musl': 1.0.2
+      '@fuma-translate/binding-wasm32-wasi': 1.0.2
+      '@fuma-translate/binding-win32-arm64-msvc': 1.0.2
+      '@fuma-translate/binding-win32-x64-msvc': 1.0.2
 
   fumadb@0.4.0(drizzle-orm@0.45.2(@electric-sql/pglite@0.4.3)(@prisma/client@7.9.1(prisma@7.9.1(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3))(typescript@6.0.3))(@types/pg@8.20.0)(kysely@0.29.2)(mysql2@3.15.3)(pg@8.22.0)(postgres@3.4.7)(prisma@7.9.1(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3)))(mongodb@7.5.0)(prisma@7.9.1(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3)):
     dependencies:

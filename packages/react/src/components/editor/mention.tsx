@@ -5,6 +5,7 @@ import { cn } from "../../utils/cn";
 import { useCommentsContext } from "../../contexts/comments";
 import { useMention } from "../../contexts/mention";
 import { Spinner } from "../spinner";
+import { useTranslations } from "@fuma-translate/react";
 
 export interface MentionListRef {
 	onKeyDown: (event: KeyboardEvent) => boolean;
@@ -19,6 +20,7 @@ export const MentionList = forwardRef<
 	MentionListRef,
 	SuggestionProps<MentionItem, { id: string; label: string }>
 >((props, ref) => {
+	const t = useTranslations({ note: "mention picker" });
 	const { page } = useCommentsContext();
 	const ctx = useMention();
 
@@ -81,11 +83,13 @@ export const MentionList = forwardRef<
 					{item.label}
 				</button>
 			))}
-			{query.data?.length === 0 && <p className="p-3 text-fc-muted-foreground">No result</p>}
+			{query.data?.length === 0 ? (
+				<p className="p-3 text-fc-muted-foreground">{t("No results")}</p>
+			) : null}
 			{!query.data ? (
 				<div className="flex flex-row items-center gap-1.5 p-3 text-fc-muted-foreground">
 					<Spinner className="size-4" />
-					Loading
+					{t("Loading")}
 				</div>
 			) : null}
 		</div>

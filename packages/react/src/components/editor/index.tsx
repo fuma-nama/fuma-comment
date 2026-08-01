@@ -18,6 +18,7 @@ import { useMention } from "../../contexts/mention";
 import { HyperLink } from "./hyper-link";
 import { createEditorLazy } from "./lazy-load";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
+import { useTranslations } from "@fuma-translate/react";
 
 export type UseCommentEditor = Editor;
 
@@ -85,6 +86,7 @@ const ImageUploadButton = lazy(() => import("./image-upload"));
 
 export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 	({ editorRef, disabled = false, containerProps, children, ...props }, ref) => {
+		const t = useTranslations({ note: "comment editor" });
 		const [editor, setEditor] = useState<Editor>();
 		const mention = useMention();
 		const storage = useStorage();
@@ -93,6 +95,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 		const propsRef = useRef({
 			...props,
 			mentionEnabled: mention.enabled,
+			imageAlt: t("Uploaded image", { note: "image alt text" }),
 		});
 
 		useLayoutEffect(() => {
@@ -121,6 +124,7 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 					return true;
 				},
 				mentionEnabled: propsRef.current.mentionEnabled,
+				imageAlt: propsRef.current.imageAlt,
 				placeholder: propsRef.current.placeholder,
 				onTransaction(v) {
 					propsRef.current.onChange?.(v.editor as Editor);
@@ -179,10 +183,30 @@ export const CommentEditor = forwardRef<HTMLDivElement, EditorProps>(
 					className={cn("min-h-[38px]", props.editorProps?.className)}
 				/>
 				<div className="flex flex-row items-center p-1">
-					<MarkButton editor={editor} name="bold" icon={<Bold className="size-4" />} />
-					<MarkButton editor={editor} name="italic" icon={<Italic className="size-4" />} />
-					<MarkButton editor={editor} name="strike" icon={<Strikethrough className="size-4" />} />
-					<MarkButton editor={editor} name="code" icon={<Code className="size-4" />} />
+					<MarkButton
+						editor={editor}
+						name="bold"
+						label={t("Toggle bold", { note: "aria-label" })}
+						icon={<Bold className="size-4" />}
+					/>
+					<MarkButton
+						editor={editor}
+						name="italic"
+						label={t("Toggle italic", { note: "aria-label" })}
+						icon={<Italic className="size-4" />}
+					/>
+					<MarkButton
+						editor={editor}
+						name="strike"
+						label={t("Toggle strikethrough", { note: "aria-label" })}
+						icon={<Strikethrough className="size-4" />}
+					/>
+					<MarkButton
+						editor={editor}
+						name="code"
+						label={t("Toggle inline code", { note: "aria-label" })}
+						icon={<Code className="size-4" />}
+					/>
 					<div className="w-px h-4 bg-fc-border mx-0.5 last:hidden" />
 					<UpdateLink editor={editor} />
 					<CodeBlockButton editor={editor} />
@@ -201,10 +225,12 @@ CommentEditor.displayName = "Editor";
 function MarkButton({
 	editor,
 	name,
+	label,
 	icon,
 }: {
 	editor: Editor;
 	name: string;
+	label: string;
 	icon: ReactNode;
 }): React.ReactNode {
 	useHookUpdate(editor);
@@ -213,7 +239,7 @@ function MarkButton({
 		<button
 			key={name}
 			type="button"
-			aria-label={`Toggle ${name}`}
+			aria-label={label}
 			className={cn(
 				toggleVariants({
 					active: editor.isActive(name),
@@ -231,6 +257,7 @@ function MarkButton({
 }
 
 function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
+	const t = useTranslations({ note: "comment editor" });
 	useHookUpdate(editor);
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -238,14 +265,14 @@ function UpdateLink({ editor }: { editor: Editor }): React.ReactElement {
 		<Dialog onOpenChange={setIsOpen} open={isOpen}>
 			<DialogTrigger
 				type="button"
-				aria-label="Toggle Link"
+				aria-label={t("Toggle link", { note: "aria-label" })}
 				className={cn(toggleVariants({ active: editor.isActive("link") }))}
 				disabled={editor.isDestroyed || !editor.isEditable || !editor.can().setLink({ href: "" })}
 			>
 				<LinkIcon className="size-4" />
 			</DialogTrigger>
 			<DialogContent onCloseAutoFocus={(e) => e.preventDefault()}>
-				<DialogTitle>Add Link</DialogTitle>
+				<DialogTitle>{t("Add link")}</DialogTitle>
 				<HyperLink
 					editor={editor}
 					onClose={() => {

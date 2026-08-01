@@ -12,14 +12,16 @@ import { Spinner } from "../spinner";
 import { updateCommentList } from "../../utils/comment-list";
 import { syncComments } from "../../utils/comment-manager";
 import { AuthButton } from "../../atom";
+import { useTranslations } from "@fuma-translate/react";
 
 export const CreateForm = forwardRef<
 	HTMLFormElement,
 	FormHTMLAttributes<HTMLFormElement> & {
 		placeholder?: string;
 	}
->(({ placeholder = "Leave comment", ...props }, ref) => {
+>(({ placeholder, ...props }, ref) => {
 	const auth = useAuthContext();
+	const t = useTranslations({ note: "comment form" });
 	const { page, fetcher } = useCommentsContext();
 	const [isEmpty, setIsEmpty] = useState(true);
 	const editorRef = useRef<UseCommentEditor | undefined>(undefined);
@@ -77,11 +79,11 @@ export const CreateForm = forwardRef<
 					setIsEmpty(v.isEmpty);
 				}, [])}
 				onSubmit={submit}
-				placeholder={placeholder}
+				placeholder={placeholder ?? t("Leave comment")}
 			>
 				{auth.isLoading || auth.session ? (
 					<button
-						aria-label="Send"
+						aria-label={t("Send", { note: "aria-label" })}
 						className={cn(
 							buttonVariants({
 								size: "icon",

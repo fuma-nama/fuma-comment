@@ -11,6 +11,7 @@ import { ReplyForm } from "./reply-form";
 import { useCommentsContext } from "../../contexts/comments";
 import { useIsMobile } from "../../utils/use-media-query";
 import { Dialog, DialogContent, DialogTitle } from "../dialog";
+import { useTranslations } from "@fuma-translate/react";
 
 const rateVariants = cva(
 	"inline-flex items-center gap-1.5 p-2 text-xs transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fc-ring",
@@ -25,6 +26,7 @@ const rateVariants = cva(
 );
 
 export function Actions({ canReply = false }: { canReply?: boolean }): React.ReactNode {
+	const t = useTranslations({ note: "comment actions" });
 	const { fetcher } = useCommentsContext();
 	const { comment, isReplying, setReply } = useCommentContext();
 	const editorRef = useRef<UseCommentEditor | undefined>(undefined);
@@ -78,7 +80,7 @@ export function Actions({ canReply = false }: { canReply?: boolean }): React.Rea
 					onClick={onLike}
 					type="button"
 				>
-					<ThumbsUp aria-label="Like" className="size-4" />
+					<ThumbsUp aria-label={t("Like", { note: "aria-label" })} className="size-4" />
 					{comment.likes > 0 ? comment.likes : null}
 				</button>
 				<button
@@ -91,7 +93,7 @@ export function Actions({ canReply = false }: { canReply?: boolean }): React.Rea
 					onClick={onDislike}
 					type="button"
 				>
-					<ThumbsDown aria-label="Dislike" className="size-4" />
+					<ThumbsDown aria-label={t("Dislike", { note: "aria-label" })} className="size-4" />
 					{comment.dislikes > 0 ? comment.dislikes : null}
 				</button>
 				{canReply && isAuthenticated ? (
@@ -101,7 +103,7 @@ export function Actions({ canReply = false }: { canReply?: boolean }): React.Rea
 						onClick={() => setReply(!isReplying)}
 					>
 						<ReplyIcon className="size-4" />
-						Reply
+						{t("Reply")}
 					</button>
 				) : null}
 			</div>
@@ -111,7 +113,9 @@ export function Actions({ canReply = false }: { canReply?: boolean }): React.Rea
 						aria-describedby="reply-description"
 						onOpenAutoFocus={(e) => e.preventDefault()}
 					>
-						<DialogTitle className="sr-only">Replying to {comment.author.name}</DialogTitle>
+						<DialogTitle className="sr-only">
+							{t("Replying to {name}", { variables: { name: comment.author.name } })}
+						</DialogTitle>
 						<ReplyForm editorRef={editorRef} comment={comment} onCancel={() => setReply(false)} />
 					</DialogContent>
 				</Dialog>

@@ -18,6 +18,7 @@ import type { SerializedComment } from "@fuma-comment/server";
 import { ReplyForm } from "./reply-form";
 import type { Editor } from "@tiptap/react";
 import { useAuthContext } from "../../contexts/auth";
+import { useTranslations } from "@fuma-translate/react";
 
 const count = 40;
 
@@ -44,6 +45,7 @@ export function CommentList({
 	components: _components = {},
 	...props
 }: CommentListProps) {
+	const t = useTranslations({ note: "comment list" });
 	const { page, fetcher } = useCommentsContext();
 	const [cursor, setCursor] = useState<number>();
 	const { Comment = defaultComponents.Comment } = useRef(_components).current;
@@ -68,9 +70,11 @@ export function CommentList({
 
 	return (
 		<div ref={ref} {...props} className={cn("flex flex-col", props.className)}>
-			{!query.isLoading && cursor === undefined && list.length === 0 && (
-				<p className="mx-auto my-4 text-center text-sm text-fc-muted-foreground">No comments</p>
-			)}
+			{!query.isLoading && cursor === undefined && list.length === 0 ? (
+				<p className="mx-auto my-4 text-center text-sm text-fc-muted-foreground">
+					{t("No comments")}
+				</p>
+			) : null}
 			{list.map((reply) => (
 				<Comment key={reply.id} comment={reply} />
 			))}
@@ -88,7 +92,7 @@ export function CommentList({
 						if (list.length > 0) setCursor(new Date(list[list.length - 1].timestamp).getTime());
 					}}
 				>
-					Load More
+					{t("Load more")}
 				</button>
 			) : null}
 			{query.isLoading ? <Spinner className="mx-auto my-4" /> : null}
@@ -97,6 +101,7 @@ export function CommentList({
 }
 
 export function Replies(): React.ReactNode {
+	const t = useTranslations({ note: "replies" });
 	const { comment } = useCommentContext();
 	const auth = useAuthContext();
 	const isMobile = useIsMobile();
@@ -117,7 +122,9 @@ export function Replies(): React.ReactNode {
 			)}
 		>
 			<ChevronDown className={cn("size-4 transition-transform", open && "rotate-180")} />
-			{comment.replies} Replies
+			{comment.replies === 1
+				? t("1 Reply")
+				: t("{count} Replies", { variables: { count: comment.replies.toString() } })}
 		</button>
 	);
 
@@ -126,7 +133,7 @@ export function Replies(): React.ReactNode {
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogTrigger asChild>{button}</DialogTrigger>
 				<DialogContent className="h-[70vh]">
-					<DialogTitle>Comments</DialogTitle>
+					<DialogTitle>{t("Comments")}</DialogTitle>
 					<CommentList
 						threadId={comment.id}
 						isSubThread

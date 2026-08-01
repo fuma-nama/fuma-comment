@@ -6,8 +6,10 @@ import { cn } from "../../utils/cn";
 import { useHookUpdate, toggleVariants } from ".";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../dialog";
 import { inputVariants } from "../input";
+import { useTranslations } from "@fuma-translate/react";
 
 export default function EmojiPickerPopover({ editor }: { editor: Editor }): React.ReactElement {
+	const t = useTranslations({ note: "emoji picker" });
 	useHookUpdate(editor);
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -15,7 +17,7 @@ export default function EmojiPickerPopover({ editor }: { editor: Editor }): Reac
 		<Dialog onOpenChange={setIsOpen} open={isOpen}>
 			<DialogTrigger
 				type="button"
-				aria-label="Add Emoji"
+				aria-label={t("Add emoji", { note: "aria-label" })}
 				className={cn(toggleVariants())}
 				disabled={!editor.isEditable}
 			>
@@ -28,7 +30,7 @@ export default function EmojiPickerPopover({ editor }: { editor: Editor }): Reac
 					e.preventDefault();
 				}}
 			>
-				<DialogTitle className="sr-only">Insert Emoji</DialogTitle>
+				<DialogTitle className="sr-only">{t("Insert emoji")}</DialogTitle>
 				<EmojiPicker.Root
 					className="flex w-full flex-col h-[368px] isolate max-sm:-mt-3"
 					onEmojiSelect={(emoji) => {
@@ -38,6 +40,7 @@ export default function EmojiPickerPopover({ editor }: { editor: Editor }): Reac
 				>
 					<EmojiPicker.Search
 						type="text"
+						placeholder={t("Search emoji...")}
 						className={cn(
 							inputVariants({
 								variant: "ghost",
@@ -46,10 +49,10 @@ export default function EmojiPickerPopover({ editor }: { editor: Editor }): Reac
 					/>
 					<EmojiPicker.Viewport className="relative flex-1 outline-hidden">
 						<EmojiPicker.Loading className="absolute inset-0 flex items-center justify-center text-fc-muted-foreground text-sm">
-							Loading…
+							{t("Loading...")}
 						</EmojiPicker.Loading>
 						<EmojiPicker.Empty className="absolute inset-0 flex items-center justify-center text-fc-muted-foreground text-sm">
-							No emoji found.
+							{t("No emoji found.")}
 						</EmojiPicker.Empty>
 						<EmojiPicker.List
 							className="select-none pb-1.5"

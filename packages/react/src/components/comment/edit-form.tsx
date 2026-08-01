@@ -10,8 +10,10 @@ import { buttonVariants } from "../button";
 import { clearPersistentId, CommentEditor, type UseCommentEditor } from "../editor";
 import { Spinner } from "../spinner";
 import { useCommentsContext } from "../../contexts/comments";
+import { useTranslations } from "@fuma-translate/react";
 
 export function EditForm({ onClose }: { onClose: () => void }): React.ReactNode {
+	const t = useTranslations({ note: "edit comment form" });
 	const [isEmpty, setIsEmpty] = useState(false);
 	const { comment, editorRef } = useCommentContext();
 	const { fetcher } = useCommentsContext();
@@ -67,10 +69,10 @@ export function EditForm({ onClose }: { onClose: () => void }): React.ReactNode 
 				}, [])}
 				onEscape={onClose}
 				onSubmit={submit}
-				placeholder="Edit Message"
+				placeholder={t("Edit message")}
 			>
 				<button
-					aria-label="Edit"
+					aria-label={t("Save edit", { note: "aria-label" })}
 					className={cn(
 						buttonVariants({
 							variant: "primary",

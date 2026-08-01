@@ -25,9 +25,19 @@ interface InnerProps {
 }
 
 export const Comments = forwardRef<HTMLDivElement, CommentsProps>(
-	({ page, className, title, storage, editor, mention, auth, apiUrl, ...props }, ref) => {
+	(
+		{ page, className, title, storage, editor, mention, auth, apiUrl, translations, ...props },
+		ref,
+	) => {
 		return (
-			<CommentsProvider page={page} apiUrl={apiUrl} auth={auth} storage={storage} mention={mention}>
+			<CommentsProvider
+				page={page}
+				apiUrl={apiUrl}
+				auth={auth}
+				storage={storage}
+				mention={mention}
+				translations={translations}
+			>
 				<div
 					className={cn(
 						"overflow-hidden rounded-xl border border-fc-border bg-fc-background text-fc-foreground",

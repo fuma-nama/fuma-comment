@@ -3,6 +3,7 @@ import { useLayoutEffect, useState } from "react";
 import { cn } from "../../utils/cn";
 import { inputVariants } from "../input";
 import { buttonVariants } from "../button";
+import { useTranslations } from "@fuma-translate/react";
 
 export function HyperLink({
 	editor,
@@ -11,6 +12,7 @@ export function HyperLink({
 	editor: Editor;
 	onClose: () => void;
 }): React.ReactElement {
+	const t = useTranslations({ note: "link editor" });
 	const [name, setName] = useState("");
 	const [value, setValue] = useState("");
 	const isInsert = editor.state.selection.empty;
@@ -58,7 +60,7 @@ export function HyperLink({
 			}}
 		>
 			<label className="font-medium text-sm content-center" htmlFor="url">
-				Link
+				{t("Link")}
 			</label>
 			<input
 				id="url"
@@ -72,7 +74,7 @@ export function HyperLink({
 				value={value}
 			/>
 			<label className="font-medium text-sm content-center" htmlFor="name">
-				Name
+				{t("Name")}
 			</label>
 			<input
 				id="name"
@@ -81,11 +83,11 @@ export function HyperLink({
 				onChange={(e) => {
 					setName(e.target.value);
 				}}
-				placeholder="My Link (optional)"
+				placeholder={t("My link (optional)")}
 			/>
 			<div className="flex gap-1 mt-2">
 				<button className={cn(buttonVariants())} type="submit">
-					{isInsert ? "Insert" : "Save"}
+					{isInsert ? t("Insert") : t("Save")}
 				</button>
 				{editor.isActive("link") ? (
 					<button
@@ -96,7 +98,7 @@ export function HyperLink({
 						}}
 						type="button"
 					>
-						Unset
+						{t("Unset")}
 					</button>
 				) : null}
 			</div>

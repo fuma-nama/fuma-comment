@@ -18,31 +18,34 @@ import { MentionList, type MentionListRef } from "./mention";
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
 import { lowlight } from "../../utils/highlighter";
 
-const ImageWithWidth = Image.extend({
-	addAttributes() {
-		return {
-			src: {
-				isRequired: true,
-				default: null,
-			},
-			width: {
-				isRequired: true,
-				default: null,
-			},
-			height: {
-				isRequired: true,
-				default: null,
-			},
-			alt: {
-				default: "My Image",
-			},
-		};
-	},
-});
+function createImageWithWidth(defaultAlt: string) {
+	return Image.extend({
+		addAttributes() {
+			return {
+				src: {
+					isRequired: true,
+					default: null,
+				},
+				width: {
+					isRequired: true,
+					default: null,
+				},
+				height: {
+					isRequired: true,
+					default: null,
+				},
+				alt: {
+					default: defaultAlt,
+				},
+			};
+		},
+	});
+}
 
 export type CreateEditorOptions = Partial<EditorOptions> & {
 	placeholder?: string;
 	mentionEnabled: boolean;
+	imageAlt: string;
 
 	onSubmit: () => boolean;
 	onEscape: () => boolean;
@@ -95,6 +98,7 @@ export function createEditor({
 	onSubmit,
 	onEscape,
 	mentionEnabled,
+	imageAlt,
 	...options
 }: CreateEditorOptions): Editor {
 	return new Editor({
@@ -116,7 +120,7 @@ export function createEditor({
 			Italic,
 			History,
 			Paragraph,
-			ImageWithWidth,
+			createImageWithWidth(imageAlt),
 			CodeBlockLowlight.configure({
 				lowlight,
 				defaultLanguage: "plaintext",

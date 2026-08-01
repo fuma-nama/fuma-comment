@@ -10,8 +10,10 @@ import { toggleVariants, useHookUpdate } from ".";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "../dialog";
 import { ImageIcon } from "lucide-react";
 import { useId } from "react";
+import { useTranslations } from "@fuma-translate/react";
 
 export default function UploadImageButton({ editor }: { editor: Editor }): React.ReactElement {
+	const t = useTranslations({ note: "image upload" });
 	useHookUpdate(editor);
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -19,15 +21,15 @@ export default function UploadImageButton({ editor }: { editor: Editor }): React
 		<Dialog onOpenChange={setIsOpen} open={isOpen}>
 			<DialogTrigger
 				type="button"
-				aria-label="Upload Image"
+				aria-label={t("Upload image", { note: "aria-label" })}
 				className={cn(toggleVariants())}
 				disabled={editor.isDestroyed || !editor.isEditable || !editor.can().setImage({ src: "" })}
 			>
 				<ImageIcon className="size-4" />
 			</DialogTrigger>
 			<DialogContent onCloseAutoFocus={(e) => e.preventDefault()}>
-				<DialogTitle>Upload Image</DialogTitle>
-				<DialogDescription>Attach your own image to comment.</DialogDescription>
+				<DialogTitle>{t("Upload image")}</DialogTitle>
+				<DialogDescription>{t("Attach your own image to the comment.")}</DialogDescription>
 				<UploadImage
 					editor={editor}
 					onClose={() => {
@@ -47,6 +49,7 @@ function UploadImage({
 	editor: Editor;
 	onClose: () => void;
 }): React.ReactElement {
+	const t = useTranslations({ note: "image upload" });
 	const storage = useStorage();
 	const [file, setFile] = useState<Blob | null>(null);
 	const fileUrl = useObjectURL(file);
@@ -58,7 +61,7 @@ function UploadImage({
 			onSuccess(data) {
 				editor.commands.setImage({
 					src: data.url,
-					alt: data.alt,
+					alt: data.alt ?? t("Uploaded image", { note: "image alt text" }),
 					width: data.width,
 					height: data.height,
 				});
@@ -102,23 +105,27 @@ function UploadImage({
 					{mutation.isMutating ? (
 						<div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center text-xs backdrop-blur-lg backdrop-brightness-50">
 							<Spinner className="size-8" />
-							Uploading
+							{t("Uploading")}
 						</div>
 					) : null}
-					<img alt="preview" className="mx-auto max-h-96" src={fileUrl} />
+					<img
+						alt={t("Image preview", { note: "image alt text" })}
+						className="mx-auto max-h-96"
+						src={fileUrl}
+					/>
 				</label>
 			) : (
 				<label
 					className="cursor-pointer rounded-xl border border-fc-border bg-fc-background p-4 text-center text-sm font-medium text-fc-muted-foreground"
 					htmlFor={id}
 				>
-					Upload Image
+					{t("Upload image")}
 				</label>
 			)}
 
 			<div className="mt-4 flex gap-1">
 				<button className={cn(buttonVariants())} disabled={mutation.isMutating} type="submit">
-					Save
+					{t("Save")}
 				</button>
 			</div>
 		</form>
