@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import { source } from "@/app/source";
 import defaultMdxComponents from "fumadocs-ui/mdx";
-import { SponsorsMarquee } from "@/components/sponsors-marquee";
+import { SponsorsMarquee } from "@fumari/sponsors";
 
 export default async function Page({ params }: { params: Promise<{ slug?: string[] }> }) {
 	const page = source.getPage((await params).slug);

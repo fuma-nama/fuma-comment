@@ -22,9 +22,9 @@
 		"@fuma-comment/server": "workspace:*"
 	},
 	"devDependencies": {
-		"@types/node": "^26.0.1",
+		"@types/node": "^26.1.2",
 		"tsconfig": "workspace:*",
-		"tsdown": "^0.22.3",
+		"tsdown": "^0.22.14",
 		"typescript": "^6.0.3"
 	}
 }
