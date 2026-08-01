@@ -1,0 +1,24 @@
+core:changelogs:
+  - content: "---\npackages:\n  npm:@fuma-comment/react:\n    type: patch\n---\n\n### Add comment UI translations\n\nComment components now accept a typed `translations` prop for localizing labels, placeholders, dialogs, editor controls, and accessibility text.\n"
+    filename: 2026-08-01-a7f3c2d.md
+    v: 0.0.0
+core:packages:
+  - id: npm:fuma-comment
+    updated: false
+  - id: npm:@fuma-comment/next
+    updated: true
+  - changelogIds:
+      - 2026-08-01-a7f3c2d.md
+    id: npm:@fuma-comment/react
+    updated: true
+  - id: npm:@fuma-comment/server
+    updated: true
+npm:packages:
+  - id: npm:fuma-comment
+  - id: npm:@fuma-comment/next
+  - id: npm:@fuma-comment/react
+  - id: npm:@fuma-comment/server
+  - id: npm:docs
+  - id: npm:example-better-auth
+  - id: npm:example-clerk
+  - id: npm:example-mongodb
