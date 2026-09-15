@@ -16,6 +16,7 @@
     "./adapters/clerk": "./dist/adapters/clerk.js",
     "./adapters/drizzle": "./dist/adapters/drizzle.js",
     "./adapters/fumadb": "./dist/adapters/fumadb.js",
+    "./adapters/github-discussions": "./dist/adapters/github-discussions.js",
     "./adapters/mongo-db": "./dist/adapters/mongo-db.js",
     "./adapters/next-auth": "./dist/adapters/next-auth.js",
     "./adapters/prisma": "./dist/adapters/prisma.js",
@@ -55,6 +56,7 @@
     "fastify": "5.11.0",
     "fumadb": "^0.4.0",
     "hono": "^4.12.32",
+    "marked": "^14.1.4",
     "mongodb": "^7.5.0",
     "next": "^16.2.12",
     "next-auth": "4.24.15",
@@ -72,11 +74,15 @@
     "fastify": "5.x.x",
     "fumadb": "^0.2.1 || ^0.3.0 || ^0.4.0",
     "hono": "*",
+    "marked": "^14.0.0 || ^15.0.0 || ^16.0.0",
     "mongodb": "6.x.x || 7.x.x",
     "next": "^14.0.0 || ^15.0.0 || ^16.0.0",
     "next-auth": "4.x.x"
   },
   "peerDependenciesMeta": {
+    "marked": {
+      "optional": true
+    },
     "hono": {
       "optional": true
     },
