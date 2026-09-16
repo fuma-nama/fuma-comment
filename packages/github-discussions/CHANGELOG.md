@@ -1,7 +1,4 @@
----
-packages:
-  "npm:@fuma-comment/github-discussions": minor
----
+## @fuma-comment/github-discussions@1.6.0
 
 ### New package: GitHub Discussions adapter
 
@@ -14,3 +11,8 @@ auth-agnostic through a `getToken(request)` callback, and supports `@mention` au
 Comments round-trip between the editor's content and GitHub-flavored Markdown. Headings, lists and quotes
 authored on GitHub degrade to paragraphs, and images without dimensions become links, since the editor
 cannot represent them.
+
+### Declare `sideEffects` for better tree-shaking
+
+All packages now declare `sideEffects` in their `package.json`, so bundlers can drop unused imports
+instead of keeping every module alive.

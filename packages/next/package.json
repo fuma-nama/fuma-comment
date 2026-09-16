@@ -1,31 +1,31 @@
 {
-	"name": "@fuma-comment/next",
-	"version": "1.5.1",
-	"homepage": "https://fuma-comment.vercel.app",
-	"license": "MIT",
-	"author": "Fuma Nama",
-	"repository": "https://github.com/fuma-nama/fuma-comment",
-	"files": [
-		"./dist"
-	],
-	"type": "module",
-	"sideEffects": false,
-	"module": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"publishConfig": {
-		"access": "public"
-	},
-	"scripts": {
-		"build": "tsdown",
-		"dev": "tsdown --watch"
-	},
-	"dependencies": {
-		"@fuma-comment/server": "workspace:*"
-	},
-	"devDependencies": {
-		"@types/node": "^26.1.2",
-		"tsconfig": "workspace:*",
-		"tsdown": "^0.22.14",
-		"typescript": "^6.0.3"
-	}
+  "name": "@fuma-comment/next",
+  "version": "1.6.0",
+  "homepage": "https://fuma-comment.vercel.app",
+  "license": "MIT",
+  "author": "Fuma Nama",
+  "repository": "https://github.com/fuma-nama/fuma-comment",
+  "files": [
+    "./dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch"
+  },
+  "dependencies": {
+    "@fuma-comment/server": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "tsconfig": "workspace:*",
+    "tsdown": "^0.22.14",
+    "typescript": "^6.0.3"
+  }
 }

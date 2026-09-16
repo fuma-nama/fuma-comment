@@ -1,3 +1,10 @@
+## @fuma-comment/next@1.6.0
+
+### Declare `sideEffects` for better tree-shaking
+
+All packages now declare `sideEffects` in their `package.json`, so bundlers can drop unused imports
+instead of keeping every module alive.
+
 # @fuma-comment/next
 
 ## 1.5.0
