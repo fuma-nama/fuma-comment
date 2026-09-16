@@ -1,112 +1,112 @@
 {
-	"name": "@fuma-comment/server",
-	"version": "1.5.1",
-	"homepage": "https://fuma-comment.vercel.app",
-	"license": "MIT",
-	"author": "Fuma Nama",
-	"repository": "https://github.com/fuma-nama/fuma-comment",
-	"files": [
-		"./dist"
-	],
-	"type": "module",
-	"sideEffects": false,
-	"types": "./dist/index.d.ts",
-	"exports": {
-		".": "./dist/index.js",
-		"./adapters/better-auth": "./dist/adapters/better-auth.js",
-		"./adapters/clerk": "./dist/adapters/clerk.js",
-		"./adapters/drizzle": "./dist/adapters/drizzle.js",
-		"./adapters/fumadb": "./dist/adapters/fumadb.js",
-		"./adapters/mongo-db": "./dist/adapters/mongo-db.js",
-		"./adapters/next-auth": "./dist/adapters/next-auth.js",
-		"./adapters/prisma": "./dist/adapters/prisma.js",
-		"./cli": "./dist/cli/index.js",
-		"./custom": "./dist/custom/index.js",
-		"./elysia": "./dist/elysia/index.js",
-		"./express": "./dist/express/index.js",
-		"./fastify": "./dist/fastify/index.js",
-		"./hono": "./dist/hono/index.js",
-		"./next": "./dist/next/index.js",
-		"./package.json": "./package.json"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
-	"scripts": {
-		"build": "tsdown",
-		"test": "vitest run",
-		"dev": "tsdown --watch",
-		"check:types": "tsc --noEmit"
-	},
-	"dependencies": {
-		"zod": "^4.4.3"
-	},
-	"devDependencies": {
-		"@clerk/backend": "^3.14.0",
-		"@elysiajs/node": "^1.4.5",
-		"@hono/node-server": "^2.0.12",
-		"@tanstack/react-router": "^1.170.18",
-		"@tanstack/react-start": "^1.168.34",
-		"@types/express": "^5.0.6",
-		"@types/node": "^26.1.2",
-		"better-auth": "1.6.25",
-		"drizzle-orm": "^0.45.2",
-		"elysia": "1.4.29",
-		"express": "^5.2.1",
-		"fastify": "5.11.0",
-		"fumadb": "^0.4.0",
-		"hono": "^4.12.32",
-		"mongodb": "^7.5.0",
-		"next": "^16.2.12",
-		"next-auth": "4.24.15",
-		"path-to-regexp": "^8.4.2",
-		"tsconfig": "workspace:*",
-		"tsdown": "^0.22.14",
-		"typescript": "^6.0.3",
-		"vitest": "^4.1.10"
-	},
-	"peerDependencies": {
-		"@clerk/backend": "2.x.x || 3.x.x",
-		"better-auth": "1.x.x",
-		"drizzle-orm": "0.x.x",
-		"elysia": "1.x.x",
-		"fastify": "5.x.x",
-		"fumadb": "^0.2.1 || ^0.3.0 || ^0.4.0",
-		"hono": "*",
-		"mongodb": "6.x.x || 7.x.x",
-		"next": "^14.0.0 || ^15.0.0 || ^16.0.0",
-		"next-auth": "4.x.x"
-	},
-	"peerDependenciesMeta": {
-		"hono": {
-			"optional": true
-		},
-		"mongodb": {
-			"optional": true
-		},
-		"elysia": {
-			"optional": true
-		},
-		"fastify": {
-			"optional": true
-		},
-		"@clerk/backend": {
-			"optional": true
-		},
-		"next-auth": {
-			"optional": true
-		},
-		"better-auth": {
-			"optional": true
-		},
-		"next": {
-			"optional": true
-		},
-		"fumadb": {
-			"optional": true
-		}
-	},
-	"inlinedDependencies": {
-		"path-to-regexp": "8.3.0"
-	}
+  "name": "@fuma-comment/server",
+  "version": "1.6.0",
+  "homepage": "https://fuma-comment.vercel.app",
+  "license": "MIT",
+  "author": "Fuma Nama",
+  "repository": "https://github.com/fuma-nama/fuma-comment",
+  "files": [
+    "./dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./adapters/better-auth": "./dist/adapters/better-auth.js",
+    "./adapters/clerk": "./dist/adapters/clerk.js",
+    "./adapters/drizzle": "./dist/adapters/drizzle.js",
+    "./adapters/fumadb": "./dist/adapters/fumadb.js",
+    "./adapters/mongo-db": "./dist/adapters/mongo-db.js",
+    "./adapters/next-auth": "./dist/adapters/next-auth.js",
+    "./adapters/prisma": "./dist/adapters/prisma.js",
+    "./cli": "./dist/cli/index.js",
+    "./custom": "./dist/custom/index.js",
+    "./elysia": "./dist/elysia/index.js",
+    "./express": "./dist/express/index.js",
+    "./fastify": "./dist/fastify/index.js",
+    "./hono": "./dist/hono/index.js",
+    "./next": "./dist/next/index.js",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "test": "vitest run",
+    "dev": "tsdown --watch",
+    "check:types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@clerk/backend": "^3.14.0",
+    "@elysiajs/node": "^1.4.5",
+    "@hono/node-server": "^2.0.12",
+    "@tanstack/react-router": "^1.170.18",
+    "@tanstack/react-start": "^1.168.34",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.2",
+    "better-auth": "1.6.25",
+    "drizzle-orm": "^0.45.2",
+    "elysia": "1.4.29",
+    "express": "^5.2.1",
+    "fastify": "5.11.0",
+    "fumadb": "^0.4.0",
+    "hono": "^4.12.32",
+    "mongodb": "^7.5.0",
+    "next": "^16.2.12",
+    "next-auth": "4.24.15",
+    "path-to-regexp": "^8.4.2",
+    "tsconfig": "workspace:*",
+    "tsdown": "^0.22.14",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10"
+  },
+  "peerDependencies": {
+    "@clerk/backend": "2.x.x || 3.x.x",
+    "better-auth": "1.x.x",
+    "drizzle-orm": "0.x.x",
+    "elysia": "1.x.x",
+    "fastify": "5.x.x",
+    "fumadb": "^0.2.1 || ^0.3.0 || ^0.4.0",
+    "hono": "*",
+    "mongodb": "6.x.x || 7.x.x",
+    "next": "^14.0.0 || ^15.0.0 || ^16.0.0",
+    "next-auth": "4.x.x"
+  },
+  "peerDependenciesMeta": {
+    "hono": {
+      "optional": true
+    },
+    "mongodb": {
+      "optional": true
+    },
+    "elysia": {
+      "optional": true
+    },
+    "fastify": {
+      "optional": true
+    },
+    "@clerk/backend": {
+      "optional": true
+    },
+    "next-auth": {
+      "optional": true
+    },
+    "better-auth": {
+      "optional": true
+    },
+    "next": {
+      "optional": true
+    },
+    "fumadb": {
+      "optional": true
+    }
+  },
+  "inlinedDependencies": {
+    "path-to-regexp": "8.3.0"
+  }
 }

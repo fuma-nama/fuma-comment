@@ -1,24 +1,38 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@fuma-comment/react:\n    type: patch\n---\n\n### Add comment UI translations\n\nComment components now accept a typed `translations` prop for localizing labels, placeholders, dialogs, editor controls, and accessibility text.\n"
-    filename: 2026-08-01-a7f3c2d.md
+  - content: "---\npackages:\n  npm:@fuma-comment/github-discussions:\n    type: minor\n---\n\n### New package: GitHub Discussions adapter\n\nStore comments in GitHub Discussions via `@fuma-comment/github-discussions`. GitHub is the store, the\nmoderation, and the identity, so there's no database and no separate auth — a good fit for a docs site or\nblog. `createGithubDiscussionsAdapter` returns both `storage` and `auth` (spread into `NextComment`); it's\nauth-agnostic through a `getToken(request)` callback, and supports `@mention` autocomplete via\n`repository.mentionableUsers`.\n\nComments round-trip between the editor's content and GitHub-flavored Markdown. Headings, lists and quotes\nauthored on GitHub degrade to paragraphs, and images without dimensions become links, since the editor\ncannot represent them.\n"
+    filename: 2026-09-15-github-discussions.md
+    v: 0.0.0
+  - content: "---\npackages:\n  npm:@fuma-comment/server:\n    type: patch\n  npm:@fuma-comment/react:\n    type: patch\n  npm:@fuma-comment/next:\n    type: patch\n  npm:@fuma-comment/github-discussions:\n    type: patch\n---\n\n### Declare `sideEffects` for better tree-shaking\n\nAll packages now declare `sideEffects` in their `package.json`, so bundlers can drop unused imports\ninstead of keeping every module alive.\n"
+    filename: 2026-09-16-side-effects.md
     v: 0.0.0
 core:packages:
   - id: npm:fuma-comment
     updated: false
-  - id: npm:@fuma-comment/next
+  - changelogIds:
+      - 2026-09-15-github-discussions.md
+      - 2026-09-16-side-effects.md
+    id: npm:@fuma-comment/github-discussions
     updated: true
   - changelogIds:
-      - 2026-08-01-a7f3c2d.md
+      - 2026-09-16-side-effects.md
+    id: npm:@fuma-comment/next
+    updated: true
+  - changelogIds:
+      - 2026-09-16-side-effects.md
     id: npm:@fuma-comment/react
     updated: true
-  - id: npm:@fuma-comment/server
+  - changelogIds:
+      - 2026-09-16-side-effects.md
+    id: npm:@fuma-comment/server
     updated: true
 npm:packages:
   - id: npm:fuma-comment
+  - id: npm:@fuma-comment/github-discussions
   - id: npm:@fuma-comment/next
   - id: npm:@fuma-comment/react
   - id: npm:@fuma-comment/server
   - id: npm:docs
-  - id: npm:example-better-auth
   - id: npm:example-clerk
+  - id: npm:example-better-auth
+  - id: npm:example-github-discussions
   - id: npm:example-mongodb
