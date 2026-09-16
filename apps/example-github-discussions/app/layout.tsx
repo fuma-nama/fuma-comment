@@ -6,8 +6,7 @@ const geist = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 
 export const metadata: Metadata = {
 	title: "fuma-comment + GitHub Discussions",
-	description:
-		"Comments stored in GitHub Discussions, via @fuma-comment/server/adapters/github-discussions.",
+	description: "Comments stored in GitHub Discussions, via @fuma-comment/github-discussions.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -31,6 +31,7 @@ const paper = tegami({
 		"@fuma-comment/server": { group: "fuma-comment" },
 		"@fuma-comment/react": { group: "fuma-comment" },
 		"@fuma-comment/next": { group: "fuma-comment" },
+		"@fuma-comment/github-discussions": { group: "fuma-comment" },
 	},
 });
 

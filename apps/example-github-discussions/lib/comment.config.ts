@@ -1,4 +1,4 @@
-import { createGithubDiscussionsAdapter } from "@fuma-comment/server/adapters/github-discussions";
+import { createGithubDiscussionsAdapter } from "@fuma-comment/github-discussions";
 import { getTokenFromRequest } from "./github-oauth";
 
 /** The GitHub Discussions adapter (storage + auth), wired from env. Spread into `NextComment`. */

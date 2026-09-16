@@ -1,7 +1,7 @@
 import { Demo } from "./page.client";
 
 const CONFIG_SNIPPET = `import { NextComment } from "@fuma-comment/server/next";
-import { createGithubDiscussionsAdapter } from "@fuma-comment/server/adapters/github-discussions";
+import { createGithubDiscussionsAdapter } from "@fuma-comment/github-discussions";
 
 const github = createGithubDiscussionsAdapter({
   repo: "owner/name",
@@ -23,19 +23,24 @@ const OPTIONS: [string, string, string][] = [
 	["repo", "yes", '"owner/name" of the public repo storing the discussions.'],
 	["repoId", "yes", "Repository node id (R_...), to open new discussions."],
 	["categoryId", "yes", "Discussions category node id (DIC_...) for new threads."],
-	["getToken", "yes", "Resolve the reader's GitHub token from the request (or null when signed out)."],
+	[
+		"getToken",
+		"yes",
+		"Resolve the reader's GitHub token from the request (or null when signed out).",
+	],
 	["category", "no", "Category name; scopes the search that finds a page's discussion."],
 	["ownerLogins", "no", 'GitHub logins allowed to moderate (with role: "database").'],
 	["readToken", "no", "Server PAT for anonymous reads + opening threads (public_repo)."],
 	["pageToTitle", "no", "Map a page to the Discussion title (default: identity)."],
-	["pageToUrl", "no", "URL placed in a new discussion's seed body."],
+	["pageToUrl", "no", "Map a page to the URL placed in a new discussion's seed body."],
 ];
 
 const NOTES = [
 	"One level of replies, matching GitHub Discussions.",
 	"@mention autocomplete uses repository.mentionableUsers; enable it with mention: { enabled: true }.",
 	"readToken needs Discussions read + write (a classic public_repo PAT). Without it, signed-out visitors see no comments and own-comment deletes are blocked.",
-	"Rich content round-trips through Markdown; Markdown authored on GitHub that the editor can't represent (headings, lists, quotes) degrades to paragraphs.",
+	"Rich content round-trips through Markdown. What the editor can't represent degrades: headings, lists and quotes become paragraphs, and images without dimensions become links.",
+	"A page maps to a Discussion by title, resolved through GitHub's search index. Set pageToTitle to keep those titles unique.",
 ];
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -57,9 +62,10 @@ export default function Home() {
 				<h1 className="text-2xl font-semibold tracking-tight">GitHub Discussions adapter</h1>
 				<p className="text-sm opacity-70">
 					Store fuma-comment comments in GitHub Discussions, via{" "}
-					<code>@fuma-comment/server/adapters/github-discussions</code>. GitHub is the store, the
-					moderation, and the identity, so there's no database and no separate auth. This page is both
-					the docs and a live demo{repo ? (
+					<code>@fuma-comment/github-discussions</code>. GitHub is the store, the moderation, and
+					the identity, so there's no database and no separate auth. This page is both the docs and
+					a live demo
+					{repo ? (
 						<>
 							{" "}
 							running against <code>{repo}</code>
@@ -77,8 +83,8 @@ export default function Home() {
 
 			<Section title="Try it">
 				<p className="text-sm opacity-70">
-					Sign in with your GitHub account to post; replies and 👍 / 👎 reactions work too, and whatever
-					you post shows up on the GitHub discussion.
+					Sign in with your GitHub account to post; replies and 👍 / 👎 reactions work too, and
+					whatever you post shows up on the GitHub discussion.
 					{repo ? (
 						<>
 							{" "}
@@ -99,10 +105,10 @@ export default function Home() {
 			<Section title="Configure">
 				<p className="text-sm opacity-70">
 					<code>createGithubDiscussionsAdapter</code> returns both <code>storage</code> and{" "}
-					<code>auth</code>, so spread it into <code>NextComment</code>. It's auth-agnostic: you only
-					supply <code>getToken</code> (how to read the reader's GitHub token). This example ships a
-					reference OAuth flow in <code>lib/github-oauth.ts</code> that stores the token in an httpOnly,
-					encrypted cookie.
+					<code>auth</code>, so spread it into <code>NextComment</code>. It's auth-agnostic: you
+					only supply <code>getToken</code> (how to read the reader's GitHub token). This example
+					ships a reference OAuth flow in <code>lib/github-oauth.ts</code> that stores the token in
+					an httpOnly, encrypted cookie.
 				</p>
 				<pre className="overflow-x-auto rounded-lg border border-black/10 bg-black/[0.03] p-4 text-xs leading-relaxed dark:border-white/10 dark:bg-white/[0.04]">
 					<code>{CONFIG_SNIPPET}</code>

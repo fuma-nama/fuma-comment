@@ -251,15 +251,15 @@ importers:
 
   apps/example-github-discussions:
     dependencies:
+      '@fuma-comment/github-discussions':
+        specifier: workspace:*
+        version: link:../../packages/github-discussions
       '@fuma-comment/react':
         specifier: workspace:*
         version: link:../../packages/react
       '@fuma-comment/server':
         specifier: workspace:*
         version: link:../../packages/server
-      marked:
-        specifier: ^14.1.4
-        version: 14.1.4
       next:
         specifier: 16.2.12
         version: 16.2.12(@babel/core@7.29.7)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -334,6 +334,28 @@ importers:
       vite:
         specifier: ^8.2.0
         version: 8.2.0(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.1)(yaml@2.9.0)
+
+  packages/github-discussions:
+    dependencies:
+      marked:
+        specifier: ^14.1.4
+        version: 14.1.4
+    devDependencies:
+      '@fuma-comment/server':
+        specifier: workspace:*
+        version: link:../server
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      tsdown:
+        specifier: ^0.22.14
+        version: 0.22.14(tsx@4.23.1)(typescript@6.0.3)
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@26.1.2)(vite@8.2.0(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.1)(yaml@2.9.0))
 
   packages/next:
     dependencies:
@@ -553,9 +575,6 @@ importers:
       hono:
         specifier: ^4.12.32
         version: 4.12.32
-      marked:
-        specifier: ^14.1.4
-        version: 14.1.4
       mongodb:
         specifier: ^7.5.0
         version: 7.5.0

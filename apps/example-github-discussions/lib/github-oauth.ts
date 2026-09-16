@@ -1,4 +1,10 @@
-import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
+import {
+	createCipheriv,
+	createDecipheriv,
+	createHash,
+	randomBytes,
+	timingSafeEqual,
+} from "node:crypto";
 import { NextResponse } from "next/server";
 import type { CustomRequest } from "@fuma-comment/server/custom";
 
@@ -9,18 +15,26 @@ import type { CustomRequest } from "@fuma-comment/server/custom";
  * reaches the browser. Bring your own auth in a real app if you already have GitHub sign-in.
  */
 
-const COOKIE = "fc_gh_token";
+const TOKEN_COOKIE = "fc_gh_token";
+const STATE_COOKIE = "fc_gh_state";
 const SCOPE = "public_repo"; // lets the reader create/comment on discussions in a public repo
 const ONE_YEAR = 60 * 60 * 24 * 365;
-
-function secret(): string {
-	return process.env.GITHUB_TOKEN_SECRET ?? "";
-}
+const STATE_TTL = 10 * 60 * 1000;
 
 // ── AES-256-GCM (base64url of iv|tag|ciphertext) ─────────────────────────────────────────────────
 
+let cachedKey: Buffer | undefined;
+
 function key(): Buffer {
-	return createHash("sha256").update(secret()).digest();
+	if (cachedKey) return cachedKey;
+	const secret = process.env.GITHUB_TOKEN_SECRET;
+	if (!secret || secret.length < 32) {
+		throw new Error(
+			"GITHUB_TOKEN_SECRET must be set to a random string of at least 32 characters; it encrypts the reader's GitHub token.",
+		);
+	}
+	cachedKey = createHash("sha256").update(secret).digest();
+	return cachedKey;
 }
 
 function encrypt(plaintext: string): string {
@@ -37,38 +51,54 @@ function decrypt(payload: string): string {
 	return Buffer.concat([decipher.update(buf.subarray(28)), decipher.final()]).toString("utf8");
 }
 
-function encodeState(returnUrl: string): string {
-	return encrypt(JSON.stringify({ r: returnUrl, e: Date.now() + 10 * 60 * 1000 }));
+function encodeState(returnUrl: string, nonce: string): string {
+	return encrypt(JSON.stringify({ r: returnUrl, n: nonce, e: Date.now() + STATE_TTL }));
 }
 
-function decodeState(state: string): string {
-	const { r, e } = JSON.parse(decrypt(state)) as { r: string; e: number };
+function decodeState(state: string): { returnUrl: string; nonce: string } {
+	const { r, n, e } = JSON.parse(decrypt(state)) as { r: string; n: string; e: number };
 	if (typeof e !== "number" || Date.now() > e) throw new Error("State expired");
-	return r;
+	return { returnUrl: r, nonce: n };
 }
 
 // ── Cookie / token access ────────────────────────────────────────────────────────────────────────
 
-function headerValue(v: string | readonly string[] | undefined): string | null {
-	if (v == null) return null;
-	return Array.isArray(v) ? (v[0] ?? null) : (v as string);
-}
-
-/** Read + decrypt the reader's GitHub token from the request cookie. Passed to the adapter as `getToken`. */
-export function getTokenFromRequest(request: CustomRequest): string | null {
-	const header = headerValue(request.headers.get("cookie"));
+function readCookie(header: string | null, name: string): string | null {
 	if (!header) return null;
 	for (const part of header.split(";")) {
 		const idx = part.indexOf("=");
 		if (idx === -1) continue;
-		if (part.slice(0, idx).trim() !== COOKIE) continue;
-		try {
-			return decrypt(decodeURIComponent(part.slice(idx + 1).trim()));
-		} catch {
-			return null;
-		}
+		if (part.slice(0, idx).trim() !== name) continue;
+		return decodeURIComponent(part.slice(idx + 1).trim());
 	}
 	return null;
+}
+
+function cookie(name: string, value: string, maxAge: number): string {
+	const parts = [
+		`${name}=${encodeURIComponent(value)}`,
+		"Path=/",
+		`Max-Age=${maxAge}`,
+		"SameSite=Lax",
+		"HttpOnly",
+	];
+	if (process.env.NODE_ENV === "production") parts.push("Secure");
+	return parts.join("; ");
+}
+
+/** Read + decrypt the reader's GitHub token from the request cookie. Passed to the adapter as `getToken`. */
+export function getTokenFromRequest(request: CustomRequest): string | null {
+	const header = request.headers.get("cookie");
+	const value = readCookie(
+		Array.isArray(header) ? (header[0] ?? null) : (header ?? null),
+		TOKEN_COOKIE,
+	);
+	if (!value) return null;
+	try {
+		return decrypt(value);
+	} catch {
+		return null;
+	}
 }
 
 // ── OAuth route handlers (login / callback / logout) ─────────────────────────────────────────────
@@ -94,45 +124,51 @@ function sameOrigin(candidate: string | null, self: string): string {
 	}
 }
 
-function cookie(value: string, maxAge: number): string {
-	const parts = [
-		`${COOKIE}=${encodeURIComponent(value)}`,
-		"Path=/",
-		`Max-Age=${maxAge}`,
-		"SameSite=Lax",
-		"HttpOnly",
-	];
-	if (process.env.NODE_ENV === "production") parts.push("Secure");
-	return parts.join("; ");
-}
-
 export function login(request: Request): NextResponse {
 	const self = origin(request);
 	const returnUrl = sameOrigin(new URL(request.url).searchParams.get("return"), self);
+	const nonce = randomBytes(16).toString("base64url");
 	const params = new URLSearchParams({
 		client_id: process.env.GITHUB_CLIENT_ID ?? "",
 		redirect_uri: `${self}${CALLBACK_PATH}`,
 		scope: SCOPE,
-		state: encodeState(returnUrl),
+		state: encodeState(returnUrl, nonce),
 	});
-	return NextResponse.redirect(`${GITHUB_AUTHORIZE}?${params.toString()}`);
+
+	const response = NextResponse.redirect(`${GITHUB_AUTHORIZE}?${params.toString()}`);
+	response.headers.append("Set-Cookie", cookie(STATE_COOKIE, nonce, STATE_TTL / 1000));
+	return response;
 }
 
 export async function callback(request: Request): Promise<NextResponse> {
 	const self = origin(request);
 	const url = new URL(request.url);
-	const code = url.searchParams.get("code");
 	const state = url.searchParams.get("state");
+	const nonce = readCookie(request.headers.get("cookie"), STATE_COOKIE);
 
-	let returnUrl = `${self}/`;
-	if (state) {
-		try {
-			returnUrl = decodeState(state);
-		} catch {
-			return NextResponse.json({ message: "Invalid or expired sign-in state" }, { status: 400 });
+	let returnUrl: string;
+	try {
+		if (!state) throw new Error("Missing state");
+		const decoded = decodeState(state);
+		// `state` is only CSRF protection if it is bound to the browser that started the flow.
+		const sent = Buffer.from(decoded.nonce ?? "");
+		const held = Buffer.from(nonce ?? "");
+		if (sent.length !== held.length || !timingSafeEqual(sent, held)) {
+			throw new Error("State mismatch");
 		}
+		// Re-check the origin: the return URL was captured when the flow started, from a request whose
+		// forwarded headers this app does not control.
+		returnUrl = sameOrigin(decoded.returnUrl, self);
+	} catch {
+		return NextResponse.json({ message: "Invalid or expired sign-in state" }, { status: 400 });
 	}
-	if (url.searchParams.get("error") || !code) return NextResponse.redirect(returnUrl);
+
+	const code = url.searchParams.get("code");
+	if (url.searchParams.get("error") || !code) {
+		const response = NextResponse.redirect(returnUrl);
+		response.headers.append("Set-Cookie", cookie(STATE_COOKIE, "", 0));
+		return response;
+	}
 
 	let accessToken: string;
 	try {
@@ -153,7 +189,8 @@ export async function callback(request: Request): Promise<NextResponse> {
 	}
 
 	const response = NextResponse.redirect(returnUrl);
-	response.headers.append("Set-Cookie", cookie(encrypt(accessToken), ONE_YEAR));
+	response.headers.append("Set-Cookie", cookie(STATE_COOKIE, "", 0));
+	response.headers.append("Set-Cookie", cookie(TOKEN_COOKIE, encrypt(accessToken), ONE_YEAR));
 	return response;
 }
 
@@ -161,6 +198,6 @@ export function logout(request: Request): NextResponse {
 	const self = origin(request);
 	const returnUrl = sameOrigin(new URL(request.url).searchParams.get("return"), self);
 	const response = NextResponse.redirect(returnUrl);
-	response.headers.append("Set-Cookie", cookie("", 0));
+	response.headers.append("Set-Cookie", cookie(TOKEN_COOKIE, "", 0));
 	return response;
 }

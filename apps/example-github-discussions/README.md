@@ -1,7 +1,7 @@
 # Example: GitHub Discussions
 
 Comments stored in **GitHub Discussions** via
-[`@fuma-comment/server/adapters/github-discussions`](../../packages/server/src/adapters/github-discussions.ts).
+[`@fuma-comment/github-discussions`](../../packages/github-discussions).
 No database and no separate auth: GitHub is the store, the moderation, and the identity. Readers sign in
 with their own GitHub account and comment, reply, and react; each page maps to one Discussion.
 
@@ -21,11 +21,11 @@ with their own GitHub account and comment, reply, and react; each page maps to o
 
 - `lib/comment.config.ts` — builds the adapter (`createGithubDiscussionsAdapter`) from env. It's both the
   storage and the auth provider; you only supply `getToken` (how to read the reader's GitHub token).
-- `app/api/comments/[[...comment]]/route.ts` — mounts `NextComment` with the adapter, `role: "database"`
+- `app/api/comments/[...comment]/route.ts` — mounts `NextComment` with the adapter, `role: "database"`
   (so `ownerLogins` can moderate), and `mention: { enabled: true }`.
 - `lib/github-oauth.ts` + `app/api/comments/oauth/*` — a reference GitHub OAuth flow that stores the
   reader's token in an httpOnly, encrypted cookie. The adapter core is auth-agnostic; swap this for your
   own GitHub sign-in if you already have one.
 - `app/page.client.tsx` — the `<Comments>` widget.
 
-The `marked` dependency is used by the adapter to convert stored Markdown back into the editor's content.
+The adapter converts between the editor's content and GitHub-flavored Markdown; `marked` (its only dependency) handles the parse direction.
