@@ -1,5 +1,5 @@
 {
-	"name": "@fuma-comment/next",
+	"name": "@fuma-comment/github-discussions",
 	"version": "1.5.1",
 	"homepage": "https://fuma-comment.vercel.app",
 	"license": "MIT",
@@ -11,20 +11,30 @@
 	"type": "module",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
 	"publishConfig": {
 		"access": "public"
 	},
 	"scripts": {
 		"build": "tsdown",
-		"dev": "tsdown --watch"
+		"check:types": "tsc --noEmit",
+		"dev": "tsdown --watch",
+		"test": "vitest run"
 	},
 	"dependencies": {
-		"@fuma-comment/server": "workspace:*"
+		"marked": "^14.1.4"
 	},
 	"devDependencies": {
-		"@types/node": "^26.1.2",
+		"@fuma-comment/server": "workspace:*",
 		"tsconfig": "workspace:*",
 		"tsdown": "^0.22.14",
-		"typescript": "^6.0.3"
+		"typescript": "^6.0.3",
+		"vitest": "^4.1.10"
+	},
+	"peerDependencies": {
+		"@fuma-comment/server": "workspace:^"
 	}
 }
