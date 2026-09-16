@@ -4,6 +4,12 @@ import { github } from "tegami/plugins/github";
 import { x } from "tinyexec";
 
 const paper = tegami({
+	npm: {
+		trustedPublish: {
+			provider: "github",
+			workflow: "release.yml",
+		},
+	},
 	plugins: [
 		github({
 			repo: "fuma-nama/fuma-comment",

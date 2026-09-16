@@ -25,6 +25,8 @@ core:packages:
       - 2026-09-16-side-effects.md
     id: npm:@fuma-comment/server
     updated: true
+npm:mark-latest:
+  - id: npm:@fuma-comment/github-discussions
 npm:packages:
   - id: npm:fuma-comment
   - id: npm:@fuma-comment/github-discussions
